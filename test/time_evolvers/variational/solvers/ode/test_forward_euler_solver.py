@@ -13,7 +13,7 @@
 """Test Forward Euler solver."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, data, unpack
 from scipy.integrate import solve_ivp

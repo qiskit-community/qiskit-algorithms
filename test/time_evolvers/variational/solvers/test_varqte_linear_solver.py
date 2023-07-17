@@ -13,10 +13,10 @@
 """Test solver of linear equations."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 # fmt: off
-from test.python.algorithms.time_evolvers.variational.solvers.expected_results.\
+from test.time_evolvers.variational.solvers.expected_results.\
     test_varqte_linear_solver_expected_1 import expected_metric_res_1
 # fmt: on
 

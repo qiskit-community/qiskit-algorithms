@@ -13,7 +13,7 @@
 """Test the QAOA algorithm with opflow."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 from functools import partial
 import numpy as np

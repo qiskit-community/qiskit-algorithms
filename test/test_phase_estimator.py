@@ -13,7 +13,7 @@
 """Test phase estimation"""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data, unpack
 import numpy as np
 from qiskit.circuit.library import ZGate, XGate, HGate, IGate

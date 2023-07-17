@@ -12,7 +12,7 @@
 
 """Test validate initial point."""
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 from unittest.mock import Mock
 

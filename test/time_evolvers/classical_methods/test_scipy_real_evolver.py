@@ -12,7 +12,7 @@
 
 """Test Classical Real Evolver."""
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from ddt import data, ddt, unpack
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister

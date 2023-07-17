@@ -13,7 +13,7 @@
 """Test of scikit-quant optimizers."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 from ddt import ddt, data, unpack
 

@@ -11,7 +11,7 @@
 # that they have been altered from the originals.
 """Class for testing evolution result."""
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from qiskit_algorithms import TimeEvolutionResult
 from qiskit.opflow import Zero
 

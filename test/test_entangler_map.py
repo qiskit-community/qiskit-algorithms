@@ -14,7 +14,7 @@
 
 import unittest
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from qiskit.utils import get_entangler_map, validate_entangler_map
 
 

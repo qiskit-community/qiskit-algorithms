@@ -12,7 +12,7 @@
 
 """Tests for LearningRate."""
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit_algorithms.optimizers.optimizer_utils import LearningRate
 

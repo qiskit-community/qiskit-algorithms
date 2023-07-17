@@ -13,7 +13,7 @@
 """Test the quantum amplitude estimation algorithm."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, idata, data, unpack
 from qiskit import QuantumRegister, QuantumCircuit, BasicAer

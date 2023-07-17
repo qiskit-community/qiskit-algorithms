@@ -13,7 +13,7 @@
 """Test the variational quantum eigensolver algorithm."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 from functools import partial
 import numpy as np

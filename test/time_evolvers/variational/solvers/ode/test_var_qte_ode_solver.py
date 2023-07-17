@@ -13,7 +13,7 @@
 """Test solver of ODEs."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data, unpack
 import numpy as np
 

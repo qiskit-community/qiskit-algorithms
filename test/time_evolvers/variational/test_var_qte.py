@@ -13,7 +13,7 @@
 
 import unittest
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from numpy.testing import assert_raises
 from ddt import data, ddt
 import numpy as np

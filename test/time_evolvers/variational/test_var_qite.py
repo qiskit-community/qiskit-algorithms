@@ -13,7 +13,7 @@
 """Test Variational Quantum Imaginary Time Evolution algorithm."""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from ddt import ddt
 import numpy as np
 

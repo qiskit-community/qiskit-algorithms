@@ -12,7 +12,7 @@
 
 """Tests for the Gradient Descent optimizer."""
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit_algorithms.optimizers import GradientDescent, GradientDescentState
 from qiskit_algorithms.optimizers.steppable_optimizer import TellData, AskData

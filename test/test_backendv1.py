@@ -13,7 +13,7 @@
 """Test Providers that support BackendV1 interface"""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from qiskit import QuantumCircuit
 from qiskit.providers.fake_provider import FakeProvider
 from qiskit.utils import QuantumInstance, algorithm_globals

@@ -13,7 +13,7 @@
 """Test NumPy minimum eigensolver"""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data

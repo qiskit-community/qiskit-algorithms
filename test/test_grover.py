@@ -14,7 +14,7 @@
 
 import itertools
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt, idata, unpack

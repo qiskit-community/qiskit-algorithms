@@ -12,7 +12,7 @@
 
 """Tests for the UMDA optimizer."""
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from scipy.optimize import rosen

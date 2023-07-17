@@ -14,7 +14,7 @@
 
 import unittest
 from functools import partial
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 import rustworkx as rx

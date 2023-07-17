@@ -13,7 +13,7 @@
 """Test Optimizers"""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 
 from typing import Optional, List, Tuple
 from ddt import ddt, data, unpack

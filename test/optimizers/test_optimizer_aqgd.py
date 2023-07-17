@@ -13,7 +13,7 @@
 """Test of AQGD optimizer"""
 
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.opflow import PauliSumOp

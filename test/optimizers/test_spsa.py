@@ -12,7 +12,7 @@
 
 """Tests for the SPSA optimizer."""
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data
 
 import numpy as np

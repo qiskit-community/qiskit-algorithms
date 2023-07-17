@@ -14,7 +14,7 @@
 
 import unittest
 
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit import Parameter

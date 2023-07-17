@@ -14,7 +14,7 @@
 
 import logging
 import unittest
-from test.python.algorithms import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase
 from test.python.transpiler._dummy_passes import DummyAP
 
 from functools import partial
