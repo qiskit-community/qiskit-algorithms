@@ -18,10 +18,11 @@ from qiskit import QuantumCircuit
 from qiskit.providers.fake_provider import FakeProvider
 from qiskit.providers.fake_provider.fake_backend_v2 import FakeBackendSimple
 from qiskit.utils import QuantumInstance
-from qiskit_algorithms import VQE, Grover, AmplificationProblem
 from qiskit.opflow import X, Z, I
-from qiskit_algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
+
+from qiskit_algorithms import VQE, Grover, AmplificationProblem
+from qiskit_algorithms.optimizers import SPSA
 
 
 class TestBackendV2(QiskitAlgorithmsTestCase):
@@ -68,7 +69,7 @@ class TestBackendV2(QiskitAlgorithmsTestCase):
         problem = AmplificationProblem(oracle, is_good_state=["11"])
 
         with self.assertWarns(DeprecationWarning):
-            qi = QuantumInstance(
+            qi = QuantumInstance( # pylint: disable=invalid-name
                 self._provider.get_backend("fake_yorktown"), seed_simulator=12, seed_transpiler=32
             )
 
@@ -87,7 +88,7 @@ class TestBackendV2(QiskitAlgorithmsTestCase):
         backend._configuration.max_experiments = 1
 
         with self.assertWarns(DeprecationWarning):
-            qi = QuantumInstance(
+            qi = QuantumInstance( # pylint: disable=invalid-name
                 self._provider.get_backend("fake_yorktown"), seed_simulator=12, seed_transpiler=32
             )
 

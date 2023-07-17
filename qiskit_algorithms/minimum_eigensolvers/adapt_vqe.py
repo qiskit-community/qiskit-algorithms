@@ -23,12 +23,13 @@ from typing import Any
 import numpy as np
 
 from qiskit import QiskitError
-from qiskit_algorithms.list_or_dict import ListOrDict
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 from qiskit.utils.validation import validate_min
+
+from qiskit_algorithms.list_or_dict import ListOrDict
 
 from .minimum_eigensolver import MinimumEigensolver
 from .vqe import VQE, VQEResult

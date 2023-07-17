@@ -23,8 +23,8 @@ from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 from .exceptions import AlgorithmError
 from .list_or_dict import ListOrDict
-from ..primitives import BaseEstimator
-from ..quantum_info.operators.base_operator import BaseOperator
+from qiskit.primitives import BaseEstimator
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 
 def estimate_observables(

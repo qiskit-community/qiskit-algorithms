@@ -23,6 +23,7 @@ from qiskit.circuit.library import RealAmplitudes
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.opflow import PauliSumOp
+
 from qiskit_algorithms import VQE
 from qiskit_algorithms.optimizers import BOBYQA, SNOBFIT, IMFIL
 
@@ -49,7 +50,7 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
     def _optimize(self, optimizer):
         """launch vqe"""
         with self.assertWarns(DeprecationWarning):
-            qe = QuantumInstance(
+            qe = QuantumInstance( # pylint: disable=invalid-name
                 BasicAer.get_backend("statevector_simulator"),
                 seed_simulator=algorithm_globals.random_seed,
                 seed_transpiler=algorithm_globals.random_seed,

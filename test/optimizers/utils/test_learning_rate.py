@@ -14,6 +14,7 @@
 
 from test import QiskitAlgorithmsTestCase
 import numpy as np
+
 from qiskit_algorithms.optimizers.optimizer_utils import LearningRate
 
 
@@ -35,7 +36,7 @@ class TestLearningRate(QiskitAlgorithmsTestCase):
         float, list and iterator.
         """
         constant_learning_rate_input = 0.01
-        list_learning_rate_input = [0.01 * n for n in range(10)]
+        list_learning_rate_input = [0.01 * n for n in range(10)] # pylint: disable=unnecessary-lambda-assignment
         generator_learning_rate_input = lambda: (el for el in list_learning_rate_input)
 
         with self.subTest("Check constant learning rate."):

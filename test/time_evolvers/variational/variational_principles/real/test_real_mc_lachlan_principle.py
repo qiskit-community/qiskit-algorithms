@@ -23,13 +23,13 @@ from test.time_evolvers.variational.variational_principles.expected_results.\
 import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
+from qiskit.circuit.library import EfficientSU2
+from qiskit.primitives import Estimator
+
+from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
 from qiskit_algorithms.time_evolvers.variational import (
     RealMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
-from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
-from qiskit.primitives import Estimator
-
 
 class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):
     """Test real McLachlan's variational principle."""

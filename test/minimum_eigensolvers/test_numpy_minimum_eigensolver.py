@@ -18,9 +18,10 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, data
 
-from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Operator, SparsePauliOp
+
+from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
 
 H2_SPARSE_PAULI = SparsePauliOp(
     ["II", "ZI", "IZ", "ZZ", "XX"],

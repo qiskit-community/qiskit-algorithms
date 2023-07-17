@@ -534,7 +534,7 @@ class SPSA(Optimizer):
 
         # if blocking is enabled we need to keep track of the function values
         if self.blocking:
-            fx = fun(x)
+            fx = fun(x) # pylint: disable=invalid-name
 
             self._nfev += 1
             if self.allowed_increase is None:
@@ -590,7 +590,7 @@ class SPSA(Optimizer):
                         time() - iteration_start,
                     )
                     continue
-                fx = fx_next
+                fx = fx_next # pylint: disable=invalid-name
 
             logger.info(
                 "Iteration %s/%s done in %s.", k, self.maxiter + 1, time() - iteration_start

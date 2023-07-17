@@ -20,18 +20,19 @@ import numpy as np
 from ddt import ddt, data
 
 from qiskit import QuantumCircuit
-from qiskit_algorithms.gradients import (
-    FiniteDiffSamplerGradient,
-    LinCombSamplerGradient,
-    ParamShiftSamplerGradient,
-    SPSASamplerGradient,
-)
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import Sampler
 from qiskit.result import QuasiDistribution
 from qiskit.test import QiskitTestCase
+
+from qiskit_algorithms.gradients import (
+    FiniteDiffSamplerGradient,
+    LinCombSamplerGradient,
+    ParamShiftSamplerGradient,
+    SPSASamplerGradient,
+)
 
 from .logging_primitives import LoggingSampler
 

@@ -22,13 +22,13 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
+from qiskit.circuit.library import EfficientSU2
+from qiskit.primitives import Estimator
+
+from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
-from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
-from qiskit.primitives import Estimator
-
 
 class TestImaginaryMcLachlanPrinciple(QiskitAlgorithmsTestCase):
     """Test imaginary McLachlan's variational principle."""

@@ -17,8 +17,7 @@ from __future__ import annotations
 import warnings
 
 from qiskit import QuantumCircuit
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg
+from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.opflow import (
     SummedOp,
     PauliOp,
@@ -30,13 +29,15 @@ from qiskit.opflow import (
     I,
 )
 from qiskit.providers import Backend
+from qiskit.primitives import BaseSampler
+from qiskit.quantum_info import SparsePauliOp, Statevector, Pauli
+from qiskit.synthesis import EvolutionSynthesis
+from qiskit.utils import QuantumInstance
+from qiskit.utils.deprecation import deprecate_arg
+
 from .phase_estimation import PhaseEstimation
 from .hamiltonian_phase_estimation_result import HamiltonianPhaseEstimationResult
 from .phase_estimation_scale import PhaseEstimationScale
-from ...circuit.library import PauliEvolutionGate
-from ...primitives import BaseSampler
-from ...quantum_info import SparsePauliOp, Statevector, Pauli
-from ...synthesis import EvolutionSynthesis
 
 
 class HamiltonianPhaseEstimation:

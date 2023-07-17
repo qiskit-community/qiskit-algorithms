@@ -17,11 +17,11 @@ from test import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.opflow import PauliSumOp
-from qiskit_algorithms.optimizers import AQGD
-from qiskit_algorithms import VQE, AlgorithmError
 from qiskit.opflow.gradients import Gradient
 from qiskit.test import slow_test
 
+from qiskit_algorithms.optimizers import AQGD
+from qiskit_algorithms import VQE, AlgorithmError
 
 class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
     """Test AQGD optimizer using RY for analytic gradient with VQE"""

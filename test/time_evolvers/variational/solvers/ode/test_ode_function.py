@@ -18,6 +18,8 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit import Parameter
+from qiskit.circuit.library import EfficientSU2
+
 from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
 )
@@ -27,7 +29,6 @@ from qiskit_algorithms.time_evolvers.variational.solvers.ode.ode_function import
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
 
 
 class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):

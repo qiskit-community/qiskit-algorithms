@@ -1,0 +1,365 @@
+name: black
+run_id: install_deps
+env TERM_PROGRAM: Apple_Terminal
+env SHELL: /bin/zsh
+env TERM: xterm-256color
+env TMPDIR: /var/folders/wy/lry0jnrs2h30d7hgtthkmpwc0000gn/T/
+env TERM_PROGRAM_VERSION: 447
+env TERM_SESSION_ID: 2A125FBB-95DB-4CCA-9581-E1AE5CA43A94
+env USER: ept
+env SSH_AUTH_SOCK: /private/tmp/com.apple.launchd.6qBQJqxfME/Listeners
+env PATH: /Users/ept/Desktop/repo-move/qiskit-algorithms/.tox/lint/bin:/opt/anaconda3/bin:/opt/anaconda3/condabin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/ept/.cargo/bin
+env LaunchInstanceID: CCBA074D-F336-424B-AC15-044E9D78CF27
+env __CFBundleIdentifier: com.apple.Terminal
+env PWD: /Users/ept/Desktop/repo-move/qiskit-algorithms
+env XPC_FLAGS: 0x0
+env XPC_SERVICE_NAME: 0
+env SHLVL: 1
+env HOME: /Users/ept
+env LOGNAME: ept
+env SECURITYSESSIONID: 186a6
+env OLDPWD: /Users/ept/Desktop/repo-move
+env CONDA_EXE: /opt/anaconda3/bin/conda
+env _CE_M: 
+env _CE_CONDA: 
+env CONDA_PYTHON_EXE: /opt/anaconda3/bin/python
+env CONDA_SHLVL: 1
+env CONDA_PREFIX: /opt/anaconda3
+env CONDA_DEFAULT_ENV: base
+env CONDA_PROMPT_MODIFIER: (base) 
+env LC_CTYPE: UTF-8
+env _: /Library/Frameworks/Python.framework/Versions/3.10/bin/tox
+env __CF_USER_TEXT_ENCODING: 0x1F5:0x0:0x0
+env PLAT: macosx-10.9-universal2
+env PYTHONHASHSEED: 196796261
+env PIP_DISABLE_PIP_VERSION_CHECK: 1
+env PYTHONIOENCODING: utf-8
+env VIRTUAL_ENV: .tox/lint
+env LANGUAGE: en_US
+env LC_ALL: en_US.utf-8
+env ARGS: "-V"
+env TOX_ENV_NAME: black
+env TOX_WORK_DIR: /Users/ept/Desktop/repo-move/qiskit-algorithms/.tox
+env TOX_ENV_DIR: .tox/lint
+env COLUMNS: 280
+env LINES: 75
+metadata pid: 66720
+cwd: /Users/ept/Desktop/repo-move/qiskit-algorithms
+allow: /Users/ept/Desktop/repo-move/qiskit-algorithms/.tox/lint/bin/*
+cmd: pip install -c constraints.txt -U git+https://github.com/Qiskit/qiskit-aer.git git+https://github.com/Qiskit/qiskit-terra.git -r /Users/ept/Desktop/repo-move/qiskit-algorithms/requirements.txt -r /Users/ept/Desktop/repo-move/qiskit-algorithms/requirements-dev.txt
+exit_code: -15
+Collecting git+https://github.com/Qiskit/qiskit-aer.git
+  Cloning https://github.com/Qiskit/qiskit-aer.git to /private/var/folders/wy/lry0jnrs2h30d7hgtthkmpwc0000gn/T/pip-req-build-a1rd8c0n
+  Resolved https://github.com/Qiskit/qiskit-aer.git to commit b4e393c57a946a5f003f9065c7887d1c4ff6f2dd
+  Installing build dependencies ... [?25l- \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | done
+[?25h  Getting requirements to build wheel ... [?25l- done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- done
+[?25hCollecting git+https://github.com/Qiskit/qiskit-terra.git
+  Cloning https://github.com/Qiskit/qiskit-terra.git to /private/var/folders/wy/lry0jnrs2h30d7hgtthkmpwc0000gn/T/pip-req-build-a3ckpsdd
+  Resolved https://github.com/Qiskit/qiskit-terra.git to commit fafb75082f78c354d030e8dcf0f090f2eb3e2c7f
+  Installing build dependencies ... [?25l- \ | / - done
+[?25h  Getting requirements to build wheel ... [?25l- \ done
+[?25h  Preparing metadata (pyproject.toml) ... [?25l- \ done
+[?25hCollecting scipy>=1.4
+  Downloading scipy-1.11.1-cp310-cp310-macosx_10_9_x86_64.whl (37.2 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/37.2 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.2/37.2 MB[0m [31m7.8 MB/s[0m eta [36m0:00:05[0m[2K     [38;5;204m━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.0/37.2 MB[0m [31m14.2 MB/s[0m eta [36m0:00:03[0m[2K     [38;5;204m━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.0/37.2 MB[0m [31m18.2 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.9/37.2 MB[0m [31m19.7 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.9/37.2 MB[0m [31m21.0 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.8/37.2 MB[0m [31m21.6 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m5.8/37.2 MB[0m [31m22.1 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m6.5/37.2 MB[0m [31m21.9 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m7.3/37.2 MB[0m [31m22.2 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m8.4/37.2 MB[0m [31m22.5 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m9.3/37.2 MB[0m [31m22.7 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m10.1/37.2 MB[0m [31m22.9 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m11.0/37.2 MB[0m [31m24.1 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.0/37.2 MB[0m [31m24.1 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m12.8/37.2 MB[0m [31m24.0 MB/s[0m eta [36m0:00:02[0m[2K     [38;5;204m━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m14.0/37.2 MB[0m [31m24.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━[0m [32m15.1/37.2 MB[0m [31m24.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━[0m [32m15.9/37.2 MB[0m [31m23.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━[0m [32m16.8/37.2 MB[0m [31m24.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━[0m [32m17.8/37.2 MB[0m [31m24.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━[0m [32m18.7/37.2 MB[0m [31m24.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━[0m [32m19.7/37.2 MB[0m [31m24.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━[0m [32m20.7/37.2 MB[0m [31m25.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━[0m [32m21.5/37.2 MB[0m [31m25.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━[0m [32m22.7/37.2 MB[0m [31m25.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━[0m [32m23.7/37.2 MB[0m [31m25.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━[0m [32m24.7/37.2 MB[0m [31m25.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━[0m [32m25.7/37.2 MB[0m [31m26.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━[0m [32m26.7/37.2 MB[0m [31m26.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━[0m [32m27.6/37.2 MB[0m [31m26.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━[0m [32m28.5/37.2 MB[0m [31m25.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━[0m [32m29.5/37.2 MB[0m [31m25.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━[0m [32m30.4/37.2 MB[0m [31m25.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━[0m [32m31.4/37.2 MB[0m [31m25.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━[0m [32m32.4/37.2 MB[0m [31m25.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━[0m [32m33.4/37.2 MB[0m [31m26.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━[0m [32m34.3/37.2 MB[0m [31m26.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━[0m [32m35.3/37.2 MB[0m [31m25.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━[0m [32m36.1/37.2 MB[0m [31m25.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m37.2/37.2 MB[0m [31m25.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m37.2/37.2 MB[0m [31m25.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m37.2/37.2 MB[0m [31m19.6 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting numpy>=1.17
+  Downloading numpy-1.25.1-cp310-cp310-macosx_10_9_x86_64.whl (20.1 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/20.1 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.7/20.1 MB[0m [31m21.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.7/20.1 MB[0m [31m24.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.4/20.1 MB[0m [31m24.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.4/20.1 MB[0m [31m24.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.4/20.1 MB[0m [31m24.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.4/20.1 MB[0m [31m24.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.3/20.1 MB[0m [31m16.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m6.7/20.1 MB[0m [31m22.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m7.5/20.1 MB[0m [31m22.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━[0m [32m8.6/20.1 MB[0m [31m23.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━[0m [32m9.3/20.1 MB[0m [31m23.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━[0m [32m10.2/20.1 MB[0m [31m23.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━[0m [32m11.1/20.1 MB[0m [31m23.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━[0m [32m12.0/20.1 MB[0m [31m23.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━[0m [32m12.7/20.1 MB[0m [31m32.6 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━[0m [32m13.5/20.1 MB[0m [31m29.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━[0m [32m14.5/20.1 MB[0m [31m27.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━[0m [32m15.4/20.1 MB[0m [31m25.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━[0m [32m16.0/20.1 MB[0m [31m23.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━[0m [32m16.5/20.1 MB[0m [31m21.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━[0m [32m17.2/20.1 MB[0m [31m21.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━[0m [32m18.0/20.1 MB[0m [31m21.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━[0m [32m18.8/20.1 MB[0m [31m20.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m [32m19.7/20.1 MB[0m [31m20.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m20.0/20.1 MB[0m [31m20.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m20.0/20.1 MB[0m [31m20.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m20.1/20.1 MB[0m [31m18.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting psutil>=5
+  Using cached psutil-5.9.5-cp36-abi3-macosx_10_9_x86_64.whl (245 kB)
+Collecting fastdtw
+  Using cached fastdtw-0.3.4-py3-none-any.whl
+Requirement already satisfied: setuptools>=40.1.0 in ./.tox/lint/lib/python3.10/site-packages (from -r /Users/ept/Desktop/repo-move/qiskit-algorithms/requirements.txt (line 6)) (67.1.0)
+Collecting setuptools>=40.1.0
+  Using cached setuptools-68.0.0-py3-none-any.whl (804 kB)
+Collecting dill>=0.3.4
+  Using cached dill-0.3.6-py3-none-any.whl (110 kB)
+Collecting coverage>=4.4.0
+  Downloading coverage-7.2.7-cp310-cp310-macosx_10_9_x86_64.whl (200 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/200.7 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m200.7/200.7 kB[0m [31m6.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting matplotlib>=2.1
+  Using cached matplotlib-3.7.2-cp310-cp310-macosx_10_12_x86_64.whl (7.4 MB)
+Collecting seaborn
+  Using cached seaborn-0.12.2-py3-none-any.whl (293 kB)
+Collecting black[jupyter]~=22.0
+  Using cached black-22.12.0-py3-none-any.whl (167 kB)
+Collecting pylint>=2.15.0
+  Downloading pylint-2.17.4-py3-none-any.whl (536 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/536.6 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m532.5/536.6 kB[0m [31m18.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m536.6/536.6 kB[0m [31m9.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pylatexenc>=1.4
+  Using cached pylatexenc-2.10-py3-none-any.whl
+Collecting stestr>=2.0.0
+  Using cached stestr-4.0.1-py3-none-any.whl (117 kB)
+Collecting ddt!=1.4.0,>=1.2.0
+  Using cached ddt-1.6.0-py2.py3-none-any.whl (7.1 kB)
+Collecting reno>=3.4.0
+  Using cached reno-4.0.0-py3-none-any.whl (70 kB)
+Collecting Sphinx>=5.0
+  Using cached sphinx-7.0.1-py3-none-any.whl (3.0 MB)
+Collecting sphinx-design>=0.4.0
+  Using cached sphinx_design-0.4.1-py3-none-any.whl (2.2 MB)
+Collecting sphinxcontrib-spelling
+  Downloading sphinxcontrib_spelling-8.0.0-py3-none-any.whl (16 kB)
+Collecting jupyter-sphinx
+  Using cached jupyter_sphinx-0.4.0-py3-none-any.whl (21 kB)
+Collecting discover
+  Using cached discover-0.4.0-py3-none-any.whl
+Collecting mypy>=0.981
+  Downloading mypy-1.4.1-cp310-cp310-macosx_10_9_x86_64.whl (10.5 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/10.5 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.6/10.5 MB[0m [31m24.6 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.4/10.5 MB[0m [31m21.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.8/10.5 MB[0m [31m21.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.8/10.5 MB[0m [31m21.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.8/10.5 MB[0m [31m21.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m4.1/10.5 MB[0m [31m18.5 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━[0m [32m5.3/10.5 MB[0m [31m20.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━[0m [32m6.1/10.5 MB[0m [31m20.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━[0m [32m6.6/10.5 MB[0m [31m20.4 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━[0m [32m7.4/10.5 MB[0m [31m19.8 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━[0m [32m8.2/10.5 MB[0m [31m19.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━━━━━[0m [32m9.1/10.5 MB[0m [31m20.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━[0m [32m9.9/10.5 MB[0m [31m20.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m10.4/10.5 MB[0m [31m20.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m10.5/10.5 MB[0m [31m18.4 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting mypy-extensions>=0.4.3
+  Using cached mypy_extensions-1.0.0-py3-none-any.whl (4.7 kB)
+Collecting nbsphinx
+  Downloading nbsphinx-0.9.2-py3-none-any.whl (30 kB)
+Collecting qiskit_sphinx_theme~=1.12.0
+  Downloading qiskit_sphinx_theme-1.12.1-py2.py3-none-any.whl (137 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/137.9 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m137.9/137.9 kB[0m [31m4.5 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting python-dateutil>=2.8.0
+  Using cached python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+Collecting ply>=3.10
+  Using cached ply-3.11-py2.py3-none-any.whl (49 kB)
+Collecting sympy>=1.3
+  Using cached sympy-1.12-py3-none-any.whl (5.7 MB)
+Collecting rustworkx>=0.13.0
+  Using cached rustworkx-0.13.0-cp310-cp310-macosx_10_9_x86_64.whl (1.6 MB)
+Collecting symengine<0.10,>=0.9
+  Using cached symengine-0.9.2-cp310-cp310-macosx_10_9_x86_64.whl (17.8 MB)
+Collecting stevedore>=3.0.0
+  Using cached stevedore-5.1.0-py3-none-any.whl (49 kB)
+Collecting packaging>=20.0
+  Using cached packaging-23.1-py3-none-any.whl (48 kB)
+Collecting fonttools>=4.22.0
+  Downloading fonttools-4.41.0-cp310-cp310-macosx_10_9_x86_64.whl (2.1 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/2.1 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.8/2.1 MB[0m [31m22.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.8/2.1 MB[0m [31m22.7 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━[0m [32m1.3/2.1 MB[0m [31m11.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m [32m2.1/2.1 MB[0m [31m14.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m [32m2.1/2.1 MB[0m [31m13.0 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m2.1/2.1 MB[0m [31m10.7 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting contourpy>=1.0.1
+  Using cached contourpy-1.1.0-cp310-cp310-macosx_10_9_x86_64.whl (243 kB)
+Collecting cycler>=0.10
+  Using cached cycler-0.11.0-py3-none-any.whl (6.4 kB)
+Collecting kiwisolver>=1.0.1
+  Using cached kiwisolver-1.4.4-cp310-cp310-macosx_10_9_x86_64.whl (65 kB)
+Collecting pyparsing<3.1,>=2.3.1
+  Using cached pyparsing-3.0.9-py3-none-any.whl (98 kB)
+Collecting pillow>=6.2.0
+  Using cached Pillow-10.0.0-cp310-cp310-macosx_10_10_x86_64.whl (3.4 MB)
+Collecting pandas>=0.25
+  Using cached pandas-2.0.3-cp310-cp310-macosx_10_9_x86_64.whl (11.8 MB)
+Collecting pathspec>=0.9.0
+  Using cached pathspec-0.11.1-py3-none-any.whl (29 kB)
+Collecting tomli>=1.1.0
+  Using cached tomli-2.0.1-py3-none-any.whl (12 kB)
+Collecting platformdirs>=2
+  Downloading platformdirs-3.9.1-py3-none-any.whl (16 kB)
+Collecting click>=8.0.0
+  Downloading click-8.1.5-py3-none-any.whl (98 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/98.1 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m98.1/98.1 kB[0m [31m2.8 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting tokenize-rt>=3.2.0
+  Using cached tokenize_rt-5.1.0-py2.py3-none-any.whl (5.8 kB)
+Collecting ipython>=7.8.0
+  Downloading ipython-8.14.0-py3-none-any.whl (798 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/798.7 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m [32m788.5/798.7 kB[0m [31m22.9 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m798.7/798.7 kB[0m [31m12.0 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting tomlkit>=0.10.1
+  Using cached tomlkit-0.11.8-py3-none-any.whl (35 kB)
+Collecting isort<6,>=4.2.5
+  Using cached isort-5.12.0-py3-none-any.whl (91 kB)
+Collecting astroid<=2.17.0-dev0,>=2.15.4
+  Downloading astroid-2.15.6-py3-none-any.whl (278 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/278.3 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m278.3/278.3 kB[0m [31m8.2 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting mccabe<0.8,>=0.6
+  Using cached mccabe-0.7.0-py2.py3-none-any.whl (7.3 kB)
+Collecting future
+  Using cached future-0.18.3-py3-none-any.whl
+Collecting pbr!=2.1.0,!=4.0.0,!=4.0.1,!=4.0.2,!=4.0.3,>=2.0.0
+  Using cached pbr-5.11.1-py2.py3-none-any.whl (112 kB)
+Collecting cliff>=2.8.0
+  Using cached cliff-4.3.0-py3-none-any.whl (80 kB)
+Collecting testtools>=2.2.0
+  Using cached testtools-2.6.0-py3-none-any.whl (182 kB)
+Collecting PyYAML>=3.10.0
+  Using cached PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl (197 kB)
+Collecting fixtures>=3.0.0
+  Using cached fixtures-4.1.0-py3-none-any.whl (64 kB)
+Collecting python-subunit>=1.4.0
+  Using cached python_subunit-1.4.2-py3-none-any.whl (106 kB)
+Collecting voluptuous>=0.8.9
+  Using cached voluptuous-0.13.1-py3-none-any.whl (29 kB)
+Collecting dulwich>=0.15.0
+  Using cached dulwich-0.21.5-cp310-cp310-macosx_10_9_x86_64.whl (470 kB)
+Collecting sphinxcontrib-serializinghtml>=1.1.5
+  Using cached sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl (94 kB)
+Collecting sphinxcontrib-jsmath
+  Using cached sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl (5.1 kB)
+Collecting babel>=2.9
+  Using cached Babel-2.12.1-py3-none-any.whl (10.1 MB)
+Collecting Pygments>=2.13
+  Using cached Pygments-2.15.1-py3-none-any.whl (1.1 MB)
+Collecting sphinxcontrib-htmlhelp>=2.0.0
+  Using cached sphinxcontrib_htmlhelp-2.0.1-py3-none-any.whl (99 kB)
+Collecting sphinxcontrib-qthelp
+  Using cached sphinxcontrib_qthelp-1.0.3-py2.py3-none-any.whl (90 kB)
+Collecting alabaster<0.8,>=0.7
+  Using cached alabaster-0.7.13-py3-none-any.whl (13 kB)
+Collecting docutils<0.21,>=0.18.1
+  Using cached docutils-0.20.1-py3-none-any.whl (572 kB)
+Collecting snowballstemmer>=2.0
+  Using cached snowballstemmer-2.2.0-py2.py3-none-any.whl (93 kB)
+Collecting Jinja2>=3.0
+  Using cached Jinja2-3.1.2-py3-none-any.whl (133 kB)
+Collecting requests>=2.25.0
+  Using cached requests-2.31.0-py3-none-any.whl (62 kB)
+Collecting sphinxcontrib-applehelp
+  Using cached sphinxcontrib_applehelp-1.0.4-py3-none-any.whl (120 kB)
+Collecting imagesize>=1.3
+  Using cached imagesize-1.4.1-py2.py3-none-any.whl (8.8 kB)
+Collecting sphinxcontrib-devhelp
+  Using cached sphinxcontrib_devhelp-1.0.2-py2.py3-none-any.whl (84 kB)
+Collecting Sphinx>=5.0
+  Using cached sphinx-6.2.1-py3-none-any.whl (3.0 MB)
+Collecting docutils<0.21,>=0.18.1
+  Using cached docutils-0.19-py3-none-any.whl (570 kB)
+Collecting PyEnchant>=3.1.1
+  Using cached pyenchant-3.2.2-py3-none-any.whl (55 kB)
+Collecting ipywidgets>=7.0.0
+  Using cached ipywidgets-8.0.7-py3-none-any.whl (138 kB)
+Collecting nbconvert>=5.5
+  Downloading nbconvert-7.7.1-py3-none-any.whl (254 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/254.6 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;204m╸[0m[38;5;237m━[0m [32m245.8/254.6 kB[0m [31m26.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m254.6/254.6 kB[0m [31m6.5 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting nbformat
+  Downloading nbformat-5.9.1-py3-none-any.whl (77 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/77.6 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m77.6/77.6 kB[0m [31m2.3 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting typing-extensions>=4.1.0
+  Using cached typing_extensions-4.7.1-py3-none-any.whl (33 kB)
+Collecting traitlets>=5
+  Using cached traitlets-5.9.0-py3-none-any.whl (117 kB)
+Collecting sphinxcontrib-jquery
+  Using cached sphinxcontrib_jquery-4.1-py2.py3-none-any.whl (121 kB)
+Collecting wrapt<2,>=1.11
+  Using cached wrapt-1.15.0-cp310-cp310-macosx_10_9_x86_64.whl (35 kB)
+Collecting lazy-object-proxy>=1.4.0
+  Using cached lazy_object_proxy-1.9.0-cp310-cp310-macosx_10_9_x86_64.whl (22 kB)
+Collecting cmd2>=1.0.0
+  Using cached cmd2-2.4.3-py3-none-any.whl (147 kB)
+Collecting autopage>=0.4.0
+  Using cached autopage-0.5.1-py3-none-any.whl (29 kB)
+Collecting PrettyTable>=0.7.2
+  Using cached prettytable-3.8.0-py3-none-any.whl (27 kB)
+Collecting importlib-metadata>=4.4
+  Downloading importlib_metadata-6.8.0-py3-none-any.whl (22 kB)
+Collecting urllib3>=1.25
+  Using cached urllib3-2.0.3-py3-none-any.whl (123 kB)
+Collecting pexpect>4.3
+  Using cached pexpect-4.8.0-py2.py3-none-any.whl (59 kB)
+Collecting stack-data
+  Using cached stack_data-0.6.2-py3-none-any.whl (24 kB)
+Collecting jedi>=0.16
+  Using cached jedi-0.18.2-py2.py3-none-any.whl (1.6 MB)
+Collecting decorator
+  Using cached decorator-5.1.1-py3-none-any.whl (9.1 kB)
+Collecting backcall
+  Using cached backcall-0.2.0-py2.py3-none-any.whl (11 kB)
+Collecting pickleshare
+  Using cached pickleshare-0.7.5-py2.py3-none-any.whl (6.9 kB)
+Collecting matplotlib-inline
+  Using cached matplotlib_inline-0.1.6-py3-none-any.whl (9.4 kB)
+Collecting appnope
+  Using cached appnope-0.1.3-py2.py3-none-any.whl (4.4 kB)
+Collecting prompt-toolkit!=3.0.37,<3.1.0,>=3.0.30
+  Using cached prompt_toolkit-3.0.39-py3-none-any.whl (385 kB)
+Collecting ipykernel>=4.5.1
+  Downloading ipykernel-6.24.0-py3-none-any.whl (152 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/152.8 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m152.8/152.8 kB[0m [31m4.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting widgetsnbextension~=4.0.7
+  Using cached widgetsnbextension-4.0.8-py3-none-any.whl (2.3 MB)
+Collecting jupyterlab-widgets~=3.0.7
+  Using cached jupyterlab_widgets-3.0.8-py3-none-any.whl (214 kB)
+Collecting MarkupSafe>=2.0
+  Using cached MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_x86_64.whl (13 kB)
+Collecting nbclient>=0.5.0
+  Using cached nbclient-0.8.0-py3-none-any.whl (73 kB)
+Collecting beautifulsoup4
+  Using cached beautifulsoup4-4.12.2-py3-none-any.whl (142 kB)
+Collecting tinycss2
+  Using cached tinycss2-1.2.1-py3-none-any.whl (21 kB)
+Collecting bleach!=5.0.0
+  Using cached bleach-6.0.0-py3-none-any.whl (162 kB)
+Collecting pandocfilters>=1.4.1
+  Using cached pandocfilters-1.5.0-py2.py3-none-any.whl (8.7 kB)
+Collecting jupyterlab-pygments
+  Using cached jupyterlab_pygments-0.2.2-py2.py3-none-any.whl (21 kB)
+Collecting jupyter-core>=4.7
+  Using cached jupyter_core-5.3.1-py3-none-any.whl (93 kB)
+Collecting mistune<4,>=2.0.3
+  Using cached mistune-3.0.1-py3-none-any.whl (47 kB)
+Collecting defusedxml
+  Using cached defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Collecting fastjsonschema
+  Using cached fastjsonschema-2.17.1-py3-none-any.whl (23 kB)
+Collecting jsonschema>=2.6
+  Downloading jsonschema-4.18.3-py3-none-any.whl (80 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/81.0 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m81.0/81.0 kB[0m [31m2.7 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting pytz>=2020.1
+  Using cached pytz-2023.3-py2.py3-none-any.whl (502 kB)
+Collecting tzdata>=2022.1
+  Using cached tzdata-2023.3-py2.py3-none-any.whl (341 kB)
+Collecting six>=1.5
+  Using cached six-1.16.0-py2.py3-none-any.whl (11 kB)
+Collecting extras
+  Using cached extras-1.0.0-py2.py3-none-any.whl (7.3 kB)
+Collecting certifi>=2017.4.17
+  Using cached certifi-2023.5.7-py3-none-any.whl (156 kB)
+Collecting charset-normalizer<4,>=2
+  Using cached charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_x86_64.whl (126 kB)
+Collecting idna<4,>=2.5
+  Using cached idna-3.4-py3-none-any.whl (61 kB)
+Collecting mpmath>=0.19
+  Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Collecting webencodings
+  Using cached webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+Collecting pyperclip>=1.6
+  Using cached pyperclip-1.8.2-py3-none-any.whl
+Collecting attrs>=16.3.0
+  Using cached attrs-23.1.0-py3-none-any.whl (61 kB)
+Collecting wcwidth>=0.1.7
+  Using cached wcwidth-0.2.6-py2.py3-none-any.whl (29 kB)
+Collecting zipp>=0.5
+  Downloading zipp-3.16.2-py3-none-any.whl (7.2 kB)
+Collecting pyzmq>=20
+  Using cached pyzmq-25.1.0-cp310-cp310-macosx_10_15_universal2.whl (1.8 MB)
+Collecting nest-asyncio
+  Using cached nest_asyncio-1.5.6-py3-none-any.whl (5.2 kB)
+Collecting tornado>=6.1
+  Using cached tornado-6.3.2-cp38-abi3-macosx_10_9_x86_64.whl (422 kB)
+Collecting jupyter-client>=6.1.12
+  Using cached jupyter_client-8.3.0-py3-none-any.whl (103 kB)
+Collecting debugpy>=1.6.5
+  Downloading debugpy-1.6.7-cp310-cp310-macosx_11_0_x86_64.whl (1.7 MB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/1.7 MB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m[38;5;237m━━━━━━━━━━━━━━━━━━━━[0m [32m0.8/1.7 MB[0m [31m24.3 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m [32m1.7/1.7 MB[0m [31m23.1 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.7/1.7 MB[0m [31m15.9 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting comm>=0.1.1
+  Using cached comm-0.1.3-py3-none-any.whl (6.6 kB)
+Collecting parso<0.9.0,>=0.8.0
+  Using cached parso-0.8.3-py2.py3-none-any.whl (100 kB)
+Collecting jsonschema-specifications>=2023.03.6
+  Downloading jsonschema_specifications-2023.6.1-py3-none-any.whl (17 kB)
+Collecting referencing>=0.28.4
+  Downloading referencing-0.29.1-py3-none-any.whl (25 kB)
+Collecting rpds-py>=0.7.1
+  Downloading rpds_py-0.8.11-cp310-cp310-macosx_10_7_x86_64.whl (311 kB)
+[?25l     [38;5;237m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/311.8 kB[0m [31m?[0m eta [36m-:--:--[0m[2K     [38;5;204m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[38;5;237m╺[0m [32m307.2/311.8 kB[0m [31m24.2 MB/s[0m eta [36m0:00:01[0m[2K     [38;5;107m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m311.8/311.8 kB[0m [31m7.7 MB/s[0m eta [36m0:00:00[0m
+[?25hCollecting ptyprocess>=0.5
+  Using cached ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+Collecting soupsieve>1.2
+  Using cached soupsieve-2.4.1-py3-none-any.whl (36 kB)
+Collecting pure-eval
+  Using cached pure_eval-0.2.2-py3-none-any.whl (11 kB)
+Collecting asttokens>=2.1.0
+  Using cached asttokens-2.2.1-py2.py3-none-any.whl (26 kB)
+Collecting executing>=1.2.0
+  Using cached executing-1.2.0-py2.py3-none-any.whl (24 kB)
+Building wheels for collected packages: qiskit-aer, qiskit-terra
+  Building wheel for qiskit-aer (pyproject.toml) ... [?25l- \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \ | / - \[?25h canceled
+
+standard error:
+  Running command git clone --filter=blob:none --quiet https://github.com/Qiskit/qiskit-aer.git /private/var/folders/wy/lry0jnrs2h30d7hgtthkmpwc0000gn/T/pip-req-build-a1rd8c0n
+  Running command git clone --filter=blob:none --quiet https://github.com/Qiskit/qiskit-terra.git /private/var/folders/wy/lry0jnrs2h30d7hgtthkmpwc0000gn/T/pip-req-build-a3ckpsdd
+[31mERROR: Operation cancelled by user[0m[31m
+[0m

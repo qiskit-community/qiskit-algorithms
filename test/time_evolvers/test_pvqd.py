@@ -19,10 +19,6 @@ import numpy as np
 from ddt import data, ddt, unpack
 
 from qiskit import QiskitError
-from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
-from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
-from qiskit_algorithms.state_fidelities import ComputeUncompute
-from qiskit_algorithms.time_evolvers.pvqd import PVQD
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.opflow import PauliSumOp
@@ -31,6 +27,10 @@ from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.test import QiskitTestCase
 from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
+from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
+from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.time_evolvers.pvqd import PVQD
 
 # pylint: disable=unused-argument, invalid-name
 def gradient_supplied(fun, x0, jac, info):

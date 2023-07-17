@@ -19,9 +19,6 @@ from ddt import ddt, data, unpack
 
 import numpy as np
 
-from qiskit_algorithms.minimum_eigensolvers import VQE
-from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
-from qiskit_algorithms.optimizers import SLSQP
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.opflow import PauliSumOp
@@ -29,6 +26,9 @@ from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.minimum_eigensolvers import VQE
+from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
+from qiskit_algorithms.optimizers import SLSQP
 
 @ddt
 class TestAdaptVQE(QiskitAlgorithmsTestCase):
