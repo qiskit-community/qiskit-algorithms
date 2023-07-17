@@ -21,10 +21,10 @@ import numpy as np
 from ddt import data, ddt
 from scipy.optimize import minimize as scipy_minimize
 
-from qiskit.algorithms import AlgorithmError
-from qiskit.algorithms.minimum_eigensolvers import SamplingVQE
-from qiskit.algorithms.optimizers import L_BFGS_B, QNSPSA, SLSQP, OptimizerResult
-from qiskit.algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.minimum_eigensolvers import SamplingVQE
+from qiskit_algorithms.optimizers import L_BFGS_B, QNSPSA, SLSQP, OptimizerResult
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit.circuit import ParameterVector, QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.opflow import PauliSumOp

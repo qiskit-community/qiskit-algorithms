@@ -20,7 +20,7 @@ from ddt import ddt, data, unpack
 import numpy as np
 from scipy.optimize import rosen, rosen_der
 
-from qiskit.algorithms.optimizers import (
+from qiskit_algorithms.optimizers import (
     ADAM,
     AQGD,
     BOBYQA,

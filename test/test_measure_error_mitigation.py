@@ -21,9 +21,9 @@ from qiskit import QuantumCircuit, execute
 from qiskit.quantum_info import Pauli
 from qiskit.exceptions import QiskitError
 from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit.algorithms import VQE, QAOA
+from qiskit_algorithms import VQE, QAOA
 from qiskit.opflow import I, X, Z, PauliSumOp
-from qiskit.algorithms.optimizers import SPSA, COBYLA
+from qiskit_algorithms.optimizers import SPSA, COBYLA
 from qiskit.circuit.library import EfficientSU2
 from qiskit.utils.mitigation import CompleteMeasFitter, TensoredMeasFitter
 from qiskit.utils.measurement_error_mitigation import build_measurement_error_mitigation_circuits

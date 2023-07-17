@@ -20,9 +20,9 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, data
 
-from qiskit.algorithms.list_or_dict import ListOrDict
+from qiskit_algorithms.list_or_dict import ListOrDict
 from qiskit.quantum_info.operators.base_operator import BaseOperator
-from qiskit.algorithms import estimate_observables
+from qiskit_algorithms import estimate_observables
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import Statevector, SparsePauliOp
 from qiskit import QuantumCircuit

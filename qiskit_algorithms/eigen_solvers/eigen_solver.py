@@ -26,7 +26,7 @@ class Eigensolver(ABC):
     """Deprecated: Eigensolver Interface.
 
     The Eigensolver interface has been superseded by the
-    :class:`qiskit.algorithms.eigensolvers.Eigensolver` interface.
+    :class:`qiskit_algorithms.eigensolvers.Eigensolver` interface.
     This interface will be deprecated in a future release and subsequently
     removed after that.
 
@@ -37,7 +37,7 @@ class Eigensolver(ABC):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the interface ``qiskit.algorithms.eigensolvers.Eigensolver``. See "
+            "Instead, use the interface ``qiskit_algorithms.eigensolvers.Eigensolver``. See "
             "https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",
@@ -81,7 +81,7 @@ class EigensolverResult(AlgorithmResult):
     """Deprecated: Eigensolver Result.
 
     The EigensolverResult class has been superseded by the
-    :class:`qiskit.algorithms.eigensolvers.EigensolverResult` class.
+    :class:`qiskit_algorithms.eigensolvers.EigensolverResult` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -89,7 +89,7 @@ class EigensolverResult(AlgorithmResult):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.eigensolvers.EigensolverResult``. "
+            "Instead, use the class ``qiskit_algorithms.eigensolvers.EigensolverResult``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

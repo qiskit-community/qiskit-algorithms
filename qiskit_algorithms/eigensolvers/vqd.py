@@ -24,7 +24,7 @@ from time import time
 
 import numpy as np
 
-from qiskit.algorithms.state_fidelities import BaseStateFidelity
+from qiskit_algorithms.state_fidelities import BaseStateFidelity
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
@@ -61,7 +61,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     An instance of VQD requires defining three algorithmic sub-components:
     an integer k denoting the number of eigenstates to calculate, a trial
     state (a.k.a. ansatz) which is a :class:`QuantumCircuit`,
-    and one instance (or list of) classical :mod:`~qiskit.algorithms.optimizers`.
+    and one instance (or list of) classical :mod:`~qiskit_algorithms.optimizers`.
     The optimizer varies the circuit parameters
     The trial state :math:`|\psi(\vec\theta)\rangle` is varied by the optimizer,
     which modifies the set of ansatz parameters :math:`\vec\theta`

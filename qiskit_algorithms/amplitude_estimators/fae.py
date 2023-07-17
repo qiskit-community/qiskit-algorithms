@@ -21,7 +21,7 @@ from qiskit.providers import Backend
 from qiskit.primitives import BaseSampler
 from qiskit.utils import QuantumInstance
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
-from qiskit.algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem

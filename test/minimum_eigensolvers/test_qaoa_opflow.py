@@ -24,8 +24,8 @@ from ddt import ddt, idata, unpack
 import rustworkx as rx
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.minimum_eigensolvers import QAOA
-from qiskit.algorithms.optimizers import COBYLA, NELDER_MEAD
+from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit.circuit import Parameter
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Pauli

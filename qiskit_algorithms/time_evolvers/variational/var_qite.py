@@ -38,8 +38,8 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
 
         import numpy as np
 
-        from qiskit.algorithms import TimeEvolutionProblem, VarQITE
-        from qiskit.algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
+        from qiskit_algorithms import TimeEvolutionProblem, VarQITE
+        from qiskit_algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
         from qiskit.circuit.library import EfficientSU2
         from qiskit.quantum_info import SparsePauliOp, Pauli
         from qiskit.primitives import Estimator

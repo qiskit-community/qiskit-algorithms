@@ -16,7 +16,7 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 from ddt import data, ddt, unpack
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.algorithms import SciPyRealEvolver, TimeEvolutionProblem
+from qiskit_algorithms import SciPyRealEvolver, TimeEvolutionProblem
 from qiskit.quantum_info import Statevector, SparsePauliOp
 
 

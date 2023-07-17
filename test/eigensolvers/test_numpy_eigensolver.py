@@ -18,8 +18,8 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt
 
-from qiskit.algorithms.eigensolvers import NumPyEigensolver
-from qiskit.algorithms import AlgorithmError
+from qiskit_algorithms.eigensolvers import NumPyEigensolver
+from qiskit_algorithms import AlgorithmError
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Operator, SparsePauliOp, Pauli, ScalarOp
 

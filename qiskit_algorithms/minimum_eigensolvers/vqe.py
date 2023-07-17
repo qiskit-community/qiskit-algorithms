@@ -21,7 +21,7 @@ from typing import Any
 
 import numpy as np
 
-from qiskit.algorithms.gradients import BaseEstimatorGradient
+from qiskit_algorithms.gradients import BaseEstimatorGradient
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
@@ -62,11 +62,11 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     The :attr:`estimator` is used to compute this expectation value for every optimization step.
 
     The optimizer can either be one of Qiskit's optimizers, such as
-    :class:`~qiskit.algorithms.optimizers.SPSA` or a callable with the following signature:
+    :class:`~qiskit_algorithms.optimizers.SPSA` or a callable with the following signature:
 
     .. code-block:: python
 
-        from qiskit.algorithms.optimizers import OptimizerResult
+        from qiskit_algorithms.optimizers import OptimizerResult
 
         def my_minimizer(fun, x0, jac=None, bounds=None) -> OptimizerResult:
             # Note that the callable *must* have these argument names!

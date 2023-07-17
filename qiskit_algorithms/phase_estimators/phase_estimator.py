@@ -15,7 +15,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from qiskit.circuit import QuantumCircuit
-from qiskit.algorithms.algorithm_result import AlgorithmResult
+from qiskit_algorithms.algorithm_result import AlgorithmResult
 
 
 class PhaseEstimator(ABC):

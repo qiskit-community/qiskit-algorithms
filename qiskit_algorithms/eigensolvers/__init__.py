@@ -12,10 +12,10 @@
 
 """
 =====================================================================
-Eigensolvers Package (:mod:`qiskit.algorithms.eigensolvers`)
+Eigensolvers Package (:mod:`qiskit_algorithms.eigensolvers`)
 =====================================================================
 
-.. currentmodule:: qiskit.algorithms.eigensolvers
+.. currentmodule:: qiskit_algorithms.eigensolvers
 
 Eigensolvers
 ================

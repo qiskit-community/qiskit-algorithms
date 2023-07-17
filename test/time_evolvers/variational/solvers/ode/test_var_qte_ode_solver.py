@@ -18,19 +18,19 @@ from ddt import ddt, data, unpack
 import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.algorithms.time_evolvers.variational.solvers.ode.forward_euler_solver import (
+from qiskit_algorithms.time_evolvers.variational.solvers.ode.forward_euler_solver import (
     ForwardEulerSolver,
 )
-from qiskit.algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
+from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
 )
-from qiskit.algorithms.time_evolvers.variational.solvers.ode.var_qte_ode_solver import (
+from qiskit_algorithms.time_evolvers.variational.solvers.ode.var_qte_ode_solver import (
     VarQTEOdeSolver,
 )
-from qiskit.algorithms.time_evolvers.variational.solvers.ode.ode_function import (
+from qiskit_algorithms.time_evolvers.variational.solvers.ode.ode_function import (
     OdeFunction,
 )
-from qiskit.algorithms.time_evolvers.variational import (
+from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
 from qiskit.circuit.library import EfficientSU2

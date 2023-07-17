@@ -72,8 +72,8 @@ class UMDA(Optimizer):
 
             from qiskit.opflow import X, Z, I
             from qiskit import Aer
-            from qiskit.algorithms.optimizers import UMDA
-            from qiskit.algorithms import QAOA
+            from qiskit_algorithms.optimizers import UMDA
+            from qiskit_algorithms import QAOA
             from qiskit.utils import QuantumInstance
 
 

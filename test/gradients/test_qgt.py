@@ -19,7 +19,7 @@ from ddt import ddt, data
 import numpy as np
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.gradients import DerivativeType, LinCombQGT, ReverseQGT
+from qiskit_algorithms.gradients import DerivativeType, LinCombQGT, ReverseQGT
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator

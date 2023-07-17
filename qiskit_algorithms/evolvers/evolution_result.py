@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.list_or_dict import ListOrDict
+from qiskit_algorithms.list_or_dict import ListOrDict
 from qiskit.opflow import StateFn, OperatorBase
 from qiskit.utils.deprecation import deprecate_func
 from ..algorithm_result import AlgorithmResult
@@ -25,7 +25,7 @@ class EvolutionResult(AlgorithmResult):
     """Deprecated: Class for holding evolution result.
 
     The EvolutionResult class has been superseded by the
-    :class:`qiskit.algorithms.time_evolvers.TimeEvolutionResult` class.
+    :class:`qiskit_algorithms.time_evolvers.TimeEvolutionResult` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -33,7 +33,7 @@ class EvolutionResult(AlgorithmResult):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.time_evolvers.TimeEvolutionResult``. "
+            "Instead, use the class ``qiskit_algorithms.time_evolvers.TimeEvolutionResult``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

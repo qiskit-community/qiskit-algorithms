@@ -23,7 +23,7 @@ from qiskit.circuit.classicalregister import ClassicalRegister
 from qiskit.providers import Backend
 from qiskit.utils import QuantumInstance
 from qiskit.utils.deprecation import deprecate_arg
-from qiskit.algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 from .phase_estimator import PhaseEstimator
 from .phase_estimator import PhaseEstimatorResult
 from ...primitives import BaseSampler

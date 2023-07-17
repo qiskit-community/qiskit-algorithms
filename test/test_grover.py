@@ -20,7 +20,7 @@ import numpy as np
 from ddt import data, ddt, idata, unpack
 
 from qiskit import BasicAer, QuantumCircuit
-from qiskit.algorithms import AmplificationProblem, Grover
+from qiskit_algorithms import AmplificationProblem, Grover
 from qiskit.circuit.library import GroverOperator, PhaseOracle
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Operator, Statevector

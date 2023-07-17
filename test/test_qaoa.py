@@ -22,8 +22,8 @@ from scipy.optimize import minimize as scipy_minimize
 from ddt import ddt, idata, unpack
 import rustworkx as rx
 
-from qiskit.algorithms import QAOA
-from qiskit.algorithms.optimizers import COBYLA, NELDER_MEAD
+from qiskit_algorithms import QAOA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 
 from qiskit.opflow import I, X, Z, PauliSumOp
 

@@ -23,7 +23,7 @@ from typing import Any, Union, Protocol
 import numpy as np
 import scipy
 
-from qiskit.algorithms.algorithm_result import AlgorithmResult
+from qiskit_algorithms.algorithm_result import AlgorithmResult
 
 logger = logging.getLogger(__name__)
 

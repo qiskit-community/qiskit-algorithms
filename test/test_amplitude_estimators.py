@@ -19,7 +19,7 @@ from ddt import ddt, idata, data, unpack
 from qiskit import QuantumRegister, QuantumCircuit, BasicAer
 from qiskit.circuit.library import QFT, GroverOperator
 from qiskit.utils import QuantumInstance
-from qiskit.algorithms import (
+from qiskit_algorithms import (
     AmplitudeEstimation,
     MaximumLikelihoodAmplitudeEstimation,
     IterativeAmplitudeEstimation,

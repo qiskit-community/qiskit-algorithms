@@ -89,7 +89,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             import numpy as np
-            from qiskit.algorithms.optimizers import SPSA
+            from qiskit_algorithms.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
             from qiskit.opflow import Z, StateFn
 
@@ -117,7 +117,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             import numpy as np
-            from qiskit.algorithms.optimizers import SPSA
+            from qiskit_algorithms.optimizers import SPSA
 
             def objective(x):
                 return np.linalg.norm(x) + .04*np.random.rand(1)

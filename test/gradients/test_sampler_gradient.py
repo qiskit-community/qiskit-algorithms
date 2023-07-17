@@ -20,7 +20,7 @@ import numpy as np
 from ddt import ddt, data
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.gradients import (
+from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
     LinCombSamplerGradient,
     ParamShiftSamplerGradient,

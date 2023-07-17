@@ -21,10 +21,10 @@ from scipy.optimize import minimize as scipy_minimize
 from ddt import data, ddt
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms import AlgorithmError
-from qiskit.algorithms.gradients import ParamShiftEstimatorGradient
-from qiskit.algorithms.minimum_eigensolvers import VQE
-from qiskit.algorithms.optimizers import (
+from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.gradients import ParamShiftEstimatorGradient
+from qiskit_algorithms.minimum_eigensolvers import VQE
+from qiskit_algorithms.optimizers import (
     CG,
     COBYLA,
     GradientDescent,
@@ -36,7 +36,7 @@ from qiskit.algorithms.optimizers import (
     SPSA,
     TNC,
 )
-from qiskit.algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.opflow import PauliSumOp, TwoQubitReduction
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli

@@ -22,8 +22,8 @@ from ddt import ddt, idata, unpack
 from scipy.optimize import minimize as scipy_minimize
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.minimum_eigensolvers import QAOA
-from qiskit.algorithms.optimizers import COBYLA, NELDER_MEAD
+from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit.circuit import Parameter
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp

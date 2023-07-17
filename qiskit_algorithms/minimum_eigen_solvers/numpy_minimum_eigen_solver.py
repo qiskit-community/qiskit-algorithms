@@ -33,7 +33,7 @@ class NumPyMinimumEigensolver(MinimumEigensolver):
     Deprecated: Numpy Minimum Eigensolver algorithm.
 
     The NumPyMinimumEigensolver class has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver` class.
+    :class:`qiskit_algorithms.minimum_eigensolvers.NumPyMinimumEigensolver` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -42,7 +42,7 @@ class NumPyMinimumEigensolver(MinimumEigensolver):
     @deprecate_func(
         additional_msg=(
             "Instead, use the class "
-            "``qiskit.algorithms.minimum_eigensolvers.NumPyMinimumEigensolver``. "
+            "``qiskit_algorithms.minimum_eigensolvers.NumPyMinimumEigensolver``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

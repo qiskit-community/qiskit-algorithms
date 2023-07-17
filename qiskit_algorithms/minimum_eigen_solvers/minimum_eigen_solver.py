@@ -27,7 +27,7 @@ class MinimumEigensolver(ABC):
     """Deprecated: Minimum Eigensolver Interface.
 
     The Minimum Eigensolver interface has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.MinimumEigensolver` interface.
+    :class:`qiskit_algorithms.minimum_eigensolvers.MinimumEigensolver` interface.
     This interface will be deprecated in a future release and subsequently
     removed after that.
 
@@ -39,7 +39,7 @@ class MinimumEigensolver(ABC):
     @deprecate_func(
         additional_msg=(
             "Instead, use the interface "
-            "``qiskit.algorithms.minimum_eigensolvers.MinimumEigensolver``. "
+            "``qiskit_algorithms.minimum_eigensolvers.MinimumEigensolver``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",
@@ -87,7 +87,7 @@ class MinimumEigensolverResult(AlgorithmResult):
     """Deprecated: Minimum Eigensolver Result.
 
     The MinimumEigensolverResult class has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.MinimumEigensolverResult` class.
+    :class:`qiskit_algorithms.minimum_eigensolvers.MinimumEigensolverResult` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -96,7 +96,7 @@ class MinimumEigensolverResult(AlgorithmResult):
     @deprecate_func(
         additional_msg=(
             "Instead, use the class "
-            "``qiskit.algorithms.minimum_eigensolvers.MinimumEigensolverResult``. "
+            "``qiskit_algorithms.minimum_eigensolvers.MinimumEigensolverResult``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

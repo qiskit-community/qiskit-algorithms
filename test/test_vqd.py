@@ -19,8 +19,8 @@ import numpy as np
 from ddt import data, ddt, unpack
 
 from qiskit import BasicAer, QuantumCircuit
-from qiskit.algorithms import VQD, AlgorithmError
-from qiskit.algorithms.optimizers import (
+from qiskit_algorithms import VQD, AlgorithmError
+from qiskit_algorithms.optimizers import (
     COBYLA,
     L_BFGS_B,
     SLSQP,

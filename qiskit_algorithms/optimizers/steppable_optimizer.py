@@ -102,7 +102,7 @@ class SteppableOptimizer(Optimizer):
 
             import random
             import numpy as np
-            from qiskit.algorithms.optimizers import GradientDescent
+            from qiskit_algorithms.optimizers import GradientDescent
 
             def objective(x):
                 if random.choice([True, False]):

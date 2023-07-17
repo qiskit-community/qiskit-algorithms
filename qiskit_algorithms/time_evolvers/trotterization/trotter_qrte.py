@@ -15,10 +15,10 @@
 from __future__ import annotations
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
-from qiskit.algorithms.time_evolvers.time_evolution_result import TimeEvolutionResult
-from qiskit.algorithms.time_evolvers.real_time_evolver import RealTimeEvolver
-from qiskit.algorithms.observables_evaluator import estimate_observables
+from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
+from qiskit_algorithms.time_evolvers.time_evolution_result import TimeEvolutionResult
+from qiskit_algorithms.time_evolvers.real_time_evolver import RealTimeEvolver
+from qiskit_algorithms.observables_evaluator import estimate_observables
 from qiskit.opflow import PauliSumOp
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.circuit.parametertable import ParameterView
@@ -38,8 +38,8 @@ class TrotterQRTE(RealTimeEvolver):
             from qiskit.opflow import PauliSumOp
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
-            from qiskit.algorithms import TimeEvolutionProblem
-            from qiskit.algorithms.time_evolvers import TrotterQRTE
+            from qiskit_algorithms import TimeEvolutionProblem
+            from qiskit_algorithms.time_evolvers import TrotterQRTE
             from qiskit.primitives import Estimator
 
             operator = PauliSumOp(SparsePauliOp([Pauli("X"), Pauli("Z")]))

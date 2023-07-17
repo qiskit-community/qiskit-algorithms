@@ -15,13 +15,13 @@ import unittest
 from test.python.algorithms import QiskitAlgorithmsTestCase
 from ddt import data, ddt, unpack
 import numpy as np
-from qiskit.algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
+from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
 
 from qiskit.quantum_info.states.statevector import Statevector
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms import SciPyImaginaryEvolver
+from qiskit_algorithms import SciPyImaginaryEvolver
 
 from qiskit.opflow import PauliSumOp
 

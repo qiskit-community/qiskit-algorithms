@@ -14,7 +14,7 @@
 
 from test.python.algorithms import QiskitAlgorithmsTestCase
 import numpy as np
-from qiskit.algorithms.optimizers.optimizer_utils import LearningRate
+from qiskit_algorithms.optimizers.optimizer_utils import LearningRate
 
 
 class TestLearningRate(QiskitAlgorithmsTestCase):

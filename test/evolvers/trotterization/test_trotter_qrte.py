@@ -19,8 +19,8 @@ import numpy as np
 from numpy.testing import assert_raises
 
 from qiskit import BasicAer, QuantumCircuit
-from qiskit.algorithms import EvolutionProblem
-from qiskit.algorithms.evolvers.trotterization import (
+from qiskit_algorithms import EvolutionProblem
+from qiskit_algorithms.evolvers.trotterization import (
     TrotterQRTE,
 )
 from qiskit.circuit.library import ZGate

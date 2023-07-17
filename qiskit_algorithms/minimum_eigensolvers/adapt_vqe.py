@@ -23,7 +23,7 @@ from typing import Any
 import numpy as np
 
 from qiskit import QiskitError
-from qiskit.algorithms.list_or_dict import ListOrDict
+from qiskit_algorithms.list_or_dict import ListOrDict
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.circuit.library import EvolvedOperatorAnsatz
@@ -62,8 +62,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
     .. code-block:: python
 
-      from qiskit.algorithms.minimum_eigensolvers import AdaptVQE, VQE
-      from qiskit.algorithms.optimizers import SLSQP
+      from qiskit_algorithms.minimum_eigensolvers import AdaptVQE, VQE
+      from qiskit_algorithms.optimizers import SLSQP
       from qiskit.primitives import Estimator
       from qiskit.circuit.library import EvolvedOperatorAnsatz
 

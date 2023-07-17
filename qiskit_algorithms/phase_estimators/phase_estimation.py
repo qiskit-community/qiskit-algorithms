@@ -25,7 +25,7 @@ from qiskit.providers import Backend
 from qiskit.utils import QuantumInstance
 from qiskit.utils.deprecation import deprecate_arg
 from qiskit.result import Result
-from qiskit.algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 from .phase_estimation_result import PhaseEstimationResult, _sort_phases
 from .phase_estimator import PhaseEstimator
 from ...primitives import BaseSampler
@@ -71,7 +71,7 @@ class PhaseEstimation(PhaseEstimator):
     In both estimation methods, the QPE circuit is run on a backend
     and the frequencies or counts of the phases represented by bitstrings
     are recorded. The results are returned as an instance of
-    :class:`~qiskit.algorithms.phase_estimator_result.PhaseEstimationResult`.
+    :class:`~qiskit_algorithms.phase_estimator_result.PhaseEstimationResult`.
 
     **Reference:**
 
@@ -216,7 +216,7 @@ class PhaseEstimation(PhaseEstimator):
             num_unitary_qubits: Must agree with the number of qubits in the unitary in `pe_circuit`.
 
         Returns:
-            An instance of qiskit.algorithms.phase_estimator_result.PhaseEstimationResult.
+            An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
 
         Raises:
             AlgorithmError: Primitive job failed.
@@ -260,7 +260,7 @@ class PhaseEstimation(PhaseEstimator):
                 computational basis.
 
         Returns:
-            An instance of qiskit.algorithms.phase_estimator_result.PhaseEstimationResult.
+            An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
         """
         pe_circuit = self.construct_circuit(unitary, state_preparation)
         num_unitary_qubits = unitary.num_qubits

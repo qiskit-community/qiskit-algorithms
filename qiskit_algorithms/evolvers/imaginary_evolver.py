@@ -23,7 +23,7 @@ class ImaginaryEvolver(ABC):
     """Deprecated: Interface for Quantum Imaginary Time Evolution.
 
     The ImaginaryEvolver interface has been superseded by the
-    :class:`qiskit.algorithms.time_evolvers.ImaginaryTimeEvolver` interface.
+    :class:`qiskit_algorithms.time_evolvers.ImaginaryTimeEvolver` interface.
     This interface will be deprecated in a future release and subsequently
     removed after that.
 
@@ -31,7 +31,7 @@ class ImaginaryEvolver(ABC):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the interface ``qiskit.algorithms.time_evolvers.ImaginaryTimeEvolver``. "
+            "Instead, use the interface ``qiskit_algorithms.time_evolvers.ImaginaryTimeEvolver``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

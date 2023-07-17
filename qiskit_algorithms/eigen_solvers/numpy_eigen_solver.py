@@ -35,7 +35,7 @@ class NumPyEigensolver(Eigensolver):
     Deprecated: NumPy Eigensolver algorithm.
 
     The NumPyEigensolver class has been superseded by the
-    :class:`qiskit.algorithms.eigensolvers.NumPyEigensolver` class.
+    :class:`qiskit_algorithms.eigensolvers.NumPyEigensolver` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -50,7 +50,7 @@ class NumPyEigensolver(Eigensolver):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.eigensolvers.NumPyEigensolver``. "
+            "Instead, use the class ``qiskit_algorithms.eigensolvers.NumPyEigensolver``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

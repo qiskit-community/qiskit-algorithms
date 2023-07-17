@@ -18,7 +18,7 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt
 
-from qiskit.algorithms import NumPyEigensolver
+from qiskit_algorithms import NumPyEigensolver
 from qiskit.opflow import PauliSumOp, X, Y, Z
 
 

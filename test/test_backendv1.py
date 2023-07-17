@@ -17,9 +17,9 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 from qiskit import QuantumCircuit
 from qiskit.providers.fake_provider import FakeProvider
 from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit.algorithms import VQE, Grover, AmplificationProblem
+from qiskit_algorithms import VQE, Grover, AmplificationProblem
 from qiskit.opflow import X, Z, I
-from qiskit.algorithms.optimizers import SPSA
+from qiskit_algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal, EfficientSU2
 from qiskit.utils.mitigation import CompleteMeasFitter
 

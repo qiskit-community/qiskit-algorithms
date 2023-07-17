@@ -19,7 +19,7 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, ParameterVector
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Sampler
-from qiskit.algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit.test import QiskitTestCase
 
 

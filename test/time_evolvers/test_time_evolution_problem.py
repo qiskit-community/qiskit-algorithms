@@ -16,7 +16,7 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 from ddt import data, ddt
 from numpy.testing import assert_raises
 from qiskit import QuantumCircuit
-from qiskit.algorithms import TimeEvolutionProblem
+from qiskit_algorithms import TimeEvolutionProblem
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector
 from qiskit.circuit import Parameter
 from qiskit.opflow import Y, Z, One, X, Zero, PauliSumOp

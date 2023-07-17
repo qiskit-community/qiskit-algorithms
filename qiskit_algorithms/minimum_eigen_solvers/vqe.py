@@ -57,7 +57,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     r"""Deprecated: Variational Quantum Eigensolver algorithm.
 
     The VQE class has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.VQE` class.
+    :class:`qiskit_algorithms.minimum_eigensolvers.VQE` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -67,7 +67,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     An instance of VQE requires defining two algorithmic sub-components:
     a trial state (a.k.a. ansatz) which is a :class:`QuantumCircuit`, and one of the classical
-    :mod:`~qiskit.algorithms.optimizers`. The ansatz is varied, via its set of parameters, by the
+    :mod:`~qiskit_algorithms.optimizers`. The ansatz is varied, via its set of parameters, by the
     optimizer, such that it works towards a state, as determined by the parameters applied to the
     ansatz, that will result in the minimum expectation value being measured of the input operator
     (Hamiltonian).
@@ -92,7 +92,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     as the upper bound, the default value will be :math:`2\pi`.
 
     The optimizer can either be one of Qiskit's optimizers, such as
-    :class:`~qiskit.algorithms.optimizers.SPSA` or a callable with the following signature:
+    :class:`~qiskit_algorithms.optimizers.SPSA` or a callable with the following signature:
 
     .. note::
 
@@ -101,7 +101,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     .. code-block:: python
 
-        from qiskit.algorithms.optimizers import OptimizerResult
+        from qiskit_algorithms.optimizers import OptimizerResult
 
         def my_minimizer(fun, x0, jac=None, bounds=None) -> OptimizerResult:
             # Note that the callable *must* have these argument names!
@@ -129,7 +129,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.minimum_eigensolvers.VQE``. "
+            "Instead, use the class ``qiskit_algorithms.minimum_eigensolvers.VQE``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",
@@ -662,7 +662,7 @@ class VQEResult(VariationalResult, MinimumEigensolverResult):
     """Deprecated: VQE Result.
 
     The VQEResult class has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.VQEResult` class.
+    :class:`qiskit_algorithms.minimum_eigensolvers.VQEResult` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -670,7 +670,7 @@ class VQEResult(VariationalResult, MinimumEigensolverResult):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.minimum_eigensolvers.VQEResult``. "
+            "Instead, use the class ``qiskit_algorithms.minimum_eigensolvers.VQEResult``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

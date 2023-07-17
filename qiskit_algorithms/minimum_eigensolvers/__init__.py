@@ -12,10 +12,10 @@
 
 """
 ============================================================================
-Minimum Eigensolvers Package (:mod:`qiskit.algorithms.minimum_eigensolvers`)
+Minimum Eigensolvers Package (:mod:`qiskit_algorithms.minimum_eigensolvers`)
 ============================================================================
 
-.. currentmodule:: qiskit.algorithms.minimum_eigensolvers
+.. currentmodule:: qiskit_algorithms.minimum_eigensolvers
 
 Minimum Eigensolvers
 ====================

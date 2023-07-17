@@ -23,8 +23,8 @@ from scipy.optimize import minimize as scipy_minimize
 from ddt import data, ddt, unpack
 
 from qiskit import BasicAer, QuantumCircuit
-from qiskit.algorithms import VQE, AlgorithmError
-from qiskit.algorithms.optimizers import (
+from qiskit_algorithms import VQE, AlgorithmError
+from qiskit_algorithms.optimizers import (
     CG,
     COBYLA,
     L_BFGS_B,

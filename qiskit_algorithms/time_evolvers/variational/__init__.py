@@ -10,14 +10,14 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """
-Variational Quantum Time Evolutions (:mod:`qiskit.algorithms.time_evolvers.variational`)
+Variational Quantum Time Evolutions (:mod:`qiskit_algorithms.time_evolvers.variational`)
 ========================================================================================
 
 Algorithms for performing Variational Quantum Time Evolution of quantum states,
 which can be tailored to near-term devices.
-:class:`~qiskit.algorithms.time_evolvers.variational.VarQTE` base class exposes an interface, compliant
+:class:`~qiskit_algorithms.time_evolvers.variational.VarQTE` base class exposes an interface, compliant
 with the Quantum Time Evolution Framework in Qiskit Terra, that is implemented by
-:class:`~qiskit.algorithms.VarQRTE` and :class:`~qiskit.algorithms.VarQITE` classes for real and
+:class:`~qiskit_algorithms.VarQRTE` and :class:`~qiskit_algorithms.VarQITE` classes for real and
 imaginary time evolution respectively. The variational approach is taken according to a variational
 principle chosen by a user.
 
@@ -27,8 +27,8 @@ Example:
 
         import numpy as np
 
-        from qiskit.algorithms import TimeEvolutionProblem, VarQITE
-        from qiskit.algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
+        from qiskit_algorithms import TimeEvolutionProblem, VarQITE
+        from qiskit_algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
         from qiskit.circuit.library import EfficientSU2
         from qiskit.quantum_info import SparsePauliOp
 
@@ -53,7 +53,7 @@ Example:
         var_qite = VarQITE(ansatz, var_principle, init_param_values)
         evolution_result = var_qite.evolve(evolution_problem)
 
-.. currentmodule:: qiskit.algorithms.time_evolvers.variational
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
 
 Variational Principles
 ----------------------

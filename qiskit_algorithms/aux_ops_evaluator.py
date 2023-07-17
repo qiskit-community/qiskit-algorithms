@@ -34,7 +34,7 @@ from .list_or_dict import ListOrDict
 @deprecate_func(
     additional_msg=(
         "Instead, use the function "
-        "``qiskit.algorithms.observables_evaluator.estimate_observables``. See "
+        "``qiskit_algorithms.observables_evaluator.estimate_observables``. See "
         "https://qisk.it/algo_migration for a migration guide."
     ),
     since="0.24.0",
@@ -53,7 +53,7 @@ def eval_observables(
     can optionally provide a threshold value which filters mean values falling below the threshold.
 
     This function has been superseded by the
-    :func:`qiskit.algorithms.observables_evaluator.eval_observables` function.
+    :func:`qiskit_algorithms.observables_evaluator.eval_observables` function.
     It will be deprecated in a future release and subsequently
     removed after that.
 

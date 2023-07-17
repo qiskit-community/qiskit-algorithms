@@ -16,7 +16,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
-from qiskit.algorithms.list_or_dict import ListOrDict
+from qiskit_algorithms.list_or_dict import ListOrDict
 from ..algorithm_result import AlgorithmResult
 
 

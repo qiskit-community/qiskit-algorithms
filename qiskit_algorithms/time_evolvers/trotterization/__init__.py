@@ -24,6 +24,6 @@ Trotterization-based Quantum Real Time Evolution
     TrotterQRTE
 """
 
-from qiskit.algorithms.time_evolvers.trotterization.trotter_qrte import TrotterQRTE
+from qiskit_algorithms.time_evolvers.trotterization.trotter_qrte import TrotterQRTE
 
 __all__ = ["TrotterQRTE"]

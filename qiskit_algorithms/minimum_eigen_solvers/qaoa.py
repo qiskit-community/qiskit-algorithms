@@ -18,7 +18,7 @@ from collections.abc import Callable
 
 import numpy as np
 
-from qiskit.algorithms.optimizers import Minimizer, Optimizer
+from qiskit_algorithms.optimizers import Minimizer, Optimizer
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import OperatorBase, ExpectationBase
 from qiskit.opflow.gradients import GradientBase
@@ -27,7 +27,7 @@ from qiskit.utils.quantum_instance import QuantumInstance
 from qiskit.utils.validation import validate_min
 from qiskit.utils.deprecation import deprecate_func
 from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
-from qiskit.algorithms.minimum_eigen_solvers.vqe import VQE
+from qiskit_algorithms.minimum_eigen_solvers.vqe import VQE
 
 
 class QAOA(VQE):
@@ -35,7 +35,7 @@ class QAOA(VQE):
     Deprecated: Quantum Approximate Optimization Algorithm.
 
     The QAOA class has been superseded by the
-    :class:`qiskit.algorithms.minimum_eigensolvers.QAOA` class.
+    :class:`qiskit_algorithms.minimum_eigensolvers.QAOA` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -63,7 +63,7 @@ class QAOA(VQE):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.minimum_eigensolvers.QAOA``. "
+            "Instead, use the class ``qiskit_algorithms.minimum_eigensolvers.QAOA``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",
@@ -84,7 +84,7 @@ class QAOA(VQE):
     ) -> None:
         """
         Args:
-            optimizer: A classical optimizer, see also :class:`~qiskit.algorithms.VQE` for
+            optimizer: A classical optimizer, see also :class:`~qiskit_algorithms.VQE` for
                 more details on the possible types.
             reps: the integer parameter :math:`p` as specified in https://arxiv.org/abs/1411.4028,
                 Has a minimum valid value of 1.

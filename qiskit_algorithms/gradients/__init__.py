@@ -12,10 +12,10 @@
 
 """
 ==============================================
-Gradients (:mod:`qiskit.algorithms.gradients`)
+Gradients (:mod:`qiskit_algorithms.gradients`)
 ==============================================
 
-.. currentmodule:: qiskit.algorithms.gradients
+.. currentmodule:: qiskit_algorithms.gradients
 
 Base Classes
 ============

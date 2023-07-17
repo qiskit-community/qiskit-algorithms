@@ -18,7 +18,7 @@ from unittest.mock import Mock
 
 import numpy as np
 
-from qiskit.algorithms.utils import validate_bounds
+from qiskit_algorithms.utils import validate_bounds
 from qiskit.utils import algorithm_globals
 
 

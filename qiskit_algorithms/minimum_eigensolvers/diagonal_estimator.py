@@ -20,7 +20,7 @@ from typing import Any
 from dataclasses import dataclass
 
 import numpy as np
-from qiskit.algorithms.algorithm_job import AlgorithmJob
+from qiskit_algorithms.algorithm_job import AlgorithmJob
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
 from qiskit.primitives.utils import init_observable, _circuit_key

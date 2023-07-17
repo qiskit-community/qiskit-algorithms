@@ -23,10 +23,10 @@ from test.python.algorithms.time_evolvers.variational.solvers.expected_results.\
 import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.algorithms.time_evolvers.variational import (
+from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
+from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
 )
 from qiskit.circuit.library import EfficientSU2

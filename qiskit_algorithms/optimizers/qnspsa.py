@@ -25,7 +25,7 @@ from qiskit.utils import QuantumInstance
 from qiskit.utils.deprecation import deprecate_arg
 
 from qiskit.primitives import BaseSampler, Sampler
-from qiskit.algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
 
@@ -65,7 +65,7 @@ class QNSPSA(SPSA):
         .. code-block:: python
 
             import numpy as np
-            from qiskit.algorithms.optimizers import QNSPSA
+            from qiskit_algorithms.optimizers import QNSPSA
             from qiskit.circuit.library import PauliTwoDesign
             from qiskit.primitives import Estimator, Sampler
             from qiskit.quantum_info import Pauli
@@ -96,7 +96,7 @@ class QNSPSA(SPSA):
         .. code-block:: python
 
             import numpy as np
-            from qiskit.algorithms.optimizers import QNSPSA
+            from qiskit_algorithms.optimizers import QNSPSA
             from qiskit.circuit.library import PauliTwoDesign
             from qiskit.opflow import Z, StateFn
 
@@ -358,7 +358,7 @@ class QNSPSA(SPSA):
             F(\theta, \phi) = \big|\langle 0 | U^\dagger(\theta) U(\phi) |0\rangle  \big|^2.
 
         The output of this function can be used as input for the ``fidelity`` to the
-        :class:~`qiskit.algorithms.optimizers.QNSPSA` optimizer.
+        :class:~`qiskit_algorithms.optimizers.QNSPSA` optimizer.
 
         Args:
             circuit: The circuit preparing the parameterized ansatz.

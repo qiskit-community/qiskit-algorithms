@@ -22,7 +22,7 @@ from typing import Any
 import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace, Statevector

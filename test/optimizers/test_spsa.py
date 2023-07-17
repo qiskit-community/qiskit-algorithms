@@ -17,7 +17,7 @@ from ddt import ddt, data
 
 import numpy as np
 
-from qiskit.algorithms.optimizers import SPSA, QNSPSA
+from qiskit_algorithms.optimizers import SPSA, QNSPSA
 from qiskit.circuit.library import PauliTwoDesign
 from qiskit.primitives import Estimator, Sampler
 from qiskit.providers.basicaer import StatevectorSimulatorPy

@@ -17,9 +17,9 @@ from __future__ import annotations
 import warnings
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.aux_ops_evaluator import eval_observables
-from qiskit.algorithms.evolvers import EvolutionProblem, EvolutionResult
-from qiskit.algorithms.evolvers.real_evolver import RealEvolver
+from qiskit_algorithms.aux_ops_evaluator import eval_observables
+from qiskit_algorithms.evolvers import EvolutionProblem, EvolutionResult
+from qiskit_algorithms.evolvers.real_evolver import RealEvolver
 from qiskit.opflow import (
     SummedOp,
     PauliOp,
@@ -41,7 +41,7 @@ class TrotterQRTE(RealEvolver):
     """Deprecated: Quantum Real Time Evolution using Trotterization.
 
     The TrotterQRTE class has been superseded by the
-    :class:`qiskit.algorithms.time_evolvers.trotterization.TrotterQRTE` class.
+    :class:`qiskit_algorithms.time_evolvers.trotterization.TrotterQRTE` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -50,7 +50,7 @@ class TrotterQRTE(RealEvolver):
     Examples::
 
             from qiskit.opflow import X, Z, Zero
-            from qiskit.algorithms import EvolutionProblem, TrotterQRTE
+            from qiskit_algorithms import EvolutionProblem, TrotterQRTE
             from qiskit import BasicAer
             from qiskit.utils import QuantumInstance
 
@@ -67,7 +67,7 @@ class TrotterQRTE(RealEvolver):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.time_evolvers.trotterization.TrotterQRTE``."
+            "Instead, use the class ``qiskit_algorithms.time_evolvers.trotterization.TrotterQRTE``."
             " See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

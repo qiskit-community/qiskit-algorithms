@@ -18,7 +18,7 @@ from numpy.testing import assert_raises
 from ddt import data, ddt
 import numpy as np
 
-from qiskit.algorithms.time_evolvers.variational.var_qte import VarQTE
+from qiskit_algorithms.time_evolvers.variational.var_qte import VarQTE
 from qiskit.circuit import Parameter
 
 

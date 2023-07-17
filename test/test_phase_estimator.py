@@ -20,8 +20,8 @@ from qiskit.circuit.library import ZGate, XGate, HGate, IGate
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector, Operator
 from qiskit.synthesis import MatrixExponential, SuzukiTrotter
 from qiskit.primitives import Sampler
-from qiskit.algorithms import PhaseEstimationScale
-from qiskit.algorithms.phase_estimators import (
+from qiskit_algorithms import PhaseEstimationScale
+from qiskit_algorithms.phase_estimators import (
     PhaseEstimation,
     HamiltonianPhaseEstimation,
     IterativePhaseEstimation,

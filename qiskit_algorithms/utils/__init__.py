@@ -10,7 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Common Qiskit algorithms utility functions."""
+"""Common qiskit_algorithms utility functions."""
 
 from .validate_initial_point import validate_initial_point
 from .validate_bounds import validate_bounds

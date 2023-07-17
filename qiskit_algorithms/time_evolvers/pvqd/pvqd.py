@@ -73,12 +73,12 @@ class PVQD(RealTimeEvolver):
 
             import numpy as np
 
-            from qiskit.algorithms.state_fidelities import ComputeUncompute
-            from qiskit.algorithms.time_evolvers import TimeEvolutionProblem, PVQD
+            from qiskit_algorithms.state_fidelities import ComputeUncompute
+            from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD
             from qiskit.primitives import Estimator, Sampler
             from qiskit.circuit.library import EfficientSU2
             from qiskit.quantum_info import SparsePauliOp, Pauli
-            from qiskit.algorithms.optimizers import L_BFGS_B
+            from qiskit_algorithms.optimizers import L_BFGS_B
 
             sampler = Sampler()
             fidelity = ComputeUncompute(sampler)

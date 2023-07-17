@@ -19,10 +19,10 @@ import numpy as np
 from ddt import data, ddt
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.eigensolvers import VQD, VQDResult
-from qiskit.algorithms import AlgorithmError
-from qiskit.algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
-from qiskit.algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.eigensolvers import VQD, VQDResult
+from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Sampler, Estimator

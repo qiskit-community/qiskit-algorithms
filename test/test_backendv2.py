@@ -18,9 +18,9 @@ from qiskit import QuantumCircuit
 from qiskit.providers.fake_provider import FakeProvider
 from qiskit.providers.fake_provider.fake_backend_v2 import FakeBackendSimple
 from qiskit.utils import QuantumInstance
-from qiskit.algorithms import VQE, Grover, AmplificationProblem
+from qiskit_algorithms import VQE, Grover, AmplificationProblem
 from qiskit.opflow import X, Z, I
-from qiskit.algorithms.optimizers import SPSA
+from qiskit_algorithms.optimizers import SPSA
 from qiskit.circuit.library import TwoLocal
 
 

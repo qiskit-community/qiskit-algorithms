@@ -38,9 +38,9 @@ class VarQRTE(VarQTE, RealTimeEvolver):
 
         import numpy as np
 
-        from qiskit.algorithms import TimeEvolutionProblem, VarQRTE
+        from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
         from qiskit.circuit.library import EfficientSU2
-        from qiskit.algorithms.time_evolvers.variational import RealMcLachlanPrinciple
+        from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
         from qiskit.quantum_info import SparsePauliOp
         from qiskit.quantum_info import SparsePauliOp, Pauli
         from qiskit.primitives import Estimator

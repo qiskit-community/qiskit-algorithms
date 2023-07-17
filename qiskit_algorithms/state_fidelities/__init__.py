@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 """
 =====================================================================
-State Fidelity Interfaces (:mod:`qiskit.algorithms.state_fidelities`)
+State Fidelity Interfaces (:mod:`qiskit_algorithms.state_fidelities`)
 =====================================================================
 
-.. currentmodule:: qiskit.algorithms.state_fidelities
+.. currentmodule:: qiskit_algorithms.state_fidelities
 
 State Fidelities
 ================

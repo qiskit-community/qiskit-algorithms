@@ -25,7 +25,7 @@ class EvolutionProblem:
     """Deprecated: Evolution problem class.
 
     The EvolutionProblem class has been superseded by the
-    :class:`qiskit.algorithms.time_evolvers.TimeEvolutionProblem` class.
+    :class:`qiskit_algorithms.time_evolvers.TimeEvolutionProblem` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -35,7 +35,7 @@ class EvolutionProblem:
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.time_evolvers.TimeEvolutionProblem``. "
+            "Instead, use the class ``qiskit_algorithms.time_evolvers.TimeEvolutionProblem``. "
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

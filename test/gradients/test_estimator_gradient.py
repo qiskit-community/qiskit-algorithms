@@ -19,7 +19,7 @@ import numpy as np
 from ddt import ddt, data, unpack
 
 from qiskit import QuantumCircuit
-from qiskit.algorithms.gradients import (
+from qiskit_algorithms.gradients import (
     FiniteDiffEstimatorGradient,
     LinCombEstimatorGradient,
     ParamShiftEstimatorGradient,

@@ -16,7 +16,7 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 from ddt import data, ddt, unpack
 from numpy.testing import assert_raises
 
-from qiskit.algorithms.evolvers.evolution_problem import EvolutionProblem
+from qiskit_algorithms.evolvers.evolution_problem import EvolutionProblem
 from qiskit.circuit import Parameter
 from qiskit.opflow import Y, Z, One, X, Zero
 

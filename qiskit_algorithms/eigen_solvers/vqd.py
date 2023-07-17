@@ -56,7 +56,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     r"""Deprecated: Variational Quantum Deflation algorithm.
 
     The VQD class has been superseded by the
-    :class:`qiskit.algorithms.eigensolvers.VQD` class.
+    :class:`qiskit_algorithms.eigensolvers.VQD` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -73,7 +73,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     An instance of VQD requires defining three algorithmic sub-components:
     an integer k denoting the number of eigenstates to calculate, a trial
     state (a.k.a. ansatz)which is a :class:`QuantumCircuit`,
-    and one of the classical :mod:`~qiskit.algorithms.optimizers`.
+    and one of the classical :mod:`~qiskit_algorithms.optimizers`.
     The ansatz is varied, via its set of parameters, by the optimizer,
     such that it works towards a state, as determined by the parameters
     applied to the ansatz, that will result in the minimum expectation values
@@ -99,7 +99,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.eigensolvers.VQD``."
+            "Instead, use the class ``qiskit_algorithms.eigensolvers.VQD``."
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",
@@ -765,7 +765,7 @@ class VQDResult(VariationalResult, EigensolverResult):
     """Deprecated: VQD Result.
 
     The VQDResult class has been superseded by the
-    :class:`qiskit.algorithms.eigensolvers.VQDResult` class.
+    :class:`qiskit_algorithms.eigensolvers.VQDResult` class.
     This class will be deprecated in a future release and subsequently
     removed after that.
 
@@ -773,7 +773,7 @@ class VQDResult(VariationalResult, EigensolverResult):
 
     @deprecate_func(
         additional_msg=(
-            "Instead, use the class ``qiskit.algorithms.eigensolvers.VQDResult``."
+            "Instead, use the class ``qiskit_algorithms.eigensolvers.VQDResult``."
             "See https://qisk.it/algo_migration for a migration guide."
         ),
         since="0.24.0",

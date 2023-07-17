@@ -42,7 +42,7 @@ from ...synthesis import EvolutionSynthesis
 class HamiltonianPhaseEstimation:
     r"""Run the Quantum Phase Estimation algorithm to find the eigenvalues of a Hermitian operator.
 
-    This class is nearly the same as :class:`~qiskit.algorithms.PhaseEstimation`, differing only
+    This class is nearly the same as :class:`~qiskit_algorithms.PhaseEstimation`, differing only
     in that the input in that class is a unitary operator, whereas here the input is a Hermitian
     operator from which a unitary will be obtained by scaling and exponentiating. The scaling is
     performed in order to prevent the phases from wrapping around :math:`2\pi`.
@@ -72,7 +72,7 @@ class HamiltonianPhaseEstimation:
     mapped to the same phase, :math:`\pi`, and so cannot be distinguished. In this case, you need
     to specify a larger bound as an argument to the method ``estimate``.
 
-    This class uses and works together with :class:`~qiskit.algorithms.PhaseEstimationScale` to
+    This class uses and works together with :class:`~qiskit_algorithms.PhaseEstimationScale` to
     manage scaling the Hamiltonian and the phases that are obtained by the QPE algorithm. This
     includes setting, or computing, a bound on the eigenvalues of the operator, using this
     bound to obtain a scale factor, scaling the operator, and shifting and scaling the measured

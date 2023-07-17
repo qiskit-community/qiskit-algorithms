@@ -11,10 +11,10 @@
 # that they have been altered from the originals.
 
 """
-Optimizers (:mod:`qiskit.algorithms.optimizers`)
+Optimizers (:mod:`qiskit_algorithms.optimizers`)
 =====================================================
 It  contains a variety of classical optimizers for use by quantum variational algorithms,
-such as :class:`~qiskit.algorithms.VQE`.
+such as :class:`~qiskit_algorithms.VQE`.
 Logically, these optimizers can be divided into two categories:
 
 `Local Optimizers`_
@@ -25,7 +25,7 @@ Logically, these optimizers can be divided into two categories:
   Given an optimization problem, a **global optimizer** is a function
   that attempts to find an optimal value among all possible solutions.
 
-.. currentmodule:: qiskit.algorithms.optimizers
+.. currentmodule:: qiskit_algorithms.optimizers
 
 Optimizer Base Class
 ====================

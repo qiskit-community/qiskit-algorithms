@@ -17,8 +17,8 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.utils import QuantumInstance, algorithm_globals, optionals
 from qiskit.opflow import PauliSumOp
-from qiskit.algorithms.optimizers import AQGD
-from qiskit.algorithms import VQE, AlgorithmError
+from qiskit_algorithms.optimizers import AQGD
+from qiskit_algorithms import VQE, AlgorithmError
 from qiskit.opflow.gradients import Gradient
 from qiskit.test import slow_test
 

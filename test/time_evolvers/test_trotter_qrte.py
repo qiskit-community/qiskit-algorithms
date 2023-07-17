@@ -19,7 +19,7 @@ import numpy as np
 from scipy.linalg import expm
 from numpy.testing import assert_raises
 
-from qiskit.algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
+from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
 from qiskit.primitives import Estimator
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate

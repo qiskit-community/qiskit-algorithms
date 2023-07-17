@@ -17,7 +17,7 @@ from test.python.algorithms import QiskitAlgorithmsTestCase
 import numpy as np
 from scipy.optimize import rosen
 
-from qiskit.algorithms.optimizers.umda import UMDA
+from qiskit_algorithms.optimizers.umda import UMDA
 from qiskit.utils import algorithm_globals
 
 

@@ -19,10 +19,10 @@ import numpy as np
 from ddt import data, ddt, unpack
 
 from qiskit import QiskitError
-from qiskit.algorithms.time_evolvers import TimeEvolutionProblem
-from qiskit.algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
-from qiskit.algorithms.state_fidelities import ComputeUncompute
-from qiskit.algorithms.time_evolvers.pvqd import PVQD
+from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
+from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
+from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.time_evolvers.pvqd import PVQD
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.opflow import PauliSumOp

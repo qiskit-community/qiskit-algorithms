@@ -12,25 +12,25 @@
 
 """
 =====================================
-Algorithms (:mod:`qiskit.algorithms`)
+Algorithms (:mod:`qiskit_algorithms`)
 =====================================
 It contains a collection of quantum algorithms, for use with quantum computers, to
 carry out research and investigate how to solve problems in different domains on
 near-term quantum devices with short depth circuits.
 
-Algorithms configuration includes the use of :mod:`~qiskit.algorithms.optimizers` which
+Algorithms configuration includes the use of :mod:`~qiskit_algorithms.optimizers` which
 were designed to be swappable sub-parts of an algorithm. Any component and may be exchanged for
 a different implementation of the same component type in order to potentially alter the behavior
 and outcome of the algorithm.
 
-Quantum algorithms are run via a :class:`~qiskit.algorithms.QuantumInstance`
+Quantum algorithms are run via a :class:`~qiskit_algorithms.QuantumInstance`
 which must be set with the
 desired backend where the algorithm's circuits will be executed and be configured with a number of
 compile and runtime parameters controlling circuit compilation and execution. It ultimately uses
 `Terra <https://www.qiskit.org/terra>`__ for the actual compilation and execution of the quantum
 circuits created by the algorithm and its components.
 
-.. currentmodule:: qiskit.algorithms
+.. currentmodule:: qiskit_algorithms
 
 Algorithms
 ==========

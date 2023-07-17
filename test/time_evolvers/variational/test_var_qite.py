@@ -19,12 +19,12 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
+from qiskit_algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.utils import algorithm_globals
-from qiskit.algorithms import TimeEvolutionProblem, VarQITE
-from qiskit.algorithms.time_evolvers.variational import (
+from qiskit_algorithms import TimeEvolutionProblem, VarQITE
+from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
 from qiskit.circuit.library import EfficientSU2
