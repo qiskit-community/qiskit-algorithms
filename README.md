@@ -1,4 +1,4 @@
-# Qiskit Machine Learning
+# Qiskit Algorithms
 
 [TODO: Add license]
 
@@ -45,8 +45,8 @@ For questions that are more suited for a forum, we use the **Qiskit** tag in [St
 
 ## Authors and Citation
 
-Machine Learning was inspired, authored and brought about by the collective work of a team of researchers.
-Machine Learning continues to grow with the help and work of
+Qiskit Algorithms was inspired, authored and brought about by the collective work of a team of researchers.
+Algorithms continues to grow with the help and work of
 [many people](https://github.com/qiskit-community/qiskit-algorithms/graphs/contributors), who contribute
 to the project at different levels.
 If you use Qiskit, please cite as per the provided

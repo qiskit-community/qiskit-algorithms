@@ -4,4 +4,3 @@ numpy>=1.17
 psutil>=5
 fastdtw
 setuptools>=40.1.0
-dill>=0.3.4
