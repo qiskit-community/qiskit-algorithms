@@ -65,7 +65,7 @@ class NumPyEigensolver(Eigensolver):
         super().__init__()
 
         self._in_k = k
-        self._k = k # pylint: disable=invalid-name
+        self._k = k  # pylint: disable=invalid-name
 
         self._filter_criterion = filter_criterion
 

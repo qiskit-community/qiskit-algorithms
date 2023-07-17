@@ -31,6 +31,7 @@ from qiskit_algorithms.time_evolvers.variational import (
     RealMcLachlanPrinciple,
 )
 
+
 @ddt
 class TestVarQRTE(QiskitAlgorithmsTestCase):
     """Test Variational Quantum Real Time Evolution algorithm."""
@@ -85,7 +86,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             ]
         )
         aux_ops = [Pauli("XX"), Pauli("YZ")]
-        d = 1
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
@@ -191,7 +192,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
                 ("XX", 0.091),
             ]
         )
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)

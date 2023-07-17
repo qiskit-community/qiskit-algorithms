@@ -22,6 +22,7 @@ from qiskit.opflow import Y, Z, One, X, Zero, PauliSumOp
 
 from qiskit_algorithms import TimeEvolutionProblem
 
+
 @ddt
 class TestTimeEvolutionProblem(QiskitAlgorithmsTestCase):
     """Test evolver problem class."""

@@ -47,7 +47,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
@@ -99,7 +99,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
             np.array([t_param, 0.5716, 0.3435, -0.4347, 0.091, 0.091]),
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters

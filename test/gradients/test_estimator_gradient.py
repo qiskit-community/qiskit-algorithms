@@ -239,7 +239,7 @@ class TestEstimatorGradient(QiskitTestCase):
             ]
             param = [[a, b, c], [c, b, a], [a, c], [c, a]]
             op = SparsePauliOp.from_list([("Z", 1)])
-            for i, p in enumerate(param):
+            for i, p in enumerate(param):  # pylint: disable=invalid-name
                 gradient = grad(estimator)
                 gradients = (
                     gradient.run([qc], [op], param_list, parameters=[p]).result().gradients[0]
@@ -358,7 +358,7 @@ class TestEstimatorGradient(QiskitTestCase):
                 [-0.3535525, 0.3535525],
                 [0.3535525, -0.3535525],
             ]
-            for i, p in enumerate(param):
+            for i, p in enumerate(param):  # pylint: disable=invalid-name
                 gradient = SPSAEstimatorGradient(estimator, epsilon=1e-6, seed=123)
                 gradients = (
                     gradient.run([qc], [op], param_list3, parameters=[p]).result().gradients[0]

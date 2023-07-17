@@ -239,7 +239,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
     @staticmethod
     def _get_expected_trotter_qrte(operator, time, num_timesteps, init_state, observables, t_param):
         """Compute reference values for Trotter evolution via exact matrix exponentiation."""
-        dt = time / num_timesteps
+        dt = time / num_timesteps  # pylint: disable=invalid-name
         observables = [obs.to_matrix() for obs in observables]
 
         psi = Statevector(init_state).data

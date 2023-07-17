@@ -37,7 +37,6 @@ from qiskit_algorithms.time_evolvers.variational import (
 )
 
 
-
 @ddt
 class TestVarQTEOdeSolver(QiskitAlgorithmsTestCase):
     """Test solver of ODEs."""
@@ -84,7 +83,7 @@ class TestVarQTEOdeSolver(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 1
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters

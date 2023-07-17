@@ -69,7 +69,7 @@ class TestBackendV2(QiskitAlgorithmsTestCase):
         problem = AmplificationProblem(oracle, is_good_state=["11"])
 
         with self.assertWarns(DeprecationWarning):
-            qi = QuantumInstance( # pylint: disable=invalid-name
+            qi = QuantumInstance(  # pylint: disable=invalid-name
                 self._provider.get_backend("fake_yorktown"), seed_simulator=12, seed_transpiler=32
             )
 
@@ -88,7 +88,7 @@ class TestBackendV2(QiskitAlgorithmsTestCase):
         backend._configuration.max_experiments = 1
 
         with self.assertWarns(DeprecationWarning):
-            qi = QuantumInstance( # pylint: disable=invalid-name
+            qi = QuantumInstance(  # pylint: disable=invalid-name
                 self._provider.get_backend("fake_yorktown"), seed_simulator=12, seed_transpiler=32
             )
 

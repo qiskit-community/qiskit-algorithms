@@ -30,6 +30,7 @@ from qiskit_algorithms import (
     EstimationProblem,
 )
 
+
 class BernoulliStateIn(QuantumCircuit):
     """A circuit preparing sqrt(1 - p)|0> + sqrt(p)|1>."""
 
@@ -101,7 +102,7 @@ class TestBernoulli(QiskitAlgorithmsTestCase):
 
         def qasm(shots=100):
             with self.assertWarns(DeprecationWarning):
-                qi = QuantumInstance( # pylint: disable=invalid-name
+                qi = QuantumInstance(  # pylint: disable=invalid-name
                     backend=BasicAer.get_backend("qasm_simulator"),
                     shots=shots,
                     seed_simulator=2,
@@ -392,7 +393,7 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
 
         def qasm(shots=100):
             with self.assertWarns(DeprecationWarning):
-                qi = QuantumInstance( # pylint: disable=invalid-name
+                qi = QuantumInstance(  # pylint: disable=invalid-name
                     backend=BasicAer.get_backend("qasm_simulator"),
                     shots=shots,
                     seed_simulator=7192,

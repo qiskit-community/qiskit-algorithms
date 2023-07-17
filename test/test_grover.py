@@ -28,6 +28,7 @@ from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_algorithms import AmplificationProblem, Grover
 
+
 @ddt
 class TestAmplificationProblem(QiskitAlgorithmsTestCase):
     """Test the amplification problem."""

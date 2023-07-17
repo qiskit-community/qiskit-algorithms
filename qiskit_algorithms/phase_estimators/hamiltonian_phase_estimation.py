@@ -278,7 +278,7 @@ def _remove_identity(pauli_sum: SummedOp):
     idcoeff = 0.0
     ops = []
     for op in pauli_sum:
-        p = op.primitive
+        p = op.primitive  # pylint: disable=invalid-name
         if p.x.any() or p.z.any():
             ops.append(op)
         else:

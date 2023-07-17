@@ -48,6 +48,7 @@ from qiskit_algorithms.optimizers import (
     SciPyOptimizer,
 )
 
+
 @ddt
 class TestOptimizers(QiskitAlgorithmsTestCase):
     """Test Optimizers"""

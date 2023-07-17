@@ -30,6 +30,7 @@ from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
 from qiskit_algorithms.optimizers import SLSQP
 
+
 @ddt
 class TestAdaptVQE(QiskitAlgorithmsTestCase):
     """Test of the AdaptVQE minimum eigensolver"""

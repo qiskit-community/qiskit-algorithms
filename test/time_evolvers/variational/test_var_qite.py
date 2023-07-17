@@ -31,6 +31,7 @@ from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
 
+
 @ddt
 class TestVarQITE(QiskitAlgorithmsTestCase):
     """Test Variational Quantum Imaginary Time Evolution algorithm."""
@@ -55,7 +56,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             ]
         )
         aux_ops = [Pauli("XX"), Pauli("YZ")]
-        d = 1 # pylint: disable=invalid-name
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
@@ -158,7 +159,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 1 # pylint: disable=invalid-name
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
@@ -199,7 +200,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
                 ("XX", 0.091),
             ]
         )
-        d = 2 # pylint: disable=invalid-name
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)

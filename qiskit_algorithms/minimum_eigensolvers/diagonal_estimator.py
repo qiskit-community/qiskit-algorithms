@@ -29,6 +29,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.algorithm_job import AlgorithmJob
 
+
 @dataclass(frozen=True)
 class _DiagonalEstimatorResult(EstimatorResult):
     """A result from an expectation of a diagonal observable."""

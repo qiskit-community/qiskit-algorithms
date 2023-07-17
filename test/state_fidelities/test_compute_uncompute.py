@@ -23,6 +23,7 @@ from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
+
 class TestComputeUncompute(QiskitTestCase):
     """Test Compute-Uncompute Fidelity class"""
 

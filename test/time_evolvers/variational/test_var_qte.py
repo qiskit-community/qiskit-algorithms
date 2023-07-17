@@ -22,6 +22,7 @@ from qiskit.circuit import Parameter
 
 from qiskit_algorithms.time_evolvers.variational.var_qte import VarQTE
 
+
 @ddt
 class TestVarQTE(QiskitAlgorithmsTestCase):
     """Test Variational Quantum Time Evolution class methods."""

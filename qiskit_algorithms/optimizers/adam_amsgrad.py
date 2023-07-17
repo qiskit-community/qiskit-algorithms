@@ -162,8 +162,9 @@ class ADAM(Optimizer):
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writerow({"v": self._v, "v_eff": self._v_eff, "m": self._m, "t": self._t})
         else:
-            # pylint: disable=unspecified-encoding
-            with open(os.path.join(snapshot_dir, "adam_params.csv"), mode="a") as csv_file:
+            with open(
+                os.path.join(snapshot_dir, "adam_params.csv"), mode="a"
+            ) as csv_file:  # pylint: disable=unspecified-encoding
                 fieldnames = ["v", "m", "t"]
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writerow({"v": self._v, "m": self._m, "t": self._t})
@@ -174,7 +175,9 @@ class ADAM(Optimizer):
         Args:
             load_dir: The directory containing ``adam_params.csv``.
         """
-        with open(os.path.join(load_dir, "adam_params.csv")) as csv_file:  # pylint: disable=unspecified-encoding
+        with open(
+            os.path.join(load_dir, "adam_params.csv")
+        ) as csv_file:  # pylint: disable=unspecified-encoding
             if self._amsgrad:
                 fieldnames = ["v", "v_eff", "m", "t"]
             else:

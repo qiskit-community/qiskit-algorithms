@@ -20,6 +20,7 @@ from qiskit.quantum_info import Statevector, SparsePauliOp
 
 from qiskit_algorithms import SciPyRealEvolver, TimeEvolutionProblem
 
+
 def zero(n):
     """Auxiliary function to create an initial state on n qubits."""
     qr = QuantumRegister(n)

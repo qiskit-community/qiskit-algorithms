@@ -20,6 +20,7 @@ from qiskit.opflow import I, Z, StateFn
 from qiskit_algorithms.optimizers import GradientDescent, GradientDescentState
 from qiskit_algorithms.optimizers.steppable_optimizer import TellData, AskData
 
+
 class TestGradientDescent(QiskitAlgorithmsTestCase):
     """Tests for the gradient descent optimizer."""
 

@@ -21,10 +21,11 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
-from .exceptions import AlgorithmError
-from .list_or_dict import ListOrDict
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
+from .exceptions import AlgorithmError
+from .list_or_dict import ListOrDict
 
 
 def estimate_observables(

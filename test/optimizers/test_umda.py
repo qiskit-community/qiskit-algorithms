@@ -21,6 +21,7 @@ from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.optimizers.umda import UMDA
 
+
 class TestUMDA(QiskitAlgorithmsTestCase):
     """Tests for the UMDA optimizer."""
 

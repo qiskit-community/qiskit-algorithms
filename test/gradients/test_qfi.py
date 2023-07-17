@@ -26,6 +26,7 @@ from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 
+
 @ddt
 class TestQFI(QiskitTestCase):
     """Test QFI"""

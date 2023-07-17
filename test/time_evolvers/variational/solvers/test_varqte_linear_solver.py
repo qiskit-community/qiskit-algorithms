@@ -49,7 +49,7 @@ class TestVarQTELinearSolver(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)

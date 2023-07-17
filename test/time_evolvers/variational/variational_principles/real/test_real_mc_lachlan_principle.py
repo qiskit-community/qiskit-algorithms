@@ -31,6 +31,7 @@ from qiskit_algorithms.time_evolvers.variational import (
     RealMcLachlanPrinciple,
 )
 
+
 class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):
     """Test real McLachlan's variational principle."""
 
@@ -47,7 +48,7 @@ class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
@@ -74,7 +75,7 @@ class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters

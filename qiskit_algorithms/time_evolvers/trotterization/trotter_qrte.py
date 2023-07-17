@@ -28,6 +28,7 @@ from qiskit_algorithms.time_evolvers.time_evolution_result import TimeEvolutionR
 from qiskit_algorithms.time_evolvers.real_time_evolver import RealTimeEvolver
 from qiskit_algorithms.observables_evaluator import estimate_observables
 
+
 class TrotterQRTE(RealTimeEvolver):
     """Quantum Real Time Evolution using Trotterization.
     Type of Trotterization is defined by a ``ProductFormula`` provided.
@@ -186,7 +187,7 @@ class TrotterQRTE(RealTimeEvolver):
             )
 
         # make sure PauliEvolutionGate does not implement more than one Trotter step
-        dt = evolution_problem.time / self.num_timesteps
+        dt = evolution_problem.time / self.num_timesteps  # pylint: disable=invalid-name
 
         if evolution_problem.initial_state is not None:
             initial_state = evolution_problem.initial_state

@@ -23,6 +23,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..list_or_dict import ListOrDict
 
+
 class TimeEvolutionProblem:
     """Time evolution problem class.
 

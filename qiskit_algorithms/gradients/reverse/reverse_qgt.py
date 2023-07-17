@@ -77,7 +77,7 @@ class ReverseQGT(BaseQGT):
         """
         return Options()
 
-    def _run( # pylint: disable=arguments-renamed
+    def _run(  # pylint: disable=arguments-renamed
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],

@@ -359,7 +359,7 @@ class TestSamplerGradient(QiskitTestCase):
                     {0: -0.17677666583387008, 1: 0.17677666583378482},
                 ],
             ]
-            for i, p in enumerate(params):
+            for i, p in enumerate(params):  # pylint: disable=invalid-name
                 gradients = gradient.run([qc], param_values, parameters=[p]).result().gradients[0]
                 array1 = _quasi2array(gradients, num_qubits=1)
                 array2 = _quasi2array(expected[i], num_qubits=1)
@@ -536,7 +536,7 @@ class TestSamplerGradient(QiskitTestCase):
                     {0: -0.17677624757590138, 1: 0.17677624757590138},
                 ],
             ]
-            for i, p in enumerate(param):
+            for i, p in enumerate(param):  # pylint: disable=invalid-name
                 gradient = SPSASamplerGradient(sampler, epsilon=1e-6, seed=123)
                 gradients = gradient.run([qc], param_list, parameters=[p]).result().gradients[0]
                 array1 = _quasi2array(gradients, num_qubits=1)
