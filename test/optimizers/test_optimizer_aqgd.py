@@ -66,13 +66,12 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         aqgd = AQGD(maxiter=[1000, 1000, 1000], eta=[1.0, 0.5, 0.3], momentum=[0.0, 0.5, 0.75])
 
-        with self.assertWarns(DeprecationWarning):
-            vqe = VQE(
-                self.estimator,
-                ansatz=RealAmplitudes(),
-                optimizer=aqgd,
-            )
-            result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
+        vqe = VQE(
+            self.estimator,
+            ansatz=RealAmplitudes(),
+            optimizer=aqgd,
+        )
+        result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 
         self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
 

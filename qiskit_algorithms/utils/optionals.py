@@ -24,3 +24,4 @@ HAS_SKQUANT = LazyImportTester(
     install="pip install scikit-quant",
 )
 HAS_SQSNOBFIT = LazyImportTester("SQSnobFit", install="pip install SQSnobFit")
+HAS_TWEEDLEDUM = LazyImportTester("tweedledum", install="pip install tweedledum")
