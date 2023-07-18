@@ -79,21 +79,31 @@ please ensure that:
    deprecation, removal, etc), you have added a reno (release note) for
    that change and that the PR is tagged for the changelog.
 
-5. Ensure all code, including unit tests, has the copyright header. The copyright
-   date will be checked by CI build. The format of the date(s) is _year of creation,
-   last year changed_. So for example:
-   
-   > \# (C) Copyright IBM 2018, 2021.
+[//]: # (5. Ensure all code, including unit tests, has the copyright header. The copyright)
 
-   If the _year of creation_ is the same as _last year changed_ then only
-   one date is needed, for example:
+[//]: # (   date will be checked by CI build. The format of the date&#40;s&#41; is _year of creation,)
 
-   > \# (C) Copyright IBM 2021.
-                                                                                                                                                                                                 
-   If code is changed in a file make sure the copyright includes the current year.
-   If there is just one date and it's a prior year then add the current year as the 2nd date, 
-   otherwise simply change the 2nd date to the current year. The _year of creation_ date is
-   never changed.
+[//]: # (   last year changed_. So for example:)
+
+[//]: # (   )
+[//]: # (   > \# &#40;C&#41; Copyright IBM 2018, 2021.)
+
+[//]: # ()
+[//]: # (   If the _year of creation_ is the same as _last year changed_ then only)
+
+[//]: # (   one date is needed, for example:)
+
+[//]: # ()
+[//]: # (   > \# &#40;C&#41; Copyright IBM 2021.)
+
+[//]: # (                                                                                                                                                                                                 )
+[//]: # (   If code is changed in a file make sure the copyright includes the current year.)
+
+[//]: # (   If there is just one date and it's a prior year then add the current year as the 2nd date, )
+
+[//]: # (   otherwise simply change the 2nd date to the current year. The _year of creation_ date is)
+
+[//]: # (   never changed.)
 
 ### Changelog generation
 
@@ -296,39 +306,63 @@ When the time for a new release has come, we will:
 1.  Create a new tag with the version number and push it to github
 2.  Change the `main` version to the next release version.
 
-The release automation processes will be triggered by the new tag and perform
-the following steps:
+[//]: # (The release automation processes will be triggered by the new tag and perform)
 
-1.  Create a stable branch for the new minor version from the release tag
-    on the `main` branch
-2.  Build and upload binary wheels to pypi
-3.  Create a github release page with a generated changelog
-4.  Generate a PR on the meta-repository to bump the terra version and
-    meta-package version.
+[//]: # (the following steps:)
+
+[//]: # ()
+[//]: # (1.  Create a stable branch for the new minor version from the release tag)
+
+[//]: # (    on the `main` branch)
+
+[//]: # (2.  Build and upload binary wheels to pypi)
+
+[//]: # (3.  Create a github release page with a generated changelog)
+
+[//]: # (4.  Generate a PR on the meta-repository to bump the terra version and)
+
+[//]: # (    meta-package version.)
 
 The `stable/*` branches should only receive changes in the form of bug
 fixes.
 
-## Dealing with the git blame ignore list
+[//]: # (## Dealing with the git blame ignore list)
 
-In the qiskit-algorithms repository we maintain a list of commits for git blame
-to ignore. This is mostly commits that are code style changes that don't
-change the functionality but just change the code formatting (for example,
-when we migrated to use black for code formatting). This file,
-`.git-blame-ignore-revs` just contains a list of commit SHA1s you can tell git
-to ignore when using the `git blame` command. This can be done one time
-with something like
+[//]: # ()
+[//]: # (In the qiskit-algorithms repository we maintain a list of commits for git blame)
 
-```
-git blame --ignore-revs-file .git-blame-ignore-revs qiskit_algorithms/version.py
-```
+[//]: # (to ignore. This is mostly commits that are code style changes that don't)
 
-from the root of the repository. If you'd like to enable this by default you
-can update your local repository's configuration with:
+[//]: # (change the functionality but just change the code formatting &#40;for example,)
 
-```
-git config blame.ignoreRevsFile .git-blame-ignore-revs
-```
+[//]: # (when we migrated to use black for code formatting&#41;. This file,)
 
-which will update your local repositories configuration to use the ignore list
-by default.
+[//]: # (`.git-blame-ignore-revs` just contains a list of commit SHA1s you can tell git)
+
+[//]: # (to ignore when using the `git blame` command. This can be done one time)
+
+[//]: # (with something like)
+
+[//]: # ()
+[//]: # (```)
+
+[//]: # (git blame --ignore-revs-file .git-blame-ignore-revs qiskit_algorithms/version.py)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (from the root of the repository. If you'd like to enable this by default you)
+
+[//]: # (can update your local repository's configuration with:)
+
+[//]: # ()
+[//]: # (```)
+
+[//]: # (git config blame.ignoreRevsFile .git-blame-ignore-revs)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (which will update your local repositories configuration to use the ignore list)
+
+[//]: # (by default.)
