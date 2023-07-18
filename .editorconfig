@@ -15,7 +15,7 @@
 # top-most EditorConfig file, stop looking higher in the tree
 root = true
 
-# Default settings can be overidden by editorconfig file in a subdir
+# Default settings can be overriden by editorconfig file in a subdir
 # or by a specific glob later in this file
 [*]
 end_of_line = lf

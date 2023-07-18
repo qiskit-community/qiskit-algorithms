@@ -1,5 +1,5 @@
-coverage>=4.4.0
-matplotlib>=2.1
+coverage>=4.4.0,<7.0
+matplotlib>=3.3
 black[jupyter]~=22.0
 pylint>=2.15.0
 pylatexenc>=1.4
@@ -11,8 +11,5 @@ sphinx-design>=0.4.0
 sphinxcontrib-spelling
 jupyter-sphinx
 discover
-qiskit-aer>=0.11.2
-mypy>=0.981
-mypy-extensions>=0.4.3
 nbsphinx
 qiskit_sphinx_theme~=1.12.0
