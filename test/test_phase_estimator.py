@@ -173,9 +173,8 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         backend = qiskit.BasicAer.get_backend("statevector_simulator")
 
         with self.assertWarns(DeprecationWarning):
-            qi = qiskit.utils.QuantumInstance(
-                backend=backend, shots=10000
-            )  # pylint: disable=invalid-name
+            # pylint: disable=invalid-name
+            qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
         with self.assertWarns(DeprecationWarning):
             phase_est = HamiltonianPhaseEstimation(num_evaluation_qubits=6, quantum_instance=qi)
 
@@ -368,9 +367,8 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             phase_estimator = IterativePhaseEstimation
 
         with self.assertWarns(DeprecationWarning):
-            qi = qiskit.utils.QuantumInstance(
-                backend=backend, shots=10000
-            )  # pylint: disable=invalid-name
+            # pylint: disable=invalid-name
+            qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
 
         with self.assertWarns(DeprecationWarning):
 
@@ -462,9 +460,8 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             backend = qiskit.BasicAer.get_backend("statevector_simulator")
 
         with self.assertWarns(DeprecationWarning):
-            qi = qiskit.utils.QuantumInstance(
-                backend=backend, shots=10000
-            )  # pylint: disable=invalid-name
+            # pylint: disable=invalid-name
+            qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
         with self.assertWarns(DeprecationWarning):
             phase_est = PhaseEstimation(
                 num_evaluation_qubits=num_evaluation_qubits, quantum_instance=qi

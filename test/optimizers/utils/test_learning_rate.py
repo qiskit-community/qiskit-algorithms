@@ -37,9 +37,8 @@ class TestLearningRate(QiskitAlgorithmsTestCase):
         """
         constant_learning_rate_input = 0.01
         list_learning_rate_input = [0.01 * n for n in range(10)]
-        generator_learning_rate_input = lambda: (
-            el for el in list_learning_rate_input
-        )  # pylint: disable=unnecessary-lambda-assignment
+        # pylint: disable=unnecessary-lambda-assignment
+        generator_learning_rate_input = lambda: (el for el in list_learning_rate_input)
 
         with self.subTest("Check constant learning rate."):
             constant_learning_rate = LearningRate(learning_rate=constant_learning_rate_input)
