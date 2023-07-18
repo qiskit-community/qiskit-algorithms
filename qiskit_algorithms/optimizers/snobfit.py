@@ -18,7 +18,7 @@ from typing import Any
 
 import numpy as np
 from qiskit.exceptions import QiskitError
-from qiskit.utils import optionals as _optionals
+from qiskit_algorithms.utils import optionals as _optionals
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
 

@@ -16,19 +16,20 @@
 from __future__ import annotations
 
 import numpy
-
-from qiskit.circuit import QuantumCircuit
 import qiskit
 from qiskit import circuit
+from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.classicalregister import ClassicalRegister
+from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.utils import QuantumInstance
 from qiskit.utils.deprecation import deprecate_arg
 from qiskit.result import Result
+
 from qiskit_algorithms.exceptions import AlgorithmError
+
 from .phase_estimation_result import PhaseEstimationResult, _sort_phases
 from .phase_estimator import PhaseEstimator
-from ...primitives import BaseSampler
 
 
 class PhaseEstimation(PhaseEstimator):

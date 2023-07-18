@@ -86,7 +86,7 @@ class LinearCombGradientCircuit:
 ################################################################################
 ## Parameter shift gradient
 ################################################################################
-def _make_param_shift_parameter_values(
+def _make_param_shift_parameter_values(  # pylint: disable=invalid-name
     circuit: QuantumCircuit,
     parameter_values: np.ndarray | list[float],
     parameters: Sequence[Parameter],
@@ -128,7 +128,7 @@ def _make_lin_comb_gradient_circuit(
     lin_comb_circuits = {}
     for i, instruction in enumerate(circuit_temp.data):
         if instruction.operation.is_parameterized():
-            for p in instruction.operation.params[0].parameters:
+            for p in instruction.operation.params[0].parameters:  # pylint: disable=invalid-name
                 gate = _gate_gradient(instruction.operation)
                 lin_comb_circuit = circuit_temp.copy()
                 # insert `gate` to i-th position

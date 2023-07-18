@@ -20,13 +20,14 @@ from typing import Any
 from dataclasses import dataclass
 
 import numpy as np
-from qiskit_algorithms.algorithm_job import AlgorithmJob
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
 from qiskit.primitives.utils import init_observable, _circuit_key
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
+from qiskit_algorithms.algorithm_job import AlgorithmJob
 
 
 @dataclass(frozen=True)

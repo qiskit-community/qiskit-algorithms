@@ -32,7 +32,7 @@ class TestForwardEulerSolver(QiskitAlgorithmsTestCase):
     def test_solve(self, timesteps, expected_result):
         """Test Forward Euler solver for a simple ODE."""
 
-        y0 = [1]
+        y0 = [1]  # pylint: disable=invalid-name
 
         # pylint: disable=unused-argument
         def func(time, y):

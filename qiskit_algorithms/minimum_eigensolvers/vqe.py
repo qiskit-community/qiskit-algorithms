@@ -21,11 +21,12 @@ from typing import Any
 
 import numpy as np
 
-from qiskit_algorithms.gradients import BaseEstimatorGradient
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
+from qiskit_algorithms.gradients import BaseEstimatorGradient
 
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict

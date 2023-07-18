@@ -17,12 +17,13 @@ from ddt import ddt, data
 
 import numpy as np
 
-from qiskit_algorithms.optimizers import SPSA, QNSPSA
 from qiskit.circuit.library import PauliTwoDesign
 from qiskit.primitives import Estimator, Sampler
 from qiskit.providers.basicaer import StatevectorSimulatorPy
 from qiskit.opflow import I, Z, StateFn, MatrixExpectation
 from qiskit.utils import algorithm_globals
+
+from qiskit_algorithms.optimizers import SPSA, QNSPSA
 
 
 @ddt
@@ -267,7 +268,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
     def test_point_sample(self):
         """Test point sample function in QNSPSA"""
 
-        def fidelity(x, _y):
+        def fidelity(x, _y):  # pylint: disable=invalid-name
             x = np.asarray(x)
             return np.ones_like(x, dtype=float)  # some float
 

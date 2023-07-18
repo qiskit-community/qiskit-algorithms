@@ -18,9 +18,10 @@ from collections.abc import Mapping
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter, ParameterExpression
 from qiskit.opflow import PauliSumOp
+from qiskit.quantum_info import Statevector
+from qiskit.quantum_info.operators.base_operator import BaseOperator
+
 from ..list_or_dict import ListOrDict
-from ...quantum_info import Statevector
-from ...quantum_info.operators.base_operator import BaseOperator
 
 
 class TimeEvolutionProblem:

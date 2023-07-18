@@ -19,11 +19,12 @@ from ddt import ddt, data
 import numpy as np
 
 from qiskit import QuantumCircuit
-from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 from qiskit.circuit import Parameter
 from qiskit.circuit.parametervector import ParameterVector
 from qiskit.primitives import Estimator
 from qiskit.test import QiskitTestCase
+
+from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 
 
 @ddt

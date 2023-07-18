@@ -15,16 +15,18 @@
 from __future__ import annotations
 
 from qiskit import QuantumCircuit
+
+from qiskit.circuit.library import PauliEvolutionGate
+from qiskit.circuit.parametertable import ParameterView
+from qiskit.opflow import PauliSumOp
+from qiskit.primitives import BaseEstimator
+from qiskit.quantum_info import Pauli, SparsePauliOp
+from qiskit.synthesis import ProductFormula, LieTrotter
+
 from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
 from qiskit_algorithms.time_evolvers.time_evolution_result import TimeEvolutionResult
 from qiskit_algorithms.time_evolvers.real_time_evolver import RealTimeEvolver
 from qiskit_algorithms.observables_evaluator import estimate_observables
-from qiskit.opflow import PauliSumOp
-from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.circuit.parametertable import ParameterView
-from qiskit.primitives import BaseEstimator
-from qiskit.quantum_info import Pauli, SparsePauliOp
-from qiskit.synthesis import ProductFormula, LieTrotter
 
 
 class TrotterQRTE(RealTimeEvolver):
@@ -185,7 +187,7 @@ class TrotterQRTE(RealTimeEvolver):
             )
 
         # make sure PauliEvolutionGate does not implement more than one Trotter step
-        dt = evolution_problem.time / self.num_timesteps
+        dt = evolution_problem.time / self.num_timesteps  # pylint: disable=invalid-name
 
         if evolution_problem.initial_state is not None:
             initial_state = evolution_problem.initial_state

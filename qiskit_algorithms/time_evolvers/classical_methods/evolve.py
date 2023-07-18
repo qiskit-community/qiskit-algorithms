@@ -201,7 +201,7 @@ def _evolve(
     )
 
     # Perform the time evolution and stores the value of the operators at each timestep.
-    for ts in range(num_timesteps):
+    for ts in range(num_timesteps):  # pylint: disable=invalid-name
         ops_ev_mean[:, ts] = _evaluate_aux_ops(aux_ops, state)
         state = expm_multiply(A=step_operator, B=state)
         state = renormalize(state)

@@ -19,15 +19,16 @@ import numpy as np
 from scipy.linalg import expm
 from numpy.testing import assert_raises
 
-from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
-from qiskit.primitives import Estimator
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
 from qiskit.utils import algorithm_globals
 from qiskit.circuit import Parameter
 from qiskit.opflow import PauliSumOp, X, MatrixOp
+from qiskit.primitives import Estimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
+
+from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
 
 
 @ddt
@@ -238,7 +239,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
     @staticmethod
     def _get_expected_trotter_qrte(operator, time, num_timesteps, init_state, observables, t_param):
         """Compute reference values for Trotter evolution via exact matrix exponentiation."""
-        dt = time / num_timesteps
+        dt = time / num_timesteps  # pylint: disable=invalid-name
         observables = [obs.to_matrix() for obs in observables]
 
         psi = Statevector(init_state).data

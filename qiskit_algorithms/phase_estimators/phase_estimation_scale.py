@@ -151,6 +151,7 @@ class PhaseEstimationScale:
         else:
             if pauli_sum.primitive_strings() != {"Pauli"}:
                 raise ValueError(
+                    # pylint: disable=consider-using-f-string
                     "`pauli_sum` must be a sum of Pauli operators. Got primitives {}.".format(
                         pauli_sum.primitive_strings()
                     )

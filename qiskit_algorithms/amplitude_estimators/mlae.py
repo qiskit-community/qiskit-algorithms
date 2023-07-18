@@ -474,7 +474,7 @@ def _safe_min(array, default=0):
     return np.min(array)
 
 
-def _safe_max(array, default=(np.pi / 2)):
+def _safe_max(array, default=(np.pi / 2)):  # pylint: disable=superfluous-parens
     if len(array) == 0:
         return default
     return np.max(array)

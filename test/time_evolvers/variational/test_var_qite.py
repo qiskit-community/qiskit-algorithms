@@ -19,16 +19,17 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit_algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.utils import algorithm_globals
+from qiskit.circuit.library import EfficientSU2
+from qiskit.quantum_info import Statevector
+
+from qiskit_algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
 from qiskit_algorithms import TimeEvolutionProblem, VarQITE
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
-from qiskit.quantum_info import Statevector
 
 
 @ddt
@@ -55,7 +56,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             ]
         )
         aux_ops = [Pauli("XX"), Pauli("YZ")]
-        d = 1
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
@@ -158,7 +159,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 1
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
@@ -199,7 +200,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
                 ("XX", 0.091),
             ]
         )
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
