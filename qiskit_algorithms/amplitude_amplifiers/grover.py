@@ -22,12 +22,13 @@ from typing import Any
 import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit.primitives import BaseSampler
 from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace, Statevector
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
+
+from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplification_problem import AmplificationProblem
 from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult

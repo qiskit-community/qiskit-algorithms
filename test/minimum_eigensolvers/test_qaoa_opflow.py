@@ -24,14 +24,15 @@ from ddt import ddt, idata, unpack
 import rustworkx as rx
 
 from qiskit import QuantumCircuit
-from qiskit_algorithms.minimum_eigensolvers import QAOA
-from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit.circuit import Parameter
 from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Pauli
 from qiskit.result import QuasiDistribution
 from qiskit.primitives import Sampler
 from qiskit.utils import algorithm_globals
+
+from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 
 I = PauliSumOp.from_list([("I", 1)])
 X = PauliSumOp.from_list([("X", 1)])

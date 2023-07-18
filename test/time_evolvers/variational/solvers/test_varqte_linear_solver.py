@@ -21,15 +21,15 @@ from test.time_evolvers.variational.solvers.expected_results.\
 # fmt: on
 
 import numpy as np
-
+from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import SparsePauliOp
+
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
 from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
 )
-from qiskit.circuit.library import EfficientSU2
 
 
 class TestVarQTELinearSolver(QiskitAlgorithmsTestCase):
@@ -49,7 +49,7 @@ class TestVarQTELinearSolver(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)

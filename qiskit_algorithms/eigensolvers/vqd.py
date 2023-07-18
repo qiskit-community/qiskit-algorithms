@@ -24,12 +24,13 @@ from time import time
 
 import numpy as np
 
-from qiskit_algorithms.state_fidelities import BaseStateFidelity
 from qiskit.circuit import QuantumCircuit
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import SparsePauliOp
+
+from qiskit_algorithms.state_fidelities import BaseStateFidelity
 
 from ..list_or_dict import ListOrDict
 from ..optimizers import Optimizer, Minimizer, OptimizerResult

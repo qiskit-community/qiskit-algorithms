@@ -299,9 +299,6 @@ Utility classes used by algorithms (mainly for type-hinting purposes).
 """
 from .algorithm_job import AlgorithmJob
 from .algorithm_result import AlgorithmResult
-from .evolvers import EvolutionResult, EvolutionProblem
-from .evolvers.real_evolver import RealEvolver
-from .evolvers.imaginary_evolver import ImaginaryEvolver
 from .variational_algorithm import VariationalAlgorithm, VariationalResult
 from .amplitude_amplifiers import Grover, GroverResult, AmplificationProblem, AmplitudeAmplifier
 from .amplitude_estimators import (
@@ -317,15 +314,7 @@ from .amplitude_estimators import (
     MaximumLikelihoodAmplitudeEstimationResult,
     EstimationProblem,
 )
-from .eigen_solvers import NumPyEigensolver, Eigensolver, EigensolverResult, VQD, VQDResult
-from .minimum_eigen_solvers import (
-    VQE,
-    VQEResult,
-    QAOA,
-    NumPyMinimumEigensolver,
-    MinimumEigensolver,
-    MinimumEigensolverResult,
-)
+
 from .phase_estimators import (
     HamiltonianPhaseEstimation,
     HamiltonianPhaseEstimationResult,
@@ -335,9 +324,7 @@ from .phase_estimators import (
     IterativePhaseEstimation,
 )
 from .exceptions import AlgorithmError
-from .aux_ops_evaluator import eval_observables
 from .observables_evaluator import estimate_observables
-from .evolvers.trotterization import TrotterQRTE
 
 from .time_evolvers import (
     ImaginaryTimeEvolver,
@@ -374,28 +361,12 @@ __all__ = [
     "MaximumLikelihoodAmplitudeEstimation",
     "MaximumLikelihoodAmplitudeEstimationResult",
     "EstimationProblem",
-    "NumPyEigensolver",
-    "RealEvolver",
-    "ImaginaryEvolver",
     "RealTimeEvolver",
     "ImaginaryTimeEvolver",
-    "TrotterQRTE",
-    "EvolutionResult",
-    "EvolutionProblem",
     "TimeEvolutionResult",
     "TimeEvolutionProblem",
-    "Eigensolver",
-    "EigensolverResult",
-    "VQE",
-    "VQEResult",
-    "QAOA",
-    "NumPyMinimumEigensolver",
-    "MinimumEigensolver",
-    "MinimumEigensolverResult",
     "HamiltonianPhaseEstimation",
     "HamiltonianPhaseEstimationResult",
-    "VQD",
-    "VQDResult",
     "PhaseEstimationScale",
     "PhaseEstimation",
     "PhaseEstimationResult",
@@ -405,7 +376,6 @@ __all__ = [
     "SciPyImaginaryEvolver",
     "IterativePhaseEstimation",
     "AlgorithmError",
-    "eval_observables",
     "estimate_observables",
     "VarQITE",
     "VarQRTE",

@@ -20,12 +20,6 @@ from qiskit.circuit.library import ZGate, XGate, HGate, IGate
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector, Operator
 from qiskit.synthesis import MatrixExponential, SuzukiTrotter
 from qiskit.primitives import Sampler
-from qiskit_algorithms import PhaseEstimationScale
-from qiskit_algorithms.phase_estimators import (
-    PhaseEstimation,
-    HamiltonianPhaseEstimation,
-    IterativePhaseEstimation,
-)
 import qiskit
 from qiskit import QuantumCircuit
 from qiskit.opflow import (
@@ -40,6 +34,13 @@ from qiskit.opflow import (
     PauliSumOp,
 )
 from qiskit.test import slow_test
+
+from qiskit_algorithms import PhaseEstimationScale
+from qiskit_algorithms.phase_estimators import (
+    PhaseEstimation,
+    HamiltonianPhaseEstimation,
+    IterativePhaseEstimation,
+)
 
 
 @ddt
@@ -172,6 +173,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         backend = qiskit.BasicAer.get_backend("statevector_simulator")
 
         with self.assertWarns(DeprecationWarning):
+            # pylint: disable=invalid-name
             qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
         with self.assertWarns(DeprecationWarning):
             phase_est = HamiltonianPhaseEstimation(num_evaluation_qubits=6, quantum_instance=qi)
@@ -365,6 +367,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             phase_estimator = IterativePhaseEstimation
 
         with self.assertWarns(DeprecationWarning):
+            # pylint: disable=invalid-name
             qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
 
         with self.assertWarns(DeprecationWarning):
@@ -457,6 +460,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             backend = qiskit.BasicAer.get_backend("statevector_simulator")
 
         with self.assertWarns(DeprecationWarning):
+            # pylint: disable=invalid-name
             qi = qiskit.utils.QuantumInstance(backend=backend, shots=10000)
         with self.assertWarns(DeprecationWarning):
             phase_est = PhaseEstimation(

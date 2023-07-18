@@ -18,6 +18,8 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit import Parameter
+from qiskit.circuit.library import EfficientSU2
+
 from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
 )
@@ -27,7 +29,6 @@ from qiskit_algorithms.time_evolvers.variational.solvers.ode.ode_function import
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
 
 
 class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
@@ -46,7 +47,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
@@ -98,7 +99,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
             np.array([t_param, 0.5716, 0.3435, -0.4347, 0.091, 0.091]),
         )
 
-        d = 2
+        d = 2  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters

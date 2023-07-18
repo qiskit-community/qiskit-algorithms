@@ -22,14 +22,14 @@ from ddt import ddt, idata, unpack
 from scipy.optimize import minimize as scipy_minimize
 
 from qiskit import QuantumCircuit
-from qiskit_algorithms.minimum_eigensolvers import QAOA
-from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit.circuit import Parameter
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
 from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.minimum_eigensolvers import QAOA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 
 W1 = np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])
 P1 = 1

@@ -27,7 +27,7 @@ from qiskit_algorithms.algorithm_result import AlgorithmResult
 
 logger = logging.getLogger(__name__)
 
-POINT = Union[float, np.ndarray]
+POINT = Union[float, np.ndarray]  # pylint: disable=invalid-name
 
 
 class OptimizerResult(AlgorithmResult):
@@ -35,7 +35,7 @@ class OptimizerResult(AlgorithmResult):
 
     def __init__(self) -> None:
         super().__init__()
-        self._x: POINT | None = None
+        self._x: POINT | None = None  # pylint: disable=invalid-name
         self._fun: float | None = None
         self._jac: POINT | None = None
         self._nfev: int | None = None
@@ -147,7 +147,7 @@ class Minimizer(Protocol):
         Returns:
              The minimization result object (either SciPy's or Qiskit's).
         """
-        ...
+        ...  # pylint: disable=unnecessary-ellipsis
 
 
 class OptimizerSupportLevel(IntEnum):

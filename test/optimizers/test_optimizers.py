@@ -20,6 +20,10 @@ from ddt import ddt, data, unpack
 import numpy as np
 from scipy.optimize import rosen, rosen_der
 
+from qiskit.circuit.library import RealAmplitudes
+from qiskit.exceptions import MissingOptionalLibraryError
+from qiskit.utils import algorithm_globals, optionals
+
 from qiskit_algorithms.optimizers import (
     ADAM,
     AQGD,
@@ -43,9 +47,6 @@ from qiskit_algorithms.optimizers import (
     TNC,
     SciPyOptimizer,
 )
-from qiskit.circuit.library import RealAmplitudes
-from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.utils import algorithm_globals, optionals
 
 
 @ddt

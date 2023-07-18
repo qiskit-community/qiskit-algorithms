@@ -106,7 +106,7 @@ def _derivative_circ_dist(x, p):
     Returns:
         float: The derivative.
     """
-    # pylint: disable=chained-comparison,misplaced-comparison-constant
+    # pylint: disable=chained-comparison
     t = p - x
     if t < -0.5 or (0 < t and t < 0.5):
         return -1

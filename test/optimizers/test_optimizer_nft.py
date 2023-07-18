@@ -14,12 +14,12 @@
 
 import unittest
 from test import QiskitAlgorithmsTestCase
-from qiskit import BasicAer
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.opflow import PauliSumOp
+from qiskit.primitives import Estimator
+
 from qiskit_algorithms.optimizers import NFT
-from qiskit_algorithms import VQE
+from qiskit_algorithms.minimum_eigensolvers import VQE
 
 
 class TestOptimizerNFT(QiskitAlgorithmsTestCase):
@@ -27,7 +27,6 @@ class TestOptimizerNFT(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        algorithm_globals.random_seed = 50
         with self.assertWarns(DeprecationWarning):
             self.qubit_op = PauliSumOp.from_list(
                 [
@@ -41,17 +40,10 @@ class TestOptimizerNFT(QiskitAlgorithmsTestCase):
 
     def test_nft(self):
         """Test NFT optimizer by using it"""
-        with self.assertWarns(DeprecationWarning):
-            vqe = VQE(
-                ansatz=RealAmplitudes(),
-                optimizer=NFT(),
-                quantum_instance=QuantumInstance(
-                    BasicAer.get_backend("statevector_simulator"),
-                    seed_simulator=algorithm_globals.random_seed,
-                    seed_transpiler=algorithm_globals.random_seed,
-                ),
-            )
-            result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
+
+        vqe = VQE(Estimator(), ansatz=RealAmplitudes(), optimizer=NFT())
+
+        result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 
         self.assertAlmostEqual(result.eigenvalue.real, -1.857275, places=6)
 

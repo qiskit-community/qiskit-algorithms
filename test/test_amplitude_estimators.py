@@ -19,6 +19,9 @@ from ddt import ddt, idata, data, unpack
 from qiskit import QuantumRegister, QuantumCircuit, BasicAer
 from qiskit.circuit.library import QFT, GroverOperator
 from qiskit.utils import QuantumInstance
+from qiskit.quantum_info import Operator, Statevector
+from qiskit.primitives import Sampler
+
 from qiskit_algorithms import (
     AmplitudeEstimation,
     MaximumLikelihoodAmplitudeEstimation,
@@ -26,8 +29,6 @@ from qiskit_algorithms import (
     FasterAmplitudeEstimation,
     EstimationProblem,
 )
-from qiskit.quantum_info import Operator, Statevector
-from qiskit.primitives import Sampler
 
 
 class BernoulliStateIn(QuantumCircuit):
@@ -101,7 +102,7 @@ class TestBernoulli(QiskitAlgorithmsTestCase):
 
         def qasm(shots=100):
             with self.assertWarns(DeprecationWarning):
-                qi = QuantumInstance(
+                qi = QuantumInstance(  # pylint: disable=invalid-name
                     backend=BasicAer.get_backend("qasm_simulator"),
                     shots=shots,
                     seed_simulator=2,
@@ -392,7 +393,7 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
 
         def qasm(shots=100):
             with self.assertWarns(DeprecationWarning):
-                qi = QuantumInstance(
+                qi = QuantumInstance(  # pylint: disable=invalid-name
                     backend=BasicAer.get_backend("qasm_simulator"),
                     shots=shots,
                     seed_simulator=7192,

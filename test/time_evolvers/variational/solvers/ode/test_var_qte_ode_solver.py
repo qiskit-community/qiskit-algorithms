@@ -17,7 +17,9 @@ from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data, unpack
 import numpy as np
 
+from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import SparsePauliOp
+
 from qiskit_algorithms.time_evolvers.variational.solvers.ode.forward_euler_solver import (
     ForwardEulerSolver,
 )
@@ -33,7 +35,6 @@ from qiskit_algorithms.time_evolvers.variational.solvers.ode.ode_function import
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
-from qiskit.circuit.library import EfficientSU2
 
 
 @ddt
@@ -82,7 +83,7 @@ class TestVarQTEOdeSolver(QiskitAlgorithmsTestCase):
             ]
         )
 
-        d = 1
+        d = 1  # pylint: disable=invalid-name
         ansatz = EfficientSU2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters

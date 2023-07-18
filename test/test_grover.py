@@ -20,12 +20,13 @@ import numpy as np
 from ddt import data, ddt, idata, unpack
 
 from qiskit import BasicAer, QuantumCircuit
-from qiskit_algorithms import AmplificationProblem, Grover
 from qiskit.circuit.library import GroverOperator, PhaseOracle
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit.utils.optionals import HAS_TWEEDLEDUM
+
+from qiskit_algorithms import AmplificationProblem, Grover
 
 
 @ddt

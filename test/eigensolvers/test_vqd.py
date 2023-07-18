@@ -19,10 +19,6 @@ import numpy as np
 from ddt import data, ddt
 
 from qiskit import QuantumCircuit
-from qiskit_algorithms.eigensolvers import VQD, VQDResult
-from qiskit_algorithms import AlgorithmError
-from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
-from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
 from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Sampler, Estimator
@@ -30,6 +26,10 @@ from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators import Operator
 from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.eigensolvers import VQD, VQDResult
+from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 H2_SPARSE_PAULI = SparsePauliOp.from_list(
     [

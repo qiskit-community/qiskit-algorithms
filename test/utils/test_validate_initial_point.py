@@ -18,8 +18,9 @@ from unittest.mock import Mock
 
 import numpy as np
 
-from qiskit_algorithms.utils import validate_initial_point
 from qiskit.utils import algorithm_globals
+
+from qiskit_algorithms.utils import validate_initial_point
 
 
 class TestValidateInitialPoint(QiskitAlgorithmsTestCase):
