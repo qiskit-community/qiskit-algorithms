@@ -1,20 +1,20 @@
 # Contributing
 
-**We appreciate all kinds of help, so thank you!**
+**We appreciate all kinds of help, so if you're planning to contribute, thank you!**
 
-First please read the overall project contributing guidelines. These are
-included in the Qiskit documentation here:
+We follow the general Qiskit contribution guidelines, which can be found
+in the Qiskit documentation:
 
 https://qiskit.org/documentation/contributing_to_qiskit.html
 
 ## Contributing to Qiskit Algorithms
 
-In addition to the general guidelines above there are specific details for
+In addition to the general guidelines above, there are specific details for
 contributing to Qiskit Algorithms.
 
 You should first install the python development libraries by running
 `pip install -r requirements-dev.txt` from the root of the
-Machine Learning repository clone and then
+Algorithms repository clone and then
 follow the  guidelines below.
 
 ### Project Code Style.
@@ -25,7 +25,7 @@ should be written using the Google docstring format.
 
 ### Pull request checklist
 
-When submitting a pull request and you feel it is ready for review,
+If you submit a pull request and you feel it is ready for review,
 please ensure that:
 
 1. The code follows the _code style_ of this project and successfully
@@ -41,9 +41,9 @@ please ensure that:
 
    If your code fails the local style checks (specifically the black
    code formatting check) you can use `make black` to automatically
-   fix update the code formatting.
+   update the code formatting.
    
-   For unit testing please see [Testing](#testing) section below.
+   For unit testing please see the [Testing](#testing) section below.
    
 2. The documentation has been updated accordingly. In particular, if a
    function or class has been modified during the PR, please update the
@@ -59,25 +59,24 @@ please ensure that:
    ```
    from the root of the Algorithms repository clone. You might also like to check the html output
    to see the changes formatted output is as expected. You will find an index.html
-   file in docs\_build\html and you can navigate from there.
+   file in `docs\_build\html` and you can navigate from there.
    
-   Please note that a spell check is run in CI, on the docstrings, since the text
-   becomes part of the online [API Documentation](https://qiskit.org/documentation/).
+   Please note that the CI will run a spell check on the docstrings, as the text will
+   become part of the online [API Documentation](https://qiskit.org/documentation/).
    
-   You can run `make spell` locally to check spelling though you would need to
+   You can run `make spell` locally to check the spelling, though you would need to
    [install pyenchant](https://pyenchant.github.io/pyenchant/install.html) and be using
    hunspell-en-us as is used by the CI. 
    
    For some words, such as names, technical terms, referring to parameters of the method etc., 
    that are not in the en-us dictionary and get flagged as being misspelled, despite being correct,
-   there is a [.pylintdict](./.pylintdict) custom word list file, in the root of the Machine Learning repo,
+   there is a [.pylintdict](./.pylintdict) custom word list file in the root of the repo,
    where such words can be added, in alphabetic order, as needed.
    
-3. If it makes sense for your change that you have added new tests that
-   cover the changes and any new function.
+3. If you have added new unit tests that cover the changes and any new function.
    
-4. Ensure that if your change has an end user facing impact (new feature,
-   deprecation, removal etc) that you have added a reno release note for
+4. Ensure that, if your change has user-facing impact (new feature,
+   deprecation, removal, etc), you have added a reno (release note) for
    that change and that the PR is tagged for the changelog.
 
 5. Ensure all code, including unit tests, has the copyright header. The copyright
@@ -100,7 +99,7 @@ please ensure that:
 
 The changelog is automatically generated as part of the release process
 automation. This works through a combination of the git log and the pull
-request. When a release is tagged and pushed to github the release automation
+request. When a release is tagged and pushed to GitHub, the release automation
 bot looks at all commit messages from the git log for the release. It takes the
 PR numbers from the git log (assuming a squash merge) and checks if that PR had
 a `Changelog:` label on it. If there is a label it will add the git commit
@@ -121,9 +120,9 @@ The current categories for each label are as follows:
 
 ### Release Notes
 
-When making any end user facing changes in a contribution we have to make sure
-we document that when we release a new version of qiskit-machine-learning. The expectation
-is that if your code contribution has user facing changes that you will write
+When making any user-facing changes in a contribution we have to make sure
+we document that when we release a new version of qiskit-algorithms. The expectation
+is that if your code contribution has user facing changes, you will write
 the release documentation for these changes. This documentation must explain
 what was changed, why it was changed, and how users can either use or adapt
 to the change. The idea behind release documentation is that when a naive
@@ -133,7 +132,7 @@ understand if they need to update their program which uses qiskit, and how they
 would go about doing that. It ideally should explain why they need to make
 this change too, to provide the necessary context.
 
-To make sure we don't forget a release note or if the details of user facing
+To make sure you don't forget a release note or if the details of user facing
 changes over a release cycle we require that all user facing changes include
 documentation at the same time as the code. To accomplish this we use the
 [reno](https://docs.openstack.org/reno/latest/) tool which enables a git based
@@ -271,12 +270,7 @@ Test section. However please note Algorithms does not have any
 [online tests](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#online-tests)
 nor does it have
 [test skip
- options](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test-skip-options).    
-
-### Development Cycle
-
-The development cycle for qiskit-algorithms is informed by release plans in the 
-[Qiskit rfcs repository](https://github.com/Qiskit/rfcs)
+ options](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test-skip-options).
  
 ### Branches
 

@@ -1,6 +1,6 @@
 # Qiskit Algorithms
 
-[TODO: Add license]
+[//]: # (TODO: add license banner )
 
 ## Installation
 
@@ -23,17 +23,23 @@ To do this follow the instructions in the
 
 ### Optional Installs
 
-### Creating Your First Algorithm in Qiskit
+Some optimization algorithms require specific libraries to be run:
 
+* **Scikit-quant**, may be installed using the command `pip install scikit-quant`.
 
-### Further examples
+* **SnobFit**, may be installed using the command `pip install SQSnobFit`.
 
+* **NLOpt**, may be installed using the command `pip install nlopt`.
+
+[//]: # (### Creating Your First Algorithm in Qiskit)
+
+[//]: # (### Further examples)
 
 ----------------------------------------------------------------------------------------------------
 
 ## Contribution Guidelines
 
-If you'd like to contribute to Qiskit, please take a look at our
+If you'd like to contribute to Qiskit Algorithms, please take a look at our
 [contribution guidelines](https://github.com/qiskit-community/qiskit-algorithms/blob/main/CONTRIBUTING.md).
 This project adheres to Qiskit's [code of conduct](https://github.com/qiskit-community/qiskit-algorithms/blob/main/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code.
