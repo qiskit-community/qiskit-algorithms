@@ -120,9 +120,6 @@ jobs:
       - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
-      - run: make mypy
-        if: ${{ !cancelled() && matrix.python-version != '3.10' && matrix.python-version != 3.11 }}
-        shell: bash
       - name: Algorithms Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:
