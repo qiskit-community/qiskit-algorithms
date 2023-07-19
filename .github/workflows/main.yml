@@ -125,7 +125,6 @@ jobs:
           coverage3 combine
           mkdir ./ci-artifact-data
           mv .coverage ./ci-artifact-data/alg.dat
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
