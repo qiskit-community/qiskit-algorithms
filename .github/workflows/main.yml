@@ -131,11 +131,6 @@ jobs:
           run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
           python-version: ${{ matrix.python-version }}
         if: ${{ !cancelled() }}
-      - name: Deprecation Messages
-        run: |
-          mkdir ./ci-artifact-data
-          python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/alg.dep
-        shell: bash
       - name: Coverage combine
         run: |
           coverage3 combine

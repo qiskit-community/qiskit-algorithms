@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools-rust"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -11,17 +11,13 @@ manylinux-x86_64-image = "manylinux2014"
 manylinux-i686-image = "manylinux2014"
 skip = "pp* cp36-* cp37-* *musllinux*"
 test-skip = "cp310-win32 cp310-manylinux_i686 cp311-win32 cp311-manylinux_i686"
-test-command = "python {project}/examples/python/stochastic_swap.py"
 # We need to use pre-built versions of Numpy and Scipy in the tests; they have a
 # tendency to crash if they're installed from source by `pip install`, and since
 # Numpy 1.22 there are no i686 wheels, so we force pip to use older ones without
 # restricting any dependencies that Numpy and Scipy might have.
 before-test = "pip install --only-binary=numpy,scipy numpy scipy"
-environment = 'RUSTUP_TOOLCHAIN="stable"'
 
 [tool.cibuildwheel.linux]
-before-all = "yum install -y wget && {package}/tools/install_rust.sh"
-environment = 'PATH="$PATH:$HOME/.cargo/bin" CARGO_NET_GIT_FETCH_WITH_CLI="true" RUSTUP_TOOLCHAIN="stable"'
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} && pipx run abi3audit --strict --report {wheel}"
 
 [tool.cibuildwheel.macos]
@@ -45,12 +41,7 @@ select = [
 [tool.pylint.main]
 extension-pkg-allow-list = [
     "numpy",
-    "qiskit._accelerate",
-    # We can't allow pylint to load qiskit._qasm2 because it's not able to
-    # statically resolve the cyclical load of the exception and it bugs out.
-    "retworkx",
     "rustworkx",
-    "tweedledum",
 ]
 load-plugins = ["pylint.extensions.docparams", "pylint.extensions.docstyle"]
 py-version = "3.8"  # update it when bumping minimum supported python version

@@ -42,7 +42,6 @@ all_check: spell style lint copyright
 lint:
 	pylint -rn qiskit_algorithms test tools
 	python tools/verify_headers.py qiskit_algorithms test tools
-	python tools/find_stray_release_notes.py
 
 style:
 	black --check qiskit_algorithms test tools
