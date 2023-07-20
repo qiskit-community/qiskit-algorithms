@@ -64,9 +64,7 @@ jobs:
       - uses: ./.github/actions/install-algorithms
       - name: Install Dependencies
         run: |
-          sudo apt-get -y install pandoc graphviz
-          sudo apt-get -y install python3-enchant
-          sudo apt-get -y install hunspell-en-us
+          sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
           pip install pyenchant
           echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
