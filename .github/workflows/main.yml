@@ -1,0 +1,157 @@
+# This code is part of Qiskit.
+#
+# (C) Copyright IBM 2021, 2023.
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+name: Algorithms Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+  schedule:
+    # run every day at 1AM
+    - cron: '0 1 * * *'
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  Checks:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+    steps:
+      - name: Print Concurrency Group
+        env:
+          CONCURRENCY_GROUP: ${{ github.repository }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}
+        run: |
+          echo -e "\033[31;1;4mConcurrency Group\033[0m"
+          echo -e "$CONCURRENCY_GROUP\n"
+        shell: bash
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            setup.py
+            requirements.txt
+            requirements-dev.txt
+      - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          terra-main: "false"
+        if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+      - uses: ./.github/actions/install-algorithms
+      - name: Install Dependencies
+        run: |
+          sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
+          pip install pyenchant
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
+        shell: bash
+      - run: pip check
+        if: ${{ !cancelled() }}
+        shell: bash
+      - name: Style Check
+        run: |
+          make style
+        if: ${{ !cancelled() }}
+        shell: bash
+  Algorithms:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.9, '3.10', 3.11]
+        include:
+          - os: macos-latest
+            python-version: 3.8
+          - os: macos-latest
+            python-version: 3.11
+          - os: windows-2019
+            python-version: 3.8
+          - os: windows-2019
+            python-version: 3.11
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            setup.py
+            requirements.txt
+            requirements-dev.txt
+      - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+        if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+      - uses: ./.github/actions/install-algorithms
+      - run: make lint
+        shell: bash
+      - name: Algorithms Unit Tests under Python ${{ matrix.python-version }}
+        uses: ./.github/actions/run-tests
+        with:
+          os: ${{ matrix.os }}
+          event-name: ${{ github.event_name }}
+          run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
+          python-version: ${{ matrix.python-version }}
+        if: ${{ !cancelled() }}
+      - name: Coverage combine
+        run: |
+          coverage3 combine
+          mkdir ./ci-artifact-data
+          mv .coverage ./ci-artifact-data/alg.dat
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
+        shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}-${{ matrix.python-version }}
+          path: ./ci-artifact-data/*
+  Deprecation_Messages_and_Coverage:
+    needs: [Checks, Algorithms]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.8
+          path: /tmp/u38
+      - name: Install Dependencies
+        run: pip install -U coverage coveralls diff-cover
+        shell: bash
+      - name: Coverage combine
+        run: coverage3 combine /tmp/u38/alg.dat
+        shell: bash
+      - name: Upload to Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: coveralls --service=github
+        shell: bash

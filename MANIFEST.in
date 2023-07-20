@@ -1,0 +1,7 @@
+include LICENSE.txt
+include requirements.txt
+include qiskit_algorithms/py.typed
+recursive-include qiskit_algorithms *.txt
+graft test
+prune tools
+global-exclude *.py[co] .DS_Store
