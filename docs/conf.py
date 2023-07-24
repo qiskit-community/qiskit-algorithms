@@ -80,14 +80,9 @@ intersphinx_mapping = {
 
 # -- Options for HTML output -------------------------------------------------
 
-html_theme = "qiskit_sphinx_theme"
+html_theme = "qiskit-ecosystem"
 html_last_updated_fmt = "%Y/%m/%d"
-html_theme_options = {
-    "logo_only": True,
-    "display_version": True,
-    "prev_next_buttons_location": "bottom",
-    "style_external_links": True,
-}
+html_title = f"{project} {release}"
 
 
 # -- Options for Autosummary and Autodoc -------------------------------------
