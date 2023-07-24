@@ -6,7 +6,7 @@ Qiskit Algorithms documentation
   :maxdepth: 2
   :hidden:
 
-  API References <apidocs/terra>
+  API References <apidocs/algorithms>
   Tutorials <tutorials/index>
   Release Notes <release_notes>
 
