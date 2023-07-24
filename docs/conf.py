@@ -45,7 +45,8 @@ extensions = [
     "reno.sphinxext",
     "sphinx_design",
     "matplotlib.sphinxext.plot_directive",
-    "sphinx.ext.doctest"
+    "sphinx.ext.doctest",
+    "qiskit_sphinx_theme"
 ]
 
 templates_path = ["_templates"]
@@ -69,14 +70,6 @@ add_module_names = False
 # A list of prefixes that are ignored for sorting the Python module index
 # (e.g., if this is set to ['foo.'], then foo.bar is shown under B, not F).
 modindex_common_prefix = ["qiskit."]
-
-intersphinx_mapping = {
-    "rustworkx": ("https://qiskit.org/ecosystem/rustworkx/", None),
-    "qiskit-ibm-runtime": ("https://qiskit.org/ecosystem/ibm-runtime/", None),
-    "qiskit-aer": ("https://qiskit.org/ecosystem/aer/", None),
-    "numpy": ("https://numpy.org/doc/stable/", None),
-    "matplotlib": ("https://matplotlib.org/stable/", None),
-}
 
 # -- Options for HTML output -------------------------------------------------
 
