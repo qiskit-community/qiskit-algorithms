@@ -23,13 +23,6 @@ were designed to be swappable sub-parts of an algorithm. Any component and may b
 a different implementation of the same component type in order to potentially alter the behavior
 and outcome of the algorithm.
 
-Quantum algorithms are run via a :class:`~qiskit_algorithms.QuantumInstance`
-which must be set with the
-desired backend where the algorithm's circuits will be executed and be configured with a number of
-compile and runtime parameters controlling circuit compilation and execution. It ultimately uses
-`Terra <https://www.qiskit.org/terra>`__ for the actual compilation and execution of the quantum
-circuits created by the algorithm and its components.
-
 .. currentmodule:: qiskit_algorithms
 
 Algorithms
@@ -92,23 +85,6 @@ using the primitive-based Eigensolvers in place of the legacy :class:`.QuantumIn
    eigensolvers
 
 
-Legacy Eigensolvers
-+++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   Eigensolver
-   EigensolverResult
-   NumPyEigensolver
-   VQD
-   VQDResult
-
-
 Time Evolvers
 -------------
 
@@ -137,23 +113,6 @@ using the primitive-based Time Evolvers in place of the legacy :class:`.QuantumI
    SciPyRealEvolver
    VarQITE
    VarQRTE
-
-Legacy Time Evolvers
-++++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-    RealEvolver
-    ImaginaryEvolver
-    TrotterQRTE
-    EvolutionResult
-    EvolutionProblem
-
 
 Variational Quantum Time Evolution
 ++++++++++++++++++++++++++++++++++
@@ -209,23 +168,6 @@ ones.
    minimum_eigensolvers
 
 
-Legacy Minimum Eigensolvers
-+++++++++++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   MinimumEigensolver
-   MinimumEigensolverResult
-   NumPyMinimumEigensolver
-   QAOA
-   VQE
-
-
 Optimizers
 ----------
 
@@ -272,18 +214,6 @@ Exceptions
    :toctree: ../stubs/
 
    AlgorithmError
-
-
-Utility methods
----------------
-
-Utility methods used by algorithms.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   eval_observables
-   estimate_observables
 
 
 Utility classes
