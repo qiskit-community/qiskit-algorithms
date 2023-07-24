@@ -71,9 +71,32 @@ jobs:
       - run: pip check
         if: ${{ !cancelled() }}
         shell: bash
+      - name: Copyright Check
+        run: |
+          python tools/check_copyright.py -check
+        if: ${{ !cancelled() }}
+        shell: bash
       - name: Style Check
         run: |
           make style
+        if: ${{ !cancelled() }}
+        shell: bash
+      - name: Run make html
+        run: |
+          make clean_sphinx
+          make html
+          cd docs/_build/html
+          mkdir artifacts
+          tar -zcvf artifacts/documentation.tar.gz --exclude=./artifacts .
+        if: ${{ !cancelled() }}
+        shell: bash
+      - name: Run upload documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: documentation
+          path: docs/_build/html/artifacts/documentation.tar.gz
+        if: ${{ !cancelled() }}
+      - run: make doctest
         if: ${{ !cancelled() }}
         shell: bash
   Algorithms:
@@ -129,6 +152,54 @@ jobs:
         with:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
+  Tutorials:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        python-version: [ 3.7, 3.8 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            setup.py
+            requirements.txt
+            requirements-dev.txt
+      - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+        if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
+      - uses: ./.github/actions/install-algorithms
+        with:
+          os: ${{ matrix.os }}
+      - name: Install Dependencies
+        run: |
+          pip install jupyter qiskit-terra[visualization]
+          sudo apt-get install -y pandoc graphviz
+        shell: bash
+      - name: Run Qiskit Algorithms Tutorials
+        env:
+          QISKIT_PARALLEL: False
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
+        run: |
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
+          make html
+          cd docs/_build/html
+          mkdir artifacts
+          tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
+        shell: bash
+      - name: Run upload tutorials
+        uses: actions/upload-artifact@v3
+        with:
+          name: tutorials${{ matrix.python-version }}
+          path: docs/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
     needs: [Checks, Algorithms]
     runs-on: ubuntu-latest
