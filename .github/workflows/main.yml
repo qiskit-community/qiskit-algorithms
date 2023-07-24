@@ -66,7 +66,6 @@ jobs:
         run: |
           sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
           pip install pyenchant
-          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - run: pip check
         if: ${{ !cancelled() }}
@@ -189,7 +188,6 @@ jobs:
           QISKIT_PARALLEL: False
           QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
-          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
           tools/ignore_untagged_notes.sh
           make html
           cd docs/_build/html
