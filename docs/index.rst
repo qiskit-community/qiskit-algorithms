@@ -2,13 +2,14 @@
 Qiskit Algorithms documentation
 ################################
 
+
 .. toctree::
-  :maxdepth: 2
   :hidden:
 
   API References <apidocs/algorithms>
   Tutorials <tutorials/index>
   Release Notes <release_notes>
+  GitHub <https://github.com/qiskit-community/qiskit-algorithms>
 
 .. Hiding - Indices and tables
    :ref:`genindex`

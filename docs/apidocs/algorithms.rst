@@ -1,3 +1,6 @@
 .. _qiskit-algorithms:
 
-.. module:: qiskit_algorithms
+.. automodule:: qiskit_algorithms
+   :no-members:
+   :no-inherited-members:
+   :no-special-members:

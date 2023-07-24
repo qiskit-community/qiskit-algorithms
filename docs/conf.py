@@ -18,6 +18,12 @@
 import datetime
 import doctest
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(".."))
+sys.path.append(os.path.abspath("."))
+
 project = "Qiskit Algorithms"
 copyright = f"2017-{datetime.date.today().year}, Qiskit Algorithms Development Team" # pylint: disable=redefined-builtin
 author = "Qiskit Algorithms Development Team"
