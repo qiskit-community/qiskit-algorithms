@@ -62,13 +62,11 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
 
         def objective_pauli(x):
             bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
-            state = Statevector(bound_circ)
-            return state.evolve(obs)
+            return Statevector(bound_circ).expectation_value(obs).real
 
         optimizer = GradientDescent(maxiter=100, learning_rate=0.1, perturbation=0.1)
 
-        with self.assertWarns(DeprecationWarning):
-            result = optimizer.minimize(objective_pauli, x0=initial_point)
+        result = optimizer.minimize(objective_pauli, x0=initial_point)
         self.assertLess(result.fun, -0.95)  # final loss
         self.assertEqual(result.nfev, 1300)  # function evaluations
 
