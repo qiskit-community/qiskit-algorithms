@@ -347,7 +347,7 @@ from .eigensolvers import (
     NumPyEigensolver,
     NumPyEigensolverResult,
     VQD,
-    VQDResult
+    VQDResult,
 )
 
 from .minimum_eigensolvers import (
@@ -361,7 +361,7 @@ from .minimum_eigensolvers import (
     SamplingVQE,
     SamplingVQEResult,
     VQE,
-    VQEResult
+    VQEResult,
 )
 
 __all__ = [
@@ -420,5 +420,5 @@ __all__ = [
     "SamplingVQE",
     "SamplingVQEResult",
     "VQE",
-    "VQEResult"
+    "VQEResult",
 ]
