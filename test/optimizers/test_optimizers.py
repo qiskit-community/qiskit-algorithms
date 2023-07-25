@@ -23,6 +23,7 @@ from scipy.optimize import rosen, rosen_der
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.utils import algorithm_globals, optionals
+from qiskit.primitives import Sampler
 
 from qiskit_algorithms.optimizers import (
     ADAM,
@@ -365,7 +366,7 @@ class TestOptimizerSerialization(QiskitAlgorithmsTestCase):
     def test_qnspsa(self):
         """Test QN-SPSA optimizer is serializable."""
         ansatz = RealAmplitudes(1)
-        fidelity = QNSPSA.get_fidelity(ansatz)
+        fidelity = QNSPSA.get_fidelity(ansatz, sampler=Sampler())
         options = {
             "fidelity": fidelity,
             "maxiter": 100,
