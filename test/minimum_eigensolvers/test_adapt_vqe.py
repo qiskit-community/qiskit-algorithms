@@ -122,10 +122,9 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         calc = AdaptVQE(
             VQE(Estimator(), self.ansatz, self.optimizer),
             max_iterations=1,
-        )
-        with self.assertWarns(DeprecationWarning):
-            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
 
+        )
+        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertEqual(res.termination_criterion, TerminationCriterion.MAXIMUM)
 
     def test_eigenvalue_threshold(self):
@@ -149,8 +148,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
             VQE(Estimator(), ansatz, self.optimizer),
             eigenvalue_threshold=1,
         )
-        with self.assertWarns(DeprecationWarning):
-            res = calc.compute_minimum_eigenvalue(operator)
+        res = calc.compute_minimum_eigenvalue(operator)
 
         self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
@@ -161,8 +159,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
                 VQE(Estimator(), self.ansatz, self.optimizer),
                 threshold=1e-3,
             )
-            with self.assertWarns(DeprecationWarning):
-                res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
 
             self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
@@ -202,8 +199,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         """Test to check if the VQE solver remains the same or not"""
         solver = VQE(Estimator(), self.ansatz, self.optimizer)
         calc = AdaptVQE(solver)
-        with self.assertWarns(DeprecationWarning):
-            _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+        _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertEqual(solver.ansatz, calc.solver.ansatz)
 
     def test_gradient_calculation(self):
@@ -218,8 +214,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
     def test_supports_aux_operators(self):
         """Test that auxiliary operators are supported"""
         calc = AdaptVQE(VQE(Estimator(), self.ansatz, self.optimizer))
-        with self.assertWarns(DeprecationWarning):
-            res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+        res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
 
         expected_eigenvalue = -1.85727503
 
