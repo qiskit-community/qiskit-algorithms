@@ -19,7 +19,6 @@ from typing import Any
 import numpy as np
 
 from qiskit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -31,7 +30,7 @@ from .list_or_dict import ListOrDict
 def estimate_observables(
     estimator: BaseEstimator,
     quantum_state: QuantumCircuit,
-    observables: ListOrDict[BaseOperator | PauliSumOp],
+    observables: ListOrDict[BaseOperator],
     parameter_values: Sequence[float] | None = None,
     threshold: float = 1e-12,
 ) -> ListOrDict[tuple[complex, dict[str, Any]]]:
@@ -85,9 +84,9 @@ def estimate_observables(
 
 
 def _handle_zero_ops(
-    observables_list: list[BaseOperator | PauliSumOp],
-) -> list[BaseOperator | PauliSumOp]:
-    """Replaces all occurrence of operators equal to 0 in the list with an equivalent ``PauliSumOp``
+    observables_list: list[BaseOperator],
+) -> list[BaseOperator]:
+    """Replaces all occurrence of operators equal to 0 in the list with an equivalent ``SparsePauliOp``
     operator."""
     if observables_list:
         zero_op = SparsePauliOp.from_list([("I" * observables_list[0].num_qubits, 0)])
@@ -99,7 +98,7 @@ def _handle_zero_ops(
 
 def _prepare_result(
     observables_results: list[tuple[complex, dict]],
-    observables: ListOrDict[BaseOperator | PauliSumOp],
+    observables: ListOrDict[BaseOperator],
 ) -> ListOrDict[tuple[complex, dict[str, Any]]]:
     """
     Prepares a list of tuples of eigenvalues and metadata tuples from

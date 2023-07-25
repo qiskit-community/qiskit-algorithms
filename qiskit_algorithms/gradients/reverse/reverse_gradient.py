@@ -21,7 +21,6 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import Statevector
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Estimator
 
 from .bind import bind
@@ -75,7 +74,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,
@@ -92,7 +91,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
     def _run_unique(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,  # pylint: disable=unused-argument
@@ -187,9 +186,6 @@ def _evolve_by_operator(operator, state):
 
     # try casting to sparse matrix and use sparse matrix-vector multiplication, which is
     # a lot faster than using Statevector.evolve
-    if isinstance(operator, PauliSumOp):
-        operator = operator.primitive * operator.coeff
-
     try:
         spmatrix = operator.to_matrix(sparse=True)
         evolved = spmatrix @ state.data

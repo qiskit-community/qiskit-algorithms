@@ -18,7 +18,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
@@ -58,7 +57,7 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,
@@ -75,7 +74,7 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
     def _run_unique(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,

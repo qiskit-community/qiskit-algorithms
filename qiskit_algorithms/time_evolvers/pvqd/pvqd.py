@@ -20,7 +20,6 @@ import numpy as np
 
 from qiskit.circuit import Parameter, ParameterVector, QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
@@ -170,7 +169,7 @@ class PVQD(RealTimeEvolver):
 
     def step(
         self,
-        hamiltonian: BaseOperator | PauliSumOp,
+        hamiltonian: BaseOperator,
         ansatz: QuantumCircuit,
         theta: np.ndarray,
         dt: float,
@@ -211,7 +210,7 @@ class PVQD(RealTimeEvolver):
 
     def get_loss(
         self,
-        hamiltonian: BaseOperator | PauliSumOp,
+        hamiltonian: BaseOperator,
         ansatz: QuantumCircuit,
         dt: float,
         current_parameters: np.ndarray,

@@ -18,7 +18,6 @@ from collections.abc import Mapping
 from typing import Any
 
 from qiskit.quantum_info.operators.base_operator import BaseOperator
-from qiskit.opflow import PauliSumOp
 from qiskit.result import QuasiDistribution
 from ..algorithm_result import AlgorithmResult
 from ..list_or_dict import ListOrDict
@@ -30,8 +29,8 @@ class SamplingMinimumEigensolver(ABC):
     @abstractmethod
     def compute_minimum_eigenvalue(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> "SamplingMinimumEigensolverResult":
         """Compute the minimum eigenvalue of a diagonal operator.
 

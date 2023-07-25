@@ -24,7 +24,6 @@ import numpy as np
 
 from qiskit import QiskitError
 from qiskit.quantum_info.operators.base_operator import BaseOperator
-from qiskit.opflow import OperatorBase, PauliSumOp
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 from qiskit.utils.validation import validate_min
@@ -138,8 +137,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         self.eigenvalue_threshold = eigenvalue_threshold
         self.max_iterations = max_iterations
         self._tmp_ansatz: EvolvedOperatorAnsatz | None = None
-        self._excitation_pool: list[OperatorBase] = []
-        self._excitation_list: list[OperatorBase] = []
+        self._excitation_pool: list[BaseOperator] = []
+        self._excitation_list: list[BaseOperator] = []
 
     @property
     @deprecate_func(
@@ -183,7 +182,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
     def _compute_gradients(
         self,
         theta: list[float],
-        operator: BaseOperator | OperatorBase,
+        operator: BaseOperator,
     ) -> list[tuple[complex, dict[str, Any]]]:
         """
         Computes the gradients for all available excitation operators.
@@ -229,8 +228,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
     def compute_minimum_eigenvalue(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> AdaptVQEResult:
         """Computes the minimum eigenvalue.
 

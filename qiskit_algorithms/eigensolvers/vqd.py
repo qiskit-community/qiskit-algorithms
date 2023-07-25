@@ -25,7 +25,6 @@ from time import time
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import SparsePauliOp
@@ -178,7 +177,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         """Sets initial point"""
         self._initial_point = initial_point
 
-    def _check_operator_ansatz(self, operator: BaseOperator | PauliSumOp):
+    def _check_operator_ansatz(self, operator: BaseOperator):
         """Check that the number of qubits of operator and ansatz match."""
         if operator is not None and self.ansatz is not None:
             if operator.num_qubits != self.ansatz.num_qubits:
@@ -198,8 +197,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     def compute_eigenvalues(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> VQDResult:
         super().compute_eigenvalues(operator, aux_operators)
 
@@ -217,7 +216,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
             # Drop None and convert zero values when aux_operators is a dict.
             if isinstance(aux_operators, list):
                 key_op_iterator = enumerate(aux_operators)
-                converted: ListOrDict[BaseOperator | PauliSumOp] = [zero_op] * len(aux_operators)
+                converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
             else:
                 key_op_iterator = aux_operators.items()
                 converted = {}
@@ -231,9 +230,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
             aux_operators = None
 
         if self.betas is None:
-            if isinstance(operator, PauliSumOp):
-                operator = operator.coeff * operator.primitive
-
             try:
                 upper_bound = sum(np.abs(operator.coeffs))
 
@@ -345,7 +341,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     def _get_evaluate_energy(
         self,
         step: int,
-        operator: BaseOperator | PauliSumOp,
+        operator: BaseOperator,
         betas: Sequence[float],
         prev_states: list[QuantumCircuit] | None = None,
     ) -> Callable[[np.ndarray], float | np.ndarray]:

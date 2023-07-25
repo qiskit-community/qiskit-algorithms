@@ -14,8 +14,6 @@
 from __future__ import annotations
 
 import itertools
-import operator
-import warnings
 from collections.abc import Iterator, Generator
 from typing import Any
 
@@ -23,10 +21,8 @@ import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSampler
-from qiskit.providers import Backend
 from qiskit.quantum_info import partial_trace, Statevector
-from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
+from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.exceptions import AlgorithmError
 
@@ -115,20 +111,11 @@ class Grover(AmplitudeAmplifier):
             `arXiv:quant-ph/0005055 <http://arxiv.org/abs/quant-ph/0005055>`_.
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. "
-            "See https://qisk.it/algo_migration for a migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         iterations: list[int] | Iterator[int] | int | None = None,
         growth_rate: float | None = None,
         sample_from_iterations: bool = False,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
@@ -148,7 +135,6 @@ class Grover(AmplitudeAmplifier):
             sample_from_iterations: If True, instead of taking the values in ``iterations`` as
                 powers of the Grover operator, a random integer sample between 0 and smaller value
                 than the iteration is used as a power, see [1], Section 4.
-            quantum_instance: Deprecated: A Quantum Instance or Backend to run the circuits.
             sampler: A Sampler to use for sampling the results of the circuits.
 
         Raises:
@@ -176,55 +162,9 @@ class Grover(AmplitudeAmplifier):
         else:
             self._iterations = iterations
 
-        if quantum_instance is not None and sampler is not None:
-            raise ValueError("Only one of quantum_instance or sampler can be passed, not both!")
-
-        # check positionally passing the sampler in the place of quantum_instance
-        # which will be removed in future
-        if isinstance(quantum_instance, BaseSampler):
-            sampler = quantum_instance
-            quantum_instance = None
-
-        self._quantum_instance: QuantumInstance | None = None
-        if quantum_instance is not None:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", DeprecationWarning)
-                self.quantum_instance = quantum_instance
-
         self._sampler = sampler
-
         self._sample_from_iterations = sample_from_iterations
         self._iterations_arg = iterations
-
-    @property
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self) -> QuantumInstance | None:
-        r"""Deprecated. Get the quantum instance.
-
-        Returns:
-            The quantum instance used to run this algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self, quantum_instance: QuantumInstance | Backend) -> None:
-        r"""Deprecated. Set quantum instance.
-
-        Args:
-            quantum_instance: The quantum instance used to run this algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
 
     @property
     def sampler(self) -> BaseSampler | None:
@@ -255,16 +195,13 @@ class Grover(AmplitudeAmplifier):
             as ``result.top_measurement``.
 
         Raises:
-            ValueError: If a quantum instance or sampler is not set.
-            AlgorithmError: If a sampler job fails.
+            ValueError: If sampler is not set.
+            AlgorithmError: If sampler job fails.
             TypeError: If ``is_good_state`` is not provided and is required (i.e. when iterations
             is ``None`` or a ``list``)
         """
-        if self._sampler is None and self._quantum_instance is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
-
-        if self._quantum_instance is not None and self._sampler is not None:
-            raise ValueError("Only one of quantum_instance or sampler can be passed, not both!")
+        if self._sampler is None:
+            raise ValueError("A sampler must be provided.")
 
         if isinstance(self._iterations, list):
             max_iterations = len(self._iterations)
@@ -284,7 +221,6 @@ class Grover(AmplitudeAmplifier):
         oracle_evaluation = False
         all_circuit_results = []
         max_probability = 0
-        shots = 0
 
         for _ in range(max_iterations):  # iterate at most to the max number of iterations
             # get next power and check if allowed
@@ -313,36 +249,6 @@ class Grover(AmplitudeAmplifier):
                     np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
                 }
                 top_measurement, max_probability = max(circuit_results.items(), key=lambda x: x[1])
-
-            else:  # use of else brach instead of elif as this seperates out the deprecated logic
-                if self._quantum_instance.is_statevector:
-                    qc = self.construct_circuit(amplification_problem, power, measurement=False)
-                    circuit_results = self._quantum_instance.execute(qc).get_statevector()
-                    num_bits = len(amplification_problem.objective_qubits)
-
-                    # trace out work qubits
-                    if qc.width() != num_bits:
-                        indices = [
-                            i
-                            for i in range(qc.num_qubits)
-                            if i not in amplification_problem.objective_qubits
-                        ]
-                        rho = partial_trace(circuit_results, indices)
-                        circuit_results = np.diag(rho.data)
-
-                    max_amplitude = max(circuit_results.max(), circuit_results.min(), key=abs)
-                    max_amplitude_idx = np.where(circuit_results == max_amplitude)[0][0]
-                    top_measurement = np.binary_repr(max_amplitude_idx, num_bits)
-                    max_probability = np.abs(max_amplitude) ** 2
-                    shots = 1
-                else:
-                    qc = self.construct_circuit(amplification_problem, power, measurement=True)
-                    circuit_results = self._quantum_instance.execute(qc).get_counts(qc)
-                    top_measurement = max(circuit_results.items(), key=operator.itemgetter(1))[0]
-                    shots = sum(circuit_results.values())
-                    max_probability = (
-                        max(circuit_results.items(), key=operator.itemgetter(1))[1] / shots
-                    )
 
             all_circuit_results.append(circuit_results)
 

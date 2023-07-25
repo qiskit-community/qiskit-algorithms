@@ -14,7 +14,6 @@
 from __future__ import annotations
 import numpy as np
 
-from qiskit.opflow import SummedOp, PauliSumOp
 from qiskit.quantum_info import SparsePauliOp, Operator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -116,7 +115,7 @@ class PhaseEstimationScale:
 
     @classmethod
     def from_pauli_sum(
-        cls, pauli_sum: SummedOp | PauliSumOp | SparsePauliOp | Operator
+        cls, pauli_sum: SparsePauliOp | Operator | BaseOperator
     ) -> "PhaseEstimationScale" | float:
         """Create a PhaseEstimationScale from a `SummedOp` representing a sum of Pauli Operators.
 
@@ -126,7 +125,7 @@ class PhaseEstimationScale:
         the generic case. A ``PhaseEstimationScale`` object is instantiated using this bound.
 
         Args:
-            pauli_sum: A ``SummedOp`` whose terms are ``PauliOp`` objects.
+            pauli_sum: A ``SparsePauliOp`` or other suitable quantum info ``Operator``
 
         Raises:
             ValueError: if ``pauli_sum`` is not a sum of Pauli operators.
@@ -134,10 +133,8 @@ class PhaseEstimationScale:
         Returns:
             A ``PhaseEstimationScale`` object
         """
-        if isinstance(pauli_sum, PauliSumOp):
-            bound = abs(pauli_sum.coeff) * sum(abs(coeff) for coeff in pauli_sum.coeffs)
-            return PhaseEstimationScale(bound)
-        elif isinstance(pauli_sum, SparsePauliOp):
+
+        if isinstance(pauli_sum, SparsePauliOp):
             bound = sum(abs(coeff) for coeff in pauli_sum.coeffs)
             return PhaseEstimationScale(bound)
         elif isinstance(pauli_sum, Operator):

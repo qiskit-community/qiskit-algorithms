@@ -13,7 +13,6 @@
 """The Maximum Likelihood Amplitude Estimation algorithm."""
 
 from __future__ import annotations
-import warnings
 from collections.abc import Sequence
 from typing import Callable, List, Tuple
 
@@ -21,11 +20,8 @@ import numpy as np
 from scipy.optimize import brute
 from scipy.stats import norm, chi2
 
-from qiskit.providers import Backend
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
-from qiskit.utils import QuantumInstance
 from qiskit.primitives import BaseSampler
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -53,19 +49,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
              `arXiv:quant-ph/0005055 <http://arxiv.org/abs/quant-ph/0005055>`_.
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         evaluation_schedule: list[int] | int,
         minimizer: MINIMIZER | None = None,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
@@ -79,7 +66,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
                 according to ``evaluation_schedule``. The minimizer takes a function as first
                 argument and a list of (float, float) tuples (as bounds) as second argument and
                 returns a single float which is the found minimum.
-            quantum_instance: Deprecated: Quantum Instance or Backend
             sampler: A sampler primitive to evaluate the circuits.
 
         Raises:
@@ -87,11 +73,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         """
 
         super().__init__()
-
-        # set quantum instance
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.quantum_instance = quantum_instance
 
         # get parameters
         if isinstance(evaluation_schedule, int):
@@ -135,36 +116,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             sampler: A sampler primitive to evaluate the circuits.
         """
         self._sampler = sampler
-
-    @property
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self) -> QuantumInstance | None:
-        """Deprecated. Get the quantum instance.
-
-        Returns:
-            The quantum instance used to run this algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self, quantum_instance: QuantumInstance | Backend) -> None:
-        """Deprecated. Set quantum instance.
-
-        Args:
-            quantum_instance: The quantum instance used to run this algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
 
     def construct_circuits(
         self, estimation_problem: EstimationProblem, measurement: bool = False
@@ -316,13 +267,13 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             An amplitude estimation results object.
 
         Raises:
-            ValueError: A quantum instance or Sampler must be provided.
+            ValueError: A Sampler must be provided.
             AlgorithmError: If `state_preparation` is not set in
                 `estimation_problem`.
             AlgorithmError: Sampler job run error
         """
-        if self._quantum_instance is None and self._sampler is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
+        if self._sampler is None:
+            raise ValueError("A sampler must be provided.")
         if estimation_problem.state_preparation is None:
             raise AlgorithmError(
                 "The state_preparation property of the estimation problem must be set."
@@ -334,47 +285,27 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.post_processing = estimation_problem.post_processing
 
         shots = 0
-        if self._quantum_instance is not None and self._quantum_instance.is_statevector:
-            # run circuit on statevector simulator
-            circuits = self.construct_circuits(estimation_problem, measurement=False)
-            ret = self._quantum_instance.execute(circuits)
 
-            # get statevectors and construct MLE input
-            statevectors = [np.asarray(ret.get_statevector(circuit)) for circuit in circuits]
-            result.circuit_results = statevectors
+        circuits = self.construct_circuits(estimation_problem, measurement=True)
 
-            # to count the number of Q-oracle calls (don't count shots)
-            result.shots = 1
+        try:
+            job = self._sampler.run(circuits)
+            ret = job.result()
+        except Exception as exc:
+            raise AlgorithmError("The job was not completed successfully. ") from exc
+
+        result.circuit_results = []
+        shots = ret.metadata[0].get("shots")
+        if shots is None:
+            for quasi_dist in ret.quasi_dists:
+                circuit_result = quasi_dist.binary_probabilities()
+                result.circuit_results.append(circuit_result)
+            shots = 1
         else:
-            circuits = self.construct_circuits(estimation_problem, measurement=True)
-            if self._quantum_instance is not None:
-                # run circuit on QASM simulator
-                ret = self._quantum_instance.execute(circuits)
-                # get counts and construct MLE input
-                result.circuit_results = [ret.get_counts(circuit) for circuit in circuits]
-                shots = self._quantum_instance._run_config.shots
-            else:
-                try:
-                    job = self._sampler.run(circuits)
-                    ret = job.result()
-                except Exception as exc:
-                    raise AlgorithmError("The job was not completed successfully. ") from exc
-
-                result.circuit_results = []
-                shots = ret.metadata[0].get("shots")
-                if shots is None:
-                    for quasi_dist in ret.quasi_dists:
-                        circuit_result = quasi_dist.binary_probabilities()
-                        result.circuit_results.append(circuit_result)
-                    shots = 1
-                else:
-                    # get counts and construct MLE input
-                    for quasi_dist in ret.quasi_dists:
-                        counts = {
-                            k: round(v * shots)
-                            for k, v in quasi_dist.binary_probabilities().items()
-                        }
-                        result.circuit_results.append(counts)
+            # get counts and construct MLE input
+            for quasi_dist in ret.quasi_dists:
+                counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
+                result.circuit_results.append(counts)
 
         result.shots = shots
 

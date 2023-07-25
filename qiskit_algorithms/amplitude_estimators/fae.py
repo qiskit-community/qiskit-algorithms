@@ -13,14 +13,10 @@
 """Faster Amplitude Estimation."""
 
 from __future__ import annotations
-import warnings
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
-from qiskit.providers import Backend
 from qiskit.primitives import BaseSampler
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
@@ -48,20 +44,11 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         delta: float,
         maxiter: int,
         rescale: bool = True,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
@@ -69,21 +56,10 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             delta: The probability that the true value is outside of the final confidence interval.
             maxiter: The number of iterations, the maximal power of Q is `2 ** (maxiter - 1)`.
             rescale: Whether to rescale the problem passed to `estimate`.
-            quantum_instance: Deprecated: The quantum instance or backend
-                to run the circuits.
             sampler: A sampler primitive to evaluate the circuits.
-
-        .. note::
-
-            This algorithm overwrites the number of shots set in the ``quantum_instance``
-            argument, but will reset them to the initial number after running.
 
         """
         super().__init__()
-        # set quantum instance
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.quantum_instance = quantum_instance
         self._shots = (int(1944 * np.log(2 / delta)), int(972 * np.log(2 / delta)))
         self._rescale = rescale
         self._delta = delta
@@ -109,89 +85,31 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         """
         self._sampler = sampler
 
-    @property
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self) -> QuantumInstance | None:
-        """Deprecated. Get the quantum instance.
-
-        Returns:
-            The quantum instance used to run this algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self, quantum_instance: QuantumInstance | Backend) -> None:
-        """Deprecated. Set quantum instance.
-
-        Args:
-            quantum_instance: The quantum instance used to run this algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
-
     def _cos_estimate(self, estimation_problem, k, shots):
-        if self._quantum_instance is None and self._sampler is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
 
-        if self._sampler is not None:
-            circuit = self.construct_circuit(estimation_problem, k, measurement=True)
-            try:
-                job = self._sampler.run([circuit], shots=shots)
-                result = job.result()
-            except Exception as exc:
-                raise AlgorithmError("The job was not completed successfully. ") from exc
+        if self._sampler is None:
+            raise ValueError("A sampler must be provided.")
 
-            if shots is None:
-                shots = 1
-            self._num_oracle_calls += (2 * k + 1) * shots
+        circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
-            # sum over all probabilities where the objective qubits are 1
-            prob = 0
-            for bit, probabilities in result.quasi_dists[0].binary_probabilities().items():
-                # check if it is a good state
-                if estimation_problem.is_good_state(bit):
-                    prob += probabilities
+        try:
+            job = self._sampler.run([circuit], shots=shots)
+            result = job.result()
+        except Exception as exc:
+            raise AlgorithmError("The job was not completed successfully. ") from exc
 
-            cos_estimate = 1 - 2 * prob
-        elif self._quantum_instance.is_statevector:
-            circuit = self.construct_circuit(estimation_problem, k, measurement=False)
-            statevector = self._quantum_instance.execute(circuit).get_statevector()
+        if shots is None:
+            shots = 1
+        self._num_oracle_calls += (2 * k + 1) * shots
 
-            # sum over all amplitudes where the objective qubits are 1
-            prob = 0
-            for i, amplitude in enumerate(statevector):
-                # get bitstring of objective qubits
-                full_state = bin(i)[2:].zfill(circuit.num_qubits)[::-1]
-                state = "".join([full_state[i] for i in estimation_problem.objective_qubits])
+        # sum over all probabilities where the objective qubits are 1
+        prob = 0
+        for bit, probabilities in result.quasi_dists[0].binary_probabilities().items():
+            # check if it is a good state
+            if estimation_problem.is_good_state(bit):
+                prob += probabilities
 
-                # check if it is a good state
-                if estimation_problem.is_good_state(state[::-1]):
-                    prob = prob + np.abs(amplitude) ** 2
-
-            cos_estimate = 1 - 2 * prob
-        else:
-            circuit = self.construct_circuit(estimation_problem, k, measurement=True)
-
-            self._quantum_instance.run_config.shots = shots
-            counts = self._quantum_instance.execute(circuit).get_counts()
-            self._num_oracle_calls += (2 * k + 1) * shots
-
-            good_counts = 0
-            for state, count in counts.items():
-                if estimation_problem.is_good_state(state):
-                    good_counts += count
-
-            cos_estimate = 1 - 2 * good_counts / shots
+        cos_estimate = 1 - 2 * prob
 
         return cos_estimate
 
@@ -254,64 +172,54 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             An amplitude estimation results object.
 
         Raises:
-            ValueError: A quantum instance or Sampler must be provided.
+            ValueError: A Sampler must be provided.
             AlgorithmError: Sampler run error.
         """
-        if self._quantum_instance is None and self._sampler is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
+        if self._sampler is None:
+            raise ValueError("A sampler must be provided.")
 
         self._num_oracle_calls = 0
-        user_defined_shots = (
-            self._quantum_instance._run_config.shots if self._quantum_instance is not None else None
-        )
 
         if self._rescale:
             problem = estimation_problem.rescale(0.25)
         else:
             problem = estimation_problem
 
-        if self._quantum_instance is not None and self._quantum_instance.is_statevector:
-            cos = self._cos_estimate(problem, k=0, shots=1)
-            theta = np.arccos(cos) / 2
-            theta_ci = [theta, theta]
-            theta_cis = [theta_ci]
-            num_steps = num_first_stage_steps = 1
-        else:
-            theta_ci = [0, np.arcsin(0.25)]
-            first_stage = True
-            j_0 = self._maxiter
+        theta_ci = [0, np.arcsin(0.25)]
+        first_stage = True
+        j_0 = self._maxiter
 
-            theta_cis = [theta_ci]
-            num_first_stage_steps = 0
-            num_steps = 0
+        theta_cis = [theta_ci]
+        num_first_stage_steps = 0
+        num_steps = 0
 
-            def cos_estimate(power, shots):
-                return self._cos_estimate(problem, power, shots)
+        def cos_estimate(power, shots):
+            return self._cos_estimate(problem, power, shots)
 
-            for j in range(1, self._maxiter + 1):
-                num_steps += 1
-                if first_stage:
-                    num_first_stage_steps += 1
-                    c = cos_estimate(2 ** (j - 1), self._shots[0])
-                    chernoff_ci = self._chernoff(c, self._shots[0])
-                    theta_ci = [np.arccos(x) / (2 ** (j + 1) + 2) for x in chernoff_ci[::-1]]
+        for j in range(1, self._maxiter + 1):
+            num_steps += 1
+            if first_stage:
+                num_first_stage_steps += 1
+                c = cos_estimate(2 ** (j - 1), self._shots[0])
+                chernoff_ci = self._chernoff(c, self._shots[0])
+                theta_ci = [np.arccos(x) / (2 ** (j + 1) + 2) for x in chernoff_ci[::-1]]
 
-                    if 2 ** (j + 1) * theta_ci[1] >= 3 * np.pi / 8 and j < self._maxiter:
-                        j_0 = j
-                        v = 2**j * np.sum(theta_ci)
-                        first_stage = False
-                else:
-                    cos = cos_estimate(2 ** (j - 1), self._shots[1])
-                    cos_2 = cos_estimate(2 ** (j - 1) + 2 ** (j_0 - 1), self._shots[1])
-                    sin = (cos * np.cos(v) - cos_2) / np.sin(v)
-                    rho = np.arctan2(sin, cos)
-                    n = int(((2 ** (j + 1) + 2) * theta_ci[1] - rho + np.pi / 3) / (2 * np.pi))
+                if 2 ** (j + 1) * theta_ci[1] >= 3 * np.pi / 8 and j < self._maxiter:
+                    j_0 = j
+                    v = 2**j * np.sum(theta_ci)
+                    first_stage = False
+            else:
+                cos = cos_estimate(2 ** (j - 1), self._shots[1])
+                cos_2 = cos_estimate(2 ** (j - 1) + 2 ** (j_0 - 1), self._shots[1])
+                sin = (cos * np.cos(v) - cos_2) / np.sin(v)
+                rho = np.arctan2(sin, cos)
+                n = int(((2 ** (j + 1) + 2) * theta_ci[1] - rho + np.pi / 3) / (2 * np.pi))
 
-                    theta_ci = [
-                        (2 * np.pi * n + rho + sign * np.pi / 3) / (2 ** (j + 1) + 2)
-                        for sign in [-1, 1]
-                    ]
-                theta_cis.append(theta_ci)
+                theta_ci = [
+                    (2 * np.pi * n + rho + sign * np.pi / 3) / (2 ** (j + 1) + 2)
+                    for sign in [-1, 1]
+                ]
+            theta_cis.append(theta_ci)
 
         theta = np.mean(theta_ci)
         rescaling = 4 if self._rescale else 1
@@ -322,20 +230,13 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         result.num_oracle_queries = self._num_oracle_calls
         result.num_steps = num_steps
         result.num_first_state_steps = num_first_stage_steps
-        if self._quantum_instance is not None and self._quantum_instance.is_statevector:
-            result.success_probability = 1.0
-        else:
-            result.success_probability = 1 - (2 * self._maxiter - j_0) * self._delta
+        result.success_probability = 1 - (2 * self._maxiter - j_0) * self._delta
 
         result.estimation = value
         result.estimation_processed = problem.post_processing(value)
         result.confidence_interval = value_ci
         result.confidence_interval_processed = tuple(problem.post_processing(x) for x in value_ci)
         result.theta_intervals = theta_cis
-
-        # reset shots to what the user had defined
-        if self._quantum_instance is not None:
-            self._quantum_instance._run_config.shots = user_defined_shots
 
         return result
 

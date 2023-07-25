@@ -21,9 +21,6 @@ from qiskit import circuit
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.classicalregister import ClassicalRegister
 from qiskit.primitives import BaseSampler
-from qiskit.providers import Backend
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg
 from qiskit.result import Result
 
 from qiskit_algorithms.exceptions import AlgorithmError
@@ -82,42 +79,26 @@ class PhaseEstimation(PhaseEstimator):
 
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         num_evaluation_qubits: int,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
-            quantum_instance: Deprecated: The quantum instance on which the
-                circuit will be run.
             sampler: The sampler primitive on which the circuit will be sampled.
 
         Raises:
-            AlgorithmError: If neither sampler nor quantum instance is provided.
+            AlgorithmError: If a sampler is not provided
         """
-        if sampler is None and quantum_instance is None:
-            raise AlgorithmError(
-                "Neither a sampler nor a quantum instance was provided. Please provide one of them."
-            )
+        if sampler is None:
+            raise AlgorithmError("A sampler must be provided.")
         self._measurements_added = False
         if num_evaluation_qubits is not None:
             self._num_evaluation_qubits = num_evaluation_qubits
 
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
         self._sampler = sampler
 
     def construct_circuit(
@@ -144,15 +125,13 @@ class PhaseEstimation(PhaseEstimator):
         return pe_circuit
 
     def _add_measurement_if_required(self, pe_circuit):
-        if self._sampler is not None or not self._quantum_instance.is_statevector:
-            # Measure only the evaluation qubits.
-            regname = "meas"
-            creg = ClassicalRegister(self._num_evaluation_qubits, regname)
-            pe_circuit.add_register(creg)
-            pe_circuit.barrier()
-            pe_circuit.measure(
-                range(self._num_evaluation_qubits), range(self._num_evaluation_qubits)
-            )
+
+        # Measure only the evaluation qubits.
+        regname = "meas"
+        creg = ClassicalRegister(self._num_evaluation_qubits, regname)
+        pe_circuit.add_register(creg)
+        pe_circuit.barrier()
+        pe_circuit.measure(range(self._num_evaluation_qubits), range(self._num_evaluation_qubits))
 
         return circuit
 
@@ -186,35 +165,23 @@ class PhaseEstimation(PhaseEstimator):
             Either a dict or numpy.ndarray representing the frequencies of the phases.
 
         """
-        if self._quantum_instance.is_statevector:
-            state_vec = circuit_result.get_statevector()
-            evaluation_density_matrix = qiskit.quantum_info.partial_trace(
-                state_vec,
-                range(
-                    self._num_evaluation_qubits, self._num_evaluation_qubits + num_unitary_qubits
-                ),
-            )
-            phases = evaluation_density_matrix.probabilities()
-        else:
-            # return counts with keys sorted numerically
-            num_shots = circuit_result.results[0].shots
-            counts = circuit_result.get_counts()
-            phases = {k[::-1]: counts[k] / num_shots for k in counts.keys()}
-            phases = _sort_phases(phases)
-            phases = qiskit.result.Counts(
-                phases, memory_slots=counts.memory_slots, creg_sizes=counts.creg_sizes
-            )
+
+        # return counts with keys sorted numerically
+        num_shots = circuit_result.results[0].shots
+        counts = circuit_result.get_counts()
+        phases = {k[::-1]: counts[k] / num_shots for k in counts.keys()}
+        phases = _sort_phases(phases)
+        phases = qiskit.result.Counts(
+            phases, memory_slots=counts.memory_slots, creg_sizes=counts.creg_sizes
+        )
 
         return phases
 
-    def estimate_from_pe_circuit(
-        self, pe_circuit: QuantumCircuit, num_unitary_qubits: int
-    ) -> PhaseEstimationResult:
+    def estimate_from_pe_circuit(self, pe_circuit: QuantumCircuit) -> PhaseEstimationResult:
         """Run the phase estimation algorithm on a phase estimation circuit
 
         Args:
             pe_circuit: The phase estimation circuit.
-            num_unitary_qubits: Must agree with the number of qubits in the unitary in `pe_circuit`.
 
         Returns:
             An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
@@ -225,22 +192,18 @@ class PhaseEstimation(PhaseEstimator):
 
         self._add_measurement_if_required(pe_circuit)
 
-        if self._sampler is not None:
-            try:
-                circuit_job = self._sampler.run([pe_circuit])
-                circuit_result = circuit_job.result()
-            except Exception as exc:
-                raise AlgorithmError("The primitive job failed!") from exc
-            phases = circuit_result.quasi_dists[0]
-            phases_bitstrings = {}
-            for key, phase in phases.items():
-                bitstring_key = self._get_reversed_bitstring(self._num_evaluation_qubits, key)
-                phases_bitstrings[bitstring_key] = phase
-            phases = phases_bitstrings
+        try:
+            circuit_job = self._sampler.run([pe_circuit])
+            circuit_result = circuit_job.result()
+        except Exception as exc:
+            raise AlgorithmError("The primitive job failed!") from exc
+        phases = circuit_result.quasi_dists[0]
+        phases_bitstrings = {}
+        for key, phase in phases.items():
+            bitstring_key = self._get_reversed_bitstring(self._num_evaluation_qubits, key)
+            phases_bitstrings[bitstring_key] = phase
+        phases = phases_bitstrings
 
-        else:
-            circuit_result = self._quantum_instance.execute(pe_circuit)
-            phases = self._compute_phases(num_unitary_qubits, circuit_result)
         return PhaseEstimationResult(
             self._num_evaluation_qubits, circuit_result=circuit_result, phases=phases
         )

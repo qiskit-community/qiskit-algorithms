@@ -91,10 +91,10 @@ class SPSA(Optimizer):
             import numpy as np
             from qiskit_algorithms.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.opflow import Z, StateFn
+            from qiskit.quantum_info import Pauli
 
             ansatz = PauliTwoDesign(2, reps=1, seed=2)
-            observable = Z ^ Z
+            observable = Pauli("Z") ^ Pauli("Z")
             initial_point = np.random.random(ansatz.num_parameters)
 
             def loss(x):

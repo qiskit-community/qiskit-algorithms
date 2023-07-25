@@ -22,7 +22,6 @@ from typing import Any
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseSampler
 from qiskit.result import QuasiDistribution
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -163,7 +162,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         """Set the initial point."""
         self._initial_point = value
 
-    def _check_operator_ansatz(self, operator: BaseOperator | PauliSumOp):
+    def _check_operator_ansatz(self, operator: BaseOperator):
         """Check that the number of qubits of operator and ansatz match and that the ansatz is
         parameterized.
         """
@@ -189,8 +188,8 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
     def compute_minimum_eigenvalue(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> SamplingMinimumEigensolverResult:
         # check that the number of qubits of operator and ansatz match, and resize if possible
         self._check_operator_ansatz(operator)
@@ -255,7 +254,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
     def _get_evaluate_energy(
         self,
-        operator: BaseOperator | PauliSumOp,
+        operator: BaseOperator,
         ansatz: QuantumCircuit,
         return_best_measurement: bool = False,
     ) -> Callable[[np.ndarray], np.ndarray | float] | tuple[

@@ -18,7 +18,6 @@ from abc import ABC, abstractmethod
 from typing import Any
 import numpy as np
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..algorithm_result import AlgorithmResult
@@ -36,8 +35,8 @@ class Eigensolver(ABC):
     @abstractmethod
     def compute_eigenvalues(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> "EigensolverResult":
         """
         Computes the minimum eigenvalue. The ``operator`` and ``aux_operators`` are supplied here.

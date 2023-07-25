@@ -23,7 +23,6 @@ from copy import copy
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.primitives.utils import _circuit_key
 from qiskit.providers import Options
@@ -92,7 +91,7 @@ class BaseEstimatorGradient(ABC):
     def run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
         **options,
@@ -125,7 +124,7 @@ class BaseEstimatorGradient(ABC):
         if isinstance(circuits, QuantumCircuit):
             # Allow a single circuit to be passed in.
             circuits = (circuits,)
-        if isinstance(observables, (BaseOperator, PauliSumOp)):
+        if isinstance(observables, (BaseOperator)):
             # Allow a single observable to be passed in.
             observables = (observables,)
 
@@ -157,7 +156,7 @@ class BaseEstimatorGradient(ABC):
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,
@@ -265,7 +264,7 @@ class BaseEstimatorGradient(ABC):
     @staticmethod
     def _validate_arguments(
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
     ) -> None:

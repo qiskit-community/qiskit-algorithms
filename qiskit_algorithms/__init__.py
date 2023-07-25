@@ -23,20 +23,13 @@ were designed to be swappable sub-parts of an algorithm. Any component and may b
 a different implementation of the same component type in order to potentially alter the behavior
 and outcome of the algorithm.
 
-Quantum algorithms are run via a :class:`~qiskit_algorithms.QuantumInstance`
-which must be set with the
-desired backend where the algorithm's circuits will be executed and be configured with a number of
-compile and runtime parameters controlling circuit compilation and execution. It ultimately uses
-`Terra <https://www.qiskit.org/terra>`__ for the actual compilation and execution of the quantum
-circuits created by the algorithm and its components.
-
 .. currentmodule:: qiskit_algorithms
 
 Algorithms
 ==========
 
 It contains a variety of quantum algorithms and these have been grouped by logical function such
-as minimum eigensolvers and amplitude amplifiers.
+as minimum eigensolvers and amplitude amplifiers. These algorithms are based on the Qiskit Primitives.
 
 
 Amplitude Amplifiers
@@ -78,36 +71,12 @@ Eigensolvers
 Algorithms to find eigenvalues of an operator. For chemistry these can be used to find excited
 states of a molecule, and ``qiskit-nature`` has some algorithms that leverage chemistry specific
 knowledge to do this in that application domain.
-
-Primitive-based Eigensolvers
-++++++++++++++++++++++++++++
-
-These algorithms are based on the Qiskit Primitives, a new execution paradigm that replaces the use
-of :class:`.QuantumInstance` in algorithms. To ensure continued support and development, we recommend
-using the primitive-based Eigensolvers in place of the legacy :class:`.QuantumInstance`-based ones.
+These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
 
    eigensolvers
-
-
-Legacy Eigensolvers
-+++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   Eigensolver
-   EigensolverResult
-   NumPyEigensolver
-   VQD
-   VQDResult
-
 
 Time Evolvers
 -------------
@@ -115,13 +84,7 @@ Time Evolvers
 Algorithms to evolve quantum states in time. Both real and imaginary time evolution is possible
 with algorithms that support them. For machine learning, Quantum Imaginary Time Evolution might be
 used to train Quantum Boltzmann Machine Neural Networks for example.
-
-Primitive-based Time Evolvers
-+++++++++++++++++++++++++++++
-
-These algorithms are based on the Qiskit Primitives, a new execution paradigm that replaces the use
-of :class:`.QuantumInstance` in algorithms. To ensure continued support and development, we recommend
-using the primitive-based Time Evolvers in place of the legacy :class:`.QuantumInstance`-based ones.
+These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -137,23 +100,6 @@ using the primitive-based Time Evolvers in place of the legacy :class:`.QuantumI
    SciPyRealEvolver
    VarQITE
    VarQRTE
-
-Legacy Time Evolvers
-++++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-    RealEvolver
-    ImaginaryEvolver
-    TrotterQRTE
-    EvolutionResult
-    EvolutionProblem
-
 
 Variational Quantum Time Evolution
 ++++++++++++++++++++++++++++++++++
@@ -182,7 +128,7 @@ algorithm - :class:`~.time_evolvers.TrotterQRTE`.
 Gradients
 ----------
 
-Algorithms to calculate the gradient of a quantum circuit.
+Algorithms to calculate the gradient of a quantum circuit. These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -193,15 +139,7 @@ Algorithms to calculate the gradient of a quantum circuit.
 Minimum Eigensolvers
 ---------------------
 
-Algorithms that can find the minimum eigenvalue of an operator.
-
-Primitive-based Minimum Eigensolvers
-++++++++++++++++++++++++++++++++++++
-
-These algorithms are based on the Qiskit Primitives, a new execution paradigm that replaces the use
-of :class:`.QuantumInstance` in algorithms. To ensure continued support and development, we recommend
-using the primitive-based Minimum Eigensolvers in place of the legacy :class:`.QuantumInstance`-based
-ones.
+Algorithms that can find the minimum eigenvalue of an operator. These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -209,27 +147,10 @@ ones.
    minimum_eigensolvers
 
 
-Legacy Minimum Eigensolvers
-+++++++++++++++++++++++++++
-
-These algorithms, still based on the :class:`.QuantumInstance`, are superseded
-by the primitive-based versions in the section above but are still supported for now.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   MinimumEigensolver
-   MinimumEigensolverResult
-   NumPyMinimumEigensolver
-   QAOA
-   VQE
-
-
 Optimizers
 ----------
 
-Classical optimizers for use by quantum variational algorithms.
+Classical optimizers for use by quantum variational algorithms. These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -240,7 +161,7 @@ Classical optimizers for use by quantum variational algorithms.
 Phase Estimators
 ----------------
 
-Algorithms that estimate the phases of eigenstates of a unitary.
+Algorithms that estimate the phases of eigenstates of a unitary. These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -257,7 +178,7 @@ Algorithms that estimate the phases of eigenstates of a unitary.
 State Fidelities
 ----------------
 
-Algorithms that compute the fidelity of pairs of quantum states.
+Algorithms that compute the fidelity of pairs of quantum states. These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/

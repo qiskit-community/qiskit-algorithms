@@ -18,7 +18,6 @@ from qiskit import QuantumCircuit
 
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.circuit.parametertable import ParameterView
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.synthesis import ProductFormula, LieTrotter
@@ -37,14 +36,13 @@ class TrotterQRTE(RealTimeEvolver):
 
         .. code-block:: python
 
-            from qiskit.opflow import PauliSumOp
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
             from qiskit_algorithms import TimeEvolutionProblem
             from qiskit_algorithms.time_evolvers import TrotterQRTE
             from qiskit.primitives import Estimator
 
-            operator = PauliSumOp(SparsePauliOp([Pauli("X"), Pauli("Z")]))
+            operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
             initial_state = QuantumCircuit(1)
             time = 1
             evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
@@ -144,7 +142,7 @@ class TrotterQRTE(RealTimeEvolver):
 
         Args:
             evolution_problem: Instance defining evolution problem. For the included Hamiltonian,
-                ``Pauli`` or ``PauliSumOp`` are supported by TrotterQRTE.
+                ``Pauli`` or ``SparsePauliOp`` are supported by TrotterQRTE.
 
         Returns:
             Evolution result that includes an evolved state as a quantum circuit and, optionally,
@@ -168,14 +166,12 @@ class TrotterQRTE(RealTimeEvolver):
 
         # ensure the hamiltonian is a sparse pauli op
         hamiltonian = evolution_problem.hamiltonian
-        if not isinstance(hamiltonian, (Pauli, PauliSumOp, SparsePauliOp)):
+        if not isinstance(hamiltonian, (Pauli, SparsePauliOp)):
             raise ValueError(
-                f"TrotterQRTE only accepts Pauli | PauliSumOp | SparsePauliOp, {type(hamiltonian)} "
-                "provided."
+                f"TrotterQRTE only accepts Pauli | SparsePauliOp, {type(hamiltonian)} " "provided."
             )
-        if isinstance(hamiltonian, PauliSumOp):
-            hamiltonian = hamiltonian.primitive * hamiltonian.coeff
-        elif isinstance(hamiltonian, Pauli):
+
+        if isinstance(hamiltonian, Pauli):
             hamiltonian = SparsePauliOp(hamiltonian)
 
         t_param = evolution_problem.t_param

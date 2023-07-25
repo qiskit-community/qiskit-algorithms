@@ -20,7 +20,6 @@ from qiskit.quantum_info.states import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit import QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from ..time_evolution_problem import TimeEvolutionProblem
 from ..time_evolution_result import TimeEvolutionResult
 from ...exceptions import AlgorithmError
@@ -96,23 +95,20 @@ def _evaluate_aux_ops(
     return op_means
 
 
-def _operator_to_matrix(operator: BaseOperator | PauliSumOp):
+def _operator_to_matrix(operator: BaseOperator):
 
-    if isinstance(operator, PauliSumOp):
-        op_matrix = operator.to_spmatrix()
-    else:
+    try:
+        op_matrix = operator.to_matrix(sparse=True)
+    except TypeError:
+        logger.debug(
+            "WARNING: operator of type `%s` does not support sparse matrices. "
+            "Trying dense computation",
+            type(operator),
+        )
         try:
-            op_matrix = operator.to_matrix(sparse=True)
-        except TypeError:
-            logger.debug(
-                "WARNING: operator of type `%s` does not support sparse matrices. "
-                "Trying dense computation",
-                type(operator),
-            )
-            try:
-                op_matrix = operator.to_matrix()
-            except AttributeError as ex:
-                raise AlgorithmError(f"Unsupported operator type `{type(operator)}`.") from ex
+            op_matrix = operator.to_matrix()
+        except AttributeError as ex:
+            raise AlgorithmError(f"Unsupported operator type `{type(operator)}`.") from ex
     return op_matrix
 
 
