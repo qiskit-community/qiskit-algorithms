@@ -23,7 +23,6 @@ from scipy.optimize import minimize as scipy_minimize
 
 from qiskit.circuit import ParameterVector, QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
 from qiskit.utils import algorithm_globals
@@ -49,7 +48,7 @@ def _mock_optimizer(fun, x0, jac=None, bounds=None, inputs=None):
     return result
 
 
-PAULI_OP = PauliSumOp(SparsePauliOp(["ZZ", "IZ", "II"], coeffs=[1, -0.5, 0.12]))
+PAULI_OP = SparsePauliOp(["ZZ", "IZ", "II"], coeffs=[1, -0.5, 0.12])
 OP = Operator(PAULI_OP.to_matrix())
 
 

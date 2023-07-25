@@ -156,8 +156,6 @@ class TrotterQRTE(RealTimeEvolver):
             ValueError: If the ``initial_state`` is not provided in the ``TimeEvolutionProblem``.
             ValueError: If an unsupported Hamiltonian type is provided.
         """
-        evolution_problem.validate_params()
-
         if evolution_problem.aux_operators is not None and self.estimator is None:
             raise ValueError(
                 "The time evolution problem contained ``aux_operators`` but no estimator was "

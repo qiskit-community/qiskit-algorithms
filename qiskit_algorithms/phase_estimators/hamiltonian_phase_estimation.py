@@ -162,8 +162,6 @@ class HamiltonianPhaseEstimation:
         pe_scale = self._get_scale(hamiltonian_no_id, bound)
         unitary = self._get_unitary(hamiltonian_no_id, pe_scale, evolution)
 
-        if state_preparation is not None and isinstance(state_preparation, StateFn):
-            state_preparation = state_preparation.to_circuit_op().to_circuit()
         # run phase estimation
         phase_estimation_result = self._phase_estimation.estimate(
             unitary=unitary, state_preparation=state_preparation

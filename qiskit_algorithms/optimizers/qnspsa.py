@@ -18,9 +18,9 @@ from collections.abc import Iterator
 from typing import Any, Callable
 
 import numpy as np
-from qiskit.circuit import ParameterVector, QuantumCircuit
+from qiskit.circuit import QuantumCircuit
 
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSampler
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
@@ -235,12 +235,6 @@ class QNSPSA(SPSA):
     ) -> Callable[[np.ndarray, np.ndarray], float]:
         r"""Get a function to compute the fidelity of ``circuit`` with itself.
 
-        .. note::
-
-            Using this function with a backend and expectation converter is pending deprecation,
-            instead pass a Qiskit Primitive sampler, such as :class:`~.Sampler`.
-            The sampler can be passed as keyword argument or, positionally, as second argument.
-
         Let ``circuit`` be a parameterized quantum circuit performing the operation
         :math:`U(\theta)` given a set of parameters :math:`\theta`. Then this method returns
         a function to evaluate
@@ -254,11 +248,6 @@ class QNSPSA(SPSA):
 
         Args:
             circuit: The circuit preparing the parameterized ansatz.
-            backend: Deprecated. A backend of quantum instance to evaluate the circuits.
-                If None, plain matrix multiplication will be used.
-            expectation: Deprecated. An expectation converter to specify how the expected
-                value is computed. If a shot-based readout is used this should be set to
-                ``PauliExpectation``.
             sampler: A sampler primitive to sample from a quantum state.
 
         Returns:

@@ -14,11 +14,9 @@
 import unittest
 from test import QiskitAlgorithmsTestCase
 from ddt import data, ddt
-from numpy.testing import assert_raises
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector
 from qiskit.circuit import Parameter
-from qiskit.opflow import Y, Z, One, X, Zero, PauliSumOp
 
 from qiskit_algorithms import TimeEvolutionProblem
 
@@ -29,22 +27,24 @@ class TestTimeEvolutionProblem(QiskitAlgorithmsTestCase):
 
     def test_init_default(self):
         """Tests that all default fields are initialized correctly."""
-        hamiltonian = Y
+        hamiltonian = Pauli("Y")
         time = 2.5
-        initial_state = One
+        qc = QuantumCircuit(1)
+        qc.x(0)
+        initial_state = Statevector(qc)
 
         evo_problem = TimeEvolutionProblem(hamiltonian, time, initial_state)
 
-        expected_hamiltonian = Y
+        expected_hamiltonian = Pauli("Y")
         expected_time = 2.5
-        expected_initial_state = One
+        expected_initial_state = Statevector(qc)
         expected_aux_operators = None
         expected_t_param = None
         expected_param_value_dict = None
 
         self.assertEqual(evo_problem.hamiltonian, expected_hamiltonian)
         self.assertEqual(evo_problem.time, expected_time)
-        self.assertEqual(evo_problem.initial_state, expected_initial_state)
+        self.assertEqual(Statevector(evo_problem.initial_state), expected_initial_state)
         self.assertEqual(evo_problem.aux_operators, expected_aux_operators)
         self.assertEqual(evo_problem.t_param, expected_t_param)
         self.assertEqual(evo_problem.param_value_map, expected_param_value_dict)
@@ -53,10 +53,9 @@ class TestTimeEvolutionProblem(QiskitAlgorithmsTestCase):
     def test_init_all(self, initial_state):
         """Tests that all fields are initialized correctly."""
         t_parameter = Parameter("t")
-        with self.assertWarns(DeprecationWarning):
-            hamiltonian = t_parameter * Z + Y
+        hamiltonian = SparsePauliOp("Z", t_parameter) + SparsePauliOp("Y")
         time = 2
-        aux_operators = [X, Y]
+        aux_operators = [Pauli("X"), Pauli("Y")]
         param_value_dict = {t_parameter: 3.2}
 
         evo_problem = TimeEvolutionProblem(
@@ -68,31 +67,19 @@ class TestTimeEvolutionProblem(QiskitAlgorithmsTestCase):
             param_value_map=param_value_dict,
         )
 
-        with self.assertWarns(DeprecationWarning):
-            expected_hamiltonian = Y + t_parameter * Z
+        expected_hamiltonian = SparsePauliOp("Z", t_parameter) + SparsePauliOp("Y")
         expected_time = 2
         expected_type = QuantumCircuit
-        expected_aux_operators = [X, Y]
+        expected_aux_operators = [Pauli("X"), Pauli("Y")]
         expected_t_param = t_parameter
         expected_param_value_dict = {t_parameter: 3.2}
 
-        with self.assertWarns(DeprecationWarning):
-            self.assertEqual(evo_problem.hamiltonian, expected_hamiltonian)
+        self.assertEqual(evo_problem.hamiltonian, expected_hamiltonian)
         self.assertEqual(evo_problem.time, expected_time)
         self.assertEqual(type(evo_problem.initial_state), expected_type)
         self.assertEqual(evo_problem.aux_operators, expected_aux_operators)
         self.assertEqual(evo_problem.t_param, expected_t_param)
         self.assertEqual(evo_problem.param_value_map, expected_param_value_dict)
-
-    def test_validate_params(self):
-        """Tests expected errors are thrown on parameters mismatch."""
-        param_x = Parameter("x")
-        with self.subTest(msg="Parameter missing in dict."):
-            with self.assertWarns(DeprecationWarning):
-                hamiltonian = PauliSumOp(SparsePauliOp([Pauli("X"), Pauli("Y")]), param_x)
-            evolution_problem = TimeEvolutionProblem(hamiltonian, 2, Zero)
-            with assert_raises(ValueError):
-                evolution_problem.validate_params()
 
 
 if __name__ == "__main__":

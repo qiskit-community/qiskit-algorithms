@@ -16,7 +16,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from qiskit import QuantumCircuit
-from qiskit.circuit import Parameter, ParameterExpression
+from qiskit.circuit import Parameter
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 

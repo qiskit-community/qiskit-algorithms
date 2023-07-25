@@ -16,8 +16,8 @@ import unittest
 from test import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.utils import algorithm_globals
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Estimator
+from qiskit.quantum_info import SparsePauliOp
 from qiskit.test import slow_test
 
 from qiskit_algorithms import AlgorithmError
@@ -32,16 +32,15 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
         algorithm_globals.random_seed = 50
-        with self.assertWarns(DeprecationWarning):
-            self.qubit_op = PauliSumOp.from_list(
-                [
-                    ("II", -1.052373245772859),
-                    ("IZ", 0.39793742484318045),
-                    ("ZI", -0.39793742484318045),
-                    ("ZZ", -0.01128010425623538),
-                    ("XX", 0.18093119978423156),
-                ]
-            )
+        self.qubit_op = SparsePauliOp.from_list(
+            [
+                ("II", -1.052373245772859),
+                ("IZ", 0.39793742484318045),
+                ("ZI", -0.39793742484318045),
+                ("ZZ", -0.01128010425623538),
+                ("XX", 0.18093119978423156),
+            ]
+        )
         self.estimator = Estimator()
         self.gradient = LinCombEstimatorGradient(self.estimator)
 

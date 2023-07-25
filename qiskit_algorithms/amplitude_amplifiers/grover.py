@@ -21,7 +21,7 @@ import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSampler
-from qiskit.quantum_info import partial_trace, Statevector
+from qiskit.quantum_info import Statevector
 from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.exceptions import AlgorithmError

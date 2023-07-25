@@ -15,7 +15,7 @@
 from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.circuit.library import PauliTwoDesign
-from qiskit.opflow import I, Z, StateFn
+from qiskit.quantum_info import SparsePauliOp, Statevector
 
 from qiskit_algorithms.optimizers import GradientDescent, GradientDescentState
 from qiskit_algorithms.optimizers.steppable_optimizer import TellData, AskData
@@ -41,9 +41,7 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
         """Test standard gradient descent on the Pauli two-design example."""
         circuit = PauliTwoDesign(3, reps=3, seed=2)
         parameters = list(circuit.parameters)
-        with self.assertWarns(DeprecationWarning):
-            obs = Z ^ Z ^ I
-            expr = ~StateFn(obs) @ StateFn(circuit)
+        obs = SparsePauliOp("ZZI")  # Z^Z^I
 
         initial_point = np.array(
             [
@@ -63,7 +61,9 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
         )
 
         def objective_pauli(x):
-            return expr.bind_parameters(dict(zip(parameters, x))).eval().real
+            bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
+            state = Statevector(bound_circ)
+            return state.evolve(obs)
 
         optimizer = GradientDescent(maxiter=100, learning_rate=0.1, perturbation=0.1)
 

@@ -18,7 +18,6 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, data
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Operator, SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
@@ -36,8 +35,6 @@ H2_SPARSE_PAULI = SparsePauliOp(
 
 H2_OP = Operator(H2_SPARSE_PAULI.to_matrix())
 
-H2_PAULI = PauliSumOp(H2_SPARSE_PAULI)
-
 
 @ddt
 class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
@@ -50,7 +47,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
         self.aux_ops_list = [aux_op1, aux_op2]
         self.aux_ops_dict = {"aux_op1": aux_op1, "aux_op2": aux_op2}
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_cme(self, op):
         """Basic test"""
         algo = NumPyMinimumEigensolver()
@@ -60,7 +57,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(result.aux_operators_evaluated[0][0], 2)
         self.assertAlmostEqual(result.aux_operators_evaluated[1][0], 0)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_cme_reuse(self, op):
         """Test reuse"""
         algo = NumPyMinimumEigensolver()
@@ -98,7 +95,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.eigenvalue, 2 + 0j)
             self.assertIsNone(result.aux_operators_evaluated)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_cme_filter(self, op):
         """Basic test"""
 
@@ -114,7 +111,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(result.aux_operators_evaluated[0][0], 2)
         self.assertAlmostEqual(result.aux_operators_evaluated[1][0], 0)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_cme_filter_empty(self, op):
         """Test with filter always returning False"""
 
@@ -137,7 +134,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
         result = algo.compute_minimum_eigenvalue(operator=operator)
         self.assertAlmostEqual(result.eigenvalue, -1)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_cme_aux_ops_dict(self, op):
         """Test dictionary compatibility of aux_operators"""
         # Start with an empty dictionary
@@ -164,7 +161,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.aux_operators_evaluated["aux_op2"][0], 0)
             self.assertEqual(result.aux_operators_evaluated["zero_op"], (0.0, {"variance": 0}))
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_aux_operators_list(self, op):
         """Test list-based aux_operators."""
         algo = NumPyMinimumEigensolver()
@@ -195,7 +192,7 @@ class TestNumPyMinimumEigensolver(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.aux_operators_evaluated[1][1].pop("variance"), 0.0)
             self.assertEqual(result.aux_operators_evaluated[3][1].pop("variance"), 0.0)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_aux_operators_dict(self, op):
         """Test dict-based aux_operators."""
         algo = NumPyMinimumEigensolver()

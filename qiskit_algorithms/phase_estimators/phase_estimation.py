@@ -135,9 +135,7 @@ class PhaseEstimation(PhaseEstimator):
 
         return circuit
 
-    def _compute_phases(
-        self, num_unitary_qubits: int, circuit_result: Result
-    ) -> numpy.ndarray | qiskit.result.Counts:
+    def _compute_phases(self, circuit_result: Result) -> numpy.ndarray | qiskit.result.Counts:
         """Compute frequencies/counts of phases from the result of running the QPE circuit.
 
         How the frequencies are computed depends on whether the backend computes amplitude or
@@ -227,6 +225,5 @@ class PhaseEstimation(PhaseEstimator):
             An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
         """
         pe_circuit = self.construct_circuit(unitary, state_preparation)
-        num_unitary_qubits = unitary.num_qubits
 
-        return self.estimate_from_pe_circuit(pe_circuit, num_unitary_qubits)
+        return self.estimate_from_pe_circuit(pe_circuit)

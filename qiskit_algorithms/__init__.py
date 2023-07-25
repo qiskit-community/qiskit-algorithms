@@ -128,7 +128,8 @@ algorithm - :class:`~.time_evolvers.TrotterQRTE`.
 Gradients
 ----------
 
-Algorithms to calculate the gradient of a quantum circuit. These algorithms are based on the Qiskit Primitives.
+Algorithms to calculate the gradient of a quantum circuit. These algorithms are based
+on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -139,7 +140,8 @@ Algorithms to calculate the gradient of a quantum circuit. These algorithms are 
 Minimum Eigensolvers
 ---------------------
 
-Algorithms that can find the minimum eigenvalue of an operator. These algorithms are based on the Qiskit Primitives.
+Algorithms that can find the minimum eigenvalue of an operator. These algorithms are
+based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -150,7 +152,8 @@ Algorithms that can find the minimum eigenvalue of an operator. These algorithms
 Optimizers
 ----------
 
-Classical optimizers for use by quantum variational algorithms. These algorithms are based on the Qiskit Primitives.
+Classical optimizers for use by quantum variational algorithms. These algorithms
+are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -161,7 +164,8 @@ Classical optimizers for use by quantum variational algorithms. These algorithms
 Phase Estimators
 ----------------
 
-Algorithms that estimate the phases of eigenstates of a unitary. These algorithms are based on the Qiskit Primitives.
+Algorithms that estimate the phases of eigenstates of a unitary. These algorithms
+are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -178,7 +182,8 @@ Algorithms that estimate the phases of eigenstates of a unitary. These algorithm
 State Fidelities
 ----------------
 
-Algorithms that compute the fidelity of pairs of quantum states. These algorithms are based on the Qiskit Primitives.
+Algorithms that compute the fidelity of pairs of quantum states. These algorithms
+are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
