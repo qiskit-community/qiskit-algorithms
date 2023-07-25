@@ -2,6 +2,22 @@
 Qiskit Algorithms documentation
 ################################
 
+Overview
+========
+
+Qiskit Algorithms is a library of quantum algorithms based on Qiskit,
+suitable to run on near-term quantum devices with short-depth circuits.
+
+
+Next Steps
+===========
+
+`Getting started <getting_started.html>`_
+
+`Tutorials <tutorials/index.html>`_
+
+
+.. currentmodule:: qiskit_algorithms
 
 .. toctree::
   :hidden:
