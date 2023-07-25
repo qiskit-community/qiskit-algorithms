@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The primitive-based algorithms in :mod:`qiskit_algorithms.eigensolvers` and
+    :mod:`qiskit_algorithms.minimum_eigensolvers` are now directly
+    importable from `qiskit_algorithms`.
