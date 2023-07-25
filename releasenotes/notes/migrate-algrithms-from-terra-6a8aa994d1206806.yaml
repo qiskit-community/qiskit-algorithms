@@ -1,0 +1,17 @@
+---
+prelude:
+  - |
+    Qiskit's `qiskit.algorithms` module has been superseded by this
+    new standalone library, ``qiskit_algorithms``.
+    As of Qiskit's 0.25 release, active development of new
+    algorithm features has moved to this new package.
+    If you're relying on :mod:`qiskit.algorithms` you should update your
+    requirements to also include ``qiskit-algorithms`` and update the imports
+    from ``qiskit.algorithms`` to ``qiskit_algorithms``. If you have not yet
+    migrated from ``QuantumInstance``-based to primitives-based algorithms,
+    you should follow the migration guidelines in https://qisk.it/algo_migration,
+    to complete the migration of your code, as this package does not include 
+    any deprecated algorithm function.
+    The decision to migrate the :mod:`~.algorithms` module to a
+    separate package was made to clarify the purpose of Qiskit and
+    make a distinction between the tools and libraries built on top of it.

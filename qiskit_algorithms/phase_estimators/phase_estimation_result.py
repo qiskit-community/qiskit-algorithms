@@ -14,7 +14,6 @@
 from __future__ import annotations
 import numpy
 
-from qiskit.utils.deprecation import deprecate_func
 from qiskit.result import Result
 from .phase_estimator import PhaseEstimatorResult
 
@@ -65,20 +64,6 @@ class PhaseEstimationResult(PhaseEstimatorResult):
         This is useful for inspecting and troubleshooting the QPE algorithm.
         """
         return self._circuit_result
-
-    @property
-    @deprecate_func(
-        additional_msg="Instead, use the property ``phase``, which behaves the same.",
-        since="0.18.0",
-        is_property=True,
-    )
-    def most_likely_phase(self) -> float:
-        r"""DEPRECATED - Return the most likely phase as a number in :math:`[0.0, 1.0)`.
-
-        1.0 corresponds to a phase of :math:`2\pi`. This selects the phase corresponding
-        to the bit string with the highesest probability. This is the most likely phase.
-        """
-        return self.phase
 
     @property
     def phase(self) -> float:
