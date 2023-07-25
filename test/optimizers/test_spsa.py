@@ -48,8 +48,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
         def objective(x):
             bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
-            state = Statevector(bound_circ)
-            return state.evolve(obs)
+            return Statevector(bound_circ).expectation_value(obs).real
 
         settings = {"maxiter": 100, "blocking": True, "allowed_increase": 0}
 
