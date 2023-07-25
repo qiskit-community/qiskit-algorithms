@@ -336,6 +336,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
         shots = ret.metadata[0].get("shots")
+        exact = True
         if shots is None:
             result.circuit_results = ret.quasi_dists[0].binary_probabilities()
             shots = 1
@@ -343,6 +344,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             result.circuit_results = {
                 k: round(v * shots) for k, v in ret.quasi_dists[0].binary_probabilities().items()
             }
+            exact = False
 
         # store shots
         result.shots = shots
@@ -370,7 +372,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         result.mle = mle
         result.mle_processed = estimation_problem.post_processing(mle)
 
-        result.confidence_interval = self.compute_confidence_interval(result)
+        result.confidence_interval = self.compute_confidence_interval(result, exact=exact)
         result.confidence_interval_processed = tuple(
             estimation_problem.post_processing(value) for value in result.confidence_interval
         )
@@ -379,7 +381,8 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_confidence_interval(
-        result: "AmplitudeEstimationResult", alpha: float = 0.05, kind: str = "likelihood_ratio"
+        result: "AmplitudeEstimationResult", alpha: float = 0.05, kind: str = "likelihood_ratio",
+        exact: bool = False
     ) -> tuple[float, float]:
         """Compute the (1 - alpha) confidence interval.
 
@@ -388,6 +391,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             alpha: Confidence level: compute the (1 - alpha) confidence interval.
             kind: The method to compute the confidence interval, can be 'fisher', 'observed_fisher'
                 or 'likelihood_ratio' (default)
+            exact: Whether the result comes from a statevector simulation or not
 
         Returns:
             The (1 - alpha) confidence interval of the specified kind.
@@ -397,7 +401,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             NotImplementedError: If the confidence interval method `kind` is not implemented.
         """
         # if statevector simulator the estimate is exact
-        if isinstance(result.circuit_results, (list, np.ndarray)):
+        if exact:
             return (result.mle, result.mle)
 
         if kind in ["likelihood_ratio", "lr"]:
