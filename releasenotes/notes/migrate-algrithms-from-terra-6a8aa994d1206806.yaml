@@ -4,7 +4,7 @@ prelude:
     Qiskit's `qiskit.algorithms` module has been superseded by this
     new standalone library, ``qiskit_algorithms``.
     As of Qiskit's 0.25 release, active development of new
-    features has moved to this new package.
+    algorithm features has moved to this new package.
     If you're relying on :mod:`qiskit.algorithms` you should update your
     requirements to also include ``qiskit-algorithms`` and update the imports
     from ``qiskit.algorithms`` to ``qiskit_algorithms``. If you have not yet
