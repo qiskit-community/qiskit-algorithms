@@ -169,6 +169,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
+        exact = False
     ) -> tuple[float, float]:
         """Compute the `alpha` confidence interval using the method `kind`.
 
@@ -182,6 +183,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             kind: The method to compute the confidence interval. Defaults to 'fisher', which
                 computes the theoretical Fisher information.
             apply_post_processing: If True, apply post-processing to the confidence interval.
+            exact: Whether the result comes from a statevector simulation or not
 
         Returns:
             The specified confidence interval.
@@ -193,7 +195,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         interval: tuple[float, float] | None = None
 
         # if statevector simulator the estimate is exact
-        if all(isinstance(data, (list, np.ndarray)) for data in result.circuit_results):
+        if exact:
             interval = (result.estimation, result.estimation)
 
         elif kind in ["likelihood_ratio", "lr"]:
@@ -296,6 +298,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         result.circuit_results = []
         shots = ret.metadata[0].get("shots")
+        exact = True
         if shots is None:
             for quasi_dist in ret.quasi_dists:
                 circuit_result = quasi_dist.binary_probabilities()
@@ -306,6 +309,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             for quasi_dist in ret.quasi_dists:
                 counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
                 result.circuit_results.append(counts)
+            exact = False
 
         result.shots = shots
 
@@ -328,7 +332,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.num_oracle_queries = result.shots * sum(k for k in result.evaluation_schedule)
 
         # compute and store confidence interval
-        confidence_interval = self.compute_confidence_interval(result, alpha=0.05, kind="fisher")
+        confidence_interval = self.compute_confidence_interval(result, alpha=0.05, kind="fisher", exact=exact)
         result.confidence_interval = confidence_interval
         result.confidence_interval_processed = tuple(
             estimation_problem.post_processing(value) for value in confidence_interval
