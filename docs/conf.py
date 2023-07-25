@@ -50,6 +50,39 @@ extensions = [
     "nbsphinx"
 ]
 
+rst_prolog = """
+.. raw:: html
+
+    <br><br><br>
+
+.. |version| replace:: {0}
+""".format(
+    release
+)
+
+nbsphinx_prolog = """
+{% set docname = env.doc2path(env.docname, base=None) %}
+.. only:: html
+
+    .. role:: raw-html(raw)
+        :format: html
+
+    .. note::
+        This page was generated from `docs/{{ docname }}`__.
+
+        __"""
+
+vers = version.split(".")
+link_str = f" https://github.com/qiskit-community/qiskit-algorithms/blob/stable/{vers[0]}.{vers[1]}/docs/"
+nbsphinx_prolog += link_str + "{{ docname }}"
+
+nbsphinx_timeout = 360
+nbsphinx_execute = os.getenv("QISKIT_DOCS_BUILD_TUTORIALS", "never")
+nbsphinx_widgets_path = ""
+nbsphinx_thumbnails = {
+    "**": "_static/images/logo.png",
+}
+
 templates_path = ["_templates"]
 
 # Number figures, tables and code-blocks if they have a caption.
