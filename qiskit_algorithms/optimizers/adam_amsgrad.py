@@ -203,7 +203,7 @@ class ADAM(Optimizer):
         x0: POINT,
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
-    ) -> OptimizerResult:  # TODO find proper way to deprecate return type
+    ) -> OptimizerResult:
         """Minimize the scalar function.
 
         Args:
