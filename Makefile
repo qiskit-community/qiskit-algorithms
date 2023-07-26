@@ -35,9 +35,9 @@ endif
 # You can set this variable from the command line.
 SPHINXOPTS    =
 
-.PHONY: lint style black test test_ci spell copyright coverage clean
+.PHONY: lint style black test test_ci spell copyright html doctest clean_sphinx coverage clean
 
-all_check: spell style lint copyright
+all_check: spell style lint copyright clean_sphinx html doctest
 
 lint:
 	pylint -rn qiskit_algorithms test tools
@@ -58,9 +58,19 @@ test_ci:
 
 spell:
 	pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_algorithms test tools
+	sphinx-build -M spelling docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 copyright:
 	python tools/check_copyright.py
+
+html:
+	sphinx-build -M html docs docs/_build -W -T --keep-going $(SPHINXOPTS)
+
+doctest:
+	sphinx-build -M doctest docs docs/_build -W -T --keep-going $(SPHINXOPTS)
+
+clean_sphinx:
+	make -C docs clean
 
 coverage:
 	coverage3 run --source qiskit_algorithms -m unittest discover -s test -q
