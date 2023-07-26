@@ -169,7 +169,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
-        exact=False,
+        exact: bool = False,
     ) -> tuple[float, float]:
         """Compute the `alpha` confidence interval using the method `kind`.
 
