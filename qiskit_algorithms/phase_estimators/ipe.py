@@ -53,6 +53,7 @@ class IterativePhaseEstimation(PhaseEstimator):
         """
         if sampler is None:
             raise AlgorithmError("A sampler must be provided.")
+
         if num_iterations <= 0:
             raise ValueError("`num_iterations` must be greater than zero.")
         self._num_iterations = num_iterations
@@ -121,8 +122,6 @@ class IterativePhaseEstimation(PhaseEstimator):
         for k in range(self._num_iterations, 0, -1):
             omega_coef /= 2
 
-        if self._sampler is not None:
-
             qc = self.construct_circuit(
                 unitary, state_preparation, k, -2 * numpy.pi * omega_coef, True
             )
@@ -133,7 +132,8 @@ class IterativePhaseEstimation(PhaseEstimator):
                 raise AlgorithmError("The primitive job failed!") from exc
             x = 1 if result.get(1, 0) > result.get(0, 0) else 0
 
-        omega_coef = omega_coef + x / 2
+            omega_coef = omega_coef + x / 2
+
         return omega_coef
 
     # pylint: disable=signature-differs
