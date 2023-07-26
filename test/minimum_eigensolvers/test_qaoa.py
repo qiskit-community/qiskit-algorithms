@@ -72,7 +72,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
     @idata(
         [
             [W1, P1, M1, S1, False],
-            [W2, P2, M2, S2, True],
+            [W2, P2, M2, S2, False],
         ]
     )
     @unpack
@@ -96,7 +96,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
     @idata(
         [
             [W1, P1, S1, False],
-            [W2, P2, S2, True],
+            [W2, P2, S2, False],
         ]
     )
     @unpack
@@ -188,7 +188,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None, False], [W2, S2, [0.0, 0.0], True], [W2, S2, [1.0, 0.8], True]])
+    @idata([[W2, S2, None, False], [W2, S2, [0.0, 0.0], False], [W2, S2, [1.0, 0.8], False]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt, uses_deprecated):
         """Check first parameter value used is initial point as expected"""

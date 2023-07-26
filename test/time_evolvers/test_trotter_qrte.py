@@ -159,7 +159,11 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         )
 
     @data(
-        (QuantumCircuit(1), Statevector([0.23071786 - 0.69436148j, 0.4646314 - 0.49874749j]), True),
+        (
+            QuantumCircuit(1),
+            Statevector([0.23071786 - 0.69436148j, 0.4646314 - 0.49874749j]),
+            False,
+        ),
         (
             QuantumCircuit(1).compose(ZGate(), [0]),
             Statevector([0.23071786 - 0.69436148j, 0.4646314 - 0.49874749j]),
