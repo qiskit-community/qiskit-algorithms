@@ -19,7 +19,6 @@ import os
 
 import csv
 import numpy as np
-from qiskit.utils.deprecation import deprecate_arg
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
 # pylint: disable=invalid-name
@@ -198,21 +197,13 @@ class ADAM(Optimizer):
         t = t[1:-1]
         self._t = np.fromstring(t, dtype=int, sep=" ")
 
-    @deprecate_arg("objective_function", new_alias="fun", since="0.19.0")
-    @deprecate_arg("initial_point", new_alias="fun", since="0.19.0")
-    @deprecate_arg("gradient_function", new_alias="jac", since="0.19.0")
     def minimize(
         self,
         fun: Callable[[POINT], float],
         x0: POINT,
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
-        # pylint:disable=unused-argument
-        objective_function: Callable[[np.ndarray], float] | None = None,
-        initial_point: np.ndarray | None = None,
-        gradient_function: Callable[[np.ndarray], float] | None = None,
-        # ) -> Tuple[np.ndarray, float, int]:
-    ) -> OptimizerResult:  # TODO find proper way to deprecate return type
+    ) -> OptimizerResult:
         """Minimize the scalar function.
 
         Args:
@@ -221,11 +212,6 @@ class ADAM(Optimizer):
             jac: The gradient of the scalar function ``fun``.
             bounds: Bounds for the variables of ``fun``. This argument might be ignored if the
                 optimizer does not support bounds.
-            objective_function: DEPRECATED. A function handle to the objective function.
-            initial_point: DEPRECATED. The initial iteration point.
-            gradient_function: DEPRECATED. A function handle to the gradient of the objective
-                function.
-
         Returns:
             The result of the optimization, containing e.g. the result as attribute ``x``.
         """
