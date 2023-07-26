@@ -73,6 +73,6 @@ runs:
           fi
         else
           echo 'Install Terra from Stable'
-          pip install -U qiskit-terra
+          pip install -U qiskit-terra==0.25.rc1
         fi
       shell: bash
