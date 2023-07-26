@@ -42,28 +42,18 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         num_evaluation_qubits=6,
         evolution=None,
         bound=None,
-        uses_opflow=True,
     ):
         """Run HamiltonianPhaseEstimation and return result with all phases."""
         sampler = Sampler()
         phase_est = HamiltonianPhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits, sampler=sampler
         )
-        if uses_opflow:
-            with self.assertWarns(DeprecationWarning):
-                result = phase_est.estimate(
-                    hamiltonian=hamiltonian,
-                    state_preparation=state_preparation,
-                    evolution=evolution,
-                    bound=bound,
-                )
-        else:
-            result = phase_est.estimate(
-                hamiltonian=hamiltonian,
-                state_preparation=state_preparation,
-                evolution=evolution,
-                bound=bound,
-            )
+        result = phase_est.estimate(
+            hamiltonian=hamiltonian,
+            state_preparation=state_preparation,
+            evolution=evolution,
+            bound=bound,
+        )
         return result
 
     @data(MatrixExponential(), SuzukiTrotter(reps=4))
@@ -72,9 +62,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Z", 1)])
         state_preparation = QuantumCircuit(1).compose(HGate())
 
-        result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=evolution, uses_opflow=False
-        )
+        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evolution)
         phase_dict = result.filter_phases(0.162, as_float=True)
         phases = list(phase_dict.keys())
         phases.sort()
@@ -88,9 +76,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Z", 1), ("Y", 1)])
         state_preparation = None
 
-        result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=evolution, uses_opflow=False
-        )
+        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evolution)
         phase_dict = result.filter_phases(0.1, as_float=True)
         phases = list(phase_dict.keys())
         phases.sort()
@@ -103,18 +89,14 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp(Pauli("Z"))
         state_preparation = None
 
-        result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=None, uses_opflow=False
-        )
+        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=None)
         eigv = result.most_likely_eigenvalue
         with self.subTest("First eigenvalue"):
             self.assertAlmostEqual(eigv, 1.0, delta=0.001)
 
         state_preparation = QuantumCircuit(1).compose(XGate())
 
-        result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, bound=1.05, uses_opflow=False
-        )
+        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, bound=1.05)
         eigv = result.most_likely_eigenvalue
         with self.subTest("Second eigenvalue"):
             self.assertAlmostEqual(eigv, -0.98, delta=0.01)
@@ -137,9 +119,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         )
 
         evo = SuzukiTrotter(reps=4)
-        result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=evo, uses_opflow=False
-        )
+        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evo)
         with self.subTest("Most likely eigenvalues"):
             self.assertAlmostEqual(result.most_likely_eigenvalue, -1.855, delta=0.001)
         with self.subTest("Most likely phase"):
@@ -158,7 +138,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Y", 0.6), ("I", 0.7)])
         state_preparation = None
         result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=MatrixExponential(), uses_opflow=False
+            hamiltonian, state_preparation, evolution=MatrixExponential()
         )
         phase_dict = result.filter_phases(0.2, as_float=True)
         phases = sorted(phase_dict.keys())

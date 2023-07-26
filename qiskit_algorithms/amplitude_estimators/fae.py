@@ -13,10 +13,11 @@
 """Faster Amplitude Estimation."""
 
 from __future__ import annotations
+import warnings
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSampler, Sampler
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
@@ -88,7 +89,8 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
     def _cos_estimate(self, estimation_problem, k, shots):
 
         if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
@@ -172,11 +174,11 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             An amplitude estimation results object.
 
         Raises:
-            ValueError: A Sampler must be provided.
             AlgorithmError: Sampler run error.
         """
         if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         self._num_oracle_calls = 0
 

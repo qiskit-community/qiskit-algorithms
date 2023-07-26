@@ -20,7 +20,7 @@ from scipy.stats import chi2, norm
 from scipy.optimize import bisect
 
 from qiskit import QuantumCircuit, ClassicalRegister
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSampler, Sampler
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .ae_utils import pdf_a, derivative_log_pdf_a, bisect_max
 from .estimation_problem import EstimationProblem
@@ -302,7 +302,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
         Raises:
             ValueError: If `state_preparation` or `objective_qubits` are not set in the
                 `estimation_problem`.
-            ValueError: A sampler must be provided.
             AlgorithmError: Sampler job run error.
         """
         # check if A factory or state_preparation has been set
@@ -311,7 +310,8 @@ class AmplitudeEstimation(AmplitudeEstimator):
                 "The state_preparation property of the estimation problem must be set."
             )
         if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         if estimation_problem.objective_qubits is None:
             raise ValueError("The objective_qubits property of the estimation problem must be set.")
@@ -399,7 +399,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
             The (1 - alpha) confidence interval of the specified kind.
 
         Raises:
-            AquaError: If 'mle' is not in self._ret.keys() (i.e. `run` was not called yet).
             NotImplementedError: If the confidence interval method `kind` is not implemented.
         """
         # if statevector simulator the estimate is exact

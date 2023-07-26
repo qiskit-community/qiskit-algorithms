@@ -162,16 +162,14 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         (
             QuantumCircuit(1),
             Statevector([0.23071786 - 0.69436148j, 0.4646314 - 0.49874749j]),
-            False,
         ),
         (
             QuantumCircuit(1).compose(ZGate(), [0]),
             Statevector([0.23071786 - 0.69436148j, 0.4646314 - 0.49874749j]),
-            False,
         ),
     )
     @unpack
-    def test_trotter_qrte_qdrift(self, initial_state, expected_state, deprecated):
+    def test_trotter_qrte_qdrift(self, initial_state, expected_state):
         """Test for TrotterQRTE with QDrift."""
         operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
         time = 1
@@ -180,11 +178,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         algorithm_globals.random_seed = 0
         trotter_qrte = TrotterQRTE(product_formula=QDrift())
 
-        if deprecated:
-            with self.assertWarns(DeprecationWarning):
-                evolution_result = trotter_qrte.evolve(evolution_problem)
-        else:
-            evolution_result = trotter_qrte.evolve(evolution_problem)
+        evolution_result = trotter_qrte.evolve(evolution_problem)
 
         np.testing.assert_array_almost_equal(
             Statevector.from_instruction(evolution_result.evolved_state).data,

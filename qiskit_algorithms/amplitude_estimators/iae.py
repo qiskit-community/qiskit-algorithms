@@ -14,11 +14,12 @@
 
 from __future__ import annotations
 from typing import cast
+import warnings
 import numpy as np
 from scipy.stats import beta
 
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSampler, Sampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -288,7 +289,8 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler job run error.
         """
         if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         # initialize memory variables
         powers = [0]  # list of powers k: Q^k, (called 'k' in paper)

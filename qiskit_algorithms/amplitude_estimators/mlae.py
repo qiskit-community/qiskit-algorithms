@@ -15,13 +15,14 @@
 from __future__ import annotations
 from collections.abc import Sequence
 from typing import Callable, List, Tuple
+import warnings
 
 import numpy as np
 from scipy.optimize import brute
 from scipy.stats import norm, chi2
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSampler, Sampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -269,13 +270,14 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             An amplitude estimation results object.
 
         Raises:
-            ValueError: A Sampler must be provided.
             AlgorithmError: If `state_preparation` is not set in
                 `estimation_problem`.
             AlgorithmError: Sampler job run error
         """
         if self._sampler is None:
-            raise ValueError("A sampler must be provided.")
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
+
         if estimation_problem.state_preparation is None:
             raise AlgorithmError(
                 "The state_preparation property of the estimation problem must be set."

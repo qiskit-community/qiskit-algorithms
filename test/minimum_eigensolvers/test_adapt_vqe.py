@@ -113,8 +113,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
             VQE(Estimator(), self.ansatz, self.optimizer),
             gradient_threshold=1e-3,
         )
-        with self.assertWarns(DeprecationWarning):
-            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
 
         self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
