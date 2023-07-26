@@ -93,22 +93,13 @@ Some optimization algorithms require specific libraries to be run:
 Ready to get going?...
 ======================
 
-.. raw:: html
+.. qiskit-call-to-action-grid::
 
-   <div class="tutorials-callout-container">
-      <div class="row">
-
-.. qiskit-call-to-action-item::
-   :description: Find out about Qiskit Algorithms.
-   :header: Dive into the tutorials
-   :button_link:  ./tutorials/index.html
-   :button_text: Qiskit Algorithms tutorials
-
-.. raw:: html
-
-      </div>
-   </div>
-
+    .. qiskit-call-to-action-item::
+       :description: Find out about Qiskit Algorithms.
+       :header: Dive into the tutorials
+       :button_link:  ./tutorials/index.html
+       :button_text: Qiskit Algorithms tutorials
 
 .. Hiding - Indices and tables
    :ref:`genindex`

@@ -22,6 +22,8 @@ Next Steps
 .. toctree::
   :hidden:
 
+  Overview <self>
+  Getting Started <getting_started>
   API References <apidocs/algorithms>
   Tutorials <tutorials/index>
   Release Notes <release_notes>
