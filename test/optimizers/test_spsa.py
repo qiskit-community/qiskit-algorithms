@@ -71,8 +71,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         else:
             spsa = SPSA(**settings)
 
-        with self.assertWarns(DeprecationWarning):
-            result = spsa.optimize(circuit.num_parameters, objective, initial_point=initial_point)
+        result = spsa.optimize(circuit.num_parameters, objective, initial_point=initial_point)
 
         with self.subTest("check final accuracy"):
             self.assertLess(result[1], -0.95)  # final loss
