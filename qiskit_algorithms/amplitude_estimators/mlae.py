@@ -169,7 +169,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
-        exact = False
+        exact=False,
     ) -> tuple[float, float]:
         """Compute the `alpha` confidence interval using the method `kind`.
 
@@ -332,7 +332,9 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.num_oracle_queries = result.shots * sum(k for k in result.evaluation_schedule)
 
         # compute and store confidence interval
-        confidence_interval = self.compute_confidence_interval(result, alpha=0.05, kind="fisher", exact=exact)
+        confidence_interval = self.compute_confidence_interval(
+            result, alpha=0.05, kind="fisher", exact=exact
+        )
         result.confidence_interval = confidence_interval
         result.confidence_interval_processed = tuple(
             estimation_problem.post_processing(value) for value in confidence_interval

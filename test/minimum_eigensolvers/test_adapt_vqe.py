@@ -125,7 +125,6 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         calc = AdaptVQE(
             VQE(Estimator(), self.ansatz, self.optimizer),
             max_iterations=1,
-
         )
         with self.assertWarns(DeprecationWarning):
             res = calc.compute_minimum_eigenvalue(operator=self.h2_op)

@@ -381,8 +381,10 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_confidence_interval(
-        result: "AmplitudeEstimationResult", alpha: float = 0.05, kind: str = "likelihood_ratio",
-        exact: bool = False
+        result: "AmplitudeEstimationResult",
+        alpha: float = 0.05,
+        kind: str = "likelihood_ratio",
+        exact: bool = False,
     ) -> tuple[float, float]:
         """Compute the (1 - alpha) confidence interval.
 

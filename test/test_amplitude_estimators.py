@@ -527,7 +527,7 @@ class TestFasterAmplitudeEstimation(QiskitAlgorithmsTestCase):
         result = fae.estimate(problem)
 
         # assert the result is correct
-        self.assertAlmostEqual(result.estimation, expect, places=3) # reduced from 5
+        self.assertAlmostEqual(result.estimation, expect, places=3)  # reduced from 5
 
 
 if __name__ == "__main__":

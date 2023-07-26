@@ -94,13 +94,8 @@ class PhaseEstimation(PhaseEstimator):
             AlgorithmError: If a sampler is not provided
         """
         if sampler is None:
-<<<<<<< HEAD
             raise AlgorithmError("A sampler must be provided.")
-=======
-            raise AlgorithmError(
-                "Neither a sampler nor a quantum instance was provided. Please provide one of them."
-            )
->>>>>>> 317e2ae (Update ipe)
+
         self._measurements_added = False
         if num_evaluation_qubits is not None:
             self._num_evaluation_qubits = num_evaluation_qubits
@@ -137,13 +132,7 @@ class PhaseEstimation(PhaseEstimator):
         creg = ClassicalRegister(self._num_evaluation_qubits, regname)
         pe_circuit.add_register(creg)
         pe_circuit.barrier()
-<<<<<<< HEAD
         pe_circuit.measure(range(self._num_evaluation_qubits), range(self._num_evaluation_qubits))
-=======
-        pe_circuit.measure(
-            range(self._num_evaluation_qubits), range(self._num_evaluation_qubits)
-        )
->>>>>>> 317e2ae (Update ipe)
 
         return circuit
 
@@ -175,10 +164,7 @@ class PhaseEstimation(PhaseEstimator):
             Either a dict or numpy.ndarray representing the frequencies of the phases.
 
         """
-<<<<<<< HEAD
 
-=======
->>>>>>> 317e2ae (Update ipe)
         # return counts with keys sorted numerically
         num_shots = circuit_result.results[0].shots
         counts = circuit_result.get_counts()
