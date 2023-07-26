@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseSampler
@@ -90,7 +91,6 @@ class HamiltonianPhaseEstimation:
                 be estimated as a binary string with this many bits.
             sampler: The sampler primitive on which the circuit will be sampled.
         """
-
         self._phase_estimation = PhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
@@ -114,6 +114,9 @@ class HamiltonianPhaseEstimation:
         unitary.append(evo, unitary.qubits)
 
         return unitary.decompose().decompose()
+        # Decomposing twice allows some 1Q Hamiltonians to give correct results
+        # when using MatrixEvolution(), that otherwise would give incorrect results.
+        # It does not break any others that we tested.
 
     def estimate(
         self,
@@ -129,10 +132,10 @@ class HamiltonianPhaseEstimation:
             state_preparation: The state to be prepared, whose eigenphase will be
                 measured. If this parameter is omitted, no preparation circuit will be run and
                 input state will be the all-zero state in the computational basis.
-            evolution: An evolution converter that generates a unitary from ``hamiltonian``.
+            evolution: An evolution synthesis class.
             bound: An upper bound on the absolute value of the eigenvalues of
-                ``hamiltonian``. If omitted, then ``hamiltonian`` must be a Pauli sum, or a
-                ``SparsePauliOp``, in which case a bound will be computed. The tighter the bound,
+                ``hamiltonian``. If omitted, then ``hamiltonian`` must be a SparsePauliOp,
+                in which case a bound will be computed. The tighter the bound,
                 the higher the resolution of computed phases.
 
         Returns:
@@ -144,9 +147,9 @@ class HamiltonianPhaseEstimation:
             TypeError: If ``hamiltonian`` type is not ``Pauli`` or ``SparsePauliOp``.
             ValueError: If ``bound`` is ``None`` and ``hamiltonian`` is not a Pauli sum.
         """
-
         if evolution is not None and not isinstance(evolution, EvolutionSynthesis):
             raise TypeError(f"Expecting type EvolutionSynthesis, got {type(evolution)}")
+
         if not isinstance(hamiltonian, (Pauli, SparsePauliOp)):
             raise TypeError(
                 f"Expecting Hamiltonian type Pauli, SparsePauliOp, " f"got {type(hamiltonian)}."
@@ -157,8 +160,12 @@ class HamiltonianPhaseEstimation:
             circuit.prepare_state(state_preparation.data)
             state_preparation = circuit
 
-        id_coefficient = 0.0
-        hamiltonian_no_id = hamiltonian
+        if isinstance(hamiltonian, SparsePauliOp):
+            id_coefficient, hamiltonian_no_id = _remove_identity(hamiltonian)
+        else:
+            id_coefficient = 0.0
+            hamiltonian_no_id = hamiltonian
+
         pe_scale = self._get_scale(hamiltonian_no_id, bound)
         unitary = self._get_unitary(hamiltonian_no_id, pe_scale, evolution)
 
@@ -171,3 +178,24 @@ class HamiltonianPhaseEstimation:
             id_coefficient=id_coefficient,
             phase_estimation_scale=pe_scale,
         )
+
+
+def _remove_identity(pauli_sum: SparsePauliOp):
+    """Remove any identity operators from ``pauli_sum``. Return
+    the sum of the coefficients of the identities and the new operator.
+    """
+
+    def _get_identity(size):
+        identity = SparsePauliOp("I")
+        for _ in range(size - 1):
+            identity = identity ^ SparsePauliOp("I")
+        return identity
+
+    idcoeff = 0.0
+    if isinstance(pauli_sum, SparsePauliOp):
+        for operator in pauli_sum:
+            if operator.paulis == ["I" * pauli_sum.num_qubits]:
+                idcoeff += operator.coeffs[0]
+                pauli_sum = pauli_sum - operator.coeffs[0] * _get_identity(pauli_sum.num_qubits)
+
+    return idcoeff, pauli_sum.simplify()

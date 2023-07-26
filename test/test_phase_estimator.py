@@ -72,7 +72,9 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Z", 1)])
         state_preparation = QuantumCircuit(1).compose(HGate())
 
-        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evolution, uses_opflow=False)
+        result = self.hamiltonian_pe_sampler(
+            hamiltonian, state_preparation, evolution=evolution, uses_opflow=False
+        )
         phase_dict = result.filter_phases(0.162, as_float=True)
         phases = list(phase_dict.keys())
         phases.sort()
@@ -86,7 +88,9 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Z", 1), ("Y", 1)])
         state_preparation = None
 
-        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evolution, uses_opflow=False)
+        result = self.hamiltonian_pe_sampler(
+            hamiltonian, state_preparation, evolution=evolution, uses_opflow=False
+        )
         phase_dict = result.filter_phases(0.1, as_float=True)
         phases = list(phase_dict.keys())
         phases.sort()
@@ -116,24 +120,27 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(eigv, -0.98, delta=0.01)
 
     @data(
-        Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate())),
-        QuantumCircuit(2).compose(IGate()).compose(HGate()),
+        (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate())), True),
+        (QuantumCircuit(2).compose(IGate()).compose(HGate()), False),
     )
-    def test_H2_hamiltonian_sampler(self, state_preparation):
+    @unpack
+    def test_H2_hamiltonian_sampler(self, state_preparation, uses_opflow):
         """Test H2 hamiltonian"""
 
         hamiltonian = SparsePauliOp.from_list(
-                [
-                    ("II", -1.0523732457728587),
-                    ("IZ", 0.3979374248431802),
-                    ("ZI", -0.3979374248431802),
-                    ("ZZ", -0.011280104256235324),
-                    ("XX", 0.18093119978423147),
-                ]
-            )
+            [
+                ("II", -1.0523732457728587),
+                ("IZ", 0.3979374248431802),
+                ("ZI", -0.3979374248431802),
+                ("ZZ", -0.011280104256235324),
+                ("XX", 0.18093119978423147),
+            ]
+        )
 
         evo = SuzukiTrotter(reps=4)
-        result = self.hamiltonian_pe_sampler(hamiltonian, state_preparation, evolution=evo, uses_opflow=False)
+        result = self.hamiltonian_pe_sampler(
+            hamiltonian, state_preparation, evolution=evo, uses_opflow=uses_opflow
+        )
         with self.subTest("Most likely eigenvalues"):
             self.assertAlmostEqual(result.most_likely_eigenvalue, -1.855, delta=0.001)
         with self.subTest("Most likely phase"):
@@ -147,6 +154,8 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
 
     def test_matrix_evolution_sampler(self):
         """1Q Hamiltonian with MatrixEvolution"""
+        # hamiltonian = PauliSumOp(SparsePauliOp.from_list([("X", 0.5), ("Y", 0.6), ("I", 0.7)]))
+
         hamiltonian = SparsePauliOp.from_list([("X", 0.5), ("Y", 0.6), ("I", 0.7)])
         state_preparation = None
         result = self.hamiltonian_pe_sampler(
@@ -161,7 +170,6 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
 @ddt
 class TestPhaseEstimation(QiskitAlgorithmsTestCase):
     """Evolution tests."""
-
 
     # sampler tests
     def one_phase_sampler(
@@ -249,13 +257,26 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         self.assertEqual(phase, expected_phase)
 
     @data(
-        (QuantumCircuit(2).compose(XGate(), qubits=[0]).compose(XGate(), qubits=[1]), 0.25, IterativePhaseEstimation),
-        (QuantumCircuit(2).compose(IGate(), qubits=[0]).compose(XGate(), qubits=[1]), 0.125, IterativePhaseEstimation),
-        (QuantumCircuit(2).compose(XGate(), qubits=[0]).compose(XGate(), qubits=[1]), 0.25, PhaseEstimation),
-        (QuantumCircuit(2).compose(IGate(), qubits=[0]).compose(XGate(), qubits=[1]), 0.125, PhaseEstimation),
-        # ((I ^ X).to_circuit(), 0.125, IterativePhaseEstimation),
-        # ((X ^ X).to_circuit(), 0.25, PhaseEstimation),
-        # ((I ^ X).to_circuit(), 0.125, PhaseEstimation),
+        (
+            QuantumCircuit(2).compose(XGate(), qubits=[0]).compose(XGate(), qubits=[1]),
+            0.25,
+            IterativePhaseEstimation,
+        ),
+        (
+            QuantumCircuit(2).compose(IGate(), qubits=[0]).compose(XGate(), qubits=[1]),
+            0.125,
+            IterativePhaseEstimation,
+        ),
+        (
+            QuantumCircuit(2).compose(XGate(), qubits=[0]).compose(XGate(), qubits=[1]),
+            0.25,
+            PhaseEstimation,
+        ),
+        (
+            QuantumCircuit(2).compose(IGate(), qubits=[0]).compose(XGate(), qubits=[1]),
+            0.125,
+            PhaseEstimation,
+        ),
     )
     @unpack
     def test_qpe_two_qubit_unitary(self, state_preparation, expected_phase, phase_estimator):
@@ -298,7 +319,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         phase_est = PhaseEstimation(num_evaluation_qubits=num_evaluation_qubits, sampler=sampler)
         if construct_circuit:
             pe_circuit = phase_est.construct_circuit(unitary_circuit, state_preparation)
-            result = phase_est.estimate_from_pe_circuit(pe_circuit, unitary_circuit.num_qubits)
+            result = phase_est.estimate_from_pe_circuit(pe_circuit)
         else:
             result = phase_est.estimate(
                 unitary=unitary_circuit, state_preparation=state_preparation
