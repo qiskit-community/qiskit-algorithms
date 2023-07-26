@@ -120,11 +120,11 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(eigv, -0.98, delta=0.01)
 
     @data(
-        (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate())), True),
-        (QuantumCircuit(2).compose(IGate()).compose(HGate()), False),
+        (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate()))),
+        (QuantumCircuit(2).compose(IGate()).compose(HGate())),
     )
     @unpack
-    def test_H2_hamiltonian_sampler(self, state_preparation, uses_opflow):
+    def test_H2_hamiltonian_sampler(self, state_preparation):
         """Test H2 hamiltonian"""
 
         hamiltonian = SparsePauliOp.from_list(
@@ -139,7 +139,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
 
         evo = SuzukiTrotter(reps=4)
         result = self.hamiltonian_pe_sampler(
-            hamiltonian, state_preparation, evolution=evo, uses_opflow=uses_opflow
+            hamiltonian, state_preparation, evolution=evo, uses_opflow=False
         )
         with self.subTest("Most likely eigenvalues"):
             self.assertAlmostEqual(result.most_likely_eigenvalue, -1.855, delta=0.001)
