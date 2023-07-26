@@ -74,13 +74,13 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             spsa = SPSA(**settings)
 
         with self.assertWarns(DeprecationWarning):
-            result = spsa.optimize(circuit.num_parameters, objective, initial_point=initial_point)
+            result = spsa.minimize(objective, x0=initial_point)
 
         with self.subTest("check final accuracy"):
-            self.assertLess(result[1], -0.95)  # final loss
+            self.assertLess(result.fun, -0.95)  # final loss
 
         with self.subTest("check number of function calls"):
-            self.assertEqual(result[2], expected_nfev)  # function evaluations
+            self.assertEqual(result.nfev, expected_nfev)  # function evaluations
 
     def test_recalibrate_at_optimize(self):
         """Test SPSA calibrates anew upon each optimization run, if no autocalibration is set."""

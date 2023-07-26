@@ -105,6 +105,13 @@ add_module_names = False
 # (e.g., if this is set to ['foo.'], then foo.bar is shown under B, not F).
 modindex_common_prefix = ["qiskit."]
 
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy", None),
+    "qiskit": ("https://qiskit.org/documentation/", None),
+}
+
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "qiskit-ecosystem"
