@@ -200,18 +200,6 @@ Exceptions
    AlgorithmError
 
 
-Utility methods
----------------
-
-Utility methods used by algorithms.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   eval_observables
-   estimate_observables
-
-
 Utility classes
 ---------------
 

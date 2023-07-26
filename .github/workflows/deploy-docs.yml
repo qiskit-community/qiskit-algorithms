@@ -1,0 +1,56 @@
+# This code is part of a Qiskit project.
+#
+# (C) Copyright IBM 2023.
+#
+# This code is licensed under the Apache License, Version 2.0. You may
+# obtain a copy of this license in the LICENSE.txt file in the root directory
+# of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Any modifications or derivative works of this code must retain this
+# copyright notice, and modified files need to carry a notice indicating
+# that they have been altered from the originals.
+
+name: Deploy Docs
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  docs_publish:
+    if: ${{ startsWith(github.ref, 'refs/heads/stable') && contains('["mtreinish","Cryoris","ElePT","woodsp-ibm"]', github.actor) }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: ./.github/actions/install-optimization
+        with:
+          os: ${{ matrix.os }}
+      - name: Install Dependencies
+        run: |
+          pip install jupyter qiskit-terra[visualization]
+          sudo apt-get install -y pandoc graphviz
+        shell: bash
+      - name: Build and publish
+        env:
+          encrypted_rclone_key: ${{ secrets.encrypted_rclone_key }}
+          encrypted_rclone_iv: ${{ secrets.encrypted_rclone_iv }}
+          QISKIT_PARALLEL: False
+          QISKIT_DOCS_BUILD_TUTORIALS: 'always'
+        run: |
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
+          tools/ignore_untagged_notes.sh
+          make html
+          tools/deploy_documentation.sh
+        shell: bash
