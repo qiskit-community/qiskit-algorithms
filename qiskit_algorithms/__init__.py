@@ -271,6 +271,31 @@ from .time_evolvers import (
     VarQTEResult,
 )
 
+from .eigensolvers import (
+    Eigensolver,
+    EigensolverResult,
+    NumPyEigensolver,
+    NumPyEigensolverResult,
+    VQD,
+    VQDResult,
+)
+
+from .minimum_eigensolvers import (
+    AdaptVQE,
+    AdaptVQEResult,
+    MinimumEigensolver,
+    MinimumEigensolverResult,
+    NumPyMinimumEigensolver,
+    NumPyMinimumEigensolverResult,
+    QAOA,
+    SamplingMinimumEigensolver,
+    SamplingMinimumEigensolverResult,
+    SamplingVQE,
+    SamplingVQEResult,
+    VQE,
+    VQEResult,
+)
+
 __all__ = [
     "AlgorithmJob",
     "AlgorithmResult",
@@ -311,4 +336,23 @@ __all__ = [
     "VarQRTE",
     "VarQTE",
     "VarQTEResult",
+    "Eigensolver",
+    "EigensolverResult",
+    "NumPyEigensolver",
+    "NumPyEigensolverResult",
+    "VQD",
+    "VQDResult",
+    "AdaptVQE",
+    "AdaptVQEResult",
+    "MinimumEigensolver",
+    "MinimumEigensolverResult",
+    "NumPyMinimumEigensolver",
+    "NumPyMinimumEigensolverResult",
+    "QAOA",
+    "SamplingMinimumEigensolver",
+    "SamplingMinimumEigensolverResult",
+    "SamplingVQE",
+    "SamplingVQEResult",
+    "VQE",
+    "VQEResult",
 ]

@@ -1,0 +1,12 @@
+---
+features:
+  - |
+    The primitive-based algorithms in :mod:`qiskit_algorithms.eigensolvers` and
+    :mod:`qiskit_algorithms.minimum_eigensolvers` are now directly
+    importable from ``qiskit_algorithms``. For example, the primitive-based VQE
+    can now be imported using ``from qiskit_algorithms import VQE`` without
+    having to specify ``from qiskit_algorithms.minimum_eigensolvers import VQE``.
+    This short import path used to be reserved for ``QuantumInstance``-based
+    algorithms (now deprecated and removed from the codebase). If you have not
+    yet migrated from ``QuantumInstance``-based to primitives-based algorithms,
+    you should follow the migration guidelines in https://qisk.it/algo_migration.
