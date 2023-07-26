@@ -17,13 +17,9 @@ from __future__ import annotations
 
 import numpy
 
-import qiskit
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.classicalregister import ClassicalRegister
 from qiskit.primitives import BaseSampler
-from qiskit.providers import Backend
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg
 
 from qiskit_algorithms.exceptions import AlgorithmError
 
@@ -41,38 +37,23 @@ class IterativePhaseEstimation(PhaseEstimator):
        qubit benchmark, `arxiv/quant-ph/0610214 <https://arxiv.org/abs/quant-ph/0610214>`_
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         num_iterations: int,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
         Args:
             num_iterations: The number of iterations (rounds) of the phase estimation to run.
-            quantum_instance: Deprecated: The quantum instance on which the
-                circuit will be run.
             sampler: The sampler primitive on which the circuit will be sampled.
 
         Raises:
             ValueError: if num_iterations is not greater than zero.
-            AlgorithmError: If neither sampler nor quantum instance is provided.
+            AlgorithmError: If a sampler is not provided
         """
-        if sampler is None and quantum_instance is None:
-            raise AlgorithmError(
-                "Neither a sampler nor a quantum instance was provided. Please provide one of them."
-            )
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
+        if sampler is None:
+            raise AlgorithmError("A sampler must be provided.")
+
         if num_iterations <= 0:
             raise ValueError("`num_iterations` must be greater than zero.")
         self._num_iterations = num_iterations
@@ -141,39 +122,18 @@ class IterativePhaseEstimation(PhaseEstimator):
         for k in range(self._num_iterations, 0, -1):
             omega_coef /= 2
 
-            if self._sampler is not None:
+            qc = self.construct_circuit(
+                unitary, state_preparation, k, -2 * numpy.pi * omega_coef, True
+            )
+            try:
+                sampler_job = self._sampler.run([qc])
+                result = sampler_job.result().quasi_dists[0]
+            except Exception as exc:
+                raise AlgorithmError("The primitive job failed!") from exc
+            x = 1 if result.get(1, 0) > result.get(0, 0) else 0
 
-                qc = self.construct_circuit(
-                    unitary, state_preparation, k, -2 * numpy.pi * omega_coef, True
-                )
-                try:
-                    sampler_job = self._sampler.run([qc])
-                    result = sampler_job.result().quasi_dists[0]
-                except Exception as exc:
-                    raise AlgorithmError("The primitive job failed!") from exc
-                x = 1 if result.get(1, 0) > result.get(0, 0) else 0
-
-            elif self._quantum_instance.is_statevector:
-                qc = self.construct_circuit(
-                    unitary, state_preparation, k, -2 * numpy.pi * omega_coef, measurement=False
-                )
-                result = self._quantum_instance.execute(qc)
-                complete_state_vec = result.get_statevector(qc)
-                ancilla_density_mat = qiskit.quantum_info.partial_trace(
-                    complete_state_vec, range(unitary.num_qubits)
-                )
-                ancilla_density_mat_diag = numpy.diag(ancilla_density_mat)
-                max_amplitude = max(
-                    ancilla_density_mat_diag.min(), ancilla_density_mat_diag.max(), key=abs
-                )
-                x = numpy.where(ancilla_density_mat_diag == max_amplitude)[0][0]
-            else:
-                qc = self.construct_circuit(
-                    unitary, state_preparation, k, -2 * numpy.pi * omega_coef, measurement=True
-                )
-                measurements = self._quantum_instance.execute(qc).get_counts(qc)
-                x = 1 if measurements.get("1", 0) > measurements.get("0", 0) else 0
             omega_coef = omega_coef + x / 2
+
         return omega_coef
 
     # pylint: disable=signature-differs
@@ -195,7 +155,7 @@ class IterativePhaseEstimation(PhaseEstimator):
             Estimated phase in an IterativePhaseEstimationResult object.
 
         Raises:
-            AlgorithmError: If neither sampler nor quantum instance is provided.
+            AlgorithmError: If a sampler is not provided.
         """
         phase = self._estimate_phase_iteratively(unitary, state_preparation)
 

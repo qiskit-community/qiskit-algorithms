@@ -15,8 +15,8 @@
 import unittest
 from test import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Estimator
+from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.optimizers import NFT
 from qiskit_algorithms.minimum_eigensolvers import VQE
@@ -27,16 +27,15 @@ class TestOptimizerNFT(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        with self.assertWarns(DeprecationWarning):
-            self.qubit_op = PauliSumOp.from_list(
-                [
-                    ("II", -1.052373245772859),
-                    ("IZ", 0.39793742484318045),
-                    ("ZI", -0.39793742484318045),
-                    ("ZZ", -0.01128010425623538),
-                    ("XX", 0.18093119978423156),
-                ]
-            )
+        self.qubit_op = SparsePauliOp.from_list(
+            [
+                ("II", -1.052373245772859),
+                ("IZ", 0.39793742484318045),
+                ("ZI", -0.39793742484318045),
+                ("ZZ", -0.01128010425623538),
+                ("XX", 0.18093119978423156),
+            ]
+        )
 
     def test_nft(self):
         """Test NFT optimizer by using it"""

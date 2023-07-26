@@ -19,10 +19,7 @@ import numpy as np
 from scipy.stats import beta
 
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.providers import Backend
-from qiskit.primitives import BaseSampler
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
+from qiskit.primitives import BaseSampler, Sampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -50,21 +47,12 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
              `arXiv:quant-ph/0005055 <http://arxiv.org/abs/quant-ph/0005055>`_.
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         epsilon_target: float,
         alpha: float,
         confint_method: str = "beta",
         min_ratio: float = 2,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
@@ -79,7 +67,6 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 each iteration, can be 'chernoff' for the Chernoff intervals or 'beta' for the
                 Clopper-Pearson intervals (default)
             min_ratio: Minimal q-ratio (:math:`K_{i+1} / K_i`) for FindNextK
-            quantum_instance: Deprecated: Quantum Instance or Backend
             sampler: A sampler primitive to evaluate the circuits.
 
         Raises:
@@ -101,11 +88,6 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             )
 
         super().__init__()
-
-        # set quantum instance
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.quantum_instance = quantum_instance
 
         # store parameters
         self._epsilon = epsilon_target
@@ -131,36 +113,6 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             sampler: A sampler primitive to evaluate the circuits.
         """
         self._sampler = sampler
-
-    @property
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self) -> QuantumInstance | None:
-        """Deprecated. Get the quantum instance.
-
-        Returns:
-            The quantum instance used to run this algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_func(
-        since="0.24.0",
-        is_property=True,
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
-    def quantum_instance(self, quantum_instance: QuantumInstance | Backend) -> None:
-        """Deprecated. Set quantum instance.
-
-        Args:
-            quantum_instance: The quantum instance used to run this algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
 
     @property
     def epsilon_target(self) -> float:
@@ -333,11 +285,12 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             An amplitude estimation results object.
 
         Raises:
-            ValueError: A quantum instance or Sampler must be provided.
+            ValueError: A Sampler must be provided.
             AlgorithmError: Sampler job run error.
         """
-        if self._quantum_instance is None and self._sampler is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
+        if self._sampler is None:
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         # initialize memory variables
         powers = [0]  # list of powers k: Q^k, (called 'k' in paper)
@@ -353,151 +306,113 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         )
         upper_half_circle = True  # initially theta is in the upper half-circle
 
-        if self._quantum_instance is not None and self._quantum_instance.is_statevector:
-            # for statevector we can directly return the probability to measure 1
-            # note, that no iterations here are necessary
-            # simulate circuit
-            circuit = self.construct_circuit(estimation_problem, k=0, measurement=False)
-            ret = self._quantum_instance.execute(circuit)
+        num_iterations = 0  # keep track of the number of iterations
+        # do while loop, keep in mind that we scaled theta mod 2pi such that it lies in [0,1]
+        while theta_intervals[-1][1] - theta_intervals[-1][0] > self._epsilon / np.pi:
+            num_iterations += 1
 
-            # get statevector
-            statevector = ret.get_statevector(circuit)
+            # get the next k
+            k, upper_half_circle = self._find_next_k(
+                powers[-1],
+                upper_half_circle,
+                theta_intervals[-1],  # type: ignore
+                min_ratio=self._min_ratio,
+            )
 
-            # calculate the probability of measuring '1'
+            # store the variables
+            powers.append(k)
+            ratios.append((2 * powers[-1] + 1) / (2 * powers[-2] + 1))
+
+            # run measurements for Q^k A|0> circuit
+            circuit = self.construct_circuit(estimation_problem, k, measurement=True)
+            counts = {}
+
+            try:
+                job = self._sampler.run([circuit])
+                ret = job.result()
+            except Exception as exc:
+                raise AlgorithmError("The job was not completed successfully. ") from exc
+
+            shots = ret.metadata[0].get("shots")
+            if shots is None:
+                circuit = self.construct_circuit(estimation_problem, k=0, measurement=True)
+                try:
+                    job = self._sampler.run([circuit])
+                    ret = job.result()
+                except Exception as exc:
+                    raise AlgorithmError("The job was not completed successfully. ") from exc
+
+                # calculate the probability of measuring '1'
+                prob = 0.0
+                for bit, probabilities in ret.quasi_dists[0].binary_probabilities().items():
+                    # check if it is a good state
+                    if estimation_problem.is_good_state(bit):
+                        prob += probabilities
+
+                a_confidence_interval = [prob, prob]
+                a_intervals.append(a_confidence_interval)
+
+                theta_i_interval = [
+                    np.arccos(1 - 2 * a_i) / 2 / np.pi for a_i in a_confidence_interval
+                ]
+                theta_intervals.append(theta_i_interval)
+                num_oracle_queries = 0  # no Q-oracle call, only a single one to A
+                break
+
+            counts = {
+                k: round(v * shots) for k, v in ret.quasi_dists[0].binary_probabilities().items()
+            }
+
+            # calculate the probability of measuring '1', 'prob' is a_i in the paper
             num_qubits = circuit.num_qubits - circuit.num_ancillas
-            prob = self._good_state_probability(estimation_problem, statevector, num_qubits)
-            prob = cast(float, prob)  # tell MyPy it's a float and not Tuple[int, float ]
+            # type: ignore
+            one_counts, prob = self._good_state_probability(estimation_problem, counts, num_qubits)
 
-            a_confidence_interval = [prob, prob]  # type: list[float]
-            a_intervals.append(a_confidence_interval)
+            num_one_shots.append(one_counts)
 
-            theta_i_interval = [
-                np.arccos(1 - 2 * a_i) / 2 / np.pi for a_i in a_confidence_interval  # type: ignore
-            ]
-            theta_intervals.append(theta_i_interval)
-            num_oracle_queries = 0  # no Q-oracle call, only a single one to A
+            # track number of Q-oracle calls
+            num_oracle_queries += shots * k
 
-        else:
-            num_iterations = 0  # keep track of the number of iterations
-            # number of shots per iteration
-            shots = 0
-            # do while loop, keep in mind that we scaled theta mod 2pi such that it lies in [0,1]
-            while theta_intervals[-1][1] - theta_intervals[-1][0] > self._epsilon / np.pi:
-                num_iterations += 1
+            # if on the previous iterations we have K_{i-1} == K_i, we sum these samples up
+            j = 1  # number of times we stayed fixed at the same K
+            round_shots = shots
+            round_one_counts = one_counts
+            if num_iterations > 1:
+                while (
+                    powers[num_iterations - j] == powers[num_iterations] and num_iterations >= j + 1
+                ):
+                    j = j + 1
+                    round_shots += shots
+                    round_one_counts += num_one_shots[-j]
 
-                # get the next k
-                k, upper_half_circle = self._find_next_k(
-                    powers[-1],
-                    upper_half_circle,
-                    theta_intervals[-1],  # type: ignore
-                    min_ratio=self._min_ratio,
+            # compute a_min_i, a_max_i
+            if self._confint_method == "chernoff":
+                a_i_min, a_i_max = _chernoff_confint(prob, round_shots, max_rounds, self._alpha)
+            else:  # 'beta'
+                a_i_min, a_i_max = _clopper_pearson_confint(
+                    round_one_counts, round_shots, self._alpha / max_rounds
                 )
 
-                # store the variables
-                powers.append(k)
-                ratios.append((2 * powers[-1] + 1) / (2 * powers[-2] + 1))
+            # compute theta_min_i, theta_max_i
+            if upper_half_circle:
+                theta_min_i = np.arccos(1 - 2 * a_i_min) / 2 / np.pi
+                theta_max_i = np.arccos(1 - 2 * a_i_max) / 2 / np.pi
+            else:
+                theta_min_i = 1 - np.arccos(1 - 2 * a_i_max) / 2 / np.pi
+                theta_max_i = 1 - np.arccos(1 - 2 * a_i_min) / 2 / np.pi
 
-                # run measurements for Q^k A|0> circuit
-                circuit = self.construct_circuit(estimation_problem, k, measurement=True)
-                counts = {}
-                if self._quantum_instance is not None:
-                    ret = self._quantum_instance.execute(circuit)
-                    # get the counts and store them
-                    counts = ret.get_counts(circuit)
-                    shots = self._quantum_instance._run_config.shots
-                else:
-                    try:
-                        job = self._sampler.run([circuit])
-                        ret = job.result()
-                    except Exception as exc:
-                        raise AlgorithmError("The job was not completed successfully. ") from exc
+            # compute theta_u, theta_l of this iteration
+            scaling = 4 * k + 2  # current K_i factor
+            theta_u = (int(scaling * theta_intervals[-1][1]) + theta_max_i) / scaling
+            theta_l = (int(scaling * theta_intervals[-1][0]) + theta_min_i) / scaling
+            theta_intervals.append([theta_l, theta_u])
 
-                    shots = ret.metadata[0].get("shots")
-                    if shots is None:
-                        circuit = self.construct_circuit(estimation_problem, k=0, measurement=True)
-                        try:
-                            job = self._sampler.run([circuit])
-                            ret = job.result()
-                        except Exception as exc:
-                            raise AlgorithmError(
-                                "The job was not completed successfully. "
-                            ) from exc
-
-                        # calculate the probability of measuring '1'
-                        prob = 0.0
-                        for bit, probabilities in ret.quasi_dists[0].binary_probabilities().items():
-                            # check if it is a good state
-                            if estimation_problem.is_good_state(bit):
-                                prob += probabilities
-
-                        a_confidence_interval = [prob, prob]
-                        a_intervals.append(a_confidence_interval)
-
-                        theta_i_interval = [
-                            np.arccos(1 - 2 * a_i) / 2 / np.pi for a_i in a_confidence_interval
-                        ]
-                        theta_intervals.append(theta_i_interval)
-                        num_oracle_queries = 0  # no Q-oracle call, only a single one to A
-                        break
-
-                    counts = {
-                        k: round(v * shots)
-                        for k, v in ret.quasi_dists[0].binary_probabilities().items()
-                    }
-
-                # calculate the probability of measuring '1', 'prob' is a_i in the paper
-                num_qubits = circuit.num_qubits - circuit.num_ancillas
-                # type: ignore
-                one_counts, prob = self._good_state_probability(
-                    estimation_problem, counts, num_qubits
-                )
-
-                num_one_shots.append(one_counts)
-
-                # track number of Q-oracle calls
-                num_oracle_queries += shots * k
-
-                # if on the previous iterations we have K_{i-1} == K_i, we sum these samples up
-                j = 1  # number of times we stayed fixed at the same K
-                round_shots = shots
-                round_one_counts = one_counts
-                if num_iterations > 1:
-                    while (
-                        powers[num_iterations - j] == powers[num_iterations]
-                        and num_iterations >= j + 1
-                    ):
-                        j = j + 1
-                        round_shots += shots
-                        round_one_counts += num_one_shots[-j]
-
-                # compute a_min_i, a_max_i
-                if self._confint_method == "chernoff":
-                    a_i_min, a_i_max = _chernoff_confint(prob, round_shots, max_rounds, self._alpha)
-                else:  # 'beta'
-                    a_i_min, a_i_max = _clopper_pearson_confint(
-                        round_one_counts, round_shots, self._alpha / max_rounds
-                    )
-
-                # compute theta_min_i, theta_max_i
-                if upper_half_circle:
-                    theta_min_i = np.arccos(1 - 2 * a_i_min) / 2 / np.pi
-                    theta_max_i = np.arccos(1 - 2 * a_i_max) / 2 / np.pi
-                else:
-                    theta_min_i = 1 - np.arccos(1 - 2 * a_i_max) / 2 / np.pi
-                    theta_max_i = 1 - np.arccos(1 - 2 * a_i_min) / 2 / np.pi
-
-                # compute theta_u, theta_l of this iteration
-                scaling = 4 * k + 2  # current K_i factor
-                theta_u = (int(scaling * theta_intervals[-1][1]) + theta_max_i) / scaling
-                theta_l = (int(scaling * theta_intervals[-1][0]) + theta_min_i) / scaling
-                theta_intervals.append([theta_l, theta_u])
-
-                # compute a_u_i, a_l_i
-                a_u = np.sin(2 * np.pi * theta_u) ** 2
-                a_l = np.sin(2 * np.pi * theta_l) ** 2
-                a_u = cast(float, a_u)
-                a_l = cast(float, a_l)
-                a_intervals.append([a_l, a_u])
+            # compute a_u_i, a_l_i
+            a_u = np.sin(2 * np.pi * theta_u) ** 2
+            a_l = np.sin(2 * np.pi * theta_l) ** 2
+            a_u = cast(float, a_u)
+            a_l = cast(float, a_l)
+            a_intervals.append([a_l, a_u])
 
         # get the latest confidence interval for the estimate of a
         confidence_interval = tuple(a_intervals[-1])

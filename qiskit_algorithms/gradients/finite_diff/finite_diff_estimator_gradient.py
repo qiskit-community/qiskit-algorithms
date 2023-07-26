@@ -20,7 +20,6 @@ from typing import Literal
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import BaseEstimator
 from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -80,7 +79,7 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator | PauliSumOp],
+        observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
         **options,

@@ -17,7 +17,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..algorithm_result import AlgorithmResult
@@ -34,8 +33,8 @@ class MinimumEigensolver(ABC):
     @abstractmethod
     def compute_minimum_eigenvalue(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> "MinimumEigensolverResult":
         """
         Computes the minimum eigenvalue. The ``operator`` and ``aux_operators`` are supplied here.

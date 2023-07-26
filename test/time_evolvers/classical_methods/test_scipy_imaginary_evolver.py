@@ -19,7 +19,6 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.states.statevector import Statevector
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.opflow import PauliSumOp
 
 from qiskit_algorithms import SciPyImaginaryEvolver
 from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
@@ -121,15 +120,14 @@ class TestSciPyImaginaryEvolver(QiskitAlgorithmsTestCase):
         self.assertEqual(result.evolved_state, Statevector(qc))
 
     def test_paulisumop_hamiltonian(self):
-        """Tests if the hamiltonian can be a PauliSumOp"""
-        with self.assertWarns(DeprecationWarning):
-            hamiltonian = PauliSumOp.from_list(
-                [
-                    ("XI", 1),
-                    ("IX", 1),
-                ]
-            )
-            observable = PauliSumOp.from_list([("ZZ", 1)])
+        """Tests if the hamiltonian can be a SpasePauliOp"""
+        hamiltonian = SparsePauliOp.from_list(
+            [
+                ("XI", 1),
+                ("IX", 1),
+            ]
+        )
+        observable = SparsePauliOp.from_list([("ZZ", 1)])
         evolution_problem = TimeEvolutionProblem(
             hamiltonian=hamiltonian,
             time=1.0,

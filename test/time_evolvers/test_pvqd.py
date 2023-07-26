@@ -21,7 +21,6 @@ from ddt import data, ddt, unpack
 from qiskit import QiskitError
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
-from qiskit.opflow import PauliSumOp
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.test import QiskitTestCase
@@ -65,7 +64,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
         self.initial_parameters = np.zeros(self.ansatz.num_parameters)
         algorithm_globals.random_seed = 123
 
-    @data(("ising", True, 2), ("pauli", False, None), ("pauli_sum_op", True, 2))
+    @data(("ising", True, 2), ("pauli", False, None))
     @unpack
     def test_pvqd(self, hamiltonian_type, gradient, num_timesteps):
         """Test a simple evolution."""
@@ -73,9 +72,6 @@ class TestPVQD(QiskitAlgorithmsTestCase):
 
         if hamiltonian_type == "ising":
             hamiltonian = self.hamiltonian
-        elif hamiltonian_type == "pauli_sum_op":
-            with self.assertWarns(DeprecationWarning):
-                hamiltonian = PauliSumOp(self.hamiltonian)
         else:  # hamiltonian_type == "pauli":
             hamiltonian = Pauli("XX")
 

@@ -70,12 +70,15 @@ class UMDA(Optimizer):
 
         .. code-block:: python
 
-            from qiskit.opflow import X, Z, I
-            from qiskit import Aer
             from qiskit_algorithms.optimizers import UMDA
             from qiskit_algorithms import QAOA
             from qiskit.utils import QuantumInstance
+            from qiskit.quantum_info import Pauli
+            from qiskit.primitives import Sampler
 
+            X = Pauli("X")
+            I = Pauli("I")
+            Z = Pauli("Z")
 
             H2_op = (-1.052373245772859 * I ^ I) + \
             (0.39793742484318045 * I ^ Z) + \
@@ -86,13 +89,8 @@ class UMDA(Optimizer):
             p = 2  # Toy example: 2 layers with 2 parameters in each layer: 4 variables
 
             opt = UMDA(maxiter=100, size_gen=20)
-
-            backend = Aer.get_backend('statevector_simulator')
-            vqe = QAOA(opt,
-                       quantum_instance=QuantumInstance(backend=backend),
-                       reps=p)
-
-            result = vqe.compute_minimum_eigenvalue(operator=H2_op)
+            qaoa = QAOA(Sampler(), opt,reps=p)
+            result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
         If it is desired to modify the percentage of individuals considered to update the
         probabilistic model, then this code can be used. Here for example we set the 60% instead
@@ -101,13 +99,8 @@ class UMDA(Optimizer):
         .. code-block:: python
 
             opt = UMDA(maxiter=100, size_gen=20, alpha = 0.6)
-
-            backend = Aer.get_backend('statevector_simulator')
-            vqe = QAOA(opt,
-                       quantum_instance=QuantumInstance(backend=backend),
-                       reps=p)
-
-            result = vqe.compute_minimum_eigenvalue(operator=qubit_op)
+            qaoa = QAOA(Sampler(), opt,reps=p)
+            result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
 
     References:

@@ -19,8 +19,7 @@ import numpy as np
 
 from qiskit.circuit.library import PauliTwoDesign
 from qiskit.primitives import Estimator, Sampler
-from qiskit.providers.basicaer import StatevectorSimulatorPy
-from qiskit.opflow import I, Z, StateFn, MatrixExpectation
+from qiskit.quantum_info import SparsePauliOp, Statevector
 from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
@@ -41,16 +40,15 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         """Test SPSA on the Pauli two-design example."""
         circuit = PauliTwoDesign(3, reps=1, seed=1)
         parameters = list(circuit.parameters)
-        with self.assertWarns(DeprecationWarning):
-            obs = Z ^ Z ^ I
-            expr = ~StateFn(obs) @ StateFn(circuit)
+        obs = SparsePauliOp("ZZI")  # Z^Z^I
 
         initial_point = np.array(
             [0.82311034, 0.02611798, 0.21077064, 0.61842177, 0.09828447, 0.62013131]
         )
 
         def objective(x):
-            return expr.bind_parameters(dict(zip(parameters, x))).eval().real
+            bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
+            return Statevector(bound_circ).expectation_value(obs).real
 
         settings = {"maxiter": 100, "blocking": True, "allowed_increase": 0}
 
@@ -59,7 +57,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             settings["regularization"] = 0.01
             expected_nfev = settings["maxiter"] * 5 + 1
         elif method == "qnspsa":
-            settings["fidelity"] = QNSPSA.get_fidelity(circuit)
+            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=Sampler())
             settings["regularization"] = 0.001
             settings["learning_rate"] = 0.05
             settings["perturbation"] = 0.05
@@ -73,8 +71,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         else:
             spsa = SPSA(**settings)
 
-        with self.assertWarns(DeprecationWarning):
-            result = spsa.minimize(objective, x0=initial_point)
+        result = spsa.minimize(objective, x0=initial_point)
 
         with self.subTest("check final accuracy"):
             self.assertLess(result.fun, -0.95)  # final loss
@@ -200,18 +197,6 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         result = SPSA.estimate_stddev(objective, point, avg=10, max_evals_grouped=max_evals_grouped)
         self.assertAlmostEqual(result, 0)
 
-    def test_qnspsa_fidelity_deprecation(self):
-        """Test using a backend and expectation converter in get_fidelity warns."""
-        ansatz = PauliTwoDesign(2, reps=1, seed=2)
-
-        with self.assertWarns(DeprecationWarning):
-            QNSPSA.get_fidelity(ansatz, backend=StatevectorSimulatorPy())
-        with self.assertWarns(DeprecationWarning):
-            QNSPSA.get_fidelity(ansatz, expectation=MatrixExpectation())
-
-        # No warning when used correctly.
-        QNSPSA.get_fidelity(ansatz)
-
     def test_qnspsa_fidelity_primitives(self):
         """Test the primitives can be used in get_fidelity."""
         ansatz = PauliTwoDesign(2, reps=1, seed=2)
@@ -223,21 +208,12 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
             self.assertAlmostEqual(result[0], 1)
 
-        # this test can be removed once backend and expectation are removed
-        with self.subTest(msg="pass positionally"):
-            fidelity = QNSPSA.get_fidelity(ansatz, Sampler())
-            result = fidelity(initial_point, initial_point)
-
-            self.assertAlmostEqual(result[0], 1)
-
     def test_qnspsa_max_evals_grouped(self):
         """Test using max_evals_grouped with QNSPSA."""
         circuit = PauliTwoDesign(3, reps=1, seed=1)
         num_parameters = circuit.num_parameters
 
-        with self.assertWarns(DeprecationWarning):
-            obs = Z ^ Z ^ I
-
+        obs = SparsePauliOp("ZZI")  # Z^Z^I
         estimator = Estimator(options={"seed": 12})
 
         initial_point = np.array(
@@ -247,9 +223,9 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         def objective(x):
             x = np.reshape(x, (-1, num_parameters)).tolist()
             n = len(x)
-            return estimator.run(n * [circuit], n * [obs.primitive], x).result().values.real
+            return estimator.run(n * [circuit], n * [obs], x).result().values.real
 
-        fidelity = QNSPSA.get_fidelity(circuit)
+        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler())
         optimizer = QNSPSA(fidelity)
         optimizer.maxiter = 1
         optimizer.learning_rate = 0.05

@@ -18,7 +18,6 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import Operator, SparsePauliOp, Pauli, ScalarOp
 
 from qiskit_algorithms.eigensolvers import NumPyEigensolver
@@ -37,14 +36,12 @@ H2_SPARSE_PAULI = SparsePauliOp(
 
 H2_OP = Operator(H2_SPARSE_PAULI.to_matrix())
 
-H2_PAULI = PauliSumOp(H2_SPARSE_PAULI)
-
 
 @ddt
 class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
     """Test NumPy Eigen solver"""
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_ce(self, op):
         """Test basics"""
         algo = NumPyEigensolver()
@@ -54,7 +51,7 @@ class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
         self.assertEqual(result.eigenvalues.dtype, np.float64)
         self.assertAlmostEqual(result.eigenvalues[0], -1.85727503)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_ce_k4(self, op):
         """Test for k=4 eigenvalues"""
         algo = NumPyEigensolver(k=4)
@@ -66,7 +63,7 @@ class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
             result.eigenvalues, [-1.85727503, -1.24458455, -0.88272215, -0.22491125]
         )
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_ce_k4_filtered(self, op):
         """Test for k=4 eigenvalues with filter"""
 
@@ -82,7 +79,7 @@ class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
         self.assertEqual(result.eigenvalues.dtype, np.float64)
         np.testing.assert_array_almost_equal(result.eigenvalues, [-0.88272215, -0.22491125])
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_ce_k4_filtered_empty(self, op):
         """Test for k=4 eigenvalues with filter always returning False"""
 
@@ -118,7 +115,7 @@ class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
         result = algo.compute_eigenvalues(operator=op)
         np.testing.assert_array_almost_equal(result.eigenvalues, [-1, 1])
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_aux_operators_list(self, op):
         """Test list-based aux_operators."""
         aux_op1 = Operator(SparsePauliOp(["II"], coeffs=[2.0]).to_matrix())
@@ -158,7 +155,7 @@ class TestNumPyEigensolver(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(result.aux_operators_evaluated[0][1][1].pop("variance"), 0.0)
         self.assertEqual(result.aux_operators_evaluated[0][3][1].pop("variance"), 0.0)
 
-    @data(H2_SPARSE_PAULI, H2_PAULI, H2_OP)
+    @data(H2_SPARSE_PAULI, H2_OP)
     def test_aux_operators_dict(self, op):
         """Test dict-based aux_operators."""
         aux_op1 = Operator(SparsePauliOp(["II"], coeffs=[2.0]).to_matrix())

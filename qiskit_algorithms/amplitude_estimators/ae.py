@@ -20,10 +20,7 @@ from scipy.stats import chi2, norm
 from scipy.optimize import bisect
 
 from qiskit import QuantumCircuit, ClassicalRegister
-from qiskit.providers import Backend
-from qiskit.primitives import BaseSampler
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
+from qiskit.primitives import BaseSampler, Sampler
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .ae_utils import pdf_a, derivative_log_pdf_a, bisect_max
 from .estimation_problem import EstimationProblem
@@ -64,20 +61,11 @@ class AmplitudeEstimation(AmplitudeEstimator):
              `arXiv:1912.05559 <https://arxiv.org/abs/1912.05559>`_.
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         num_eval_qubits: int,
         phase_estimation_circuit: QuantumCircuit | None = None,
         iqft: QuantumCircuit | None = None,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
@@ -88,8 +76,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
                 `qiskit.circuit.library.PhaseEstimation` when None.
             iqft: The inverse quantum Fourier transform component, defaults to using a standard
                 implementation from `qiskit.circuit.library.QFT` when None.
-            quantum_instance: Deprecated: The backend (or `QuantumInstance`) to execute
-                the circuits on.
             sampler: A sampler primitive to evaluate the circuits.
 
         Raises:
@@ -99,11 +85,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
             raise ValueError("The number of evaluation qubits must at least be 1.")
 
         super().__init__()
-
-        # set quantum instance
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            self.quantum_instance = quantum_instance
 
         # get parameters
         self._m = num_eval_qubits  # pylint: disable=invalid-name
@@ -130,36 +111,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
             sampler: A sampler primitive to evaluate the circuits.
         """
         self._sampler = sampler
-
-    @property
-    @deprecate_func(
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-        since="0.24.0",
-        is_property=True,
-    )
-    def quantum_instance(self) -> QuantumInstance | None:
-        """Deprecated: Get the quantum instance.
-
-        Returns:
-            The quantum instance used to run this algorithm.
-        """
-        return self._quantum_instance
-
-    @quantum_instance.setter
-    @deprecate_func(
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-        since="0.24.0",
-        is_property=True,
-    )
-    def quantum_instance(self, quantum_instance: QuantumInstance | Backend) -> None:
-        """Deprecated: Set quantum instance.
-
-        Args:
-            quantum_instance: The quantum instance used to run this algorithm.
-        """
-        if isinstance(quantum_instance, Backend):
-            quantum_instance = QuantumInstance(quantum_instance)
-        self._quantum_instance = quantum_instance
 
     def construct_circuit(
         self, estimation_problem: EstimationProblem, measurement: bool = False
@@ -351,7 +302,6 @@ class AmplitudeEstimation(AmplitudeEstimator):
         Raises:
             ValueError: If `state_preparation` or `objective_qubits` are not set in the
                 `estimation_problem`.
-            ValueError: A quantum instance or sampler must be provided.
             AlgorithmError: Sampler job run error.
         """
         # check if A factory or state_preparation has been set
@@ -359,8 +309,9 @@ class AmplitudeEstimation(AmplitudeEstimator):
             raise ValueError(
                 "The state_preparation property of the estimation problem must be set."
             )
-        if self._quantum_instance is None and self._sampler is None:
-            raise ValueError("A quantum instance or sampler must be provided.")
+        if self._sampler is None:
+            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            self._sampler = Sampler()
 
         if estimation_problem.objective_qubits is None:
             raise ValueError("The objective_qubits property of the estimation problem must be set.")
@@ -377,37 +328,23 @@ class AmplitudeEstimation(AmplitudeEstimator):
         result.num_evaluation_qubits = self._m
         result.post_processing = estimation_problem.post_processing
 
-        shots = 0
-        if self._quantum_instance is not None and self._quantum_instance.is_statevector:
-            circuit = self.construct_circuit(estimation_problem, measurement=False)
-            # run circuit on statevector simulator
-            statevector = self._quantum_instance.execute(circuit).get_statevector()
-            result.circuit_results = statevector
-            # store number of shots: convention is 1 shot for statevector,
-            # needed so that MLE works!
+        circuit = self.construct_circuit(estimation_problem, measurement=True)
+        try:
+            job = self._sampler.run([circuit])
+            ret = job.result()
+        except Exception as exc:
+            raise AlgorithmError("The job was not completed successfully. ") from exc
+
+        shots = ret.metadata[0].get("shots")
+        exact = True
+        if shots is None:
+            result.circuit_results = ret.quasi_dists[0].binary_probabilities()
             shots = 1
         else:
-            circuit = self.construct_circuit(estimation_problem, measurement=True)
-            if self._quantum_instance is not None:
-                # run circuit on QASM simulator
-                result.circuit_results = self._quantum_instance.execute(circuit).get_counts()
-                shots = sum(result.circuit_results.values())
-            else:
-                try:
-                    job = self._sampler.run([circuit])
-                    ret = job.result()
-                except Exception as exc:
-                    raise AlgorithmError("The job was not completed successfully. ") from exc
-
-                shots = ret.metadata[0].get("shots")
-                if shots is None:
-                    result.circuit_results = ret.quasi_dists[0].binary_probabilities()
-                    shots = 1
-                else:
-                    result.circuit_results = {
-                        k: round(v * shots)
-                        for k, v in ret.quasi_dists[0].binary_probabilities().items()
-                    }
+            result.circuit_results = {
+                k: round(v * shots) for k, v in ret.quasi_dists[0].binary_probabilities().items()
+            }
+            exact = False
 
         # store shots
         result.shots = shots
@@ -435,7 +372,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         result.mle = mle
         result.mle_processed = estimation_problem.post_processing(mle)
 
-        result.confidence_interval = self.compute_confidence_interval(result)
+        result.confidence_interval = self.compute_confidence_interval(result, exact=exact)
         result.confidence_interval_processed = tuple(
             estimation_problem.post_processing(value) for value in result.confidence_interval
         )
@@ -444,7 +381,10 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_confidence_interval(
-        result: "AmplitudeEstimationResult", alpha: float = 0.05, kind: str = "likelihood_ratio"
+        result: "AmplitudeEstimationResult",
+        alpha: float = 0.05,
+        kind: str = "likelihood_ratio",
+        exact: bool = False,
     ) -> tuple[float, float]:
         """Compute the (1 - alpha) confidence interval.
 
@@ -453,16 +393,16 @@ class AmplitudeEstimation(AmplitudeEstimator):
             alpha: Confidence level: compute the (1 - alpha) confidence interval.
             kind: The method to compute the confidence interval, can be 'fisher', 'observed_fisher'
                 or 'likelihood_ratio' (default)
+            exact: Whether the result comes from a statevector simulation or not
 
         Returns:
             The (1 - alpha) confidence interval of the specified kind.
 
         Raises:
-            AquaError: If 'mle' is not in self._ret.keys() (i.e. `run` was not called yet).
             NotImplementedError: If the confidence interval method `kind` is not implemented.
         """
         # if statevector simulator the estimate is exact
-        if isinstance(result.circuit_results, (list, np.ndarray)):
+        if exact:
             return (result.mle, result.mle)
 
         if kind in ["likelihood_ratio", "lr"]:

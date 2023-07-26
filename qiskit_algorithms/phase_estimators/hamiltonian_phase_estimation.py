@@ -14,26 +14,12 @@
 
 from __future__ import annotations
 
-import warnings
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.opflow import (
-    SummedOp,
-    PauliOp,
-    MatrixOp,
-    PauliSumOp,
-    StateFn,
-    EvolutionBase,
-    PauliTrotterEvolution,
-    I,
-)
-from qiskit.providers import Backend
 from qiskit.primitives import BaseSampler
 from qiskit.quantum_info import SparsePauliOp, Statevector, Pauli
 from qiskit.synthesis import EvolutionSynthesis
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg
 
 from .phase_estimation import PhaseEstimation
 from .hamiltonian_phase_estimation_result import HamiltonianPhaseEstimationResult
@@ -94,36 +80,21 @@ class HamiltonianPhaseEstimation:
 
     """
 
-    @deprecate_arg(
-        "quantum_instance",
-        additional_msg=(
-            "Instead, use the ``sampler`` argument. See https://qisk.it/algo_migration for a "
-            "migration guide."
-        ),
-        since="0.24.0",
-    )
     def __init__(
         self,
         num_evaluation_qubits: int,
-        quantum_instance: QuantumInstance | Backend | None = None,
         sampler: BaseSampler | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
-            quantum_instance: Deprecated: The quantum instance on which
-                the circuit will be run.
             sampler: The sampler primitive on which the circuit will be sampled.
         """
-        # Avoid double warning on deprecated used of `quantum_instance`.
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            self._phase_estimation = PhaseEstimation(
-                num_evaluation_qubits=num_evaluation_qubits,
-                quantum_instance=quantum_instance,
-                sampler=sampler,
-            )
+        self._phase_estimation = PhaseEstimation(
+            num_evaluation_qubits=num_evaluation_qubits,
+            sampler=sampler,
+        )
 
     def _get_scale(self, hamiltonian, bound=None) -> PhaseEstimationScale:
         if bound is None:
@@ -131,58 +102,40 @@ class HamiltonianPhaseEstimation:
 
         return PhaseEstimationScale(bound)
 
-    def _get_unitary(
-        self, hamiltonian, pe_scale, evolution: EvolutionSynthesis | EvolutionBase
-    ) -> QuantumCircuit:
+    def _get_unitary(self, hamiltonian, pe_scale, evolution: EvolutionSynthesis) -> QuantumCircuit:
         """Evolve the Hamiltonian to obtain a unitary.
 
         Apply the scaling to the Hamiltonian that has been computed from an eigenvalue bound
         and compute the unitary by applying the evolution object.
         """
 
-        if self._phase_estimation._sampler is not None:
+        evo = PauliEvolutionGate(hamiltonian, -pe_scale.scale, synthesis=evolution)
+        unitary = QuantumCircuit(evo.num_qubits)
+        unitary.append(evo, unitary.qubits)
 
-            evo = PauliEvolutionGate(hamiltonian, -pe_scale.scale, synthesis=evolution)
-            unitary = QuantumCircuit(evo.num_qubits)
-            unitary.append(evo, unitary.qubits)
-
-            return unitary.decompose().decompose()
-        else:
-            # scale so that phase does not wrap.
-            scaled_hamiltonian = -pe_scale.scale * hamiltonian
-            unitary = evolution.convert(scaled_hamiltonian.exp_i())
-            if not isinstance(unitary, QuantumCircuit):
-                unitary = unitary.to_circuit()
-
-            return unitary.decompose().decompose()
-
+        return unitary.decompose().decompose()
         # Decomposing twice allows some 1Q Hamiltonians to give correct results
         # when using MatrixEvolution(), that otherwise would give incorrect results.
         # It does not break any others that we tested.
 
     def estimate(
         self,
-        hamiltonian: PauliOp | MatrixOp | SummedOp | Pauli | SparsePauliOp | PauliSumOp,
-        state_preparation: StateFn | QuantumCircuit | Statevector | None = None,
-        evolution: EvolutionSynthesis | EvolutionBase | None = None,
+        hamiltonian: Pauli | SparsePauliOp,
+        state_preparation: QuantumCircuit | Statevector | None = None,
+        evolution: EvolutionSynthesis | None = None,
         bound: float | None = None,
     ) -> HamiltonianPhaseEstimationResult:
         """Run the Hamiltonian phase estimation algorithm.
 
         Args:
-            hamiltonian: A Hermitian operator. If the algorithm is used with a ``Sampler``
-                primitive, the allowed types are ``Pauli``, ``SparsePauliOp``, and ``PauliSumOp``.
-                If the algorithm is used with a ``QuantumInstance``, ``PauliOp, ``MatrixOp``,
-                ``PauliSumOp``, and ``SummedOp`` types are allowed.
-            state_preparation: The ``StateFn`` to be prepared, whose eigenphase will be
+            hamiltonian: A Hermitian operator. The allowed types are ``Pauli`` and ``SparsePauliOp``.
+            state_preparation: The state to be prepared, whose eigenphase will be
                 measured. If this parameter is omitted, no preparation circuit will be run and
                 input state will be the all-zero state in the computational basis.
-            evolution: An evolution converter that generates a unitary from ``hamiltonian``. If
-                ``None``, then the default ``PauliTrotterEvolution`` is used.
+            evolution: An evolution synthesis class.
             bound: An upper bound on the absolute value of the eigenvalues of
-                ``hamiltonian``. If omitted, then ``hamiltonian`` must be a Pauli sum, or a
-                ``PauliOp``, in which case a bound will be computed. If ``hamiltonian``
-                is a ``MatrixOp``, then ``bound`` may not be ``None``. The tighter the bound,
+                ``hamiltonian``. If omitted, then ``hamiltonian`` must be a SparsePauliOp,
+                in which case a bound will be computed. The tighter the bound,
                 the higher the resolution of computed phases.
 
         Returns:
@@ -190,76 +143,32 @@ class HamiltonianPhaseEstimation:
             and diagnostic information.
 
         Raises:
-            TypeError: If ``evolution`` is not of type ``EvolutionSynthesis`` when a ``Sampler`` is
-                provided.
-            TypeError: If ``hamiltonian`` type is not ``Pauli`` or ``SparsePauliOp`` or
-                ``PauliSumOp`` when a ``Sampler`` is provided.
-            ValueError: If ``bound`` is ``None`` and ``hamiltonian`` is not a Pauli sum, i.e. a
-                ``PauliSumOp`` or a ``SummedOp`` whose terms are of type ``PauliOp``.
-            TypeError: If ``evolution`` is not of type ``EvolutionBase`` when no ``Sampler`` is
-                provided.
+            TypeError: If ``evolution`` is not of type ``EvolutionSynthesis``.
+            TypeError: If ``hamiltonian`` type is not ``Pauli`` or ``SparsePauliOp``.
+            ValueError: If ``bound`` is ``None`` and ``hamiltonian`` is not a Pauli sum.
         """
-        if self._phase_estimation._sampler is not None:
-            if evolution is not None and not isinstance(evolution, EvolutionSynthesis):
-                raise TypeError(f"Expecting type EvolutionSynthesis, got {type(evolution)}")
-            if not isinstance(hamiltonian, (Pauli, SparsePauliOp, PauliSumOp)):
-                raise TypeError(
-                    f"Expecting Hamiltonian type Pauli, SparsePauliOp or PauliSumOp, "
-                    f"got {type(hamiltonian)}."
-                )
+        if evolution is not None and not isinstance(evolution, EvolutionSynthesis):
+            raise TypeError(f"Expecting type EvolutionSynthesis, got {type(evolution)}")
 
-            if isinstance(state_preparation, Statevector):
-                circuit = QuantumCircuit(state_preparation.num_qubits)
-                circuit.prepare_state(state_preparation.data)
-                state_preparation = circuit
-            if isinstance(hamiltonian, PauliSumOp):
-                id_coefficient, hamiltonian_no_id = _remove_identity_pauli_sum_op(hamiltonian)
-            else:
-                id_coefficient = 0.0
-                hamiltonian_no_id = hamiltonian
-            pe_scale = self._get_scale(hamiltonian_no_id, bound)
-            unitary = self._get_unitary(hamiltonian_no_id, pe_scale, evolution)
+        if not isinstance(hamiltonian, (Pauli, SparsePauliOp)):
+            raise TypeError(
+                f"Expecting Hamiltonian type Pauli, SparsePauliOp, " f"got {type(hamiltonian)}."
+            )
+
+        if isinstance(state_preparation, Statevector):
+            circuit = QuantumCircuit(state_preparation.num_qubits)
+            circuit.prepare_state(state_preparation.data)
+            state_preparation = circuit
+
+        if isinstance(hamiltonian, SparsePauliOp):
+            id_coefficient, hamiltonian_no_id = _remove_identity(hamiltonian)
         else:
-            if evolution is None:
-                evolution = PauliTrotterEvolution()
-            elif not isinstance(evolution, EvolutionBase):
-                raise TypeError(f"Expecting type EvolutionBase, got {type(evolution)}")
+            id_coefficient = 0.0
+            hamiltonian_no_id = hamiltonian
 
-            if isinstance(hamiltonian, PauliSumOp):
-                hamiltonian = hamiltonian.to_pauli_op()
-            elif isinstance(hamiltonian, PauliOp):
-                hamiltonian = SummedOp([hamiltonian])
+        pe_scale = self._get_scale(hamiltonian_no_id, bound)
+        unitary = self._get_unitary(hamiltonian_no_id, pe_scale, evolution)
 
-            if isinstance(hamiltonian, SummedOp):
-                # remove identitiy terms
-                # The term prop to the identity is removed from hamiltonian.
-                # This is done for three reasons:
-                # 1. Work around an unknown bug that otherwise causes the energies to be wrong in some
-                #    cases.
-                # 2. Allow working with a simpler Hamiltonian, one with fewer terms.
-                # 3. Tighten the bound on the eigenvalues so that the spectrum is better resolved, i.e.
-                #   occupies more of the range of values representable by the qubit register.
-                # The coefficient of this term will be added to the eigenvalues.
-                id_coefficient, hamiltonian_no_id = _remove_identity(hamiltonian)
-                # get the rescaling object
-                pe_scale = self._get_scale(hamiltonian_no_id, bound)
-
-                # get the unitary
-                unitary = self._get_unitary(hamiltonian_no_id, pe_scale, evolution)
-
-            elif isinstance(hamiltonian, MatrixOp):
-                if bound is None:
-                    raise ValueError("bound must be specified if Hermitian operator is MatrixOp")
-
-                # Do not subtract an identity term from the matrix, so do not compensate.
-                id_coefficient = 0.0
-                pe_scale = self._get_scale(hamiltonian, bound)
-                unitary = self._get_unitary(hamiltonian, pe_scale, evolution)
-            else:
-                raise TypeError(f"Hermitian operator of type {type(hamiltonian)} not supported.")
-
-        if state_preparation is not None and isinstance(state_preparation, StateFn):
-            state_preparation = state_preparation.to_circuit_op().to_circuit()
         # run phase estimation
         phase_estimation_result = self._phase_estimation.estimate(
             unitary=unitary, state_preparation=state_preparation
@@ -271,40 +180,22 @@ class HamiltonianPhaseEstimation:
         )
 
 
-def _remove_identity(pauli_sum: SummedOp):
-    """Remove any identity operators from `pauli_sum`. Return
-    the sum of the coefficients of the identities and the new operator.
-    """
-    idcoeff = 0.0
-    ops = []
-    for op in pauli_sum:
-        p = op.primitive  # pylint: disable=invalid-name
-        if p.x.any() or p.z.any():
-            ops.append(op)
-        else:
-            idcoeff += op.coeff
-
-    return idcoeff, SummedOp(ops)
-
-
-def _remove_identity_pauli_sum_op(pauli_sum: PauliSumOp | SparsePauliOp):
+def _remove_identity(pauli_sum: SparsePauliOp):
     """Remove any identity operators from ``pauli_sum``. Return
     the sum of the coefficients of the identities and the new operator.
     """
 
     def _get_identity(size):
-        identity = I
+        identity = SparsePauliOp("I")
         for _ in range(size - 1):
-            identity = identity ^ I
+            identity = identity ^ SparsePauliOp("I")
         return identity
 
     idcoeff = 0.0
-    if isinstance(pauli_sum, PauliSumOp):
+    if isinstance(pauli_sum, SparsePauliOp):
         for operator in pauli_sum:
-            if operator.primitive.paulis == ["I" * pauli_sum.num_qubits]:
-                idcoeff += operator.primitive.coeffs[0]
-                pauli_sum = pauli_sum - operator.primitive.coeffs[0] * _get_identity(
-                    pauli_sum.num_qubits
-                )
+            if operator.paulis == ["I" * pauli_sum.num_qubits]:
+                idcoeff += operator.coeffs[0]
+                pauli_sum = pauli_sum - operator.coeffs[0] * _get_identity(pauli_sum.num_qubits)
 
-    return idcoeff, pauli_sum.reduce()
+    return idcoeff, pauli_sum.simplify()

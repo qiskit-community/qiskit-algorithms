@@ -16,8 +16,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from qiskit import QuantumCircuit
-from qiskit.circuit import Parameter, ParameterExpression
-from qiskit.opflow import PauliSumOp
+from qiskit.circuit import Parameter
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -31,11 +30,11 @@ class TimeEvolutionProblem:
     evolution time, a quantum state to be evolved and under which Hamiltonian the state is evolved.
 
     Attributes:
-        hamiltonian (BaseOperator | PauliSumOp): The Hamiltonian under which to evolve the system.
+        hamiltonian (BaseOperator): The Hamiltonian under which to evolve the system.
         initial_state (QuantumCircuit | Statevector | None): The quantum state to be evolved for
             methods like Trotterization. For variational time evolutions, where the evolution
             happens in an ansatz, this argument is not required.
-        aux_operators (ListOrDict[BaseOperator | PauliSumOp] | None): Optional list of auxiliary
+        aux_operators (ListOrDict[BaseOperator] | None): Optional list of auxiliary
             operators to be evaluated with the evolved ``initial_state`` and their expectation
             values returned.
         truncation_threshold (float): Defines a threshold under which values can be assumed to be 0.
@@ -49,10 +48,10 @@ class TimeEvolutionProblem:
 
     def __init__(
         self,
-        hamiltonian: BaseOperator | PauliSumOp,
+        hamiltonian: BaseOperator,
         time: float,
         initial_state: QuantumCircuit | Statevector | None = None,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
         truncation_threshold: float = 1e-12,
         t_param: Parameter | None = None,
         param_value_map: Mapping[Parameter, complex] | None = None,
@@ -100,16 +99,3 @@ class TimeEvolutionProblem:
         Sets time and validates it.
         """
         self._time = time
-
-    def validate_params(self) -> None:
-        """
-        Checks if all parameters present in the Hamiltonian are also present in the dictionary
-        that maps them to values.
-
-        Raises:
-            ValueError: If Hamiltonian parameters cannot be bound with data provided.
-        """
-        if isinstance(self.hamiltonian, PauliSumOp) and isinstance(
-            self.hamiltonian.coeff, ParameterExpression
-        ):
-            raise ValueError("A global parametrized coefficient for PauliSumOp is not allowed.")

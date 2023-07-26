@@ -84,6 +84,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
         qaoa = QAOA(self.sampler, COBYLA(), reps=reps, mixer=mixer)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
         self.assertIn(graph_solution, solutions)
@@ -199,6 +200,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             callback=cb_callback,
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
 

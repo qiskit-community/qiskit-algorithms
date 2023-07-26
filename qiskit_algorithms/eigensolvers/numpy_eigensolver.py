@@ -19,7 +19,6 @@ import logging
 import numpy as np
 from scipy import sparse as scisparse
 
-from qiskit.opflow import PauliSumOp
 from qiskit.quantum_info import SparsePauliOp, Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.utils.validation import validate_min
@@ -97,7 +96,7 @@ class NumPyEigensolver(Eigensolver):
     def supports_aux_operators(cls) -> bool:
         return True
 
-    def _check_set_k(self, operator: BaseOperator | PauliSumOp) -> None:
+    def _check_set_k(self, operator: BaseOperator) -> None:
         if operator is not None:
             if self._in_k > 2**operator.num_qubits:
                 self._k = 2**operator.num_qubits
@@ -107,22 +106,20 @@ class NumPyEigensolver(Eigensolver):
             else:
                 self._k = self._in_k
 
-    def _solve(self, operator: BaseOperator | PauliSumOp) -> tuple[np.ndarray, np.ndarray]:
-        if isinstance(operator, PauliSumOp):
-            op_matrix = operator.to_spmatrix()
-        else:
+    def _solve(self, operator: BaseOperator) -> tuple[np.ndarray, np.ndarray]:
+
+        try:
+            op_matrix = operator.to_matrix(sparse=True)
+        except TypeError:
+            logger.debug(
+                "WARNING: operator of type `%s` does not support sparse matrices. "
+                "Trying dense computation",
+                type(operator),
+            )
             try:
-                op_matrix = operator.to_matrix(sparse=True)
-            except TypeError:
-                logger.debug(
-                    "WARNING: operator of type `%s` does not support sparse matrices. "
-                    "Trying dense computation",
-                    type(operator),
-                )
-                try:
-                    op_matrix = operator.to_matrix()
-                except AttributeError as ex:
-                    raise AlgorithmError(f"Unsupported operator type `{type(operator)}`.") from ex
+                op_matrix = operator.to_matrix()
+            except AttributeError as ex:
+                raise AlgorithmError(f"Unsupported operator type `{type(operator)}`.") from ex
 
         if isinstance(op_matrix, scisparse.csr_matrix):
             # If matrix is diagonal, the elements on the diagonal are the eigenvalues. Solve by sorting.
@@ -168,7 +165,7 @@ class NumPyEigensolver(Eigensolver):
 
     @staticmethod
     def _eval_aux_operators(
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp],
+        aux_operators: ListOrDict[BaseOperator],
         wavefn: np.ndarray,
         threshold: float = 1e-12,
     ) -> ListOrDict[tuple[complex, complex]]:
@@ -195,18 +192,14 @@ class NumPyEigensolver(Eigensolver):
                 continue
 
             op_matrix = None
-            if isinstance(operator, PauliSumOp):
-                if operator.coeff != 0:
-                    op_matrix = operator.to_spmatrix()
-            else:
-                try:
-                    op_matrix = operator.to_matrix(sparse=True)
-                except TypeError:
-                    logger.debug(
-                        "WARNING: operator of type `%s` does not support sparse matrices. "
-                        "Trying dense computation",
-                        type(operator),
-                    )
+            try:
+                op_matrix = operator.to_matrix(sparse=True)
+            except TypeError:
+                logger.debug(
+                    "WARNING: operator of type `%s` does not support sparse matrices. "
+                    "Trying dense computation",
+                    type(operator),
+                )
                 try:
                     op_matrix = operator.to_matrix()
                 except AttributeError as ex:
@@ -229,8 +222,8 @@ class NumPyEigensolver(Eigensolver):
 
     def compute_eigenvalues(
         self,
-        operator: BaseOperator | PauliSumOp,
-        aux_operators: ListOrDict[BaseOperator | PauliSumOp] | None = None,
+        operator: BaseOperator,
+        aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> NumPyEigensolverResult:
 
         super().compute_eigenvalues(operator, aux_operators)

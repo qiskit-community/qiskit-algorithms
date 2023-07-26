@@ -21,9 +21,11 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, Parameter, ParameterExpression
 from qiskit.compiler import transpile
 from qiskit.exceptions import QiskitError
-from qiskit.opflow.gradients.circuit_gradients import ParamShift
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+
+from qiskit_algorithms.gradients import ParamShiftSamplerGradient as ParamShift
+
 from ...exceptions import AlgorithmError
 
 logger = logging.getLogger(__name__)

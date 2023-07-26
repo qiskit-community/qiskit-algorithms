@@ -12,8 +12,8 @@
 """Class for testing evolution result."""
 import unittest
 from test import QiskitAlgorithmsTestCase
-from qiskit.opflow import Zero
-
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
 from qiskit_algorithms import TimeEvolutionResult
 
 
@@ -22,10 +22,10 @@ class TestTimeEvolutionResult(QiskitAlgorithmsTestCase):
 
     def test_init_state(self):
         """Tests that a class is initialized correctly with an evolved_state."""
-        evolved_state = Zero
+        evolved_state = Statevector(QuantumCircuit(1))
         evo_result = TimeEvolutionResult(evolved_state=evolved_state)
 
-        expected_state = Zero
+        expected_state = Statevector(QuantumCircuit(1))
         expected_aux_ops_evaluated = None
 
         self.assertEqual(evo_result.evolved_state, expected_state)
@@ -33,11 +33,11 @@ class TestTimeEvolutionResult(QiskitAlgorithmsTestCase):
 
     def test_init_observable(self):
         """Tests that a class is initialized correctly with an evolved_observable."""
-        evolved_state = Zero
+        evolved_state = Statevector(QuantumCircuit(1))
         evolved_aux_ops_evaluated = [(5j, 5j), (1.0, 8j), (5 + 1j, 6 + 1j)]
         evo_result = TimeEvolutionResult(evolved_state, evolved_aux_ops_evaluated)
 
-        expected_state = Zero
+        expected_state = Statevector(QuantumCircuit(1))
         expected_aux_ops_evaluated = [(5j, 5j), (1.0, 8j), (5 + 1j, 6 + 1j)]
 
         self.assertEqual(evo_result.evolved_state, expected_state)

@@ -18,13 +18,9 @@ from collections.abc import Iterator
 from typing import Any, Callable
 
 import numpy as np
-from qiskit.providers import Backend
-from qiskit.circuit import ParameterVector, QuantumCircuit
-from qiskit.opflow import StateFn, CircuitSampler, ExpectationBase
-from qiskit.utils import QuantumInstance
-from qiskit.utils.deprecation import deprecate_arg
+from qiskit.circuit import QuantumCircuit
 
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSampler
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
@@ -89,29 +85,6 @@ class QNSPSA(SPSA):
             # run QN-SPSA
             qnspsa = QNSPSA(fidelity, maxiter=300)
             result = qnspsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
-
-        This is a legacy version solving the same problem but using Qiskit Opflow instead
-        of the Qiskit Primitives. Note however, that this usage is deprecated.
-
-        .. code-block:: python
-
-            import numpy as np
-            from qiskit_algorithms.optimizers import QNSPSA
-            from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.opflow import Z, StateFn
-
-            ansatz = PauliTwoDesign(2, reps=1, seed=2)
-            observable = Z ^ Z
-            initial_point = np.random.random(ansatz.num_parameters)
-
-            def loss(x):
-                bound = ansatz.bind_parameters(x)
-                return np.real((StateFn(observable, is_measurement=True) @ StateFn(bound)).eval())
-
-            fidelity = QNSPSA.get_fidelity(ansatz)
-            qnspsa = QNSPSA(fidelity, maxiter=300)
-            result = qnspsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
-
 
     References:
 
@@ -255,33 +228,12 @@ class QNSPSA(SPSA):
         return settings
 
     @staticmethod
-    @deprecate_arg(
-        "backend",
-        since="0.24.0",
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-        # We allow passing a sampler as the second argument because that will become a positional
-        # argument for `sampler` after removing `backend` and `expectation`.
-        predicate=lambda backend: not isinstance(backend, BaseSampler),
-    )
-    @deprecate_arg(
-        "expectation",
-        since="0.24.0",
-        additional_msg="See https://qisk.it/algo_migration for a migration guide.",
-    )
     def get_fidelity(
         circuit: QuantumCircuit,
-        backend: Backend | QuantumInstance | None = None,
-        expectation: ExpectationBase | None = None,
         *,
         sampler: BaseSampler | None = None,
     ) -> Callable[[np.ndarray, np.ndarray], float]:
         r"""Get a function to compute the fidelity of ``circuit`` with itself.
-
-        .. note::
-
-            Using this function with a backend and expectation converter is pending deprecation,
-            instead pass a Qiskit Primitive sampler, such as :class:`~.Sampler`.
-            The sampler can be passed as keyword argument or, positionally, as second argument.
 
         Let ``circuit`` be a parameterized quantum circuit performing the operation
         :math:`U(\theta)` given a set of parameters :math:`\theta`. Then this method returns
@@ -296,28 +248,12 @@ class QNSPSA(SPSA):
 
         Args:
             circuit: The circuit preparing the parameterized ansatz.
-            backend: Deprecated. A backend of quantum instance to evaluate the circuits.
-                If None, plain matrix multiplication will be used.
-            expectation: Deprecated. An expectation converter to specify how the expected
-                value is computed. If a shot-based readout is used this should be set to
-                ``PauliExpectation``.
             sampler: A sampler primitive to sample from a quantum state.
 
         Returns:
             A handle to the function :math:`F`.
 
         """
-        # allow passing sampler by position
-        if isinstance(backend, BaseSampler):
-            sampler = backend
-            backend = None
-
-        if expectation is None and backend is None and sampler is None:
-            sampler = Sampler()
-
-        if expectation is not None or backend is not None:
-            return QNSPSA._legacy_get_fidelity(circuit, backend, expectation)
-
         fid = ComputeUncompute(sampler)
 
         num_parameters = circuit.num_parameters
@@ -333,89 +269,5 @@ class QNSPSA(SPSA):
                 batch_size_x * [circuit], batch_size_y * [circuit], values_x, values_y
             ).result()
             return np.asarray(result.fidelities)
-
-        return fidelity
-
-    @staticmethod
-    def _legacy_get_fidelity(
-        circuit: QuantumCircuit,
-        backend: Backend | QuantumInstance | None = None,
-        expectation: ExpectationBase | None = None,
-    ) -> Callable[[np.ndarray, np.ndarray], float]:
-        r"""Deprecated. Get a function to compute the fidelity of ``circuit`` with itself.
-
-        .. note::
-
-            This method is deprecated. Instead use the :class:`~.ComputeUncompute`
-            class which implements the fidelity calculation in the same fashion as this method.
-
-        Let ``circuit`` be a parameterized quantum circuit performing the operation
-        :math:`U(\theta)` given a set of parameters :math:`\theta`. Then this method returns
-        a function to evaluate
-
-        .. math::
-
-            F(\theta, \phi) = \big|\langle 0 | U^\dagger(\theta) U(\phi) |0\rangle  \big|^2.
-
-        The output of this function can be used as input for the ``fidelity`` to the
-        :class:~`qiskit_algorithms.optimizers.QNSPSA` optimizer.
-
-        Args:
-            circuit: The circuit preparing the parameterized ansatz.
-            backend: A backend of quantum instance to evaluate the circuits. If None, plain
-                matrix multiplication will be used.
-            expectation: An expectation converter to specify how the expected value is computed.
-                If a shot-based readout is used this should be set to ``PauliExpectation``.
-
-        Returns:
-            A handle to the function :math:`F`.
-
-        """
-        params_x = ParameterVector("x", circuit.num_parameters)
-        params_y = ParameterVector("y", circuit.num_parameters)
-
-        expression = ~StateFn(circuit.assign_parameters(params_x)) @ StateFn(
-            circuit.assign_parameters(params_y)
-        )
-
-        if expectation is not None:
-            expression = expectation.convert(expression)
-
-        if backend is None:
-
-            def fidelity(values_x, values_y):
-                value_dict = dict(
-                    zip(params_x[:] + params_y[:], values_x.tolist() + values_y.tolist())
-                )
-                return np.abs(expression.bind_parameters(value_dict).eval()) ** 2
-
-        else:
-            sampler = CircuitSampler(backend)
-
-            def fidelity(values_x, values_y=None):
-                # no batches
-                if isinstance(values_x, np.ndarray) and isinstance(values_y, np.ndarray):
-                    value_dict = dict(
-                        zip(params_x[:] + params_y[:], values_x.tolist() + values_y.tolist())
-                    )
-                # legacy batching -- remove once QNSPSA.get_fidelity is only supported with sampler
-                elif values_y is None:
-                    value_dict = {p: [] for p in params_x[:] + params_y[:]}
-                    for values_xy in values_x:
-                        for value_x, param_x in zip(values_xy[0, :], params_x):
-                            value_dict[param_x].append(value_x)
-
-                        for value_y, param_y in zip(values_xy[1, :], params_y):
-                            value_dict[param_y].append(value_y)
-                else:
-                    value_dict = {p: [] for p in params_x[:] + params_y[:]}
-                    for values_i_x, values_i_y in zip(values_x, values_y):
-                        for value_x, param_x in zip(values_i_x, params_x):
-                            value_dict[param_x].append(value_x)
-
-                        for value_y, param_y in zip(values_i_y, params_y):
-                            value_dict[param_y].append(value_y)
-
-                return np.abs(sampler.convert(expression, params=value_dict).eval()) ** 2
 
         return fidelity
