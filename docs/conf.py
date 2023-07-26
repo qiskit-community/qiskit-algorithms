@@ -33,6 +33,12 @@ version = "0.1"
 # The full version, including alpha/beta/rc tags
 release = "0.1.0"
 
+# Manually add the gallery CSS file for now
+# TODO: Figure out why the styling is not working by default
+html_css_files = [
+    "nbsphinx-gallery.css",
+]
+
 extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
@@ -151,3 +157,4 @@ doctest_default_flags = (
 # >> code
 # output
 doctest_test_doctest_blocks = ""
+
