@@ -123,7 +123,6 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate()))),
         (QuantumCircuit(2).compose(IGate()).compose(HGate())),
     )
-    @unpack
     def test_H2_hamiltonian_sampler(self, state_preparation):
         """Test H2 hamiltonian"""
 

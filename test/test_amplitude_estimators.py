@@ -393,6 +393,7 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
         shots = 100
         alpha = 0.01
 
+        estimation_problem = EstimationProblem(SineIntegral(n), objective_qubits=[n])
         qae.sampler = self._sampler_shots(shots)
         result = qae.estimate(estimation_problem)
 
@@ -441,10 +442,10 @@ class TestAmplitudeEstimation(QiskitAlgorithmsTestCase):
 
         qae = AmplitudeEstimation(num_eval_qubits=1, sampler=Sampler())
 
-        _ = qae.estimate(problem)
+        with self.assertWarns(Warning):
+            _ = qae.estimate(problem)
 
 
-@ddt
 class TestFasterAmplitudeEstimation(QiskitAlgorithmsTestCase):
     """Specific tests for Faster AE."""
 
@@ -504,12 +505,11 @@ class TestFasterAmplitudeEstimation(QiskitAlgorithmsTestCase):
     def test_good_state(self):
         """Test with a good state function."""
 
-        expect = 0.199440
+        expect = 0.2
 
         def is_good_state(bitstr):
             return bitstr[1] == "1"
 
-        expect = 0.2
         # construct the estimation problem where the second qubit is ignored
         a_op = QuantumCircuit(2)
         a_op.ry(2 * np.arcsin(np.sqrt(0.2)), 0)
