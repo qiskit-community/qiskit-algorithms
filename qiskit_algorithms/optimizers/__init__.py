@@ -35,7 +35,6 @@ Optimizer Base Class
    :nosignatures:
 
    OptimizerResult
-   OptimizerSupportLevel
    Optimizer
    Minimizer
 
