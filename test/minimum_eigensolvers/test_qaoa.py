@@ -71,31 +71,36 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     @idata(
         [
-            [W1, P1, M1, S1],
-            [W2, P2, M2, S2],
+            [W1, P1, M1, S1, False],
+            [W2, P2, M2, S2, True],
         ]
     )
     @unpack
-    def test_qaoa(self, w, reps, mixer, solutions):
+    def test_qaoa(self, w, reps, mixer, solutions, uses_deprecated):
         """QAOA test"""
         self.log.debug("Testing %s-step QAOA with MaxCut on graph\n%s", reps, w)
 
         qubit_op, _ = self._get_operator(w)
 
         qaoa = QAOA(self.sampler, COBYLA(), reps=reps, mixer=mixer)
-        result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        if uses_deprecated:
+            with self.assertWarns(DeprecationWarning):
+                result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        else:
+            result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
         self.assertIn(graph_solution, solutions)
 
     @idata(
         [
-            [W1, P1, S1],
-            [W2, P2, S2],
+            [W1, P1, S1, False],
+            [W2, P2, S2, True],
         ]
     )
     @unpack
-    def test_qaoa_qc_mixer(self, w, prob, solutions):
+    def test_qaoa_qc_mixer(self, w, prob, solutions, uses_deprecated):
         """QAOA test with a mixer as a parameterized circuit"""
         self.log.debug(
             "Testing %s-step QAOA with MaxCut on graph with a mixer as a parameterized circuit\n%s",
@@ -112,7 +117,11 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         mixer.rx(theta, range(num_qubits))
 
         qaoa = QAOA(self.sampler, optimizer, reps=prob, mixer=mixer)
-        result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        if uses_deprecated:
+            with self.assertWarns(DeprecationWarning):
+                result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        else:
+            result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
         self.assertIn(graph_solution, solutions)
@@ -179,9 +188,9 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.0]], [W2, S2, [1.0, 0.8]]])
+    @idata([[W2, S2, None, False], [W2, S2, [0.0, 0.0], True], [W2, S2, [1.0, 0.8], True]])
     @unpack
-    def test_qaoa_initial_point(self, w, solutions, init_pt):
+    def test_qaoa_initial_point(self, w, solutions, init_pt, uses_deprecated):
         """Check first parameter value used is initial point as expected"""
         qubit_op, _ = self._get_operator(w)
 
@@ -198,7 +207,12 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             initial_point=init_pt,
             callback=cb_callback,
         )
-        result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        if uses_deprecated:
+            with self.assertWarns(DeprecationWarning):
+                result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+        else:
+            result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
         x = self._sample_most_likely(result.eigenstate)
         graph_solution = self._get_graph_solution(x)
 
