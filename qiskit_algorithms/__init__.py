@@ -280,7 +280,10 @@ from .minimum_eigensolvers import (
     VQEResult,
 )
 
+from .version import __version__
+
 __all__ = [
+    "__version__",
     "AlgorithmJob",
     "AlgorithmResult",
     "VariationalAlgorithm",
