@@ -109,7 +109,7 @@ add_module_names = False
 
 # A list of prefixes that are ignored for sorting the Python module index
 # (e.g., if this is set to ['foo.'], then foo.bar is shown under B, not F).
-modindex_common_prefix = ["qiskit."]
+modindex_common_prefix = ["qiskit_algorithms."]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
