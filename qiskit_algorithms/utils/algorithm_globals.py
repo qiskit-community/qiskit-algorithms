@@ -1,6 +1,6 @@
-# This code is part of Qiskit.
+# This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2021.
+# (C) Copyright IBM 2019, 2023.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,8 +18,8 @@ import logging
 import numpy as np
 
 from qiskit.tools import parallel
-from ..user_config import get_config
-from ..exceptions import QiskitError
+from qiskit.user_config import get_config
+from ..exceptions import AlgorithmError
 
 
 logger = logging.getLogger(__name__)
@@ -65,9 +65,9 @@ class QiskitAlgorithmGlobals:
         if num_processes is None:
             num_processes = QiskitAlgorithmGlobals.CPU_COUNT
         elif num_processes < 1:
-            raise QiskitError(f"Invalid Number of Processes {num_processes}.")
+            raise AlgorithmError(f"Invalid Number of Processes {num_processes}.")
         elif num_processes > QiskitAlgorithmGlobals.CPU_COUNT:
-            raise QiskitError(
+            raise AlgorithmError(
                 "Number of Processes {} cannot be greater than cpu count {}.".format(
                     num_processes, QiskitAlgorithmGlobals.CPU_COUNT
                 )

@@ -29,8 +29,4 @@ from .algorithm_globals import algorithm_globals
 from .validate_initial_point import validate_initial_point
 from .validate_bounds import validate_bounds
 
-__all__ = [
-    "algorithm_globals",
-    "validate_initial_point",
-    "validate_bounds"
-]
+__all__ = ["algorithm_globals", "validate_initial_point", "validate_bounds"]
