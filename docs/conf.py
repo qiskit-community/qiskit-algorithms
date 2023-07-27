@@ -21,6 +21,8 @@ import doctest
 import os
 import sys
 
+import qiskit_algorithms
+
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.append(os.path.abspath("."))
 
@@ -29,9 +31,9 @@ copyright = f"2017-{datetime.date.today().year}, Qiskit Algorithms Development T
 author = "Qiskit Algorithms Development Team"
 
 # The short X.Y version
-version = "0.1"
+version = qiskit_algorithms.__version__
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = qiskit_algorithms.__version__
 
 # Manually add the gallery CSS file for now
 # TODO: Figure out why the styling is not working by default
