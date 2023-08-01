@@ -21,9 +21,9 @@ from typing import SupportsFloat
 
 import numpy as np
 
-from qiskit.utils import algorithm_globals
 from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils import algorithm_globals
 from .optimizer import OptimizerResult, POINT
 from .scipy_optimizer import SciPyOptimizer
 
@@ -42,6 +42,12 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
     Uses scipy.optimize.fmin_l_bfgs_b.
     For further detail, please refer to
     https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_l_bfgs_b.html
+
+    .. note::
+
+    This component has some function that is normally random. If you want to reproduce behavior
+    then you should set the random number generator seed in the algorithm_globals
+    (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
     """
 
     _OPTIONS = ["maxfun", "ftol", "iprint"]
