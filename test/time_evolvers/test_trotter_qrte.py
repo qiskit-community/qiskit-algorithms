@@ -22,12 +22,12 @@ from numpy.testing import assert_raises
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
-from qiskit.utils import algorithm_globals
 from qiskit.circuit import Parameter
 from qiskit.primitives import Estimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
 
 from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt

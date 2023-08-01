@@ -23,13 +23,13 @@ from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
-from qiskit.test import QiskitTestCase
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
 from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.time_evolvers.pvqd import PVQD
+from qiskit_algorithms.utils import algorithm_globals
+
 
 # pylint: disable=unused-argument, invalid-name
 def gradient_supplied(fun, x0, jac, info):
@@ -270,7 +270,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             _ = pvqd.evolve(problem)
 
 
-class TestPVQDUtils(QiskitTestCase):
+class TestPVQDUtils(QiskitAlgorithmsTestCase):
     """Test some utility functions for PVQD."""
 
     def setUp(self):

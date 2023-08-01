@@ -15,7 +15,6 @@
 import unittest
 from test import QiskitAlgorithmsTestCase
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import algorithm_globals
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.test import slow_test
@@ -24,6 +23,7 @@ from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import LinCombEstimatorGradient
 from qiskit_algorithms.optimizers import AQGD
 from qiskit_algorithms.minimum_eigensolvers import VQE
+from qiskit_algorithms.utils import algorithm_globals
 
 
 class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
