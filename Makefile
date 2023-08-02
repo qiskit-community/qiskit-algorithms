@@ -79,4 +79,4 @@ coverage:
 coverage_erase:
 	coverage erase
 
-clean: coverage_erase;
+clean: clean_sphinx coverage_erase;
