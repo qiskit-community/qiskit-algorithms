@@ -27,7 +27,7 @@ upgrade:
     ``qiskit-algorithms`` has already been altered to use the new instance and
     the delegation function, that accesses the random generator, will warn with
     a message to switch to seeding the ``qiskit-algorithms`` version if it detects
-    a difference in the seed, A difference could exist if the ``random_seed``
+    a difference in the seed. A difference could exist if the ``random_seed``
     was set direct to the ``qiskit.utils`` instance.
 
     At such a time when the ``qiskit.utils`` ``algorithm_globals`` version no
