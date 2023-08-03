@@ -22,8 +22,8 @@ from typing import SupportsFloat
 import numpy as np
 
 from qiskit.utils import algorithm_globals
-from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils.validation import validate_min
 from .optimizer import OptimizerResult, POINT
 from .scipy_optimizer import SciPyOptimizer
 
