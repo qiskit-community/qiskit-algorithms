@@ -23,7 +23,6 @@ from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
-from qiskit.test import QiskitTestCase
 from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
@@ -270,7 +269,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             _ = pvqd.evolve(problem)
 
 
-class TestPVQDUtils(QiskitTestCase):
+class TestPVQDUtils(QiskitAlgorithmsTestCase):
     """Test some utility functions for PVQD."""
 
     def setUp(self):

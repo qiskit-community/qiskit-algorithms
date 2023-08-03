@@ -14,21 +14,21 @@
 """Test QFI."""
 
 import unittest
-from ddt import ddt, data
+from test import QiskitAlgorithmsTestCase
 
+from ddt import ddt, data
 import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.parametervector import ParameterVector
 from qiskit.primitives import Estimator
-from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 
 
 @ddt
-class TestQFI(QiskitTestCase):
+class TestQFI(QiskitAlgorithmsTestCase):
     """Test QFI"""
 
     def setUp(self):
