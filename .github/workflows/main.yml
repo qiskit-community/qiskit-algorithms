@@ -67,7 +67,7 @@ jobs:
           sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
           pip install pyenchant
           # append to reno config
-          echo "earliest_version: 0.1.0" >> releasenotes/config.yam
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - run: pip check
         if: ${{ !cancelled() }}
