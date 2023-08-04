@@ -12,9 +12,11 @@
 
 """
 Optimizers (:mod:`qiskit_algorithms.optimizers`)
-=====================================================
-It  contains a variety of classical optimizers for use by quantum variational algorithms,
-such as :class:`~qiskit_algorithms.VQE`.
+================================================
+Classical Optimizers.
+
+This package contains a variety of classical optimizers and were designed for use by
+qiskit_algorithm's quantum variational algorithms, such as :class:`~qiskit_algorithms.VQE`.
 Logically, these optimizers can be divided into two categories:
 
 `Local Optimizers`_
@@ -27,8 +29,8 @@ Logically, these optimizers can be divided into two categories:
 
 .. currentmodule:: qiskit_algorithms.optimizers
 
-Optimizer Base Class
-====================
+Optimizer Base Classes
+----------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -38,8 +40,8 @@ Optimizer Base Class
    Optimizer
    Minimizer
 
-Steppable Optimizer Base Class
-==============================
+Steppable Optimization
+----------------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -56,9 +58,8 @@ Steppable Optimizer Base Class
    OptimizerState
 
 
-
 Local Optimizers
-================
+----------------
 
 .. autosummary::
    :toctree: ../stubs/
@@ -84,11 +85,11 @@ Local Optimizers
    UMDA
 
 Qiskit also provides the following optimizers, which are built-out using the optimizers from
-the `scikit-quant` package. The `scikit-quant` package is not installed by default but must be
-explicitly installed, if desired, by the user - the optimizers therein are provided under various
-licenses so it has been made an optional install for the end user to choose whether to do so or
-not. To install the `scikit-quant` dependent package you can use
-`pip install scikit-quant`.
+`scikit-quant <https://scikit-quant.readthedocs.io/en/latest/>`_. The ``scikit-quant`` package
+is not installed by default but must be explicitly installed, if desired, by the user. The
+optimizers therein are provided under various licenses hence it has been made an optional install
+so a user's choice to do so is their own.
+To install the ``scikit-quant`` dependent package you can use ``pip install scikit-quant``.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -99,9 +100,10 @@ not. To install the `scikit-quant` dependent package you can use
    SNOBFIT
 
 Global Optimizers
-=================
-The global optimizers here all use NLopt for their core function and can only be
-used if their dependent NLopt package is manually installed.
+-----------------
+The global optimizers here all use `NLOpt <https://nlopt.readthedocs.io/en/latest/>`_ for their
+core function and can only be used if the optional dependent ``NLOpt`` package is installed.
+To install the ``NLOpt`` dependent package you can use ``pip install nlopt``.
 
 .. autosummary::
    :toctree: ../stubs/

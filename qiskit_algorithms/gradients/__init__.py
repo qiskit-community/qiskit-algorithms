@@ -11,17 +11,18 @@
 # that they have been altered from the originals.
 
 """
-==============================================
 Gradients (:mod:`qiskit_algorithms.gradients`)
 ==============================================
+Algorithms to calculate the gradient of a quantum circuit.
 
 .. currentmodule:: qiskit_algorithms.gradients
 
 Base Classes
-============
+------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    BaseEstimatorGradient
    BaseQGT
@@ -31,56 +32,62 @@ Base Classes
    QGTResult
 
 Finite Differences
-==================
+------------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    FiniteDiffEstimatorGradient
    FiniteDiffSamplerGradient
 
 Linear Combination of Unitaries
-===============================
+-------------------------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    LinCombEstimatorGradient
    LinCombSamplerGradient
    LinCombQGT
 
 Parameter Shift Rules
-=====================
+---------------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    ParamShiftEstimatorGradient
    ParamShiftSamplerGradient
 
 Quantum Fisher Information
-==========================
+--------------------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    QFIResult
    QFI
 
 Classical Methods
-=================
+-----------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    ReverseEstimatorGradient
    ReverseQGT
 
 Simultaneous Perturbation Stochastic Approximation
-==================================================
+--------------------------------------------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    SPSAEstimatorGradient
    SPSASamplerGradient
