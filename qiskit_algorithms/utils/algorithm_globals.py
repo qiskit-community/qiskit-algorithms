@@ -10,7 +10,27 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Algorithm Globals"""
+"""
+utils.algorithm_globals
+=======================
+Common (global) properties used across qiskit_algorithms.
+
+.. currentmodule:: qiskit_algorithms.utils.algorithm_globals
+
+Includes:
+
+  * Random number generator and random seed.
+
+    Algorithms can use the generator for random values, as needed, and it
+    can be seeded here for reproducible results when using such an algorithm.
+    This is often important, for example in unit tests, where the same
+    outcome is desired each time (reproducible) and not have it be variable
+    due to randomness.
+
+Attributes:
+    random_seed (int | None): Random generator seed (read/write).
+    random (np.random.Generator): Random generator (read-only)
+"""
 
 from __future__ import annotations
 
@@ -20,7 +40,7 @@ import numpy as np
 
 
 class QiskitAlgorithmGlobals:
-    """Class for global properties."""
+    """Global properties for algorithms."""
 
     # The code is done to work even after some future removal of algorithm_globals
     # from Qiskit (qiskit.utils). All that is needed in the future, after that, if
@@ -44,7 +64,7 @@ class QiskitAlgorithmGlobals:
 
     @property
     def random_seed(self) -> int | None:
-        """Return random seed."""
+        """Random seed property (getter/setter)."""
         try:
             from qiskit.utils import algorithm_globals as qiskit_globals
 
@@ -55,7 +75,11 @@ class QiskitAlgorithmGlobals:
 
     @random_seed.setter
     def random_seed(self, seed: int | None) -> None:
-        """Set random seed."""
+        """Set the random generator seed.
+
+        Args:
+            seed: If ``None`` then internally a random value is used as a seed
+        """
         try:
             from qiskit.utils import algorithm_globals as qiskit_globals
 
