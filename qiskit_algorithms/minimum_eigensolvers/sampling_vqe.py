@@ -348,7 +348,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
 
 class SamplingVQEResult(VariationalResult, SamplingMinimumEigensolverResult):
-    """VQE Result."""
+    """The SamplingVQE Result."""
 
     def __init__(self) -> None:
         super().__init__()

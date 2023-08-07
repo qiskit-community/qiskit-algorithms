@@ -16,34 +16,34 @@ Qiskit Algorithms (:mod:`qiskit_algorithms`)
 ============================================
 Qiskit Algorithms is a library of quantum algorithms for quantum computing with
 `Qiskit <https://qiskit.org>`_.
-The algorithms can be used to carry out research and investigate how to solve
+These algorithms can be used to carry out research and investigate how to solve
 problems in different domains on simulators and near-term real quantum devices
 using short depth circuits.
 
-Now there are some classical algorithms here, for example the :class:`.NumPyMinimumEigensolver`
+Now there are some classical algorithms here, for example the :class:`.NumPyMinimumEigensolver`,
 which take the same input but solve the problem classically. This has utility in the near-term,
 where problems are still tractable classically, to validate and/or act as a reference.
 There are also classical :mod:`.optimizers` for use with variational algorithms such as :class:`.VQE`.
 
 While :mod:`.optimizers` were been mentioned, algorithms may also use :mod:`.gradients` and
-:mod:`.state_fidelities`. Plus any of these may be used directly if you have need of such function.
+:mod:`.state_fidelities`. Any of these may also be used directly if you have need of such function.
 
 The quantum algorithms here all use ``Primitives`` to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
-probability distributions.
+probability distributions. Refer to the specific algorithm for more information in this regard.
 
 .. currentmodule:: qiskit_algorithms
 
 Algorithms
 ==========
 
-The algorithms are now presented and are grouped by logical function such
+The algorithms are now presented and are grouped by logical function, such
 as minimum eigensolvers, amplitude amplifiers, time evolvers etc. Within each group the
-algorithms comform to an interface defined there which allows them to be used interchangeably
-in an application that specifies use of an algorithm type by that interface. E.g. Qiskit Nature
-application may take a Minimum Eigensolver to solve a ground state problem and require it to conform to
-the :class:`.MinimumEigensolver` interface. As long as it does, e.g. :class:`.VQE` then the application
-can make use of it.
+algorithms comform to an interface defined there, which allows them to be used interchangeably
+in an application that specifies use of an algorithm type by that interface. E.g. A Qiskit Nature
+application may take a minimum eigensolver, to solve a ground state problem, and require it to conform to
+the :class:`.MinimumEigensolver` interface. As long as it does, for example :class:`.VQE` is one such
+algorithm conforming to that interface, then the application can work with it.
 
 Amplitude Amplifiers
 --------------------
@@ -99,7 +99,7 @@ knowledge to do this in that application domain.
 
 
 Gradients
-----------
+---------
 Algorithms to calculate the gradient of a quantum circuit.
 
 .. autosummary::
@@ -109,10 +109,10 @@ Algorithms to calculate the gradient of a quantum circuit.
 
 
 Minimum Eigensolvers
----------------------
+--------------------
 Algorithms to find the minimum eigenvalue of an operator.
 
-Those algorithms taking an ``Estimator`` primitive that can solve for a general hamiltonian.
+The set of these algorithms, taking an ``Estimator`` primitive, that can solve for a general hamiltonian.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -127,7 +127,7 @@ Those algorithms taking an ``Estimator`` primitive that can solve for a general 
    AdaptVQE
    AdaptVQEResult
 
-Those algorithms taking an ``Sampler`` primitive that can solve for a diagonal hamiltonian such
+The set of these algorithms, taking an ``Sampler`` primitive, that can solve for a diagonal hamiltonian such
 as Ising Hamiltonian of an optimization problem.
 
 .. autosummary::
