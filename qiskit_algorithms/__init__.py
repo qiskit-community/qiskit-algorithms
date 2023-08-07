@@ -41,9 +41,10 @@ The algorithms are now presented and are grouped by logical function, such
 as minimum eigensolvers, amplitude amplifiers, time evolvers etc. Within each group the
 algorithms comform to an interface defined there, which allows them to be used interchangeably
 in an application that specifies use of an algorithm type by that interface. E.g. A Qiskit Nature
-application may take a minimum eigensolver, to solve a ground state problem, and require it to conform to
-the :class:`.MinimumEigensolver` interface. As long as it does, for example :class:`.VQE` is one such
-algorithm conforming to that interface, then the application can work with it.
+application may take a minimum eigensolver, to solve a ground state problem, and require it to
+conform to the :class:`.MinimumEigensolver` interface. As long as it does, for example
+:class:`.VQE` is one such algorithm conforming to that interface, then the application
+ can work with it.
 
 Amplitude Amplifiers
 --------------------
@@ -112,7 +113,8 @@ Minimum Eigensolvers
 --------------------
 Algorithms to find the minimum eigenvalue of an operator.
 
-The set of these algorithms, taking an ``Estimator`` primitive, that can solve for a general hamiltonian.
+The set of these algorithms, taking an ``Estimator`` primitive, that can
+solve for a general hamiltonian.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -127,8 +129,8 @@ The set of these algorithms, taking an ``Estimator`` primitive, that can solve f
    AdaptVQE
    AdaptVQEResult
 
-The set of these algorithms, taking an ``Sampler`` primitive, that can solve for a diagonal hamiltonian such
-as Ising Hamiltonian of an optimization problem.
+The set of these algorithms, taking an ``Sampler`` primitive, that can
+solve for a diagonal hamiltonian such as an Ising Hamiltonian of an optimization problem.
 
 .. autosummary::
    :toctree: ../stubs/
