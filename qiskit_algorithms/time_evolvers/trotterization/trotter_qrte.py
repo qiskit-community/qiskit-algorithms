@@ -65,7 +65,7 @@ class TrotterQRTE(RealTimeEvolver):
                 should be 1 to obtain a number of time-steps equal to ``num_timesteps`` and an
                 evaluation of :attr:`.TimeEvolutionProblem.aux_operators` at every time-step. If ``reps``
                 is larger than 1, the true number of time-steps will be ``num_timesteps * reps``.
-            num_timesteps: The number of time-steps the full evolution time is devided into
+            num_timesteps: The number of time-steps the full evolution time is divided into
                 (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
                 ``TimeEvolutionProblem.aux_operators``.

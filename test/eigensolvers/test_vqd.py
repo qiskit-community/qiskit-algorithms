@@ -115,7 +115,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
     @data(H2_SPARSE_PAULI)
     def test_beta_autoeval(self, op):
-        """Test beta autoevaluation for different operator types."""
+        """Test beta auto-evaluation for different operator types."""
 
         with self.assertLogs(level="INFO") as logs:
             vqd = VQD(

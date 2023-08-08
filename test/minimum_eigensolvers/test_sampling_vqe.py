@@ -258,7 +258,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_aggregation(self):
         """Test the aggregation works."""
 
-        # test a custom aggregration that just uses the best measurement
+        # test a custom aggregation that just uses the best measurement
         def best_measurement(measurements):
             res = min(measurements, key=lambda meas: meas[1])[1]
             return res

@@ -291,9 +291,9 @@ class SPSA(Optimizer):
         modelspace: bool = False,
         max_evals_grouped: int = 1,
     ) -> tuple[Callable, Callable]:
-        r"""Calibrate SPSA parameters with a powerseries as learning rate and perturbation coeffs.
+        r"""Calibrate SPSA parameters with a power series as learning rate and perturbation coeffs.
 
-        The powerseries are:
+        The power series are:
 
         .. math::
 
@@ -306,15 +306,15 @@ class SPSA(Optimizer):
             stability_constant: The value of `A`.
             target_magnitude: The target magnitude for the first update step, defaults to
                 :math:`2\pi / 10`.
-            alpha: The exponent of the learning rate powerseries.
-            gamma: The exponent of the perturbation powerseries.
+            alpha: The exponent of the learning rate power series.
+            gamma: The exponent of the perturbation power series.
             modelspace: Whether the target magnitude is the difference of parameter values
                 or function values (= model space).
             max_evals_grouped: The number of grouped evaluations supported by the loss function.
                 Defaults to 1, i.e. no grouping.
 
         Returns:
-            tuple(generator, generator): A tuple of powerseries generators, the first one for the
+            tuple(generator, generator): A tuple of power series generators, the first one for the
                 learning rate and the second one for the perturbation.
         """
         logger.info("SPSA: Starting calibration of learning rate and perturbation.")
@@ -327,7 +327,7 @@ class SPSA(Optimizer):
         steps = 25
         points = []
         for _ in range(steps):
-            # compute the random directon
+            # compute the random direction
             pert = bernoulli_perturbation(dim)
             points += [initial_point + c * pert, initial_point - c * pert]
 
@@ -359,7 +359,7 @@ class SPSA(Optimizer):
         )
         logger.info(" -- Perturbation: c / (n ^ gamma) with c = %s, gamma = %s", c, gamma)
 
-        # set up the powerseries
+        # set up the power series
         def learning_rate():
             return powerseries(a, alpha, stability_constant)
 
@@ -664,7 +664,7 @@ def bernoulli_perturbation(dim, perturbation_dims=None):
 
 
 def powerseries(eta=0.01, power=2, offset=0):
-    """Yield a series decreasing by a powerlaw."""
+    """Yield a series decreasing by a power law."""
 
     n = 1
     while True:

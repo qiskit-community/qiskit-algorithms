@@ -171,8 +171,8 @@ class EstimationProblem:
             return self._grover_operator
 
         # build the reflection about the bad state: a MCZ with open controls (thus X gates
-        # around the controls) and X gates around the target to change from a phaseflip on
-        # |1> to a phaseflip on |0>
+        # around the controls) and X gates around the target to change from a phase flip on
+        # |1> to a phase flip on |0>
         num_state_qubits = self.state_preparation.num_qubits - self.state_preparation.num_ancillas
 
         oracle = QuantumCircuit(num_state_qubits)
