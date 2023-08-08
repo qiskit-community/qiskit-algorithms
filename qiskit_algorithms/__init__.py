@@ -44,7 +44,7 @@ in an application that specifies use of an algorithm type by that interface. E.g
 application may take a minimum eigensolver, to solve a ground state problem, and require it to
 conform to the :class:`.MinimumEigensolver` interface. As long as it does, for example
 :class:`.VQE` is one such algorithm conforming to that interface, then the application
- can work with it.
+can work with it.
 
 Amplitude Amplifiers
 --------------------
