@@ -186,8 +186,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
-        with:
-          os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
           pip install jupyter qiskit-terra[visualization]
