@@ -76,7 +76,7 @@ jobs:
           python tools/check_copyright.py -check
         if: ${{ !cancelled() }}
         shell: bash
-      - run:  make spell
+      - run: make spell
         if: ${{ !cancelled() }}
         shell: bash
       - name: Style Check
@@ -145,10 +145,14 @@ jobs:
           run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
           python-version: ${{ matrix.python-version }}
         if: ${{ !cancelled() }}
+      - name: Deprecation Messages
+        run: |
+          mkdir ./ci-artifact-data
+          python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/alg.dep
+        shell: bash
       - name: Coverage combine
         run: |
           coverage3 combine
-          mkdir ./ci-artifact-data
           mv .coverage ./ci-artifact-data/alg.dat
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
         shell: bash
@@ -221,8 +225,40 @@ jobs:
         with:
           name: ubuntu-latest-3.8
           path: /tmp/u38
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.9
+          path: /tmp/u39
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.10
+          path: /tmp/u310
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.11
+          path: /tmp/u311
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-latest-3.8
+          path: /tmp/m38
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-latest-3.11
+          path: /tmp/m311
+      - uses: actions/download-artifact@v3
+        with:
+          name: windows-2019-3.8
+          path: /tmp/w38
+      - uses: actions/download-artifact@v3
+        with:
+          name: windows-2019-3.11
+          path: /tmp/w311
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
+        shell: bash
+      - name: Combined Deprecation Messages
+        run: |
+          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/m38/alg.dep /tmp/m311/alg.dep /tmp/w38/alg.dep /tmp/w311/alg.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/u38/alg.dat
