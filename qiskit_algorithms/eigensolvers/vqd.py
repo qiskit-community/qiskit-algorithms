@@ -53,7 +53,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     the k eigenvalues of the Hamiltonian :math:`H` of a given system.
 
     The algorithm computes excited state energies of generalised hamiltonians
-    by optimizing over a modified cost function where each succesive eigenvalue
+    by optimizing over a modified cost function where each successive eigenvalue
     is calculated iteratively by introducing an overlap term with all
     the previously computed eigenstates that must be minimised, thus ensuring
     higher energy eigenstates are found.
