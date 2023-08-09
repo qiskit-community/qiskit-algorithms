@@ -223,7 +223,7 @@ class PhaseEstimation(PhaseEstimator):
                 computational basis.
 
         Returns:
-            An phase estimation result.
+            A phase estimation result.
         """
         pe_circuit = self.construct_circuit(unitary, state_preparation)
 

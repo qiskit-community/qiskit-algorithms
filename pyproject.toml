@@ -73,7 +73,5 @@ enable = [
 ]
 
 [tool.pylint.spelling]
-spelling-dict = "en_US"
-spelling-ignore-words = ""
 spelling-private-dict-file = ".pylintdict"
 spelling-store-unknown-words = "n"
