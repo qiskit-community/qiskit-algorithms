@@ -31,6 +31,7 @@ concurrency:
 
 jobs:
   Checks:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -75,6 +76,9 @@ jobs:
           python tools/check_copyright.py -check
         if: ${{ !cancelled() }}
         shell: bash
+      - run:  make spell
+        if: ${{ !cancelled() }}
+        shell: bash
       - name: Style Check
         run: |
           make style
@@ -99,6 +103,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Algorithms:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -152,6 +157,7 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
   Tutorials:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -200,7 +206,8 @@ jobs:
           name: tutorials${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
-    needs: [Checks, Algorithms]
+    if: github.repository_owner == 'qiskit-community'
+    needs: [Checks, Algorithms, Tutorials]
     runs-on: ubuntu-latest
     strategy:
       matrix:
