@@ -27,7 +27,7 @@ from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 from qiskit.utils.validation import validate_min
 
-from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.list_or_dict import ListOrDict
 
 from .minimum_eigensolver import MinimumEigensolver
