@@ -283,7 +283,7 @@ class PVQD(RealTimeEvolver):
             def evaluate_gradient(displacement: np.ndarray) -> np.ndarray:
                 """Evaluate the gradient with the parameter-shift rule.
 
-                This is hardcoded here since the gradient framework does not support computing
+                This is hard-coded here since the gradient framework does not support computing
                 gradients for overlaps.
 
                 Args:

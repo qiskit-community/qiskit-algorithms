@@ -70,7 +70,7 @@ class PhaseEstimationResult(PhaseEstimatorResult):
         r"""Return the most likely phase as a number in :math:`[0.0, 1.0)`.
 
         1.0 corresponds to a phase of :math:`2\pi`. This selects the phase corresponding
-        to the bit string with the highesest probability. This is the most likely phase.
+        to the bit string with the highest probability. This is the most likely phase.
         """
         if isinstance(self.phases, dict):
             binary_phase_string = max(self.phases, key=self.phases.get)

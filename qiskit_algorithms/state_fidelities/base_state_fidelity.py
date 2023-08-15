@@ -179,7 +179,7 @@ class BaseStateFidelity(ABC):
                 self._check_qubits_match(circuit_1, circuit_2)
 
                 # re-parametrize input circuits
-                # TODO: make smarter checks to avoid unnecesary reparametrizations
+                # TODO: make smarter checks to avoid unnecessary re-parametrizations
                 parameters_1 = ParameterVector("x", circuit_1.num_parameters)
                 parametrized_circuit_1 = circuit_1.assign_parameters(parameters_1)
                 parameters_2 = ParameterVector("y", circuit_2.num_parameters)

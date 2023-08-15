@@ -225,7 +225,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
     ) -> float | tuple[float, list[float]]:
         """Compute the MLE via a grid-search.
 
-        This is a stable approach if sufficient gridpoints are used.
+        This is a stable approach if sufficient grid-points are used.
 
         Args:
             circuit_results: A list of circuit outcomes. Can be counts or statevectors.

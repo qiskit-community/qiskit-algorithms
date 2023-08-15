@@ -91,6 +91,9 @@ nbsphinx_thumbnails = {
     "**": "_static/images/logo.png",
 }
 
+spelling_word_list_filename = "../.pylintdict"
+spelling_filters = ["lowercase_filter.LowercaseFilter"]
+
 templates_path = ["_templates"]
 
 # Number figures, tables and code-blocks if they have a caption.

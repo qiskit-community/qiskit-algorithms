@@ -31,6 +31,7 @@ concurrency:
 
 jobs:
   Checks:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -77,6 +78,9 @@ jobs:
           python tools/check_copyright.py -check
         if: ${{ !cancelled() }}
         shell: bash
+      - run: make spell
+        if: ${{ !cancelled() }}
+        shell: bash
       - name: Style Check
         run: |
           make style
@@ -101,6 +105,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Algorithms:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -142,10 +147,14 @@ jobs:
           run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
           python-version: ${{ matrix.python-version }}
         if: ${{ !cancelled() }}
+      - name: Deprecation Messages
+        run: |
+          mkdir ./ci-artifact-data
+          python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/alg.dep
+        shell: bash
       - name: Coverage combine
         run: |
           coverage3 combine
-          mkdir ./ci-artifact-data
           mv .coverage ./ci-artifact-data/alg.dat
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
         shell: bash
@@ -154,12 +163,13 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
   Tutorials:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ 3.8, 3.11 ]
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.11]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -178,8 +188,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
-        with:
-          os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
           pip install jupyter qiskit-terra[visualization]
@@ -202,7 +210,8 @@ jobs:
           name: tutorials${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
-    needs: [Checks, Algorithms]
+    if: github.repository_owner == 'qiskit-community'
+    needs: [Checks, Algorithms, Tutorials]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -216,8 +225,40 @@ jobs:
         with:
           name: ubuntu-latest-3.8
           path: /tmp/u38
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.9
+          path: /tmp/u39
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.10
+          path: /tmp/u310
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-latest-3.11
+          path: /tmp/u311
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-latest-3.8
+          path: /tmp/m38
+      - uses: actions/download-artifact@v3
+        with:
+          name: macos-latest-3.11
+          path: /tmp/m311
+      - uses: actions/download-artifact@v3
+        with:
+          name: windows-2019-3.8
+          path: /tmp/w38
+      - uses: actions/download-artifact@v3
+        with:
+          name: windows-2019-3.11
+          path: /tmp/w311
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
+        shell: bash
+      - name: Combined Deprecation Messages
+        run: |
+          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/m38/alg.dep /tmp/m311/alg.dep /tmp/w38/alg.dep /tmp/w311/alg.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/u38/alg.dat

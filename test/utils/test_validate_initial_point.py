@@ -43,7 +43,7 @@ class TestValidateInitialPoint(QiskitAlgorithmsTestCase):
         np.testing.assert_array_almost_equal(initial_point, [0.430278])
 
     def test_with_mismatched_params(self):
-        """Test with mistmatched parameters and bounds.."""
+        """Test with mismatched parameters and bounds.."""
         self.ansatz.parameter_bounds = None
         with self.assertRaises(ValueError):
             _ = validate_initial_point([1.0, 2.0], self.ansatz)

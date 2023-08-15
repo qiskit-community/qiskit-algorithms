@@ -98,13 +98,13 @@ class GradientDescent(SteppableOptimizer):
             def learning_rate():
                 power = 0.6
                 constant_coeff = 0.1
-                def powerlaw():
+                def power_law():
                     n = 0
                     while True:
                         yield constant_coeff * (n ** power)
                         n += 1
 
-                return powerlaw()
+                return power_law()
 
             def f(x):
                 return (np.linalg.norm(x) - 1) ** 2
@@ -157,7 +157,7 @@ class GradientDescent(SteppableOptimizer):
                     evaluated_gradient = grad(ask_data.x_center)
                     optimizer.state.njev += 1
 
-                optmizer.state.nit += 1
+                optimizer.state.nit += 1
 
                 tell_data = TellData(eval_jac=evaluated_gradient)
                 optimizer.tell(ask_data=ask_data, tell_data=tell_data)
@@ -197,7 +197,7 @@ class GradientDescent(SteppableOptimizer):
                 perturbation in both directions (defaults to 1e-2 if required).
                 Ignored when we have an explicit function for the gradient.
         Raises:
-            ValueError: If ``learning_rate`` is an array and its lenght is less than ``maxiter``.
+            ValueError: If ``learning_rate`` is an array and its length is less than ``maxiter``.
         """
         super().__init__(maxiter=maxiter)
         self.callback = callback
@@ -250,7 +250,7 @@ class GradientDescent(SteppableOptimizer):
 
     def _callback_wrapper(self) -> None:
         """
-        Wraps the callback function to accomodate GradientDescent.
+        Wraps the callback function to accommodate GradientDescent.
 
         Will call :attr:`~.callback` and pass the following arguments:
         current number of function values, current parameters, current function value,
@@ -295,7 +295,7 @@ class GradientDescent(SteppableOptimizer):
 
     def tell(self, ask_data: AskData, tell_data: TellData) -> None:
         """
-        Updates :attr:`.~GradientDescentState.x` by an ammount proportional to the learning
+        Updates :attr:`.~GradientDescentState.x` by an amount proportional to the learning
         rate and value of the gradient at that point.
 
         Args:

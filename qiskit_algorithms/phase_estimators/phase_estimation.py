@@ -183,7 +183,7 @@ class PhaseEstimation(PhaseEstimator):
             pe_circuit: The phase estimation circuit.
 
         Returns:
-            An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
+            A phase estimation result.
 
         Raises:
             AlgorithmError: Primitive job failed.
@@ -223,7 +223,7 @@ class PhaseEstimation(PhaseEstimator):
                 computational basis.
 
         Returns:
-            An instance of qiskit_algorithms.phase_estimator_result.PhaseEstimationResult.
+            A phase estimation result.
         """
         pe_circuit = self.construct_circuit(unitary, state_preparation)
 

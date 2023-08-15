@@ -73,4 +73,5 @@ enable = [
 ]
 
 [tool.pylint.spelling]
-spelling-private-dict-file = ".local-spellings"
+spelling-private-dict-file = ".pylintdict"
+spelling-store-unknown-words = "n"

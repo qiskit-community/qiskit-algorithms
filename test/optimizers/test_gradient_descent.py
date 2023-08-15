@@ -89,7 +89,7 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
         self.assertIsInstance(history[0][3], float)  # norm of the gradient
 
     def test_minimize(self):
-        """Test setting the learning rate as iterator and minimizing the funciton."""
+        """Test setting the learning rate as iterator and minimizing the function."""
 
         def learning_rate():
             power = 0.6

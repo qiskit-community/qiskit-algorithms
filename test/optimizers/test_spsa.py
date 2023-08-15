@@ -80,7 +80,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             self.assertEqual(result.nfev, expected_nfev)  # function evaluations
 
     def test_recalibrate_at_optimize(self):
-        """Test SPSA calibrates anew upon each optimization run, if no autocalibration is set."""
+        """Test SPSA calibrates anew upon each optimization run, if no auto-calibration is set."""
 
         def objective(x):
             return -(x**2)

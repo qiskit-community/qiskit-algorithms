@@ -48,7 +48,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
     .. note::
 
         This class does not support the :attr:`.EstimationProblem.is_good_state` property,
-        as for phase estimation-based QAE, the oracle that identifes the good states
+        as for phase estimation-based QAE, the oracle that identifies the good states
         must be encoded in the Grover operator. To set custom oracles, the
         :attr:`.EstimationProblem.grover_operator` attribute can be set directly.
 
@@ -159,7 +159,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         """Evaluate the results from the circuit simulation.
 
         Given the probabilities from statevector simulation of the QAE circuit, compute the
-        probabilities that the measurements y/gridpoints a are the best estimate.
+        probabilities that the measurements y/grid-points a are the best estimate.
 
         Args:
             circuit_results: The circuit result from the QAE circuit. Can be either a counts dict
@@ -167,7 +167,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             threshold: Measurements with probabilities below the threshold are discarded.
 
         Returns:
-            Dictionaries containing the a gridpoints with respective probabilities and
+            Dictionaries containing the a grid-points with respective probabilities and
                 y measurements with respective probabilities, in this order.
         """
         # compute grid sample and measurement dicts
@@ -276,7 +276,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
             right_of_qae = np.sin(np.pi * (y + 1) / M) ** 2
             bubbles = [left_of_qae, qae, right_of_qae]
 
-        # Find global maximum amongst the two local maxima
+        # Find global maximum among the two local maxima
         a_opt = qae
         loglik_opt = loglikelihood(a_opt)
         for a, b in zip(bubbles[:-1], bubbles[1:]):
