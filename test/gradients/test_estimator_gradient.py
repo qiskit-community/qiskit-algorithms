@@ -14,6 +14,7 @@
 """Test Estimator Gradients"""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -25,7 +26,6 @@ from qiskit.circuit.library.standard_gates import RXXGate, RYYGate, RZXGate, RZZ
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import Operator, SparsePauliOp, Pauli
 from qiskit.quantum_info.random import random_pauli_list
-from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.gradients import (
     FiniteDiffEstimatorGradient,
@@ -49,7 +49,7 @@ gradient_factories = [
 
 
 @ddt
-class TestEstimatorGradient(QiskitTestCase):
+class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     """Test Estimator Gradient"""
 
     @data(*gradient_factories)

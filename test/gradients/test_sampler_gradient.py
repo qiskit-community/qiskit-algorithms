@@ -14,6 +14,7 @@
 """Test Sampler Gradients"""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 from typing import List
 
 import numpy as np
@@ -25,7 +26,6 @@ from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import Sampler
 from qiskit.result import QuasiDistribution
-from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
@@ -46,7 +46,7 @@ gradient_factories = [
 
 
 @ddt
-class TestSamplerGradient(QiskitTestCase):
+class TestSamplerGradient(QiskitAlgorithmsTestCase):
     """Test Sampler Gradient"""
 
     @data(*gradient_factories)
