@@ -13,18 +13,18 @@
 """Tests for Fidelity."""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit, ParameterVector
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Sampler
-from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 
-class TestComputeUncompute(QiskitTestCase):
+class TestComputeUncompute(QiskitAlgorithmsTestCase):
     """Test Compute-Uncompute Fidelity class"""
 
     def setUp(self):
