@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    A couple of algorithms here, :class:`.PVQD`, :class:`.AdaptVQE` and optimizer
+    :class:`.SNOBFIT`, directly raised a :class:`~qiskit.exceptions.QiskitError`.
+    These have been changed to raise an :class:`.AlgorithmError` instead. Algorithms
+    have now been moved out of ``Qiskit`` and this better distinguishes the exception to the
+    algorithms when raised. Now ``AlgorithmError`` was already raised elsewhere by the algorithms
+    here so this makes things more consistent too. Note, that as ``AlgorithmError``
+    internally extends ``QiskitError``, any code that might have caught that specifically
+    will continue to work. However we do recommend you update your code accordingly for
+    ``AlgorithmError``.
