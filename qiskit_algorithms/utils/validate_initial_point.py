@@ -19,7 +19,7 @@ from collections.abc import Sequence
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms.utils import algorithm_globals
 
 
 def validate_initial_point(

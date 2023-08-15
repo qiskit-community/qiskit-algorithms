@@ -15,7 +15,8 @@
 import unittest
 
 from test import QiskitAlgorithmsTestCase
-from qiskit.utils.validation import (
+
+from qiskit_algorithms.utils.validation import (
     validate_in_set,
     validate_min,
     validate_min_exclusive,

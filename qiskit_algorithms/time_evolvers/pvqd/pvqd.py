@@ -23,9 +23,9 @@ from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms.utils import algorithm_globals
 
-from ...exceptions import AlgorithmError, QiskitError
+from ...exceptions import AlgorithmError
 from ...optimizers import Minimizer, Optimizer
 from ...state_fidelities.base_state_fidelity import BaseStateFidelity
 from ..real_time_evolver import RealTimeEvolver
@@ -420,12 +420,12 @@ class PVQD(RealTimeEvolver):
             )
 
         if self.ansatz.num_parameters == 0:
-            raise QiskitError(
+            raise AlgorithmError(
                 "The ansatz cannot have 0 parameters, otherwise it cannot be trained."
             )
 
         if len(self.initial_parameters) != self.ansatz.num_parameters:
-            raise QiskitError(
+            raise AlgorithmError(
                 f"Mismatching number of parameters in the ansatz ({self.ansatz.num_parameters}) "
                 f"and the initial parameters ({len(self.initial_parameters)})."
             )

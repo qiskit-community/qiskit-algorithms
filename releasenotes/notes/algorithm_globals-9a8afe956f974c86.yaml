@@ -1,0 +1,39 @@
+---
+upgrade:
+  - |
+    The ``qiskit-algorithms`` code uses a common random number generator,
+    which can be seeded for reproducibility. The algorithms code here, having
+    originated in Qiskit and having been moved here, used random function from
+    ``qiskit.utils`` which was seeded as follows::
+
+        from qiskit.utils import algorithm_globals
+        algorithm_globals.random_seed = 101
+
+    Now this will continue to work in ``qiskit-algorithms``, until such time
+    as the ``algorithm_globals`` are removed from ``Qiskit``, however you are
+    highly recommended to already change to import/seed the ``algorithm_globals``
+    that is now supplied by ``qiskit-algorithms`` thus::
+
+        from qiskit_algorithms.utils import algorithm_globals
+        algorithm_globals.random_seed = 101
+
+    As can be seen it's simply a change to the import statement, so as to import
+    the ``qiskit_algorithms`` instance rather than the one from ``qiskit``.
+
+    This has been done to afford a transition and not break end-users code by supporting
+    seeding the random generator as it was done before. How does it work - well,
+    while the ``qiskit.utils`` version exists, the ``qiskit-algorithms`` version
+    simply delegates its function to that instance. However the main codebase of
+    ``qiskit-algorithms`` has already been altered to use the new instance and
+    the delegation function, that accesses the random generator, will warn with
+    a message to switch to seeding the ``qiskit-algorithms`` version if it detects
+    a difference in the seed. A difference could exist if the ``random_seed``
+    was set direct to the ``qiskit.utils`` instance.
+
+    At such a time when the ``qiskit.utils`` ``algorithm_globals`` version no
+    longer exists, rather than delegating the functionality to that, it will use
+    identical logic which it already has, so no further user change will be
+    required if you already transitioned to seeding the ``qiskit_algorithms.utils``
+    ``algorithms_globals``.
+
+

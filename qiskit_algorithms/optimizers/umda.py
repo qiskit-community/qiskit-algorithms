@@ -16,10 +16,11 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any
+
 import numpy as np
 from scipy.stats import norm
-from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.utils import algorithm_globals
 from .optimizer import OptimizerResult, POINT
 from .scipy_optimizer import Optimizer, OptimizerSupportLevel
 
@@ -72,7 +73,6 @@ class UMDA(Optimizer):
 
             from qiskit_algorithms.optimizers import UMDA
             from qiskit_algorithms import QAOA
-            from qiskit.utils import QuantumInstance
             from qiskit.quantum_info import Pauli
             from qiskit.primitives import Sampler
 
@@ -102,6 +102,11 @@ class UMDA(Optimizer):
             qaoa = QAOA(Sampler(), opt,reps=p)
             result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
+    .. note::
+
+        This component has some function that is normally random. If you want to reproduce behavior
+        then you should set the random number generator seed in the algorithm_globals
+        (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
 
     References:
 

@@ -21,6 +21,8 @@ import os
 import unittest
 import time
 
+from qiskit_algorithms.utils import algorithm_globals
+
 # disable deprecation warnings that can cause log output overflow
 # pylint: disable=unused-argument
 
@@ -45,6 +47,7 @@ class QiskitAlgorithmsTestCase(unittest.TestCase, ABC):
         self._class_location = __file__
 
     def tearDown(self) -> None:
+        algorithm_globals.random_seed = None
         elapsed = time.time() - self._started_at
         if elapsed > 5.0:
             print(f"({round(elapsed, 2):.2f}s)", flush=True)
