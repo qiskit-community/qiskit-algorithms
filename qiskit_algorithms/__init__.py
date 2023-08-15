@@ -21,8 +21,8 @@ problems in different domains on simulators and near-term real quantum devices
 using short depth circuits.
 
 The library includes some algorithms, for example the :class:`.NumPyMinimumEigensolver`, which take
-the same input as their quantum counterpart but solve the problem classically. This has utility
-in the near-term, where problems are still tractable classically, to validate and/or act as a reference.
+the same input as their quantum counterpart but solve the problem classically. This has utility in
+the near-term, where problems are still tractable classically, to validate and/or act as a reference.
 There are also classical :mod:`.optimizers` for use with variational algorithms such as :class:`.VQE`.
 
 Other common subroutines used by this module's algorithms are :mod:`.gradients` and
