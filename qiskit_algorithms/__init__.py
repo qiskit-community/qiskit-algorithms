@@ -240,13 +240,18 @@ Exceptions
 Utility classes
 ---------------
 
-Utility classes used by algorithms (mainly for type-hinting purposes).
+Utility classes and function used by algorithms.
 
 .. autosummary::
    :toctree: ../stubs/
    :nosignatures:
 
    AlgorithmJob
+
+.. autosummary::
+   :toctree:
+
+   utils.algorithm_globals
 
 """
 from .algorithm_job import AlgorithmJob

@@ -19,8 +19,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import minimize
 
-from qiskit.utils.validation import validate_min
-
+from qiskit_algorithms.utils.validation import validate_min
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
 
@@ -117,7 +116,7 @@ class SciPyOptimizer(Optimizer):
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
-        # Remove ignored parameters to supress the warning of scipy.optimize.minimize
+        # Remove ignored parameters to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored:
             bounds = None
         if self.is_gradient_ignored:

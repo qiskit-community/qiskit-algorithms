@@ -24,7 +24,6 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
 from qiskit.primitives import Estimator, Sampler
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import ParamShiftEstimatorGradient
@@ -42,6 +41,8 @@ from qiskit_algorithms.optimizers import (
     TNC,
 )
 from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.utils import algorithm_globals
+
 
 # pylint: disable=invalid-name
 def _mock_optimizer(fun, x0, jac=None, bounds=None, inputs=None) -> OptimizerResult:

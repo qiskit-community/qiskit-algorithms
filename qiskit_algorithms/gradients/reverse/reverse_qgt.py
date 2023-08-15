@@ -157,7 +157,7 @@ class ReverseQGT(BaseQGT):
                 grad_coeffs = [coeff for coeff, _ in deriv]
                 grad_states = [phi.evolve(gate) for _, gate in deriv]
 
-                # compute the digaonal element L_{j, j}
+                # compute the diagonal element L_{j, j}
                 metric[j, j] += _l_term(grad_coeffs, grad_states, grad_coeffs, grad_states)
 
                 # compute the off diagonal elements L_{i, j}

@@ -25,12 +25,13 @@ from qiskit.circuit import ParameterVector, QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.primitives import Sampler
 from qiskit.quantum_info import Operator, Pauli, SparsePauliOp
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.minimum_eigensolvers import SamplingVQE
 from qiskit_algorithms.optimizers import L_BFGS_B, QNSPSA, SLSQP, OptimizerResult
 from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.utils import algorithm_globals
+
 
 # pylint: disable=invalid-name
 def _mock_optimizer(fun, x0, jac=None, bounds=None, inputs=None):
@@ -258,7 +259,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_aggregation(self):
         """Test the aggregation works."""
 
-        # test a custom aggregration that just uses the best measurement
+        # test a custom aggregation that just uses the best measurement
         def best_measurement(measurements):
             res = min(measurements, key=lambda meas: meas[1])[1]
             return res

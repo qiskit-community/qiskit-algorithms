@@ -21,7 +21,6 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
-from qiskit.utils import algorithm_globals
 from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import Statevector
 
@@ -30,6 +29,7 @@ from qiskit_algorithms import TimeEvolutionProblem, VarQITE
 from qiskit_algorithms.time_evolvers.variational import (
     ImaginaryMcLachlanPrinciple,
 )
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt

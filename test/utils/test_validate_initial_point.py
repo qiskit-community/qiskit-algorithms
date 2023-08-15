@@ -18,9 +18,7 @@ from unittest.mock import Mock
 
 import numpy as np
 
-from qiskit.utils import algorithm_globals
-
-from qiskit_algorithms.utils import validate_initial_point
+from qiskit_algorithms.utils import algorithm_globals, validate_initial_point
 
 
 class TestValidateInitialPoint(QiskitAlgorithmsTestCase):
@@ -45,7 +43,7 @@ class TestValidateInitialPoint(QiskitAlgorithmsTestCase):
         np.testing.assert_array_almost_equal(initial_point, [0.430278])
 
     def test_with_mismatched_params(self):
-        """Test with mistmatched parameters and bounds.."""
+        """Test with mismatched parameters and bounds.."""
         self.ansatz.parameter_bounds = None
         with self.assertRaises(ValueError):
             _ = validate_initial_point([1.0, 2.0], self.ansatz)

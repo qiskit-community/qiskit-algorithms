@@ -21,8 +21,8 @@ from scipy import sparse as scisparse
 
 from qiskit.quantum_info import SparsePauliOp, Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
-from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils.validation import validate_min
 from .eigensolver import Eigensolver, EigensolverResult
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
