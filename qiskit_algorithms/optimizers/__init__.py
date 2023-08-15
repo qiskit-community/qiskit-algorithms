@@ -87,8 +87,7 @@ Local Optimizers
 Qiskit also provides the following optimizers, which are built-out using the optimizers from
 `scikit-quant <https://scikit-quant.readthedocs.io/en/latest/>`_. The ``scikit-quant`` package
 is not installed by default but must be explicitly installed, if desired, by the user. The
-optimizers therein are provided under various licenses hence it has been made an optional install
-so a user's choice to do so is their own.
+optimizers therein are provided under various licenses, hence it has been made an optional install.
 To install the ``scikit-quant`` dependent package you can use ``pip install scikit-quant``.
 
 .. autosummary::
