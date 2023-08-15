@@ -20,9 +20,9 @@ import numpy as np
 from qiskit.circuit.library import PauliTwoDesign
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import SparsePauliOp, Statevector
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt

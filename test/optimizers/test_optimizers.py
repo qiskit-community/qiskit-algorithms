@@ -22,7 +22,7 @@ from scipy.optimize import rosen, rosen_der
 
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.utils import algorithm_globals, optionals
+from qiskit.utils import optionals
 from qiskit.primitives import Sampler
 
 from qiskit_algorithms.optimizers import (
@@ -48,6 +48,7 @@ from qiskit_algorithms.optimizers import (
     TNC,
     SciPyOptimizer,
 )
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt

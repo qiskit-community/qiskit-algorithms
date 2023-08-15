@@ -23,7 +23,7 @@ from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms.utils import algorithm_globals
 
 from ...exceptions import AlgorithmError
 from ...optimizers import Minimizer, Optimizer

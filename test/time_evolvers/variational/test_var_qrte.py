@@ -22,7 +22,6 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter, ParameterVector
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import Estimator
-from qiskit.utils import algorithm_globals
 from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector
 
 from qiskit_algorithms.gradients import LinCombQGT, DerivativeType, LinCombEstimatorGradient
@@ -30,6 +29,7 @@ from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
 from qiskit_algorithms.time_evolvers.variational import (
     RealMcLachlanPrinciple,
 )
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt

@@ -66,6 +66,8 @@ jobs:
         run: |
           sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
           pip install pyenchant
+          # append to reno config
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - run: pip check
         if: ${{ !cancelled() }}
@@ -182,13 +184,13 @@ jobs:
         run: |
           pip install jupyter qiskit-terra[visualization]
           sudo apt-get install -y pandoc graphviz
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - name: Run Qiskit Algorithms Tutorials
         env:
           QISKIT_PARALLEL: False
           QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
-          tools/ignore_untagged_notes.sh
           make html
           cd docs/_build/html
           mkdir artifacts
