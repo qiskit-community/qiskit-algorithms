@@ -18,7 +18,8 @@ from collections.abc import Callable
 from typing import Any
 
 import numpy as np
-from qiskit.utils.validation import validate_range_exclusive_max
+
+from qiskit_algorithms.utils.validation import validate_range_exclusive_max
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 from ..exceptions import AlgorithmError
 

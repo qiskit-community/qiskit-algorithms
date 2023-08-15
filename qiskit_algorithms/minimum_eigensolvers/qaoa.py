@@ -21,8 +21,8 @@ from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.primitives import BaseSampler
-from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.optimizers import Minimizer, Optimizer
 
 from .sampling_vqe import SamplingVQE

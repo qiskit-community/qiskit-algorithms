@@ -25,9 +25,10 @@ import numpy as np
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
-from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.exceptions import AlgorithmError
+
 from qiskit_algorithms.list_or_dict import ListOrDict
 
 from .minimum_eigensolver import MinimumEigensolver
