@@ -22,12 +22,12 @@ from typing import Any
 
 import numpy as np
 
-from qiskit import QiskitError
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.list_or_dict import ListOrDict
 
 from .minimum_eigensolver import MinimumEigensolver
@@ -239,8 +239,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
         Raises:
             TypeError: If an ansatz other than :class:`~.EvolvedOperatorAnsatz` is provided.
-            QiskitError: If all evaluated gradients lie below the convergence threshold in the first
-                iteration of the algorithm.
+            AlgorithmError: If all evaluated gradients lie below the convergence threshold in
+                the first iteration of the algorithm.
 
         Returns:
             An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also but also
@@ -281,7 +281,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             # log gradients
             if np.abs(max_grad[0]) < self.gradient_threshold:
                 if iteration == 1:
-                    raise QiskitError(
+                    raise AlgorithmError(
                         "All gradients have been evaluated to lie below the convergence threshold "
                         "during the first iteration of the algorithm. Try to either tighten the "
                         "convergence threshold or pick a different ansatz."
