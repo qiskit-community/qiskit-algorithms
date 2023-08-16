@@ -27,7 +27,9 @@ There are also classical :mod:`.optimizers` for use with variational algorithms 
 
 This package also provides common building blocks for algorithms, such quantum circuit gradients (:mod:`.gradients`) and fidelities of quantum states (:mod:`.state_fidelities`). These elements are frequently used in a variety of applications, such as variational optimization, time evolution or QML.
 
-The quantum algorithms here all use ``Primitives`` to execute quantum circuits. This can be an
+The quantum algorithms here all use 
+`Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__ 
+to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
 probability distributions. Refer to the specific algorithm for more information in this regard.
 
