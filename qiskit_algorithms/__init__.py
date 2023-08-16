@@ -25,7 +25,10 @@ the same input as their quantum counterpart but solve the problem classically. T
 the near-term, where problems are still tractable classically, to validate and/or act as a reference.
 There are also classical :mod:`.optimizers` for use with variational algorithms such as :class:`.VQE`.
 
-This package also provides common building blocks for algorithms, such quantum circuit gradients (:mod:`.gradients`) and fidelities of quantum states (:mod:`.state_fidelities`). These elements are frequently used in a variety of applications, such as variational optimization, time evolution or QML.
+This package also provides common building blocks for algorithms, such quantum circuit
+gradients (:mod:`.gradients`) and fidelities of quantum states (:mod:`.state_fidelities`).
+These elements are frequently used in a variety of applications, such as variational optimization,
+time evolution and quantum machine learning.
 
 The quantum algorithms here all use 
 `Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__ 
