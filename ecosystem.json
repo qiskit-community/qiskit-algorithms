@@ -1,0 +1,23 @@
+{
+    "dependencies_files": [
+        "requirements.txt",
+        "requirements-dev.txt"
+    ],
+    "extra_dependencies": [
+        "pytest"
+    ],
+    "language": {
+        "name": "python",
+        "versions": ["3.9"]
+    },
+    "tests_command": [
+        "pytest"
+    ],
+    "styles_check_command": [
+        "pylint -rn src tests"
+    ],
+    "coverages_check_command": [
+        "coverage3 run -m pytest",
+        "coverage3 report --fail-under=80"
+    ]
+}
