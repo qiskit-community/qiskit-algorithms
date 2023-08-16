@@ -18,7 +18,7 @@ Qiskit Algorithms is a library of quantum algorithms for quantum computing with
 `Qiskit <https://qiskit.org>`_.
 These algorithms can be used to carry out research and investigate how to solve
 problems in different domains on simulators and near-term real quantum devices
-using short depth circuits.
+using shallow circuits.
 
 The library includes some algorithms, for example the :class:`.NumPyMinimumEigensolver`, which take
 the same input as their quantum counterpart but solve the problem classically. This has utility in
