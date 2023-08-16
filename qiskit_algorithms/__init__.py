@@ -41,7 +41,7 @@ Algorithms
 The algorithms now presented are grouped by logical function, such
 as minimum eigensolvers, amplitude amplifiers, time evolvers etc. Within each group, the
 algorithms conform to an interface that allows them to be used interchangeably
-by different applications. E.g. A Qiskit Nature application may take a minimum 
+by different applications. E.g. a Qiskit Nature application may take a minimum 
 eigensolver to solve a ground state problem, and require it to
 conform to the :class:`.MinimumEigensolver` interface. Any algorithm that conforms to
 the interface, for example :class:`.VQE`, can be used by this application.
