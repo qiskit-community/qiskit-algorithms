@@ -15,3 +15,4 @@ sphinxcontrib-spelling
 jupyter-sphinx
 discover
 rustworkx>=0.13
+qiskit-aer>=0.12
