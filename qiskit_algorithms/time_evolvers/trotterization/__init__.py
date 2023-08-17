@@ -9,7 +9,11 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-"""This package contains Trotterization-based Quantum Real Time Evolution algorithm.
+"""
+Time Evolvers, Trotterization (:mod:`qiskit_algorithms.time_evolvers.variational`)
+==================================================================================
+
+This package contains Trotterization-based Quantum Real Time Evolution algorithm.
 It is compliant with the new Quantum Time Evolution Framework and makes use of
 :class:`qiskit.synthesis.evolution.ProductFormula` and
 :class:`~qiskit.circuit.library.PauliEvolutionGate` implementations.

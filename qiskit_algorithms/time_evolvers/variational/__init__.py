@@ -10,8 +10,8 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """
-Variational Quantum Time Evolutions (:mod:`qiskit_algorithms.time_evolvers.variational`)
-========================================================================================
+Time Evolvers, Variational (:mod:`qiskit_algorithms.time_evolvers.variational`)
+===============================================================================
 
 Algorithms for performing Variational Quantum Time Evolution of quantum states,
 which can be tailored to near-term devices.
@@ -68,6 +68,7 @@ Wick-rotated Schroedinger equation.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
    :template: autosummary/class_no_inherited_members.rst
 
     VariationalPrinciple
@@ -84,6 +85,7 @@ e.g. RK45.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
    :template: autosummary/class_no_inherited_members.rst
 
    ForwardEulerSolver

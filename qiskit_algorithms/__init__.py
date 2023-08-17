@@ -11,29 +11,47 @@
 # that they have been altered from the originals.
 
 """
-=====================================
-Algorithms (:mod:`qiskit_algorithms`)
-=====================================
-It contains a collection of quantum algorithms, for use with quantum computers, to
-carry out research and investigate how to solve problems in different domains on
-near-term quantum devices with short depth circuits.
+============================================
+Qiskit Algorithms (:mod:`qiskit_algorithms`)
+============================================
+Qiskit Algorithms is a library of quantum algorithms for quantum computing with
+`Qiskit <https://qiskit.org>`_.
+These algorithms can be used to carry out research and investigate how to solve
+problems in different domains on simulators and near-term real quantum devices
+using shallow circuits.
 
-Algorithms configuration includes the use of :mod:`~qiskit_algorithms.optimizers` which
-were designed to be swappable sub-parts of an algorithm. Any component and may be exchanged for
-a different implementation of the same component type in order to potentially alter the behavior
-and outcome of the algorithm.
+The library includes some algorithms, for example the :class:`.NumPyMinimumEigensolver`, which take
+the same input as their quantum counterpart but solve the problem classically. This has utility in
+the near-term, where problems are still tractable classically, to validate and/or act as a reference.
+There are also classical :mod:`.optimizers` for use with variational algorithms such as :class:`.VQE`.
+
+This package also provides common building blocks for algorithms, such quantum circuit
+gradients (:mod:`.gradients`) and fidelities of quantum states (:mod:`.state_fidelities`).
+These elements are frequently used in a variety of applications, such as variational optimization,
+time evolution and quantum machine learning.
+
+The quantum algorithms here all use 
+`Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__ 
+to execute quantum circuits. This can be an
+``Estimator``, which computes expectation values, or a ``Sampler`` which computes
+probability distributions. Refer to the specific algorithm for more information in this regard.
 
 .. currentmodule:: qiskit_algorithms
 
 Algorithms
 ==========
 
-It contains a variety of quantum algorithms and these have been grouped by logical function such
-as minimum eigensolvers and amplitude amplifiers. These algorithms are based on the Qiskit Primitives.
-
+The algorithms now presented are grouped by logical function, such
+as minimum eigensolvers, amplitude amplifiers, time evolvers etc. Within each group, the
+algorithms conform to an interface that allows them to be used interchangeably
+by different applications. E.g. a Qiskit Nature application may take a minimum 
+eigensolver to solve a ground state problem, and require it to
+conform to the :class:`.MinimumEigensolver` interface. Any algorithm that conforms to
+the interface, for example :class:`.VQE`, can be used by this application.
 
 Amplitude Amplifiers
 --------------------
+Algorithms based on amplitude amplification.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -47,6 +65,7 @@ Amplitude Amplifiers
 
 Amplitude Estimators
 --------------------
+Algorithms based on amplitude estimation.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -67,24 +86,107 @@ Amplitude Estimators
 
 Eigensolvers
 ------------
-
 Algorithms to find eigenvalues of an operator. For chemistry these can be used to find excited
 states of a molecule, and ``qiskit-nature`` has some algorithms that leverage chemistry specific
 knowledge to do this in that application domain.
-These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
-   eigensolvers
+   Eigensolver
+   EigensolverResult
+   NumPyEigensolver
+   NumPyEigensolverResult
+   VQD
+   VQDResult
+
+
+Gradients
+---------
+Algorithms to calculate the gradient of a quantum circuit.
+
+.. autosummary::
+   :toctree:
+
+   gradients
+
+
+Minimum Eigensolvers
+--------------------
+Algorithms to find the minimum eigenvalue of an operator.
+
+This set of these algorithms take an ``Estimator`` primitive and can
+solve for a general Hamiltonian.
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   MinimumEigensolver
+   MinimumEigensolverResult
+   NumPyMinimumEigensolver
+   NumPyMinimumEigensolverResult
+   VQE
+   VQEResult
+   AdaptVQE
+   AdaptVQEResult
+
+This set of algorithms take a ``Sampler`` primitive and can only
+solve for a diagonal Hamiltonian, such as an Ising Hamiltonian of an optimization problem.
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   SamplingMinimumEigensolver
+   SamplingMinimumEigensolverResult
+   SamplingVQE
+   SamplingVQEResult
+   QAOA
+
+
+Optimizers
+----------
+Classical optimizers designed for use by quantum variational algorithms.
+
+.. autosummary::
+   :toctree:
+
+   optimizers
+
+
+Phase Estimators
+----------------
+Algorithms that estimate the phases of eigenstates of a unitary.
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   HamiltonianPhaseEstimation
+   HamiltonianPhaseEstimationResult
+   PhaseEstimationScale
+   PhaseEstimation
+   PhaseEstimationResult
+   IterativePhaseEstimation
+
+
+State Fidelities
+----------------
+Algorithms that compute the fidelity of pairs of quantum states.
+
+.. autosummary::
+   :toctree:
+
+   state_fidelities
+
 
 Time Evolvers
 -------------
-
 Algorithms to evolve quantum states in time. Both real and imaginary time evolution is possible
 with algorithms that support them. For machine learning, Quantum Imaginary Time Evolution might be
 used to train Quantum Boltzmann Machine Neural Networks for example.
-These algorithms are based on the Qiskit Primitives.
 
 .. autosummary::
    :toctree: ../stubs/
@@ -103,99 +205,38 @@ These algorithms are based on the Qiskit Primitives.
 
 Variational Quantum Time Evolution
 ++++++++++++++++++++++++++++++++++
-
-Classes used by variational quantum time evolution algorithms - :class:`.VarQITE` and
-:class:`.VarQRTE`.
+Classes used by variational quantum time evolution algorithms -
+:class:`.VarQITE` and :class:`.VarQRTE`.
 
 .. autosummary::
-   :toctree: ../stubs/
+   :toctree:
 
    time_evolvers.variational
 
 
 Trotterization-based Quantum Real Time Evolution
 ++++++++++++++++++++++++++++++++++++++++++++++++
-
-Package for primitives-enabled Trotterization-based quantum time evolution
-algorithm - :class:`~.time_evolvers.TrotterQRTE`.
+Trotterization-based quantum time evolution algorithms -
+:class:`~.time_evolvers.trotterization.TrotterQRTE`.
 
 .. autosummary::
-   :toctree: ../stubs/
+   :toctree:
 
    time_evolvers.trotterization
 
 
-Gradients
-----------
-
-Algorithms to calculate the gradient of a quantum circuit. These algorithms are based
-on the Qiskit Primitives.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   gradients
-
-
-Minimum Eigensolvers
----------------------
-
-Algorithms that can find the minimum eigenvalue of an operator. These algorithms are
-based on the Qiskit Primitives.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   minimum_eigensolvers
-
-
-Optimizers
-----------
-
-Classical optimizers for use by quantum variational algorithms. These algorithms
-are based on the Qiskit Primitives.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   optimizers
-
-
-Phase Estimators
-----------------
-
-Algorithms that estimate the phases of eigenstates of a unitary. These algorithms
-are based on the Qiskit Primitives.
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-   HamiltonianPhaseEstimation
-   HamiltonianPhaseEstimationResult
-   PhaseEstimationScale
-   PhaseEstimation
-   PhaseEstimationResult
-   IterativePhaseEstimation
-
-
-State Fidelities
-----------------
-
-Algorithms that compute the fidelity of pairs of quantum states. These algorithms
-are based on the Qiskit Primitives.
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   state_fidelities
+Miscellaneous
+=============
+Various classes used by qiskit-algorithms that are part of and exposed
+by the public API.
 
 
 Exceptions
 ----------
 
 .. autosummary::
-   :toctree: ../stubs/
+   :toctree:
+   :nosignatures:
 
    AlgorithmError
 
@@ -207,6 +248,7 @@ Utility classes and function used by algorithms.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    AlgorithmJob
 
