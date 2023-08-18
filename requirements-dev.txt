@@ -17,3 +17,4 @@ discover
 rustworkx>=0.13
 qiskit-aer>=0.12
 networkx>=2.2
+tweedledum #used for grover tutorial
