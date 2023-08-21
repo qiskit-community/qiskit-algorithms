@@ -24,7 +24,7 @@ Next Steps
 
   Overview <self>
   Getting Started <getting_started>
-  API References <apidocs/algorithms>
+  API References <apidocs/qiskit_algorithms>
   Tutorials <tutorials/index>
   Release Notes <release_notes>
   GitHub <https://github.com/qiskit-community/qiskit-algorithms>

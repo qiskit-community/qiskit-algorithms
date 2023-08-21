@@ -10,36 +10,7 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""
-============================================================================
-Minimum Eigensolvers Package (:mod:`qiskit_algorithms.minimum_eigensolvers`)
-============================================================================
-
-.. currentmodule:: qiskit_algorithms.minimum_eigensolvers
-
-Minimum Eigensolvers
-====================
-.. autosummary::
-   :toctree: ../stubs/
-
-   MinimumEigensolver
-   NumPyMinimumEigensolver
-   VQE
-   AdaptVQE
-   SamplingMinimumEigensolver
-   SamplingVQE
-   QAOA
-
-.. autosummary::
-   :toctree: ../stubs/
-
-   MinimumEigensolverResult
-   NumPyMinimumEigensolverResult
-   VQEResult
-   AdaptVQEResult
-   SamplingMinimumEigensolverResult
-   SamplingVQEResult
-"""
+"""The Minimum Eigensolvers package."""
 
 from .adapt_vqe import AdaptVQE, AdaptVQEResult
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult

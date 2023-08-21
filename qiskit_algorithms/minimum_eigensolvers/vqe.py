@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 
 class VQE(VariationalAlgorithm, MinimumEigensolver):
-    r"""The variational quantum eigensolver (VQE) algorithm.
+    r"""The Variational Quantum Eigensolver (VQE) algorithm.
 
     VQE is a hybrid quantum-classical algorithm that uses a variational technique to find the
     minimum eigenvalue of a given Hamiltonian operator :math:`H`.
@@ -340,7 +340,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
 
 class VQEResult(VariationalResult, MinimumEigensolverResult):
-    """Variational quantum eigensolver result."""
+    """The Variational Quantum Eigensolver (VQE) result."""
 
     def __init__(self) -> None:
         super().__init__()
