@@ -1,0 +1,15 @@
+---
+upgrade:
+  - |
+    The deprecated ``threshold`` input argument of :class:`~.AdaptVQE` has been removed,
+    and replaced by ``gradient_threshold``. This change was made to avoid confusion with
+    the later introduced ``eigenvalue_threshold`` argument. The updated AdaptVQE use
+    would look like this::
+
+        from qiskit_algorithms import VQE, AdaptVQE
+
+        adapt_vqe = AdaptVQE(
+                      VQE(Estimator(), ansatz, optimizer),
+                      gradient_threshold=1e-3,
+                      eigenvalue_threshold=1e-3
+                    )
