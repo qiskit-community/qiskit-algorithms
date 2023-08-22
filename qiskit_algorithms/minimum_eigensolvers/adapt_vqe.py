@@ -24,7 +24,6 @@ import numpy as np
 
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.circuit.library import EvolvedOperatorAnsatz
-from qiskit.utils.deprecation import deprecate_arg, deprecate_func
 
 from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.exceptions import AlgorithmError
@@ -98,12 +97,6 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             algorithm is not bound in its number of iterations.
     """
 
-    @deprecate_arg(
-        "threshold",
-        since="0.24.0",
-        pending=True,
-        new_alias="gradient_threshold",
-    )
     def __init__(
         self,
         solver: VQE,
@@ -111,7 +104,6 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         gradient_threshold: float = 1e-5,
         eigenvalue_threshold: float = 1e-5,
         max_iterations: int | None = None,
-        threshold: float | None = None,  # pylint: disable=unused-argument
     ) -> None:
         """
         Args:
@@ -119,7 +111,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 It is a requirement that the :attr:`~.VQE.ansatz` of this solver is of type
                 :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.
             gradient_threshold: once all gradients have an absolute value smaller than this
-                threshold, the algorithm has converged and terminates.
+                threshold, the algorithm has converged and terminates. Defaults to ``1e-5``.
             eigenvalue_threshold: once the eigenvalue has changed by less than this threshold from
                 one iteration to the next, the algorithm has converged and terminates. When this
                 case occurs, the excitation included in the final iteration did not result in a
@@ -127,8 +119,6 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 are not considered.
             max_iterations: the maximum number of iterations for the adaptive loop. If ``None``, the
                 algorithm is not bound in its number of iterations.
-            threshold: once all gradients have an absolute value smaller than this threshold, the
-                algorithm has converged and terminates. Defaults to ``1e-5``.
         """
         validate_min("gradient_threshold", gradient_threshold, 1e-15)
         validate_min("eigenvalue_threshold", eigenvalue_threshold, 1e-15)
@@ -140,31 +130,6 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         self._tmp_ansatz: EvolvedOperatorAnsatz | None = None
         self._excitation_pool: list[BaseOperator] = []
         self._excitation_list: list[BaseOperator] = []
-
-    @property
-    @deprecate_func(
-        since="0.24.0",
-        pending=True,
-        is_property=True,
-        additional_msg="Instead, use the gradient_threshold attribute.",
-    )
-    def threshold(self) -> float:
-        """The threshold for the gradients.
-
-        Once all gradients have an absolute value smaller than this threshold, the algorithm has
-        converged and terminates.
-        """
-        return self.gradient_threshold
-
-    @threshold.setter
-    @deprecate_func(
-        since="0.24.0",
-        pending=True,
-        is_property=True,
-        additional_msg="Instead, use the gradient_threshold attribute.",
-    )
-    def threshold(self, threshold: float) -> None:
-        self.gradient_threshold = threshold
 
     @property
     def initial_point(self) -> Sequence[float] | None:
