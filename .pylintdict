@@ -28,6 +28,7 @@ bfgs
 bielza
 bitstring
 bitstrings
+bloch
 boltzmann
 bool
 boyer
@@ -101,6 +102,7 @@ fmin
 formatter
 fourier
 frac
+frobenius
 f'spsa
 ftol
 fujii
@@ -112,11 +114,13 @@ gaussian
 generalised
 getter
 getters
+gilliam
 giuseppe
 globals
 gogolin
 goldfarb
 goldstone
+gonciulea
 gqt
 grinko
 grover
@@ -124,6 +128,7 @@ gsls
 gtol
 gutmann
 hadamard
+hadamards
 hadfield
 hamiltonian
 hamiltonians
@@ -170,6 +175,7 @@ lin
 linalg
 loglik
 loglikelihood
+lov
 lr
 lsb
 lse
@@ -200,6 +206,7 @@ nakanishi
 nan
 nannicini
 nathan
+nd
 ndarray
 negoro
 nelder
@@ -286,6 +293,7 @@ runarsson
 rz
 sanjiv
 sashank
+satisfiability
 satyen
 schrödinger
 schroediger
@@ -334,6 +342,7 @@ toctree
 todo
 tol
 trainability
+transpilation
 transpile
 transpiled
 trotterization
@@ -349,6 +358,7 @@ vec
 vectorized
 vicentini
 ville
+voilà
 vqd
 vqe
 wavefunction
