@@ -1,0 +1,9 @@
+---
+other:
+  - |
+    Removed the custom ``__str__`` method from :class:`.SamplingMinimumEigensolverResult`
+    so that string conversion is based on the method of its parent :class:`.AlgorithmResult`
+    which prints all the result fields in a dictionary like format. The overridden method
+    had only printed a select couple of fields, unlike when normally printing a result all fields
+    are shown, and the lack of fields expected to be shown caused confusion when printing
+    results derived from that, such as returned by :class:`.SamplingVQE` and :class:`.QAOA`.
