@@ -9,25 +9,8 @@
 # Any modifications or derivative works of this code must retain this
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
-"""
-Time Evolvers, Trotterization (:mod:`qiskit_algorithms.time_evolvers.variational`)
-==================================================================================
+""" The Time Evolvers, Trotterization package"""
 
-This package contains Trotterization-based Quantum Real Time Evolution algorithm.
-It is compliant with the new Quantum Time Evolution Framework and makes use of
-:class:`qiskit.synthesis.evolution.ProductFormula` and
-:class:`~qiskit.circuit.library.PauliEvolutionGate` implementations.
-
-Trotterization-based Quantum Real Time Evolution
-------------------------------------------------
-
-.. autosummary::
-   :toctree: ../stubs/
-   :nosignatures:
-
-    TrotterQRTE
-"""
-
-from qiskit_algorithms.time_evolvers.trotterization.trotter_qrte import TrotterQRTE
+from .trotter_qrte import TrotterQRTE
 
 __all__ = ["TrotterQRTE"]
