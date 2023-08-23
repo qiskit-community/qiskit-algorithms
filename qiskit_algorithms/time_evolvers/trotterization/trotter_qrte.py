@@ -30,7 +30,9 @@ from qiskit_algorithms.observables_evaluator import estimate_observables
 
 class TrotterQRTE(RealTimeEvolver):
     """Quantum Real Time Evolution using Trotterization.
-    Type of Trotterization is defined by a ``ProductFormula`` provided.
+
+    The type of Trotterization is defined by the ``ProductFormula`` provided to
+    the algorithm.
 
     Examples:
 
@@ -38,8 +40,7 @@ class TrotterQRTE(RealTimeEvolver):
 
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
-            from qiskit_algorithms import TimeEvolutionProblem
-            from qiskit_algorithms.time_evolvers import TrotterQRTE
+            from qiskit_algorithms import TrotterQRTE, TimeEvolutionProblem
             from qiskit.primitives import Estimator
 
             operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
