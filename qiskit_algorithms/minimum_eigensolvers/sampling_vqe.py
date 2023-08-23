@@ -95,7 +95,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         sampler (BaseSampler): The sampler primitive to sample the circuits.
         ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
-            can either be a Qiskit :class:`.Optimizer` or a callable implementing the
+            can either be an :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
         aggregation (float | Callable[[list[tuple[float, complex]], float] | None):
             A float or callable to specify how the objective function evaluated on the basis states
@@ -128,7 +128,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         Args:
             sampler: The sampler primitive to sample the circuits.
             ansatz: A parameterized quantum circuit to prepare the trial state.
-            optimizer: A classical optimizer to find the minimum energy. This can either be a Qiskit
+            optimizer: A classical optimizer to find the minimum energy. This can either be an
                 :class:`.Optimizer` or a callable implementing the :class:`.Minimizer` protocol.
             initial_point: An optional initial point (i.e. initial parameter values) for the
                 optimizer. The length of the initial point must match the number of :attr:`ansatz`
