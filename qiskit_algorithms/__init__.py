@@ -30,8 +30,8 @@ gradients (:mod:`.gradients`) and fidelities of quantum states (:mod:`.state_fid
 These elements are frequently used in a variety of applications, such as variational optimization,
 time evolution and quantum machine learning.
 
-The quantum algorithms here all use 
-`Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__ 
+The quantum algorithms here all use
+`Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__
 to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
 probability distributions. Refer to the specific algorithm for more information in this regard.
@@ -44,7 +44,7 @@ Algorithms
 The algorithms now presented are grouped by logical function, such
 as minimum eigensolvers, amplitude amplifiers, time evolvers etc. Within each group, the
 algorithms conform to an interface that allows them to be used interchangeably
-by different applications. E.g. a Qiskit Nature application may take a minimum 
+by different applications. E.g. a Qiskit Nature application may take a minimum
 eigensolver to solve a ground state problem, and require it to
 conform to the :class:`.MinimumEigensolver` interface. Any algorithm that conforms to
 the interface, for example :class:`.VQE`, can be used by this application.
@@ -200,6 +200,7 @@ used to train Quantum Boltzmann Machine Neural Networks for example.
    PVQDResult
    SciPyImaginaryEvolver
    SciPyRealEvolver
+   TrotterQRTE
    VarQITE
    VarQRTE
 
@@ -212,17 +213,6 @@ Classes used by variational quantum time evolution algorithms -
    :toctree:
 
    time_evolvers.variational
-
-
-Trotterization-based Quantum Real Time Evolution
-++++++++++++++++++++++++++++++++++++++++++++++++
-Trotterization-based quantum time evolution algorithms -
-:class:`~.time_evolvers.trotterization.TrotterQRTE`.
-
-.. autosummary::
-   :toctree:
-
-   time_evolvers.trotterization
 
 
 Miscellaneous
@@ -296,6 +286,7 @@ from .time_evolvers import (
     PVQDResult,
     SciPyImaginaryEvolver,
     SciPyRealEvolver,
+    TrotterQRTE,
     VarQITE,
     VarQRTE,
     VarQTE,
@@ -363,6 +354,7 @@ __all__ = [
     "PVQDResult",
     "SciPyRealEvolver",
     "SciPyImaginaryEvolver",
+    "TrotterQRTE",
     "IterativePhaseEstimation",
     "AlgorithmError",
     "estimate_observables",

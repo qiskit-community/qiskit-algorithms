@@ -30,7 +30,9 @@ from qiskit_algorithms.observables_evaluator import estimate_observables
 
 class TrotterQRTE(RealTimeEvolver):
     """Quantum Real Time Evolution using Trotterization.
-    Type of Trotterization is defined by a ``ProductFormula`` provided.
+
+    The type of Trotterization is defined by the :class:`~qiskit.synthesis.ProductFormula`
+    provided to the algorithm.
 
     Examples:
 
@@ -38,8 +40,7 @@ class TrotterQRTE(RealTimeEvolver):
 
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
-            from qiskit_algorithms import TimeEvolutionProblem
-            from qiskit_algorithms.time_evolvers import TrotterQRTE
+            from qiskit_algorithms import TrotterQRTE, TimeEvolutionProblem
             from qiskit.primitives import Estimator
 
             operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
@@ -60,11 +61,12 @@ class TrotterQRTE(RealTimeEvolver):
     ) -> None:
         """
         Args:
-            product_formula: A Lie-Trotter-Suzuki product formula. If ``None`` provided, the
-                Lie-Trotter first order product formula with a single repetition is used. ``reps``
-                should be 1 to obtain a number of time-steps equal to ``num_timesteps`` and an
-                evaluation of :attr:`.TimeEvolutionProblem.aux_operators` at every time-step. If ``reps``
-                is larger than 1, the true number of time-steps will be ``num_timesteps * reps``.
+            product_formula: A Lie-Trotter-Suzuki product formula. If ``None`` provided (default),
+                the :class:`~qiskit.synthesis.LieTrotter` first order product formula with a single
+                repetition is used. ``reps`` should be 1 to obtain a number of time-steps equal to
+                ``num_timesteps`` and an evaluation of :attr:`.TimeEvolutionProblem.aux_operators`
+                at every time-step. If ``reps`` is larger than 1, the true number of time-steps will
+                be ``num_timesteps * reps``.
             num_timesteps: The number of time-steps the full evolution time is divided into
                 (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
@@ -85,7 +87,7 @@ class TrotterQRTE(RealTimeEvolver):
         """Sets a product formula. If ``None`` provided, sets the Lie-Trotter first order product
         formula with a single repetition."""
         if product_formula is None:
-            product_formula = LieTrotter()
+            product_formula = LieTrotter(reps=1)
         self._product_formula = product_formula
 
     @property
