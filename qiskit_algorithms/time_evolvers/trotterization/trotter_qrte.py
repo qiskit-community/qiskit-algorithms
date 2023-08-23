@@ -31,8 +31,8 @@ from qiskit_algorithms.observables_evaluator import estimate_observables
 class TrotterQRTE(RealTimeEvolver):
     """Quantum Real Time Evolution using Trotterization.
 
-    The type of Trotterization is defined by the ``ProductFormula`` provided to
-    the algorithm.
+    The type of Trotterization is defined by the :class:`~qiskit.synthesis.ProductFormula`
+    provided to the algorithm.
 
     Examples:
 
