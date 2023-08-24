@@ -88,6 +88,7 @@ evolutionsynthesis
 evolver
 evolvers
 excitations
+exponentials
 exponentiated
 exponentiating
 fae
@@ -132,7 +133,9 @@ hadamards
 hadfield
 hamiltonian
 hamiltonians
+hatano
 havlíček
+heidelberg
 hessians
 hilbert
 hopkins
@@ -179,6 +182,7 @@ lov
 lr
 lsb
 lse
+magnus
 marecek
 mathcal
 mathrm
@@ -205,6 +209,7 @@ nakaji
 nakanishi
 nan
 nannicini
+naomichi
 nathan
 nd
 ndarray
@@ -353,7 +358,9 @@ univariate
 uno
 unscaled
 utils
+varadarajan
 variational
+veeravalli
 vec
 vectorized
 vicentini
@@ -362,6 +369,7 @@ voilà
 vqd
 vqe
 wavefunction
+wilhelm
 woerner
 wrt
 xatol
