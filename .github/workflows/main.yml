@@ -139,6 +139,8 @@ jobs:
       - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
+      - run: make mypy
+        shell: bash
       - name: Algorithms Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:

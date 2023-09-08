@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.abspath(".."))
 sys.path.append(os.path.abspath("."))
 
 project = "Qiskit Algorithms"
-copyright = f"2017-{datetime.date.today().year}, Qiskit Algorithms Development Team" # pylint: disable=redefined-builtin
+copyright = f"2017-{datetime.date.today().year}, Qiskit Algorithms Development Team"  # pylint: disable=redefined-builtin
 author = "Qiskit Algorithms Development Team"
 
 # The short X.Y version
@@ -55,7 +55,7 @@ extensions = [
     "matplotlib.sphinxext.plot_directive",
     "sphinx.ext.doctest",
     "qiskit_sphinx_theme",
-    "nbsphinx"
+    "nbsphinx",
 ]
 
 rst_prolog = """
@@ -81,7 +81,9 @@ nbsphinx_prolog = """
         __"""
 
 vers = version.split(".")
-link_str = f" https://github.com/qiskit-community/qiskit-algorithms/blob/stable/{vers[0]}.{vers[1]}/docs/"
+link_str = (
+    f" https://github.com/qiskit-community/qiskit-algorithms/blob/stable/{vers[0]}.{vers[1]}/docs/"
+)
 nbsphinx_prolog += link_str + "{{ docname }}"
 
 nbsphinx_timeout = 360
@@ -162,4 +164,3 @@ doctest_default_flags = (
 # >> code
 # output
 doctest_test_doctest_blocks = ""
-
