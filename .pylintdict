@@ -34,6 +34,7 @@ bool
 boyer
 brassard
 broyden
+bugfix
 callables
 cambridge
 cancelled
@@ -358,6 +359,7 @@ unitaries
 univariate
 uno
 unscaled
+untyped
 utils
 varadarajan
 variational
