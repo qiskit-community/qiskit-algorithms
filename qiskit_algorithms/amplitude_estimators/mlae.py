@@ -556,7 +556,7 @@ def _likelihood_ratio_confint(
     # then yield [0, pi/2]
     confint = [_safe_min(above_thres, default=0), _safe_max(above_thres, default=np.pi / 2)]
     mapped_confint = cast(
-        tuple[float, float], (result.post_processing(np.sin(bound) ** 2) for bound in confint)
+        Tuple[float, float], (result.post_processing(np.sin(bound) ** 2) for bound in confint)
     )
 
     return mapped_confint

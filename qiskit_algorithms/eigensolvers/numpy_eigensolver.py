@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Callable, Union, List, Optional, cast
+from typing import Callable, Union, Tuple, Dict, List, Optional, cast
 import logging
 import numpy as np
 from scipy import sparse as scisparse
@@ -31,7 +31,7 @@ from ..list_or_dict import ListOrDict
 logger = logging.getLogger(__name__)
 
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[tuple[float, dict[str, float]]]]], bool
+    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
 ]
 
 

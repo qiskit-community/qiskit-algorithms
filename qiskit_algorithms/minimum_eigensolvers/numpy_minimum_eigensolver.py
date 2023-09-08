@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from typing import Callable, List, Union, Optional
+from typing import Callable, Union, Tuple, Dict, List, Optional
 import logging
 import numpy as np
 
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 # future type annotations not supported in type aliases in 3.8
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[tuple[float, dict[str, float]]]]], bool
+    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
 ]
 
 
