@@ -46,7 +46,7 @@ class PVQDResult(TimeEvolutionResult):
                 product of all fidelities.
             observables: The value of the observables evaluated at each iteration.
         """
-        super().__init__(evolved_state, aux_ops_evaluated)
+        super().__init__(evolved_state, aux_ops_evaluated)  # type: ignore[arg-type]
         self.times = times  # type: ignore[assignment]
         self.parameters = parameters
         self.fidelities = fidelities

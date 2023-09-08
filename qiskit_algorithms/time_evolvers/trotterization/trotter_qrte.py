@@ -241,4 +241,6 @@ class TrotterQRTE(RealTimeEvolver):
         if evolution_problem.aux_operators is not None:
             evaluated_aux_ops = observables[-1]
 
-        return TimeEvolutionResult(evolved_state, evaluated_aux_ops, observables)
+        return TimeEvolutionResult(
+            evolved_state, evaluated_aux_ops, observables
+        )  # type: ignore[arg-type]

@@ -209,7 +209,7 @@ def _evolve(
 
     return TimeEvolutionResult(
         evolved_state=Statevector(state),
-        aux_ops_evaluated=aux_ops_evaluated,
-        observables=observable_history,
+        aux_ops_evaluated=aux_ops_evaluated,  # type: ignore[arg-type]
+        observables=observable_history,  # type: ignore[arg-type]
         times=times,
     )

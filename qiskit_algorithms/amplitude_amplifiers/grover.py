@@ -14,14 +14,13 @@
 from __future__ import annotations
 
 import itertools
-from collections.abc import Iterator, Generator
+from collections.abc import Iterator
 from typing import Any
 
 import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSampler
-from qiskit.quantum_info import Statevector
 
 from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.utils import algorithm_globals
@@ -154,13 +153,12 @@ class Grover(AmplitudeAmplifier):
 
         if growth_rate is not None:
             # yield iterations ** 1, iterations ** 2, etc. and casts to int
-            self._iterations: Generator[int, None, None] | list[int] = (
-                int(growth_rate**x) for x in itertools.count(1)
-            )
+            self._iterations = [int(growth_rate**x) for x in itertools.count(1)]
+
         elif isinstance(iterations, int):
             self._iterations = [iterations]
         else:
-            self._iterations = iterations
+            self._iterations = list(iterations)
 
         self._sampler = sampler
         self._sample_from_iterations = sample_from_iterations
@@ -245,7 +243,7 @@ class Grover(AmplitudeAmplifier):
                     raise AlgorithmError("Sampler job failed.") from exc
 
                 num_bits = len(amplification_problem.objective_qubits)
-                circuit_results: dict[str, Any] | Statevector | np.ndarray = {
+                circuit_results: dict[str, Any] = {
                     np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
                 }
                 top_measurement, max_probability = max(circuit_results.items(), key=lambda x: x[1])
