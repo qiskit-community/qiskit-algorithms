@@ -249,7 +249,8 @@ class Grover(AmplitudeAmplifier):
                     np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
                 }
                 top_measurement, max_probability = max(
-                    circuit_results.items(), key=lambda x: x[1])  # type: ignore[union-attr]
+                    circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
+                )
 
             all_circuit_results.append(circuit_results)
 
