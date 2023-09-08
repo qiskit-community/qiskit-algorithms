@@ -15,7 +15,8 @@ Base state fidelity interface
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from collections.abc import Sequence, Mapping
+from collections.abc import Sequence, MutableMapping
+from typing import cast
 import numpy as np
 
 from qiskit import QuantumCircuit
@@ -44,13 +45,13 @@ class BaseStateFidelity(ABC):
     def __init__(self) -> None:
 
         # use cache for preventing unnecessary circuit compositions
-        self._circuit_cache: Mapping[tuple[int, int], QuantumCircuit] = {}
+        self._circuit_cache: MutableMapping[tuple[int, int], QuantumCircuit] = {}
 
     @staticmethod
     def _preprocess_values(
         circuits: QuantumCircuit | Sequence[QuantumCircuit],
         values: Sequence[float] | Sequence[Sequence[float]] | None = None,
-    ) -> Sequence[Sequence[float]]:
+    ) -> Sequence[list[float]]:
         """
         Checks whether the passed values match the shape of the parameters
         of the corresponding circuits and formats values to 2D list.
@@ -96,9 +97,11 @@ class BaseStateFidelity(ABC):
 
             # ensure 2d
             if len(values) > 0 and not isinstance(values[0], Sequence) or len(values) == 0:
-                values = [values]
+                values = [cast(list[float], values)]
 
-            return values
+            # we explicitly cast the type here because mypy appears to be unable to understand the
+            # above few lines where we ensure that values are 2d
+            return cast(Sequence[list[float]], values)
 
     def _check_qubits_match(self, circuit_1: QuantumCircuit, circuit_2: QuantumCircuit) -> None:
         """
@@ -200,7 +203,7 @@ class BaseStateFidelity(ABC):
         circuits_2: Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
-    ) -> list[float]:
+    ) -> list[list[float]]:
         """
         Preprocesses input parameter values to match the fidelity
         circuit parametrization, and return in list format.
@@ -214,11 +217,12 @@ class BaseStateFidelity(ABC):
            values_2: Numerical parameters to be bound to the second circuits.
 
         Returns:
-             List of parameter values for fidelity circuit.
+             List of lists of parameter values for fidelity circuit.
 
         """
         values_1 = self._preprocess_values(circuits_1, values_1)
         values_2 = self._preprocess_values(circuits_2, values_2)
+        # now, values_1 and values_2 are explicitly made 2d lists
 
         values = []
         if len(values_2[0]) == 0:
@@ -227,8 +231,11 @@ class BaseStateFidelity(ABC):
             values = list(values_2)
         else:
             for (val_1, val_2) in zip(values_1, values_2):
+                # the `+` operation concatenates the lists
+                # and then this new list gets appended to the values list
                 values.append(val_1 + val_2)
 
+        # values is guaranteed to be 2d
         return values
 
     @abstractmethod

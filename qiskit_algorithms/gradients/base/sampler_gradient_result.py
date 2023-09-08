@@ -27,7 +27,7 @@ class SamplerGradientResult:
 
     gradients: list[list[dict[int, float]]]
     """The gradients of the sample probabilities."""
-    metadata: list[dict[str, Any]]
+    metadata: list[dict[str, Any]] | list[list[dict[str, Any]]]
     """Additional information about the job."""
     options: Options
     """Primitive runtime options for the execution of the job."""

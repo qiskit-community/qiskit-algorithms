@@ -213,7 +213,7 @@ class GradientDescent(SteppableOptimizer):
                 )
         self.learning_rate = learning_rate
 
-    @property
+    @property  # type: ignore[override]
     def state(self) -> GradientDescentState:
         """Return the current state of the optimizer."""
         return self._state
@@ -259,7 +259,7 @@ class GradientDescent(SteppableOptimizer):
         if self.callback is not None:
             self.callback(
                 self.state.nfev,
-                self.state.x,
+                self.state.x,  # type: ignore[arg-type]
                 self.state.fun(self.state.x),
                 self.state.stepsize,
             )
@@ -267,13 +267,10 @@ class GradientDescent(SteppableOptimizer):
     @property
     def settings(self) -> dict[str, Any]:
         # if learning rate or perturbation are custom iterators expand them
+        learning_rate = self.learning_rate
         if callable(self.learning_rate):
             iterator = self.learning_rate()
-            learning_rate: float | np.ndarray = np.array(
-                [next(iterator) for _ in range(self.maxiter)]
-            )
-        else:
-            learning_rate = self.learning_rate
+            learning_rate = np.array([next(iterator) for _ in range(self.maxiter)])
 
         return {
             "maxiter": self.maxiter,
@@ -305,10 +302,10 @@ class GradientDescent(SteppableOptimizer):
         Raises:
             ValueError: If the gradient passed doesn't have the right dimension.
         """
-        if np.shape(self.state.x) != np.shape(tell_data.eval_jac):
+        if np.shape(self.state.x) != np.shape(tell_data.eval_jac):  # type: ignore[arg-type]
             raise ValueError("The gradient does not have the correct dimension")
         self.state.x = self.state.x - next(self.state.learning_rate) * tell_data.eval_jac
-        self.state.stepsize = np.linalg.norm(tell_data.eval_jac)
+        self.state.stepsize = np.linalg.norm(tell_data.eval_jac)  # type: ignore[arg-type,assignment]
         self.state.nit += 1
 
     def evaluate(self, ask_data: AskData) -> TellData:
@@ -334,9 +331,9 @@ class GradientDescent(SteppableOptimizer):
                 epsilon=eps,
                 max_evals_grouped=self._max_evals_grouped,
             )
-            self.state.nfev += 1 + len(ask_data.x_jac)
+            self.state.nfev += 1 + len(ask_data.x_jac)  # type: ignore[arg-type]
         else:
-            grad = self.state.jac(ask_data.x_jac)
+            grad = self.state.jac(ask_data.x_jac)  # type: ignore[arg-type]
             self.state.njev += 1
 
         return TellData(eval_jac=grad)

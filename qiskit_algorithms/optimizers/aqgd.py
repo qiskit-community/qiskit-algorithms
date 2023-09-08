@@ -223,7 +223,7 @@ class AQGD(Optimizer):
         # and current windowed average of objective values
         prev_avg = np.mean(self._prev_loss[:window_size])
         curr_avg = np.mean(self._prev_loss[1 : window_size + 1])
-        self._avg_objval = curr_avg
+        self._avg_objval = curr_avg  # type: ignore[assignment]
 
         # Update window of objective values
         # (Remove earliest value)
@@ -333,7 +333,7 @@ class AQGD(Optimizer):
                     objval, gradient = self._compute_objective_fn_and_gradient(params, fun)
                 else:
                     objval = fun(params)
-                    gradient = jac(params)
+                    gradient = jac(params)  # type: ignore[assignment]
 
                 logger.info(
                     " Iter: %4d | Obj: %11.6f | Grad Norm: %f",

@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
+from typing import cast
 import logging
 
 import numpy as np
@@ -66,7 +67,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         dummy_estimator = Estimator()  # this is required by the base class, but not used
         super().__init__(dummy_estimator, derivative_type=derivative_type)
 
-    @BaseEstimatorGradient.derivative_type.setter
+    @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]
     def derivative_type(self, derivative_type: DerivativeType) -> None:
         """Set the derivative type."""
         self._derivative_type = derivative_type
@@ -148,7 +149,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
                     bind(gate, parameter_binds, inplace=True)
 
                 # iterate the state variable
-                unitary_j_dagger = bind(unitary_j, parameter_binds).inverse()
+                unitary_j_dagger = cast(QuantumCircuit, bind(unitary_j, parameter_binds)).inverse()
                 phi = phi.evolve(unitary_j_dagger)
 
                 # compute current gradient

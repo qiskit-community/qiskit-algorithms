@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import GroverOperator
@@ -167,13 +167,13 @@ class AmplificationProblem:
             return self._is_good_state  # returns None if no is_good_state arg has been set
         elif isinstance(self._is_good_state, list):
             if all(isinstance(good_bitstr, str) for good_bitstr in self._is_good_state):
-                return lambda bitstr: bitstr in self._is_good_state
+                return lambda bitstr: bitstr in cast(list[str], self._is_good_state)
             else:
                 return lambda bitstr: all(
-                    bitstr[good_index] == "1" for good_index in self._is_good_state
+                    bitstr[good_index] == "1" for good_index in cast(list[int], self._is_good_state)
                 )
 
-        return lambda bitstr: bitstr in self._is_good_state.probabilities_dict()
+        return lambda bitstr: bitstr in cast(Statevector, self._is_good_state).probabilities_dict()
 
     @is_good_state.setter
     def is_good_state(

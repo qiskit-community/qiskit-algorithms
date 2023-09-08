@@ -54,7 +54,7 @@ def _create_observable_output(
     observable_evolution = [(ops_ev_mean[i], zero_array) for i in range(operators_number)]
 
     if isinstance(aux_ops, dict):
-        observable_evolution = dict(zip(aux_ops.keys(), observable_evolution))
+        return dict(zip(aux_ops.keys(), observable_evolution)), time_array
 
     return observable_evolution, time_array
 
@@ -78,7 +78,7 @@ def _create_obs_final(
     aux_ops = evolution_problem.aux_operators
     aux_ops_evaluated: ListOrDict[tuple[complex, complex]] = [(op_ev, 0) for op_ev in ops_ev_mean]
     if isinstance(aux_ops, dict):
-        aux_ops_evaluated = dict(zip(aux_ops.keys(), aux_ops_evaluated))
+        aux_ops_evaluated = dict(zip(aux_ops.keys(), aux_ops_evaluated))  # type: ignore[arg-type]
     return aux_ops_evaluated
 
 

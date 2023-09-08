@@ -126,7 +126,7 @@ class UMDA(Optimizer):
         maxiter: int = 100,
         size_gen: int = 20,
         alpha: float = 0.5,
-        callback: Callable[[int, np.array, float], None] | None = None,
+        callback: Callable[[int, np.ndarray, float], None] | None = None,
     ) -> None:
         r"""
         Args:
@@ -151,7 +151,7 @@ class UMDA(Optimizer):
         super().__init__()
 
         self._best_cost_global: float | None = None
-        self._best_ind_global: int | None = None
+        self._best_ind_global: np.ndarray | None = None
         self._evaluations: np.ndarray | None = None
 
         self._n_variables: int | None = None
@@ -216,11 +216,11 @@ class UMDA(Optimizer):
         result = OptimizerResult()
 
         if isinstance(x0, float):
-            x0 = [x0]
+            x0 = np.asarray([x0])
         self._n_variables = len(x0)
 
         self._best_cost_global = 999999999999
-        self._best_ind_global = 9999999
+        self._best_ind_global = None
         history = []
         self._evaluations = np.array(0)
 
