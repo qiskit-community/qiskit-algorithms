@@ -14,13 +14,14 @@
 from __future__ import annotations
 
 import itertools
-from collections.abc import Iterator
+from collections.abc import Iterator, Generator
 from typing import Any
 
 import numpy as np
 
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSampler
+from qiskit.quantum_info import Statevector
 
 from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.utils import algorithm_globals
@@ -153,12 +154,13 @@ class Grover(AmplitudeAmplifier):
 
         if growth_rate is not None:
             # yield iterations ** 1, iterations ** 2, etc. and casts to int
-            self._iterations = [int(growth_rate**x) for x in itertools.count(1)]
-
+            self._iterations: Generator[int, None, None] | list[int] = (
+                int(growth_rate**x) for x in itertools.count(1)
+            )
         elif isinstance(iterations, int):
             self._iterations = [iterations]
         else:
-            self._iterations = list(iterations)
+            self._iterations = iterations  # type: ignore[assignment]
 
         self._sampler = sampler
         self._sample_from_iterations = sample_from_iterations
@@ -243,10 +245,12 @@ class Grover(AmplitudeAmplifier):
                     raise AlgorithmError("Sampler job failed.") from exc
 
                 num_bits = len(amplification_problem.objective_qubits)
-                circuit_results: dict[str, Any] = {
+                circuit_results: dict[str, Any] | Statevector | np.ndarray = {
                     np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
                 }
-                top_measurement, max_probability = max(circuit_results.items(), key=lambda x: x[1])
+                top_measurement, max_probability = max(
+                    circuit_results.items(), key=lambda x: x[1]
+                )  # type: ignore[union-attr]
 
             all_circuit_results.append(circuit_results)
 
@@ -272,7 +276,7 @@ class Grover(AmplitudeAmplifier):
         result.top_measurement = top_measurement
         result.assignment = amplification_problem.post_processing(top_measurement)
         result.oracle_evaluation = oracle_evaluation
-        result.circuit_results = all_circuit_results
+        result.circuit_results = all_circuit_results  # type: ignore[assignment]
         result.max_probability = max_probability
 
         return result
@@ -309,9 +313,9 @@ class Grover(AmplitudeAmplifier):
             ValueError: If no power is passed and the iterations are not an integer.
         """
         if power is None:
-            if len(self._iterations) > 1:
+            if len(self._iterations) > 1:  # type: ignore[arg-type]
                 raise ValueError("Please pass ``power`` if the iterations are not an integer.")
-            power = self._iterations[0]
+            power = self._iterations[0]  # type: ignore[index]
 
         qc = QuantumCircuit(problem.oracle.num_qubits, name="Grover circuit")
         qc.compose(problem.state_preparation, inplace=True)
