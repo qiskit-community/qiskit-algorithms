@@ -60,7 +60,7 @@ test_ci:
 	python -m stestr run --concurrency $(CONCURRENCY)
 
 spell:
-	python -m pylint -rn --disable=all --enable=spelling --spelling-dict=en_US qiskit_algorithms test tools
+	python -m pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_algorithms test tools
 	sphinx-build -M spelling docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 copyright:
