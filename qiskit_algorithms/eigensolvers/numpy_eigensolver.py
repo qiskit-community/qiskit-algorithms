@@ -162,9 +162,9 @@ class NumPyEigensolver(Eigensolver):
     def _solve_dense(op_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if op_matrix.all() == op_matrix.conj().T.all():
             # Operator is Hermitian
-            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
+            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
         else:
-            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
+            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
 
     @staticmethod
     def _eval_aux_operators(
