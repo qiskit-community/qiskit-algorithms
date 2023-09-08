@@ -408,13 +408,15 @@ class MaximumLikelihoodAmplitudeEstimationResult(AmplitudeEstimatorResult):
         self._fisher_information = value
 
 
-def _safe_min(array: list[int], default: int = 0) -> int:
+def _safe_min(array: list[float], default: float = 0.0) -> float:
     if len(array) == 0:
         return default
-    return int(np.min(array))
+    return np.min(array)
 
 
-def _safe_max(array, default=(np.pi / 2)):  # pylint: disable=superfluous-parens
+def _safe_max(
+    array: list[float], default: float = (np.pi / 2)  # pylint: disable=superfluous-parens
+) -> float:
     if len(array) == 0:
         return default
     return np.max(array)
@@ -557,7 +559,7 @@ def _likelihood_ratio_confint(
     # then yield [0, pi/2]
     confint = [_safe_min(above_thres, default=0), _safe_max(above_thres, default=np.pi / 2)]
     mapped_confint = cast(
-        Tuple[float, float], (result.post_processing(np.sin(bound) ** 2) for bound in confint)
+        Tuple[float, float], tuple(result.post_processing(np.sin(bound) ** 2) for bound in confint)
     )
 
     return mapped_confint
