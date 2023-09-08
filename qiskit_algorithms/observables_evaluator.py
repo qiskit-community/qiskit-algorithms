@@ -33,7 +33,7 @@ def estimate_observables(
     observables: ListOrDict[BaseOperator],
     parameter_values: Sequence[float] | None = None,
     threshold: float = 1e-12,
-) -> ListOrDict[tuple[complex, dict[str, Any]]]:
+) -> ListOrDict[tuple[float, dict[str, Any]]]:
     """
     Accepts a sequence of operators and calculates their expectation values - means
     and metadata. They are calculated with respect to a quantum state provided. A user
@@ -98,9 +98,9 @@ def _handle_zero_ops(
 
 
 def _prepare_result(
-    observables_results: list[tuple[complex, dict]],
+    observables_results: list[tuple[float, dict]],
     observables: ListOrDict[BaseOperator],
-) -> ListOrDict[tuple[complex, dict[str, Any]]]:
+) -> ListOrDict[tuple[float, dict[str, Any]]]:
     """
     Prepares a list of tuples of eigenvalues and metadata tuples from
     ``observables_results`` and ``observables``.
@@ -114,7 +114,7 @@ def _prepare_result(
         A list or a dictionary of tuples (mean, metadata).
     """
 
-    observables_eigenvalues: ListOrDict[tuple[complex, dict]]
+    observables_eigenvalues: ListOrDict[tuple[float, dict]]
 
     if isinstance(observables, list):
         observables_eigenvalues = []

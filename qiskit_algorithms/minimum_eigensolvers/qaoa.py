@@ -129,7 +129,7 @@ class QAOA(SamplingVQE):
             sampler=sampler,
             ansatz=None,
             optimizer=optimizer,
-            initial_point=initial_point,
+            initial_point=initial_point,  # type: ignore[arg-type]
             aggregation=aggregation,
             callback=callback,
         )

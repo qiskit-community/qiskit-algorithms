@@ -28,7 +28,9 @@ from ..list_or_dict import ListOrDict
 logger = logging.getLogger(__name__)
 
 # future type annotations not supported in type aliases in 3.8
-FilterType = Callable[[Union[List, np.ndarray], float, Optional[ListOrDict[float]]], bool]
+FilterType = Callable[
+    [Union[List, np.ndarray], float, Optional[ListOrDict[tuple[float, dict[str, float]]]]], bool
+]
 
 
 class NumPyMinimumEigensolver(MinimumEigensolver):
@@ -81,7 +83,9 @@ class NumPyMinimumEigensolver(MinimumEigensolver):
             result.eigenvalue = eigensolver_result.eigenvalues[0]
             result.eigenstate = eigensolver_result.eigenstates[0]
             if eigensolver_result.aux_operators_evaluated:
-                result.aux_operators_evaluated = eigensolver_result.aux_operators_evaluated[0]
+                result.aux_operators_evaluated = eigensolver_result.aux_operators_evaluated[
+                    0
+                ]  # type: ignore[assignment]
 
         logger.debug("NumPy minimum eigensolver result: %s", result)
 
