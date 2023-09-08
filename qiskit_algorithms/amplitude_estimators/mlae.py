@@ -317,7 +317,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         num_state_qubits = circuits[0].num_qubits - circuits[0].num_ancillas
 
         theta, good_counts = cast(
-            tuple[float, list[float]],
+            Tuple[float, List[float]],
             self.compute_mle(result.circuit_results, estimation_problem, num_state_qubits, True),
         )
 
