@@ -200,8 +200,8 @@ class PVQD(RealTimeEvolver):
 
         if isinstance(self.optimizer, Optimizer):
             optimizer_result = self.optimizer.minimize(
-                loss, initial_guess, gradient
-            )  # type: ignore[arg-type]
+                loss, initial_guess, gradient  # type: ignore[arg-type]
+            )
         else:
             optimizer_result = self.optimizer(loss, initial_guess, gradient)  # type: ignore[call-arg]
 

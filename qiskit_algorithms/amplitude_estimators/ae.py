@@ -328,13 +328,13 @@ class AmplitudeEstimation(AmplitudeEstimator):
         # store shots
         result.shots = shots
         samples, measurements = self.evaluate_measurements(
-            result.circuit_results
-        )  # type: ignore[arg-type]
+            result.circuit_results  # type: ignore[arg-type]
+        )
 
         result.samples = samples
         result.samples_processed = {
-            estimation_problem.post_processing(a): p
-            for a, p in samples.items()  # type: ignore[arg-type,misc]
+            estimation_problem.post_processing(a): p  # type: ignore[arg-type,misc]
+            for a, p in samples.items()
         }
         result.measurements = measurements
 
@@ -353,13 +353,14 @@ class AmplitudeEstimation(AmplitudeEstimator):
         mle = self.compute_mle(result)
         result.mle = mle
         result.mle_processed = estimation_problem.post_processing(
-            mle
-        )  # type: ignore[assignment,arg-type]
+            mle  # type: ignore[assignment,arg-type]
+        )
 
         result.confidence_interval = self.compute_confidence_interval(result, exact=exact)
         result.confidence_interval_processed = tuple(
-            estimation_problem.post_processing(value) for value in result.confidence_interval
-        )  # type: ignore[assignment,arg-type]
+            estimation_problem.post_processing(value)  # type: ignore[assignment,arg-type]
+            for value in result.confidence_interval
+        )
 
         return result
 

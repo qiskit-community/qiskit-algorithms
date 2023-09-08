@@ -338,9 +338,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             result, alpha=0.05, kind="fisher", exact=exact
         )
         result.confidence_interval = confidence_interval
-        result.confidence_interval_processed = tuple(
-            estimation_problem.post_processing(value) for value in confidence_interval
-        )  # type: ignore[arg-type]
+        result.confidence_interval_processed = tuple(  # type: ignore[assignment]
+            estimation_problem.post_processing(value)  # type: ignore[arg-type]
+            for value in confidence_interval
+        )
 
         return result
 
