@@ -173,9 +173,9 @@ class VarQTE(ABC):
 
         return VarQTEResult(
             evolved_state,
-            evaluated_aux_ops,
-            observables,
-            time_points,
+            evaluated_aux_ops,  # type: ignore[arg-type]
+            observables,  # type: ignore[arg-type]
+            time_points,  # type: ignore[arg-type]
             param_values,  # type: ignore[arg-type]
         )
 

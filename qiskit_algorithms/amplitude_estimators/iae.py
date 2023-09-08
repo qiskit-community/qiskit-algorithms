@@ -409,11 +409,12 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         result.confidence_interval = confidence_interval
 
         result.estimation_processed = estimation_problem.post_processing(
-            estimation
-        )  # type: ignore[arg-type,assignment]
+            estimation  # type: ignore[arg-type,assignment]
+        )
         confidence_interval = tuple(
-            estimation_problem.post_processing(x) for x in confidence_interval
-        )  # type: ignore[arg-type,assignment]
+            estimation_problem.post_processing(x)  # type: ignore[arg-type,assignment]
+            for x in confidence_interval
+        )
 
         result.confidence_interval_processed = confidence_interval
         result.epsilon_estimated_processed = (confidence_interval[1] - confidence_interval[0]) / 2
