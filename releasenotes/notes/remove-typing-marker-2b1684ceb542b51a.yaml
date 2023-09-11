@@ -1,0 +1,8 @@
+---
+fixes:
+  - |
+    Even though ``qiskit-algorithms`` included a ``py.typed`` marker, reporting
+    itself as being typed, the types were not checked and contained errors.
+    We are releasing a bugfix release
+    in an untyped form to allow dependent packages, that are themselves typed, to
+    continue type checking normally.
