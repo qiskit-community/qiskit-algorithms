@@ -89,7 +89,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         self._lin_comb_cache: dict[tuple, dict[Parameter, QuantumCircuit]] = {}
         super().__init__(estimator, options, derivative_type=derivative_type)
 
-    @BaseEstimatorGradient.derivative_type.setter
+    @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]
     def derivative_type(self, derivative_type: DerivativeType) -> None:
         """Set the derivative type."""
         self._derivative_type = derivative_type

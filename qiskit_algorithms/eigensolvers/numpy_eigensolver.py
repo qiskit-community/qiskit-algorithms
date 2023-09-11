@@ -14,7 +14,8 @@
 
 from __future__ import annotations
 
-from typing import Callable, Union, List, Optional
+from collections.abc import Iterable
+from typing import Callable, Union, Tuple, Dict, List, Optional, cast
 import logging
 import numpy as np
 from scipy import sparse as scisparse
@@ -29,7 +30,9 @@ from ..list_or_dict import ListOrDict
 
 logger = logging.getLogger(__name__)
 
-FilterType = Callable[[Union[List, np.ndarray], float, Optional[ListOrDict[float]]], bool]
+FilterType = Callable[
+    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+]
 
 
 class NumPyEigensolver(Eigensolver):
@@ -159,21 +162,22 @@ class NumPyEigensolver(Eigensolver):
     def _solve_dense(op_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if op_matrix.all() == op_matrix.conj().T.all():
             # Operator is Hermitian
-            return np.linalg.eigh(op_matrix)
+            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
         else:
-            return np.linalg.eig(op_matrix)
+            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
 
     @staticmethod
     def _eval_aux_operators(
         aux_operators: ListOrDict[BaseOperator],
         wavefn: np.ndarray,
         threshold: float = 1e-12,
-    ) -> ListOrDict[tuple[complex, complex]]:
+    ) -> ListOrDict[tuple[float, dict[str, float]]]:
 
-        values: ListOrDict[tuple[complex, complex]]
+        values: ListOrDict[tuple[float, dict[str, float]]]
 
         # As a list, aux_operators can contain None operators for which None values are returned.
         # As a dict, the None operators in aux_operators have been dropped in compute_eigenvalues.
+        key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
         if isinstance(aux_operators, list):
             values = [None] * len(aux_operators)
             key_op_iterator = enumerate(aux_operators)
@@ -217,7 +221,7 @@ class NumPyEigensolver(Eigensolver):
             # The metadata includes variance (and, for other eigensolvers, shots).
             # Since this is an exact computation, there are no shots
             # and the variance is known to be zero.
-            values[key] = (value, {"variance": 0.0})
+            values[key] = (value, {"variance": 0.0})  # type: ignore[index]
         return values
 
     def compute_eigenvalues(

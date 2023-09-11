@@ -386,13 +386,13 @@ class SPSA(Optimizer):
             iterator = self.learning_rate()
             learning_rate = np.array([next(iterator) for _ in range(self.maxiter)])
         else:
-            learning_rate = self.learning_rate
+            learning_rate = self.learning_rate  # type: ignore[assignment]
 
         if callable(self.perturbation):
             iterator = self.perturbation()
             perturbation = np.array([next(iterator) for _ in range(self.maxiter)])
         else:
-            perturbation = self.perturbation
+            perturbation = self.perturbation  # type: ignore[assignment]
 
         return {
             "maxiter": self.maxiter,
@@ -509,6 +509,7 @@ class SPSA(Optimizer):
     ) -> OptimizerResult:
         # ensure learning rate and perturbation are correctly set: either none or both
         # this happens only here because for the calibration the loss function is required
+        x0 = np.asarray(x0)
         if self.learning_rate is None and self.perturbation is None:
             get_eta, get_eps = self.calibrate(fun, x0, max_evals_grouped=self._max_evals_grouped)
         else:
@@ -517,10 +518,9 @@ class SPSA(Optimizer):
             )
         eta, eps = get_eta(), get_eps()
 
+        lse_solver = self.lse_solver
         if self.lse_solver is None:
             lse_solver = np.linalg.solve
-        else:
-            lse_solver = self.lse_solver
 
         # prepare some initials
         x = np.asarray(x0)
@@ -629,7 +629,7 @@ class SPSA(Optimizer):
         logger.info("SPSA: Finished in %s", time() - start)
 
         if self.last_avg > 1:
-            x = np.mean(last_steps, axis=0)
+            x = np.mean(last_steps, axis=0)  # type: ignore[call-overload]
 
         result = OptimizerResult()
         result.x = x

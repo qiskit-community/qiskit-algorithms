@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping
+from collections.abc import Callable, Sequence, Mapping, Iterable
 from typing import Any
 
 from dataclasses import dataclass
@@ -43,7 +43,7 @@ class _DiagonalEstimator(BaseEstimator):
     def __init__(
         self,
         sampler: BaseSampler,
-        aggregation: float | Callable[[Sequence[tuple[float, float]]], float] | None = None,
+        aggregation: float | Callable[[Iterable[tuple[float, float]]], float] | None = None,
         callback: Callable[[Sequence[Mapping[str, Any]]], None] | None = None,
         **options,
     ) -> None:
@@ -65,8 +65,8 @@ class _DiagonalEstimator(BaseEstimator):
 
         self.aggregation = aggregation
         self.callback = callback
-        self._circuit_ids = {}
-        self._observable_ids = {}
+        self._circuit_ids: dict[int, QuantumCircuit] = {}
+        self._observable_ids: dict[int, BaseOperator] = {}
 
     def _run(
         self,
@@ -119,7 +119,7 @@ class _DiagonalEstimator(BaseEstimator):
         samples = sampler_result.quasi_dists
 
         # a list of dictionaries containing: {state: (measurement probability, value)}
-        evaluations = [
+        evaluations: list[dict[int, tuple[float, float]]] = [
             {
                 state: (probability, _evaluate_sparsepauli(state, self._observables[i]))
                 for state, probability in sampled.items()
@@ -151,7 +151,7 @@ class _DiagonalEstimator(BaseEstimator):
         )
 
 
-def _get_cvar_aggregation(alpha):
+def _get_cvar_aggregation(alpha: float | None) -> Callable[[Iterable[tuple[float, float]]], float]:
     """Get the aggregation function for CVaR with confidence level ``alpha``."""
     if alpha is None:
         alpha = 1
@@ -161,17 +161,17 @@ def _get_cvar_aggregation(alpha):
     # if alpha is close to 1 we can avoid the sorting
     if np.isclose(alpha, 1):
 
-        def aggregate(measurements):
+        def aggregate(measurements: Iterable[tuple[float, float]]) -> float:
             return sum(probability * value for probability, value in measurements)
 
     else:
 
-        def aggregate(measurements):
+        def aggregate(measurements: Iterable[tuple[float, float]]) -> float:
             # sort by values
             sorted_measurements = sorted(measurements, key=lambda x: x[1])
 
-            accumulated_percent = 0  # once alpha is reached, stop
-            cvar = 0
+            accumulated_percent = 0.0  # once alpha is reached, stop
+            cvar = 0.0
             for probability, value in sorted_measurements:
                 cvar += value * min(probability, alpha - accumulated_percent)
                 accumulated_percent += probability
@@ -186,7 +186,7 @@ def _get_cvar_aggregation(alpha):
 _PARITY = np.array([-1 if bin(i).count("1") % 2 else 1 for i in range(256)], dtype=np.complex128)
 
 
-def _evaluate_sparsepauli(state: int, observable: SparsePauliOp) -> complex:
+def _evaluate_sparsepauli(state: int, observable: SparsePauliOp) -> float:
     packed_uint8 = np.packbits(observable.paulis.z, axis=1, bitorder="little")
     state_bytes = np.frombuffer(state.to_bytes(packed_uint8.shape[1], "little"), dtype=np.uint8)
     reduced = np.bitwise_xor.reduce(packed_uint8 & state_bytes, axis=1)

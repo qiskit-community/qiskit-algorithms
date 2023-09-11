@@ -399,7 +399,7 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
 
         for method, expected_confint in expect.items():
             confint = qae.compute_confidence_interval(result, alpha, method)
-            np.testing.assert_array_almost_equal(confint, expected_confint, decimal=1)
+            np.testing.assert_array_almost_equal(np.asarray(confint), expected_confint, decimal=1)
             self.assertTrue(confint[0] <= getattr(result, key) <= confint[1])
 
     def test_iqae_confidence_intervals(self):

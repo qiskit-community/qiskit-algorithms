@@ -36,7 +36,9 @@ class EstimationProblem:
         state_preparation: QuantumCircuit,
         objective_qubits: int | list[int],
         grover_operator: QuantumCircuit | None = None,
-        post_processing: Callable[[float], float] | None = None,
+        post_processing: Callable[[list[float]], list[float]]
+        | Callable[[float], float]
+        | None = None,
         is_good_state: Callable[[str], bool] | None = None,
     ) -> None:
         r"""
@@ -100,7 +102,7 @@ class EstimationProblem:
         self._objective_qubits = objective_qubits
 
     @property
-    def post_processing(self) -> Callable[[float], float]:
+    def post_processing(self) -> Callable[[list[float]], list[float]] | Callable[[float], float]:
         """Apply post processing to the input value.
 
         Returns:
@@ -112,7 +114,10 @@ class EstimationProblem:
         return self._post_processing
 
     @post_processing.setter
-    def post_processing(self, post_processing: Callable[[float], float] | None) -> None:
+    def post_processing(
+        self,
+        post_processing: Callable[[list[float]], list[float]] | Callable[[float], float] | None,
+    ) -> None:
         """Set the post processing function.
 
         Args:

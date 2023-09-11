@@ -140,7 +140,8 @@ class LinCombQGT(BaseQGT):
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
         job_circuits, job_observables, job_param_values, metadata = [], [], [], []
-        all_n, all_m, phase_fixes = [], [], []
+        all_n, all_m = [], []
+        phase_fixes: list[int | np.ndarray] = []
 
         for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
             # Prepare circuits for the gradient of the specified parameters.

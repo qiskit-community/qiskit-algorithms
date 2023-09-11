@@ -16,8 +16,6 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from collections.abc import Callable
 
-import numpy as np
-
 from .estimation_problem import EstimationProblem
 from ..algorithm_result import AlgorithmResult
 
@@ -41,7 +39,7 @@ class AmplitudeEstimatorResult(AlgorithmResult):
 
     def __init__(self) -> None:
         super().__init__()
-        self._circuit_results: np.ndarray | dict[str, int] | None = None
+        self._circuit_results: list[dict[str, int]] | dict[str, int] | None = None
         self._shots: int | None = None
         self._estimation: float | None = None
         self._estimation_processed: float | None = None
@@ -51,12 +49,12 @@ class AmplitudeEstimatorResult(AlgorithmResult):
         self._confidence_interval_processed: tuple[float, float] | None = None
 
     @property
-    def circuit_results(self) -> np.ndarray | dict[str, int] | None:
+    def circuit_results(self) -> list[dict[str, int]] | dict[str, int] | None:
         """Return the circuit results. Can be a statevector or counts dictionary."""
         return self._circuit_results
 
     @circuit_results.setter
-    def circuit_results(self, value: np.ndarray | dict[str, int]) -> None:
+    def circuit_results(self, value: list[dict[str, int]] | dict[str, int]) -> None:
         """Set the circuit results."""
         self._circuit_results = value
 

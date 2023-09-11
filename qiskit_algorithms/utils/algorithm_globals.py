@@ -60,7 +60,7 @@ class QiskitAlgorithmGlobals:
 
     def __init__(self) -> None:
         self._random_seed: int | None = None
-        self._random = None
+        self._random: np.random.Generator | None = None
 
     @property
     def random_seed(self) -> int | None:

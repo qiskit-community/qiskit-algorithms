@@ -88,7 +88,7 @@ class LinearCombGradientCircuit:
 ################################################################################
 def _make_param_shift_parameter_values(  # pylint: disable=invalid-name
     circuit: QuantumCircuit,
-    parameter_values: np.ndarray | list[float],
+    parameter_values: np.ndarray | Sequence[float],
     parameters: Sequence[Parameter],
 ) -> list[np.ndarray]:
     """Returns a list of parameter values with offsets for parameter shift rule.
@@ -329,7 +329,7 @@ def _assign_unique_parameters(
 def _make_gradient_parameter_values(
     circuit: QuantumCircuit,
     gradient_circuit: GradientCircuit,
-    parameter_values: np.ndarray,
+    parameter_values: np.ndarray | Sequence[float],
 ) -> np.ndarray:
     """Makes parameter values for the gradient circuit.
 

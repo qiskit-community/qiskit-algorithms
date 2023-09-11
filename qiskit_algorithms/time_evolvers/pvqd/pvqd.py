@@ -199,9 +199,11 @@ class PVQD(RealTimeEvolver):
             initial_guess = algorithm_globals.random.random(self.initial_parameters.size) * 0.01
 
         if isinstance(self.optimizer, Optimizer):
-            optimizer_result = self.optimizer.minimize(loss, initial_guess, gradient)
+            optimizer_result = self.optimizer.minimize(
+                loss, initial_guess, gradient  # type: ignore[arg-type]
+            )
         else:
-            optimizer_result = self.optimizer(loss, initial_guess, gradient)
+            optimizer_result = self.optimizer(loss, initial_guess, gradient)  # type: ignore[call-arg]
 
         # clip the fidelity to [0, 1]
         fidelity = np.clip(1 - optimizer_result.fun, 0, 1)
@@ -297,7 +299,7 @@ class PVQD(RealTimeEvolver):
                 plus_shifts = (displacement + np.pi / 2 * np.identity(dim)).tolist()
                 minus_shifts = (displacement - np.pi / 2 * np.identity(dim)).tolist()
 
-                evaluated = evaluate_loss(plus_shifts + minus_shifts)
+                evaluated = np.asarray(evaluate_loss(plus_shifts + minus_shifts))
 
                 gradient = (evaluated[:dim] - evaluated[dim:]) / 2
 
@@ -306,14 +308,14 @@ class PVQD(RealTimeEvolver):
         else:
             evaluate_gradient = None
 
-        return evaluate_loss, evaluate_gradient
+        return evaluate_loss, evaluate_gradient  # type: ignore[return-value]
 
     def _transpose_param_dicts(self, params: dict) -> list[dict[Parameter, float]]:
         p_0 = list(params.values())[0]
         if isinstance(p_0, (list, np.ndarray)):
             num_parameterizations = len(p_0)
             param_bindings = [
-                {param: value_list[i] for param, value_list in params.items()}  # type: ignore
+                {param: value_list[i] for param, value_list in params.items()}
                 for i in range(num_parameterizations)
             ]
         else:
@@ -394,11 +396,11 @@ class PVQD(RealTimeEvolver):
             times=times,
             parameters=parameters,
             fidelities=fidelities,
-            estimated_error=1 - np.prod(fidelities),
+            estimated_error=1 - float(np.prod(fidelities)),
         )
         if observables is not None:
-            result.observables = observable_values
-            result.aux_ops_evaluated = observable_values[-1]
+            result.observables = observable_values  # type: ignore[assignment]
+            result.aux_ops_evaluated = observable_values[-1]  # type: ignore[assignment]
 
         return result
 

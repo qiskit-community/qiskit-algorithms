@@ -14,12 +14,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from typing import cast, Sequence
 
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit_algorithms.utils import algorithm_globals
+from qiskit_algorithms.utils.algorithm_globals import algorithm_globals
 
 
 def validate_initial_point(
@@ -58,7 +58,7 @@ def validate_initial_point(
             upper_bounds.append(upper if upper is not None else 2 * np.pi)
 
         # sample from within bounds
-        point = algorithm_globals.random.uniform(lower_bounds, upper_bounds)
+        point = cast(Sequence[float], algorithm_globals.random.uniform(lower_bounds, upper_bounds))
 
     elif len(point) != expected_size:
         raise ValueError(

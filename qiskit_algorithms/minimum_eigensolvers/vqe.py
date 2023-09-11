@@ -150,7 +150,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self.initial_point = initial_point
         self.callback = callback
 
-    @property
+    @property  # type: ignore[override]
     def initial_point(self) -> Sequence[float] | None:
         return self._initial_point
 
@@ -181,7 +181,10 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         # perform optimization
         if callable(self.optimizer):
             optimizer_result = self.optimizer(
-                fun=evaluate_energy, x0=initial_point, jac=evaluate_gradient, bounds=bounds
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,  # type: ignore[arg-type]
+                jac=evaluate_gradient,
+                bounds=bounds,
             )
         else:
             # we always want to submit as many estimations per job as possible for minimal
@@ -189,7 +192,10 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             was_updated = _set_default_batchsize(self.optimizer)
 
             optimizer_result = self.optimizer.minimize(
-                fun=evaluate_energy, x0=initial_point, jac=evaluate_gradient, bounds=bounds
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,  # type: ignore[arg-type]
+                jac=evaluate_gradient,  # type: ignore[arg-type]
+                bounds=bounds,
             )
 
             # reset to original value
@@ -206,13 +212,19 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         if aux_operators is not None:
             aux_operators_evaluated = estimate_observables(
-                self.estimator, self.ansatz, aux_operators, optimizer_result.x
+                self.estimator,
+                self.ansatz,
+                aux_operators,
+                optimizer_result.x,  # type: ignore[arg-type]
             )
         else:
             aux_operators_evaluated = None
 
         return self._build_vqe_result(
-            self.ansatz, optimizer_result, aux_operators_evaluated, optimizer_time
+            self.ansatz,
+            optimizer_result,
+            aux_operators_evaluated,  # type: ignore[arg-type]
+            optimizer_time,
         )
 
     @classmethod
@@ -290,7 +302,9 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         def evaluate_gradient(parameters: np.ndarray) -> np.ndarray:
             # broadcasting not required for the estimator gradients
             try:
-                job = self.gradient.run([ansatz], [operator], [parameters])
+                job = self.gradient.run(
+                    [ansatz], [operator], [parameters]  # type: ignore[list-item]
+                )
                 gradients = job.result().gradients
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the gradient failed!") from exc
@@ -330,11 +344,13 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         result.optimal_circuit = ansatz.copy()
         result.eigenvalue = optimizer_result.fun
         result.cost_function_evals = optimizer_result.nfev
-        result.optimal_point = optimizer_result.x
-        result.optimal_parameters = dict(zip(self.ansatz.parameters, optimizer_result.x))
+        result.optimal_point = optimizer_result.x  # type: ignore[assignment]
+        result.optimal_parameters = dict(
+            zip(self.ansatz.parameters, optimizer_result.x)  # type: ignore[arg-type]
+        )
         result.optimal_value = optimizer_result.fun
         result.optimizer_time = optimizer_time
-        result.aux_operators_evaluated = aux_operators_evaluated
+        result.aux_operators_evaluated = aux_operators_evaluated  # type: ignore[assignment]
         result.optimizer_result = optimizer_result
         return result
 

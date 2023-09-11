@@ -13,7 +13,7 @@
 """The Iterative Quantum Amplitude Estimation Algorithm."""
 
 from __future__ import annotations
-from typing import cast
+from typing import cast, Callable, Tuple
 import warnings
 import numpy as np
 from scipy.stats import beta
@@ -235,43 +235,24 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
     def _good_state_probability(
         self,
         problem: EstimationProblem,
-        counts_or_statevector: dict[str, int] | np.ndarray,
-        num_state_qubits: int,
-    ) -> tuple[int, float] | float:
+        counts_dict: dict[str, int],
+    ) -> tuple[int, float]:
         """Get the probability to measure '1' in the last qubit.
 
         Args:
             problem: The estimation problem, used to obtain the number of objective qubits and
                 the ``is_good_state`` function.
-            counts_or_statevector: Either a counts-dictionary (with one measured qubit only!) or
-                the statevector returned from the statevector_simulator.
-            num_state_qubits: The number of state qubits.
+            counts_dict: A counts-dictionary (with one measured qubit only!)
 
         Returns:
-            If a dict is given, return (#one-counts, #one-counts/#all-counts),
-            otherwise Pr(measure '1' in the last qubit).
+            #one-counts, #one-counts/#all-counts
         """
-        if isinstance(counts_or_statevector, dict):
-            one_counts = 0
-            for state, counts in counts_or_statevector.items():
-                if problem.is_good_state(state):
-                    one_counts += counts
+        one_counts = 0
+        for state, counts in counts_dict.items():
+            if problem.is_good_state(state):
+                one_counts += counts
 
-            return int(one_counts), one_counts / sum(counts_or_statevector.values())
-        else:
-            statevector = counts_or_statevector
-            num_qubits = int(np.log2(len(statevector)))  # the total number of qubits
-
-            # sum over all amplitudes where the objective qubit is 1
-            prob = 0
-            for i, amplitude in enumerate(statevector):
-                # consider only state qubits and revert bit order
-                bitstr = bin(i)[2:].zfill(num_qubits)[-num_state_qubits:][::-1]
-                objectives = [bitstr[index] for index in problem.objective_qubits]
-                if problem.is_good_state(objectives):
-                    prob = prob + np.abs(amplitude) ** 2
-
-            return prob
+        return int(one_counts), one_counts / sum(counts_dict.values())
 
     def estimate(
         self, estimation_problem: EstimationProblem
@@ -364,9 +345,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             }
 
             # calculate the probability of measuring '1', 'prob' is a_i in the paper
-            num_qubits = circuit.num_qubits - circuit.num_ancillas
-            # type: ignore
-            one_counts, prob = self._good_state_probability(estimation_problem, counts, num_qubits)
+            one_counts, prob = self._good_state_probability(estimation_problem, counts)
 
             num_one_shots.append(one_counts)
 
@@ -415,24 +394,28 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             a_intervals.append([a_l, a_u])
 
         # get the latest confidence interval for the estimate of a
-        confidence_interval = tuple(a_intervals[-1])
+        confidence_interval = cast(Tuple[float, float], a_intervals[-1])
 
         # the final estimate is the mean of the confidence interval
         estimation = np.mean(confidence_interval)
 
         result = IterativeAmplitudeEstimationResult()
         result.alpha = self._alpha
-        result.post_processing = estimation_problem.post_processing
+        result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
         result.num_oracle_queries = num_oracle_queries
 
-        result.estimation = estimation
+        result.estimation = float(estimation)
         result.epsilon_estimated = (confidence_interval[1] - confidence_interval[0]) / 2
         result.confidence_interval = confidence_interval
 
-        result.estimation_processed = estimation_problem.post_processing(estimation)
-        confidence_interval = tuple(
-            estimation_problem.post_processing(x) for x in confidence_interval
+        result.estimation_processed = estimation_problem.post_processing(
+            estimation  # type: ignore[arg-type,assignment]
         )
+        confidence_interval = tuple(
+            estimation_problem.post_processing(x)  # type: ignore[arg-type,assignment]
+            for x in confidence_interval
+        )
+
         result.confidence_interval_processed = confidence_interval
         result.epsilon_estimated_processed = (confidence_interval[1] - confidence_interval[0]) / 2
         result.estimate_intervals = a_intervals

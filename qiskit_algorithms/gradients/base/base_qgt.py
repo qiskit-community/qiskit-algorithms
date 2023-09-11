@@ -198,7 +198,9 @@ class BaseQGT(ABC):
             parameter_values and parameters are updated to match the gradient circuit.
         """
         translator = TranslateParameterizedGates(supported_gates)
-        g_circuits, g_parameter_values, g_parameters = [], [], []
+        g_circuits: list[QuantumCircuit] = []
+        g_parameter_values: list[Sequence[float]] = []
+        g_parameters: list[Sequence[Parameter]] = []
         for circuit, parameter_value_, parameters_ in zip(circuits, parameter_values, parameters):
             circuit_key = _circuit_key(circuit)
             if circuit_key not in self._gradient_circuit_cache:
@@ -207,7 +209,9 @@ class BaseQGT(ABC):
             gradient_circuit = self._gradient_circuit_cache[circuit_key]
             g_circuits.append(gradient_circuit.gradient_circuit)
             g_parameter_values.append(
-                _make_gradient_parameter_values(circuit, gradient_circuit, parameter_value_)
+                _make_gradient_parameter_values(  # type: ignore[arg-type]
+                    circuit, gradient_circuit, parameter_value_
+                )
             )
             g_parameters_ = [
                 g_param
@@ -253,7 +257,7 @@ class BaseQGT(ABC):
                 for param in gradient_circuit.gradient_circuit.parameters
                 if param in g_parameters
             ]
-            g_parameter_indices = {param: i for i, param in enumerate(g_parameter_indices)}
+            g_parameter_indices_d = {param: i for i, param in enumerate(g_parameter_indices)}
             rows, cols = np.triu_indices(len(parameters_))
             for row, col in zip(rows, cols):
                 for g_parameter1, coeff1 in gradient_circuit.parameter_map[parameters_[row]]:
@@ -278,7 +282,8 @@ class BaseQGT(ABC):
                             float(bound_coeff1)
                             * float(bound_coeff2)
                             * results.qgts[idx][
-                                g_parameter_indices[g_parameter1], g_parameter_indices[g_parameter2]
+                                g_parameter_indices_d[g_parameter1],
+                                g_parameter_indices_d[g_parameter2],
                             ]
                         )
 

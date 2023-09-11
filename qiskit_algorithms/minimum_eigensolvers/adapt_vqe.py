@@ -18,7 +18,6 @@ from enum import Enum
 
 import re
 import logging
-from typing import Any
 
 import numpy as np
 
@@ -131,7 +130,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         self._excitation_pool: list[BaseOperator] = []
         self._excitation_list: list[BaseOperator] = []
 
-    @property
+    @property  # type: ignore[override]
     def initial_point(self) -> Sequence[float] | None:
         """Returns the initial point of the internal :class:`~.VQE` solver."""
         return self.solver.initial_point
@@ -149,7 +148,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         self,
         theta: list[float],
         operator: BaseOperator,
-    ) -> list[tuple[complex, dict[str, Any]]]:
+    ) -> ListOrDict[tuple[float, dict[str, BaseOperator]]]:
         """
         Computes the gradients for all available excitation operators.
 
@@ -225,7 +224,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         prev_raw_vqe_result: VQEResult | None = None
         raw_vqe_result: VQEResult | None = None
         theta: list[float] = []
-        max_grad: tuple[complex, dict[str, Any] | None] = (0.0, None)
+        max_grad: tuple[float, dict[str, BaseOperator] | None] = (0.0, None)
         self._excitation_list = []
         history: list[complex] = []
         iteration = 0
@@ -236,8 +235,9 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             logger.debug("Computing gradients")
             cur_grads = self._compute_gradients(theta, operator)
             # pick maximum gradient
-            max_grad_index, max_grad = max(
-                enumerate(cur_grads), key=lambda item: np.abs(item[1][0])
+            max_grad_index, max_grad = max(  # type: ignore[assignment]
+                enumerate(cur_grads),
+                key=lambda item: np.abs(item[1][0]),  # type: ignore[call-overload]
             )
             logger.info(
                 "Found maximum gradient %s at index %s",
@@ -313,15 +313,18 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         result.combine(raw_vqe_result)
         result.num_iterations = iteration
         result.final_max_gradient = max_grad[0]
-        result.termination_criterion = termination_criterion
+        result.termination_criterion = termination_criterion  # type: ignore[assignment]
         result.eigenvalue_history = history
 
         # once finished evaluate auxiliary operators if any
         if aux_operators is not None:
             aux_values = estimate_observables(
-                self.solver.estimator, self.solver.ansatz, aux_operators, result.optimal_point
+                self.solver.estimator,
+                self.solver.ansatz,
+                aux_operators,
+                result.optimal_point,  # type: ignore[arg-type]
             )
-            result.aux_operators_evaluated = aux_values
+            result.aux_operators_evaluated = aux_values  # type: ignore[assignment]
 
         logger.info("The final eigenvalue is: %s", str(result.eigenvalue))
         self.solver.ansatz.operators = self._excitation_pool
@@ -336,7 +339,7 @@ class AdaptVQEResult(VQEResult):
         self._num_iterations: int | None = None
         self._final_max_gradient: float | None = None
         self._termination_criterion: str = ""
-        self._eigenvalue_history: list[float] | None = None
+        self._eigenvalue_history: list[complex] | None = None
 
     @property
     def num_iterations(self) -> int:
@@ -369,7 +372,7 @@ class AdaptVQEResult(VQEResult):
         self._termination_criterion = value
 
     @property
-    def eigenvalue_history(self) -> list[float]:
+    def eigenvalue_history(self) -> list[complex]:
         """Returns the history of computed eigenvalues.
 
         The history's length matches the number of iterations and includes the final computed value.
@@ -377,6 +380,6 @@ class AdaptVQEResult(VQEResult):
         return self._eigenvalue_history
 
     @eigenvalue_history.setter
-    def eigenvalue_history(self, eigenvalue_history: list[float]) -> None:
+    def eigenvalue_history(self, eigenvalue_history: list[complex]) -> None:
         """Sets the history of computed eigenvalues."""
         self._eigenvalue_history = eigenvalue_history

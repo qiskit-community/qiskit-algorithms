@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, SupportsFloat
+from typing import Any
 
 import numpy as np
 
@@ -122,11 +122,11 @@ class GSLS(Optimizer):
             var_lb = np.array([l for (l, _) in bounds])
             var_ub = np.array([u for (_, u) in bounds])
 
-        x, fun, nfev, _ = self.ls_optimize(x0.size, fun, x0, var_lb, var_ub)
+        x, fun_, nfev, _ = self.ls_optimize(x0.size, fun, x0, var_lb, var_ub)
 
         result = OptimizerResult()
         result.x = x
-        result.fun = fun
+        result.fun = fun_
         result.nfev = nfev
 
         return result
@@ -172,7 +172,7 @@ class GSLS(Optimizer):
         prev_directions, prev_sample_set_x, prev_sample_set_y = None, None, None
         consecutive_fail_iter = 0
         alpha = self._options["initial_step_size"]
-        grad_norm: SupportsFloat = np.inf
+        grad_norm: float = np.inf
         sample_set_size = int(round(self._options["sample_size_factor"] * n))
 
         # Initial point
@@ -202,7 +202,7 @@ class GSLS(Optimizer):
             grad = self.gradient_approximation(
                 n, x, x_value, directions, sample_set_x, sample_set_y
             )
-            grad_norm = np.linalg.norm(grad)
+            grad_norm = float(np.linalg.norm(grad))
             new_x = np.clip(x - alpha * grad, var_lb, var_ub)
             new_x_value = obj_fun(new_x)
             n_evals += 1

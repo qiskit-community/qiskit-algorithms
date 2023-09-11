@@ -16,8 +16,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-import numpy as np
-
 from .amplification_problem import AmplificationProblem
 from ..algorithm_result import AlgorithmResult
 
@@ -47,7 +45,7 @@ class AmplitudeAmplifierResult(AlgorithmResult):
         self._top_measurement: str | None = None
         self._assignment = None
         self._oracle_evaluation: bool | None = None
-        self._circuit_results: list[np.ndarray] | list[dict[str, int]] | None = None
+        self._circuit_results: list[dict[str, int]] | None = None
         self._max_probability: float | None = None
 
     @property
@@ -107,12 +105,12 @@ class AmplitudeAmplifierResult(AlgorithmResult):
         self._oracle_evaluation = value
 
     @property
-    def circuit_results(self) -> list[np.ndarray] | list[dict[str, int]] | None:
-        """Return the circuit results. Can be a statevector or counts dictionary."""
+    def circuit_results(self) -> list[dict[str, int]] | None:
+        """Return the circuit results."""
         return self._circuit_results
 
     @circuit_results.setter
-    def circuit_results(self, value: list[np.ndarray] | list[dict[str, int]]) -> None:
+    def circuit_results(self, value: list[dict[str, int]]) -> None:
         """Set the circuit results."""
         self._circuit_results = value
 

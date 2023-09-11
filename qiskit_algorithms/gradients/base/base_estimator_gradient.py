@@ -187,7 +187,9 @@ class BaseEstimatorGradient(ABC):
             parameter_values and parameters are updated to match the gradient circuit.
         """
         translator = TranslateParameterizedGates(supported_gates)
-        g_circuits, g_parameter_values, g_parameters = [], [], []
+        g_circuits: list[QuantumCircuit] = []
+        g_parameter_values: list[Sequence[float]] = []
+        g_parameters: list[Sequence[Parameter]] = []
         for circuit, parameter_value_, parameters_ in zip(circuits, parameter_values, parameters):
             circuit_key = _circuit_key(circuit)
             if circuit_key not in self._gradient_circuit_cache:
@@ -196,7 +198,9 @@ class BaseEstimatorGradient(ABC):
             gradient_circuit = self._gradient_circuit_cache[circuit_key]
             g_circuits.append(gradient_circuit.gradient_circuit)
             g_parameter_values.append(
-                _make_gradient_parameter_values(circuit, gradient_circuit, parameter_value_)
+                _make_gradient_parameter_values(  # type: ignore[arg-type]
+                    circuit, gradient_circuit, parameter_value_
+                )
             )
             g_parameters.append(_make_gradient_parameters(gradient_circuit, parameters_))
         return g_circuits, g_parameter_values, g_parameters

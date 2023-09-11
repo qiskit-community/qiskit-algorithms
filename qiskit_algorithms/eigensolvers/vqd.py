@@ -17,8 +17,8 @@ See https://arxiv.org/abs/1805.08138.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
-from typing import Any
+from collections.abc import Callable, Sequence, Iterable
+from typing import Any, cast
 import logging
 from time import time
 
@@ -125,7 +125,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         k: int = 2,
         betas: Sequence[float] | None = None,
         initial_point: Sequence[float] | Sequence[Sequence[float]] | None = None,
-        callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
+        callback: Callable[[int, np.ndarray, float, dict[str, Any], int], None] | None = None,
     ) -> None:
         """
 
@@ -148,7 +148,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 If ``None`` then VQD will look to the ansatz for a preferred
                 point and if not will simply compute a random one.
             callback: A callback that can access the intermediate data
-                during the optimization. Four parameter values are passed to the callback as
+                during the optimization. Five parameter values are passed to the callback as
                 follows during each evaluation by the optimizer: the evaluation count,
                 the optimizer parameters for the ansatz, the estimated value,
                 the estimation metadata, and the current step.
@@ -167,7 +167,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
         self._eval_count = 0
 
-    @property
+    @property  # type: ignore[override]
     def initial_point(self) -> Sequence[float] | Sequence[Sequence[float]] | None:
         """Returns initial point."""
         return self._initial_point
@@ -214,6 +214,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             # Convert the None and zero values when aux_operators is a list.
             # Drop None and convert zero values when aux_operators is a dict.
+            key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
             if isinstance(aux_operators, list):
                 key_op_iterator = enumerate(aux_operators)
                 converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
@@ -222,13 +223,14 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 converted = {}
             for key, op in key_op_iterator:
                 if op is not None:
-                    converted[key] = zero_op if op == 0 else op
+                    converted[key] = zero_op if op == 0 else op  # type: ignore[index]
 
             aux_operators = converted
 
         else:
             aux_operators = None
 
+        betas = self.betas
         if self.betas is None:
             try:
                 upper_bound = sum(np.abs(operator.coeffs))
@@ -241,8 +243,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             betas = [upper_bound * 10] * (self.k)
             logger.info("beta autoevaluated to %s", betas[0])
-        else:
-            betas = self.betas
 
         result = self._build_vqd_result()
 
@@ -261,7 +261,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
         # 0 just means the initial point is ``None`` and ``validate_initial_point``
         # will select a random point
         if num_initial_points <= 1:
-            initial_point = validate_initial_point(self.initial_point, self.ansatz)
+            initial_point = validate_initial_point(
+                self.initial_point, self.ansatz  # type: ignore[arg-type]
+            )
 
         for step in range(1, self.k + 1):
             if num_initial_points > 1:
@@ -285,7 +287,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             if callable(optimizer):
                 opt_result = optimizer(  # pylint: disable=not-callable
-                    fun=energy_evaluation, x0=initial_point, bounds=bounds
+                    fun=energy_evaluation,  # type: ignore[arg-type,call-arg]
+                    x0=initial_point,  # type: ignore[arg-type]
+                    bounds=bounds,
                 )
             else:
                 # we always want to submit as many estimations per job as possible for minimal
@@ -293,7 +297,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 was_updated = _set_default_batchsize(optimizer)
 
                 opt_result = optimizer.minimize(
-                    fun=energy_evaluation, x0=initial_point, bounds=bounds
+                    fun=energy_evaluation, x0=initial_point, bounds=bounds  # type: ignore[arg-type]
                 )
 
                 # reset to original value
@@ -394,7 +398,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 fidelity_job = self.fidelity.run(
                     batch_size * [self.ansatz] * (step - 1),
                     batched_prev_states,
-                    np.tile(parameters, (step - 1, 1)),
+                    np.tile(parameters, (step - 1, 1)),  # type: ignore[arg-type]
                 )
                 costs = fidelity_job.result().fidelities
 
@@ -430,7 +434,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         result.optimal_values = np.array([])
         result.cost_function_evals = np.array([], dtype=int)
         result.optimizer_times = np.array([])
-        result.eigenvalues = []
+        result.eigenvalues = []  # type: ignore[assignment]
         result.optimizer_results = []
         result.optimal_circuits = []
         return result
@@ -444,11 +448,13 @@ class VQD(VariationalAlgorithm, Eigensolver):
             if len(result.optimal_points) > 0
             else np.array([opt_result.x])
         )
-        result.optimal_parameters.append(dict(zip(ansatz.parameters, opt_result.x)))
+        result.optimal_parameters.append(
+            dict(zip(ansatz.parameters, cast(np.ndarray, opt_result.x)))
+        )
         result.optimal_values = np.concatenate([result.optimal_values, [opt_result.fun]])
         result.cost_function_evals = np.concatenate([result.cost_function_evals, [opt_result.nfev]])
         result.optimizer_times = np.concatenate([result.optimizer_times, [eval_time]])
-        result.eigenvalues.append(opt_result.fun + 0j)
+        result.eigenvalues.append(opt_result.fun + 0j)  # type: ignore[attr-defined]
         result.optimizer_results.append(opt_result)
         result.optimal_circuits.append(ansatz)
         return result

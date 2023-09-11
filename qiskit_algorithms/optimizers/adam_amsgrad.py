@@ -188,7 +188,7 @@ class ADAM(Optimizer):
         m = m[1:-1]
         self._m = np.fromstring(m, dtype=float, sep=" ")
         t = t[1:-1]
-        self._t = np.fromstring(t, dtype=int, sep=" ")
+        self._t = int(np.fromstring(t, dtype=int, sep=" "))
 
     def minimize(
         self,

@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, cast
 import warnings
 
 import numpy as np
@@ -216,13 +216,14 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         return interval
 
+    # TODO: add deprecation warning for num_state_qubits
     def compute_mle(
         self,
-        circuit_results: list[dict[str, int] | np.ndarray],
+        circuit_results: list[dict[str, int]],
         estimation_problem: EstimationProblem,
-        num_state_qubits: int | None = None,
+        num_state_qubits: int | None = None,  # pylint: disable=unused-argument
         return_counts: bool = False,
-    ) -> float | tuple[float, list[float]]:
+    ) -> float | tuple[float, list[int]]:
         """Compute the MLE via a grid-search.
 
         This is a stable approach if sufficient grid-points are used.
@@ -231,13 +232,12 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             circuit_results: A list of circuit outcomes. Can be counts or statevectors.
             estimation_problem: The estimation problem containing the evaluation schedule and the
                 number of likelihood function evaluations used to find the minimum.
-            num_state_qubits: The number of state qubits, required for statevector simulations.
             return_counts: If True, returns the good counts.
-
+            num_state_qubits: [Deprecated]. Number of qubits to process statevector results.
         Returns:
             The MLE for the provided result object.
         """
-        good_counts, all_counts = _get_counts(circuit_results, estimation_problem, num_state_qubits)
+        good_counts, all_counts = _get_counts(circuit_results, estimation_problem)
 
         # search range
         eps = 1e-15  # to avoid invalid value in log
@@ -252,7 +252,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
                 loglik += np.log(np.cos(angle) ** 2) * (all_counts[i] - good_counts[i])
             return -loglik
 
-        est_theta = self._minimizer(loglikelihood, [search_range])
+        est_theta: float = self._minimizer(loglikelihood, [search_range])
 
         if return_counts:
             return est_theta, good_counts
@@ -286,9 +286,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result = MaximumLikelihoodAmplitudeEstimationResult()
         result.evaluation_schedule = self._evaluation_schedule
         result.minimizer = self._minimizer
-        result.post_processing = estimation_problem.post_processing
-
-        shots = 0
+        result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
 
         circuits = self.construct_circuits(estimation_problem, measurement=True)
 
@@ -298,27 +296,29 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
-        result.circuit_results = []
+        circuit_results = []
         shots = ret.metadata[0].get("shots")
         exact = True
         if shots is None:
             for quasi_dist in ret.quasi_dists:
                 circuit_result = quasi_dist.binary_probabilities()
-                result.circuit_results.append(circuit_result)
+                circuit_results.append(circuit_result)
             shots = 1
         else:
             # get counts and construct MLE input
             for quasi_dist in ret.quasi_dists:
                 counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
-                result.circuit_results.append(counts)
+                circuit_results.append(counts)
             exact = False
 
         result.shots = shots
-
+        result.circuit_results = circuit_results
         # run maximum likelihood estimation
         num_state_qubits = circuits[0].num_qubits - circuits[0].num_ancillas
-        theta, good_counts = self.compute_mle(
-            result.circuit_results, estimation_problem, num_state_qubits, True
+
+        theta, good_counts = cast(
+            Tuple[float, List[float]],
+            self.compute_mle(result.circuit_results, estimation_problem, num_state_qubits, True),
         )
 
         # store results
@@ -338,8 +338,9 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             result, alpha=0.05, kind="fisher", exact=exact
         )
         result.confidence_interval = confidence_interval
-        result.confidence_interval_processed = tuple(
-            estimation_problem.post_processing(value) for value in confidence_interval
+        result.confidence_interval_processed = tuple(  # type: ignore[assignment]
+            estimation_problem.post_processing(value)  # type: ignore[arg-type]
+            for value in confidence_interval
         )
 
         return result
@@ -407,13 +408,15 @@ class MaximumLikelihoodAmplitudeEstimationResult(AmplitudeEstimatorResult):
         self._fisher_information = value
 
 
-def _safe_min(array, default=0):
+def _safe_min(array: list[float], default: float = 0.0) -> float:
     if len(array) == 0:
         return default
     return np.min(array)
 
 
-def _safe_max(array, default=(np.pi / 2)):  # pylint: disable=superfluous-parens
+def _safe_max(
+    array: list[float], default: float = (np.pi / 2)  # pylint: disable=superfluous-parens
+) -> float:
     if len(array) == 0:
         return default
     return np.max(array)
@@ -555,16 +558,16 @@ def _likelihood_ratio_confint(
     # to still provide a valid result use safe_min/max which
     # then yield [0, pi/2]
     confint = [_safe_min(above_thres, default=0), _safe_max(above_thres, default=np.pi / 2)]
-    mapped_confint = tuple(result.post_processing(np.sin(bound) ** 2) for bound in confint)
+    mapped_confint = cast(
+        Tuple[float, float], tuple(result.post_processing(np.sin(bound) ** 2) for bound in confint)
+    )
 
     return mapped_confint
 
 
 def _get_counts(
-    circuit_results: Sequence[np.ndarray | list[float] | dict[str, int]],
-    estimation_problem: EstimationProblem,
-    num_state_qubits: int,
-) -> tuple[list[float], list[int]]:
+    circuit_results: Sequence[dict[str, int]], estimation_problem: EstimationProblem
+) -> tuple[list[int], list[int]]:
     """Get the good and total counts.
 
     Returns:
@@ -574,33 +577,15 @@ def _get_counts(
         AlgorithmError: If self.run() has not been called yet.
     """
     one_hits = []  # h_k: how often 1 has been measured, for a power Q^(m_k)
-    # shots_k: how often has been measured at a power Q^(m_k)
-    all_hits: np.ndarray | list[float] = []
-    if all(isinstance(data, (list, np.ndarray)) for data in circuit_results):
-        probabilities = []
-        num_qubits = int(np.log2(len(circuit_results[0])))  # the total number of qubits
-        for statevector in circuit_results:
-            p_k = 0.0
-            for i, amplitude in enumerate(statevector):
-                probability = np.abs(amplitude) ** 2
-                # consider only state qubits and revert bit order
-                bitstr = bin(i)[2:].zfill(num_qubits)[-num_state_qubits:][::-1]
-                objectives = [bitstr[index] for index in estimation_problem.objective_qubits]
-                if estimation_problem.is_good_state(objectives):
-                    p_k += probability
-            probabilities += [p_k]
-
-        one_hits = probabilities
-        all_hits = np.ones_like(one_hits)
-    else:
-        for counts in circuit_results:
-            all_hits.append(sum(counts.values()))
-            one_hits.append(
-                sum(
-                    count
-                    for bitstr, count in counts.items()
-                    if estimation_problem.is_good_state(bitstr)
-                )
+    all_hits = []
+    for counts in circuit_results:
+        all_hits.append(sum(counts.values()))
+        one_hits.append(
+            sum(
+                count
+                for bitstr, count in counts.items()
+                if estimation_problem.is_good_state(bitstr)
             )
+        )
 
     return one_hits, all_hits

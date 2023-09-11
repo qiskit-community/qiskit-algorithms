@@ -153,7 +153,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     def evaluate_measurements(
         self,
-        circuit_results: dict[str, int] | np.ndarray,
+        circuit_results: dict[str, int],
         threshold: float = 1e-6,
     ) -> tuple[dict[float, float], dict[int, float]]:
         """Evaluate the results from the circuit simulation.
@@ -171,36 +171,14 @@ class AmplitudeEstimation(AmplitudeEstimator):
                 y measurements with respective probabilities, in this order.
         """
         # compute grid sample and measurement dicts
-        if isinstance(circuit_results, dict):
-            if set(map(type, circuit_results.values())) == {int}:
-                samples, measurements = self._evaluate_count_results(circuit_results)
-            else:
-                samples, measurements = self._evaluate_quasi_probabilities_results(circuit_results)
+        if set(map(type, circuit_results.values())) == {int}:
+            samples, measurements = self._evaluate_count_results(circuit_results)
         else:
-            samples, measurements = self._evaluate_statevector_results(circuit_results)
+            samples, measurements = self._evaluate_quasi_probabilities_results(circuit_results)
 
         # cutoff probabilities below the threshold
         samples = {a: p for a, p in samples.items() if p > threshold}
         measurements = {y: p for y, p in measurements.items() if p > threshold}
-
-        return samples, measurements
-
-    def _evaluate_statevector_results(self, statevector):
-        # map measured results to estimates
-        measurements = OrderedDict()  # type: OrderedDict
-        num_qubits = int(np.log2(len(statevector)))
-        for i, amplitude in enumerate(statevector):
-            b = bin(i)[2:].zfill(num_qubits)[::-1]
-            y = int(b[: self._m], 2)  # chop off all except the evaluation qubits
-            measurements[y] = measurements.get(y, 0) + np.abs(amplitude) ** 2
-
-        samples = OrderedDict()  # type: OrderedDict
-        for y, probability in measurements.items():
-            if y >= int(self._M / 2):
-                y = self._M - y
-            # due to the finite accuracy of the sine, we round the result to 7 decimals
-            a = np.round(np.power(np.sin(y * np.pi / 2**self._m), 2), decimals=7)
-            samples[a] = samples.get(a, 0) + probability
 
         return samples, measurements
 
@@ -326,7 +304,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
         result = AmplitudeEstimationResult()
         result.num_evaluation_qubits = self._m
-        result.post_processing = estimation_problem.post_processing
+        result.post_processing = estimation_problem.post_processing  # type: ignore[assignment]
 
         circuit = self.construct_circuit(estimation_problem, measurement=True)
         try:
@@ -337,6 +315,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
         shots = ret.metadata[0].get("shots")
         exact = True
+
         if shots is None:
             result.circuit_results = ret.quasi_dists[0].binary_probabilities()
             shots = 1
@@ -348,11 +327,14 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
         # store shots
         result.shots = shots
-        samples, measurements = self.evaluate_measurements(result.circuit_results)
+        samples, measurements = self.evaluate_measurements(
+            result.circuit_results  # type: ignore[arg-type]
+        )
 
         result.samples = samples
         result.samples_processed = {
-            estimation_problem.post_processing(a): p for a, p in samples.items()
+            estimation_problem.post_processing(a): p  # type: ignore[arg-type,misc]
+            for a, p in samples.items()
         }
         result.measurements = measurements
 
@@ -370,11 +352,14 @@ class AmplitudeEstimation(AmplitudeEstimator):
         # run the MLE post-processing
         mle = self.compute_mle(result)
         result.mle = mle
-        result.mle_processed = estimation_problem.post_processing(mle)
+        result.mle_processed = estimation_problem.post_processing(
+            mle  # type: ignore[assignment,arg-type]
+        )
 
         result.confidence_interval = self.compute_confidence_interval(result, exact=exact)
         result.confidence_interval_processed = tuple(
-            estimation_problem.post_processing(value) for value in result.confidence_interval
+            estimation_problem.post_processing(value)  # type: ignore[assignment,arg-type]
+            for value in result.confidence_interval
         )
 
         return result

@@ -73,9 +73,7 @@ class EigensolverResult(AlgorithmResult):
     def __init__(self) -> None:
         super().__init__()
         self._eigenvalues: np.ndarray | None = None
-        self._aux_operators_evaluated: list[
-            ListOrDict[tuple[complex, dict[str, Any]]]
-        ] | None = None
+        self._aux_operators_evaluated: list[ListOrDict[tuple[float, dict[str, Any]]]] | None = None
 
     @property
     def eigenvalues(self) -> np.ndarray | None:
@@ -90,7 +88,7 @@ class EigensolverResult(AlgorithmResult):
     @property
     def aux_operators_evaluated(
         self,
-    ) -> list[ListOrDict[tuple[complex, dict[str, Any]]]] | None:
+    ) -> list[ListOrDict[tuple[float, dict[str, Any]]]] | None:
         """Return the aux operator expectation values.
 
         These values are in fact tuples formatted as (mean, metadata).
@@ -99,7 +97,7 @@ class EigensolverResult(AlgorithmResult):
 
     @aux_operators_evaluated.setter
     def aux_operators_evaluated(
-        self, value: list[ListOrDict[tuple[complex, dict[str, Any]]]]
+        self, value: list[ListOrDict[tuple[float, dict[str, Any]]]]
     ) -> None:
         """Set the aux operator eigenvalues."""
         self._aux_operators_evaluated = value

@@ -52,5 +52,5 @@ class VarQTEResult(TimeEvolutionResult):
 
         """
 
-        super().__init__(evolved_state, aux_ops_evaluated, observables, times)
+        super().__init__(evolved_state, aux_ops_evaluated, observables, times)  # type: ignore[arg-type]
         self.parameter_values = parameter_values

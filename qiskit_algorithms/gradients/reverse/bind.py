@@ -51,3 +51,5 @@ def bind(
 
     if not inplace:
         return bound if return_list else bound[0]
+
+    return None
