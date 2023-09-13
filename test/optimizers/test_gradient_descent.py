@@ -61,7 +61,7 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
         )
 
         def objective_pauli(x):
-            bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
+            bound_circ = circuit.assign_parameters(dict(zip(parameters, x)))
             return Statevector(bound_circ).expectation_value(obs).real
 
         optimizer = GradientDescent(maxiter=100, learning_rate=0.1, perturbation=0.1)
