@@ -629,7 +629,7 @@ class SPSA(Optimizer):
         logger.info("SPSA: Finished in %s", time() - start)
 
         if self.last_avg > 1:
-            x = np.mean(last_steps, axis=0)  # type: ignore[call-overload]
+            x = np.mean(np.asarray(last_steps), axis=0)
 
         result = OptimizerResult()
         result.x = x
