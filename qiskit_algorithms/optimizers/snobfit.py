@@ -57,8 +57,7 @@ class SNOBFIT(Optimizer):
                 See https://github.com/scikit-quant/scikit-quant/issues/24 for more details.
         """
         # check version
-        version = tuple(map(int, np.__version__.split(".")))
-        if version >= (1, 24, 0):
+        if tuple(map(int, np.__version__.split(".")[:2])) >= (1, 24):
             raise AlgorithmError(
                 "SnobFit is incompatible with NumPy 1.24.0 or above, please "
                 "install a previous version. See also scikit-quant/scikit-quant#24."
