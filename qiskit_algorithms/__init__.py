@@ -203,6 +203,7 @@ used to train Quantum Boltzmann Machine Neural Networks for example.
    TrotterQRTE
    VarQITE
    VarQRTE
+   VarQTEResult
 
 Variational Quantum Time Evolution
 ++++++++++++++++++++++++++++++++++
