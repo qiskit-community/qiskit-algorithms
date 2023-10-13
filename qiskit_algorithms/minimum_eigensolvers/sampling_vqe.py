@@ -225,7 +225,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             optimizer_result = self.optimizer.minimize(
                 fun=evaluate_energy,  # type: ignore[arg-type]
                 x0=initial_point,
-                bounds=bounds
+                bounds=bounds,
             )
 
             # reset to original value
