@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 import logging
 from time import time
 from typing import Any
@@ -120,7 +120,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
-        initial_point: Sequence[float] | None = None,
+        initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
     ) -> None:
@@ -152,13 +152,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self._initial_point = initial_point
 
-    @property  # type: ignore[override]
-    def initial_point(self) -> Sequence[float] | None:
+    @property
+    def initial_point(self) -> np.ndarray | None:
         """Return the initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, value: Sequence[float] | None) -> None:
+    def initial_point(self, value: np.ndarray | None) -> None:
         """Set the initial point."""
         self._initial_point = value
 
@@ -212,8 +212,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         if callable(self.optimizer):
             optimizer_result = self.optimizer(
-                fun=evaluate_energy,  # type: ignore[call-arg,arg-type]
-                x0=initial_point,  # type: ignore[arg-type]
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                jac=None,
                 bounds=bounds,
             )
         else:
@@ -222,7 +223,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             was_updated = _set_default_batchsize(self.optimizer)
 
             optimizer_result = self.optimizer.minimize(
-                fun=evaluate_energy, x0=initial_point, bounds=bounds  # type: ignore[arg-type]
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                bounds=bounds
             )
 
             # reset to original value

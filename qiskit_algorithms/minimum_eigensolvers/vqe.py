@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from time import time
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from typing import Any
 
 import numpy as np
@@ -119,7 +119,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         optimizer: Optimizer | Minimizer,
         *,
         gradient: BaseEstimatorGradient | None = None,
-        initial_point: Sequence[float] | None = None,
+        initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
     ) -> None:
         r"""
@@ -150,12 +150,12 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self.initial_point = initial_point
         self.callback = callback
 
-    @property  # type: ignore[override]
-    def initial_point(self) -> Sequence[float] | None:
+    @property
+    def initial_point(self) -> np.ndarray | None:
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, value: Sequence[float] | None) -> None:
+    def initial_point(self, value: np.ndarray | None) -> None:
         self._initial_point = value
 
     def compute_minimum_eigenvalue(
@@ -182,7 +182,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         if callable(self.optimizer):
             optimizer_result = self.optimizer(
                 fun=evaluate_energy,  # type: ignore[arg-type]
-                x0=initial_point,  # type: ignore[arg-type]
+                x0=initial_point,
                 jac=evaluate_gradient,
                 bounds=bounds,
             )
@@ -193,7 +193,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
             optimizer_result = self.optimizer.minimize(
                 fun=evaluate_energy,  # type: ignore[arg-type]
-                x0=initial_point,  # type: ignore[arg-type]
+                x0=initial_point,
                 jac=evaluate_gradient,  # type: ignore[arg-type]
                 bounds=bounds,
             )
