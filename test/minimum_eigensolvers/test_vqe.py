@@ -81,9 +81,9 @@ class TestVQE(QiskitAlgorithmsTestCase):
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
     @data(L_BFGS_B(), COBYLA())
-    def test_basic_aer_statevector(self, estimator):
+    def test_using_ref_estimator(self, optimizer):
         """Test VQE using reference Estimator."""
-        vqe = VQE(Estimator(), self.ryrz_wavefunction, estimator)
+        vqe = VQE(Estimator(), self.ryrz_wavefunction, optimizer)
 
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
