@@ -123,8 +123,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
         optimizer: Optimizer | Minimizer | Sequence[Optimizer | Minimizer],
         *,
         k: int = 2,
-        betas: Sequence[float] | None = None,
-        initial_point: Sequence[float] | Sequence[Sequence[float]] | None = None,
+        betas: np.ndarray | None = None,
+        initial_point: np.ndarray | list[np.ndarray] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any], int], None] | None = None,
     ) -> None:
         """
@@ -167,13 +167,13 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
         self._eval_count = 0
 
-    @property  # type: ignore[override]
-    def initial_point(self) -> Sequence[float] | Sequence[Sequence[float]] | None:
+    @property
+    def initial_point(self) -> np.ndarray | list[np.ndarray] | None:
         """Returns initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, initial_point: Sequence[float] | Sequence[Sequence[float]] | None):
+    def initial_point(self, initial_point: np.ndarray | list[np.ndarray] | None):
         """Sets initial point"""
         self._initial_point = initial_point
 
@@ -241,7 +241,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                     f"of type {type(operator)}."
                 ) from exc
 
-            betas = [upper_bound * 10] * (self.k)
+            betas = np.asarray([upper_bound * 10] * self.k)
             logger.info("beta autoevaluated to %s", betas[0])
 
         result = self._build_vqd_result()
@@ -287,8 +287,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             if callable(optimizer):
                 opt_result = optimizer(  # pylint: disable=not-callable
-                    fun=energy_evaluation,  # type: ignore[arg-type,call-arg]
-                    x0=initial_point,  # type: ignore[arg-type]
+                    fun=energy_evaluation,  # type: ignore[arg-type]
+                    x0=initial_point,
+                    jac=None,
                     bounds=bounds,
                 )
             else:
@@ -346,7 +347,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         self,
         step: int,
         operator: BaseOperator,
-        betas: Sequence[float],
+        betas: np.ndarray,
         prev_states: list[QuantumCircuit] | None = None,
     ) -> Callable[[np.ndarray], float | np.ndarray]:
         """Returns a function handle to evaluate the ansatz's energy for any given parameters.

@@ -13,7 +13,6 @@
 """An implementation of the AdaptVQE algorithm."""
 from __future__ import annotations
 
-from collections.abc import Sequence
 from enum import Enum
 
 import re
@@ -130,13 +129,13 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         self._excitation_pool: list[BaseOperator] = []
         self._excitation_list: list[BaseOperator] = []
 
-    @property  # type: ignore[override]
-    def initial_point(self) -> Sequence[float] | None:
+    @property
+    def initial_point(self) -> np.ndarray | None:
         """Returns the initial point of the internal :class:`~.VQE` solver."""
         return self.solver.initial_point
 
     @initial_point.setter
-    def initial_point(self, value: Sequence[float] | None) -> None:
+    def initial_point(self, value: np.ndarray | None) -> None:
         """Sets the initial point of the internal :class:`~.VQE` solver."""
         self.solver.initial_point = value
 
@@ -275,7 +274,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             # setting up the ansatz for the VQE iteration
             self._tmp_ansatz.operators = self._excitation_list
             self.solver.ansatz = self._tmp_ansatz
-            self.solver.initial_point = theta
+            self.solver.initial_point = np.asarray(theta)
             # evaluating the eigenvalue with the internal VQE
             prev_raw_vqe_result = raw_vqe_result
             raw_vqe_result = self.solver.compute_minimum_eigenvalue(operator)
@@ -297,7 +296,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                     theta.pop()
                     self._tmp_ansatz.operators = self._excitation_list
                     self.solver.ansatz = self._tmp_ansatz
-                    self.solver.initial_point = theta
+                    self.solver.initial_point = np.asarray(theta)
                     raw_vqe_result = prev_raw_vqe_result
                     break
             # appending the computed eigenvalue to the tracking history
