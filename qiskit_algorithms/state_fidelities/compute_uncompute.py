@@ -19,11 +19,13 @@ from copy import copy
 
 from qiskit import QuantumCircuit
 from qiskit.primitives import BaseSampler
+from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.providers import Options
 
 from ..exceptions import AlgorithmError
 from .base_state_fidelity import BaseStateFidelity
 from .state_fidelity_result import StateFidelityResult
+from ..algorithm_job import AlgorithmJob
 
 
 class ComputeUncompute(BaseStateFidelity):
@@ -118,7 +120,7 @@ class ComputeUncompute(BaseStateFidelity):
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
         **options,
-    ) -> StateFidelityResult:
+    ) -> AlgorithmJob:
         r"""
         Computes the state overlap (fidelity) calculation between two
         (parametrized) circuits (first and second) for a specific set of parameter
@@ -135,7 +137,7 @@ class ComputeUncompute(BaseStateFidelity):
                     Higher priority setting overrides lower priority setting.
 
         Returns:
-            The result of the fidelity calculation.
+            An AlgorithmJOb for the fidelity calculation.
 
         Raises:
             ValueError: At least one pair of circuits must be defined.
@@ -155,29 +157,36 @@ class ComputeUncompute(BaseStateFidelity):
         opts = copy(self._default_options)
         opts.update_options(**options)
 
-        job = self._sampler.run(circuits=circuits, parameter_values=values, **opts.__dict__)
+        sampler_job = self._sampler.run(circuits=circuits, parameter_values=values, **opts.__dict__)
 
+        local_opts = self._get_local_options(opts.__dict__)
+        return AlgorithmJob(ComputeUncompute._call, sampler_job, circuits, self._local, local_opts)
+
+    @staticmethod
+    def _call(
+        job: PrimitiveJob, circuits: Sequence[QuantumCircuit], local: bool, local_opts: Options
+    ) -> StateFidelityResult:
         try:
             result = job.result()
         except Exception as exc:
             raise AlgorithmError("Sampler job failed!") from exc
 
-        if self._local:
+        if local:
             raw_fidelities = [
-                self._get_local_fidelity(prob_dist, circuit.num_qubits)
+                ComputeUncompute._get_local_fidelity(prob_dist, circuit.num_qubits)
                 for prob_dist, circuit in zip(result.quasi_dists, circuits)
             ]
         else:
             raw_fidelities = [
-                self._get_global_fidelity(prob_dist) for prob_dist in result.quasi_dists
+                ComputeUncompute._get_global_fidelity(prob_dist) for prob_dist in result.quasi_dists
             ]
-        fidelities = self._truncate_fidelities(raw_fidelities)
+        fidelities = ComputeUncompute._truncate_fidelities(raw_fidelities)
 
         return StateFidelityResult(
             fidelities=fidelities,
             raw_fidelities=raw_fidelities,
             metadata=result.metadata,
-            options=self._get_local_options(opts.__dict__),
+            options=local_opts,
         )
 
     @property
@@ -216,7 +225,8 @@ class ComputeUncompute(BaseStateFidelity):
         opts.update_options(**options)
         return opts
 
-    def _get_global_fidelity(self, probability_distribution: dict[int, float]) -> float:
+    @staticmethod
+    def _get_global_fidelity(probability_distribution: dict[int, float]) -> float:
         """Process the probability distribution of a measurement to determine the
         global fidelity.
 
@@ -228,9 +238,8 @@ class ComputeUncompute(BaseStateFidelity):
         """
         return probability_distribution.get(0, 0)
 
-    def _get_local_fidelity(
-        self, probability_distribution: dict[int, float], num_qubits: int
-    ) -> float:
+    @staticmethod
+    def _get_local_fidelity(probability_distribution: dict[int, float], num_qubits: int) -> float:
         """Process the probability distribution of a measurement to determine the
         local fidelity by averaging over single-qubit projectors.
 
