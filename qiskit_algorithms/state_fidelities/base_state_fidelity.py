@@ -21,6 +21,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import ParameterVector
+from qiskit.primitives.utils import _circuit_key
 
 from ..algorithm_job import AlgorithmJob
 from .state_fidelity_result import StateFidelityResult
@@ -173,8 +174,8 @@ class BaseStateFidelity(ABC):
         circuits = []
         for (circuit_1, circuit_2) in zip(circuits_1, circuits_2):
 
-            # TODO: improve caching, what if the circuit is modified without changing the id?
-            circuit = self._circuit_cache.get((id(circuit_1), id(circuit_2)))
+            # Use the same key for circuits as qiskit.primitives use.
+            circuit = self._circuit_cache.get((_circuit_key(circuit_1), _circuit_key(circuit_2)))
 
             if circuit is not None:
                 circuits.append(circuit)
@@ -193,7 +194,7 @@ class BaseStateFidelity(ABC):
                 )
                 circuits.append(circuit)
                 # update cache
-                self._circuit_cache[id(circuit_1), id(circuit_2)] = circuit
+                self._circuit_cache[_circuit_key(circuit_1), _circuit_key(circuit_2)] = circuit
 
         return circuits
 
