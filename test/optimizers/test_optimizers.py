@@ -160,6 +160,13 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         self.assertLessEqual(x_value, 0.01)
         self.assertLessEqual(n_evals, 10000)
 
+        with self.subTest("Bounds (None, None)"):
+            algorithm_globals.random_seed = 1
+            res = optimizer.minimize(rosen, x_0, bounds=[(None, None)] * len(x_0))
+
+            self.assertLessEqual(res.fun, 0.01)
+            self.assertLessEqual(res.nfev, 10000)
+
     def test_scipy_optimizer(self):
         """scipy_optimizer test"""
         optimizer = SciPyOptimizer("BFGS", options={"maxiter": 1000})
