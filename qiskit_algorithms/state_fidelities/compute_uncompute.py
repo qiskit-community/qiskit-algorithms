@@ -137,7 +137,7 @@ class ComputeUncompute(BaseStateFidelity):
                     Higher priority setting overrides lower priority setting.
 
         Returns:
-            An AlgorithmJOb for the fidelity calculation.
+            An AlgorithmJob for the fidelity calculation.
 
         Raises:
             ValueError: At least one pair of circuits must be defined.
