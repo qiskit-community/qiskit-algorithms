@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixes internal cache used by state fidelities so that circuits are cached
+    using the same generated key method as that used by the reference primitives.
+    This avoids a potential incorrect result that could have occurred with the
+    key as it was before when id() was used.
