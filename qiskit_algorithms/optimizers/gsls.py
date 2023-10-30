@@ -119,8 +119,8 @@ class GSLS(Optimizer):
             var_lb = np.array([-np.inf] * x0.size)
             var_ub = np.array([np.inf] * x0.size)
         else:
-            var_lb = np.array([l for (l, _) in bounds])
-            var_ub = np.array([u for (_, u) in bounds])
+            var_lb = np.array([l if l is not None else -np.inf for (l, _) in bounds])
+            var_ub = np.array([u if u is not None else np.inf for (_, u) in bounds])
 
         x, fun_, nfev, _ = self.ls_optimize(x0.size, fun, x0, var_lb, var_ub)
 
