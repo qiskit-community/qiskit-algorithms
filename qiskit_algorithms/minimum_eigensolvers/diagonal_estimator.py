@@ -20,7 +20,7 @@ from typing import Any
 from dataclasses import dataclass
 
 import numpy as np
-from qiskit.circuit import QuantumCircuit, Pa
+from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
 from qiskit.primitives.utils import init_observable, _circuit_key
 from qiskit.quantum_info import SparsePauliOp
