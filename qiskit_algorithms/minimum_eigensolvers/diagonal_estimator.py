@@ -14,13 +14,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping, Iterable
+from collections.abc import Callable, Sequence, Mapping, Iterable, MappingView
 from typing import Any
 
 from dataclasses import dataclass
 
 import numpy as np
-from qiskit.circuit import QuantumCircuit
+from qiskit.circuit import QuantumCircuit, Pa
 from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
 from qiskit.primitives.utils import init_observable, _circuit_key
 from qiskit.quantum_info import SparsePauliOp
@@ -59,9 +59,9 @@ class _DiagonalEstimator(BaseEstimator):
 
         """
         super().__init__(options=options)
-        self._circuits = []  # See Qiskit pull request 11051
-        self._parameters = []
-        self._observables = []
+        self._circuits: list[QuantumCircuit] = []  # See Qiskit pull request 11051
+        self._parameters: list[MappingView] = []
+        self._observables: list[SparsePauliOp] = []
 
         self.sampler = sampler
         if not callable(aggregation):
