@@ -24,7 +24,6 @@ from qiskit.circuit import ParameterVector
 from qiskit.primitives.utils import _circuit_key
 
 from ..algorithm_job import AlgorithmJob
-from .state_fidelity_result import StateFidelityResult
 
 
 class BaseStateFidelity(ABC):
@@ -247,7 +246,7 @@ class BaseStateFidelity(ABC):
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
         **options,
-    ) -> StateFidelityResult:
+    ) -> AlgorithmJob:
         r"""
         Computes the state overlap (fidelity) calculation between two
         (parametrized) circuits (first and second) for a specific set of parameter
@@ -264,7 +263,7 @@ class BaseStateFidelity(ABC):
                 Higher priority setting overrides lower priority setting.
 
         Returns:
-            The result of the fidelity calculation.
+            A newly constructed algorithm job instance to get the fidelity result.
         """
         raise NotImplementedError
 
@@ -294,15 +293,15 @@ class BaseStateFidelity(ABC):
 
         Returns:
             Primitive job for the fidelity calculation.
-            The job's result is an instance of ``StateFidelityResult``.
+            The job's result is an instance of :class:`.StateFidelityResult`.
         """
-
-        job = AlgorithmJob(self._run, circuits_1, circuits_2, values_1, values_2, **options)
+        job = self._run(circuits_1, circuits_2, values_1, values_2, **options)
 
         job.submit()
         return job
 
-    def _truncate_fidelities(self, fidelities: Sequence[float]) -> Sequence[float]:
+    @staticmethod
+    def _truncate_fidelities(fidelities: Sequence[float]) -> Sequence[float]:
         """
         Ensures fidelity result in [0,1].
 
