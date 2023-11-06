@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping, Iterable
+from collections.abc import Callable, Sequence, Mapping, Iterable, MappingView
 from typing import Any
 
 from dataclasses import dataclass
@@ -59,6 +59,10 @@ class _DiagonalEstimator(BaseEstimator):
 
         """
         super().__init__(options=options)
+        self._circuits: list[QuantumCircuit] = []  # See Qiskit pull request 11051
+        self._parameters: list[MappingView] = []
+        self._observables: list[SparsePauliOp] = []
+
         self.sampler = sampler
         if not callable(aggregation):
             aggregation = _get_cvar_aggregation(aggregation)
