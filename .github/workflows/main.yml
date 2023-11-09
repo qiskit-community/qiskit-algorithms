@@ -166,8 +166,7 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
   Monitor_Qiskit_Main:
-    if: ${{ (github.repository_owner == 'qiskit-community') &&
-      ((github.ref == 'refs/heads/main') || (github.base_ref == 'main/')) }}
+    if: ${{ (github.repository_owner == 'qiskit-community') && ((github.ref == 'refs/heads/main') || (github.base_ref == 'main/')) }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
