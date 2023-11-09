@@ -167,7 +167,7 @@ jobs:
           path: ./ci-artifact-data/*
   Monitor_Qiskit_Main:
     if: (github.repository_owner == 'qiskit-community') &&
-        (startsWith(github.ref, 'refs/heads/main') || startsWith(github.base_ref, 'main/'))
+        ${{ startsWith(github.ref, 'refs/heads/main') || startsWith(github.base_ref, 'main/') }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
