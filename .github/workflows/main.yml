@@ -166,7 +166,8 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
   Monitor_Qiskit_Main:
-    if: github.repository_owner == 'qiskit-community'
+    if: github.repository_owner == 'qiskit-community' &&
+        (startsWith(github.ref, 'refs/heads/mainx') || startsWith(github.base_ref, 'mainx/'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -188,7 +189,6 @@ jobs:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           terra-main: "true"
-        if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
