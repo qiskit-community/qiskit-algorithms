@@ -135,6 +135,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
+          terra-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - run: make lint
@@ -164,6 +165,42 @@ jobs:
         with:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
+  Monitor_Qiskit_Main:
+    if: github.repository_owner == 'qiskit-community' && (github.ref == 'refs/heads/main' || github.base_ref == 'main')
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.11]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            setup.py
+            requirements.txt
+            requirements-dev.txt
+      - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          terra-main: "true"
+      - uses: ./.github/actions/install-algorithms
+      - run: make lint
+        shell: bash
+      - run: make mypy
+        shell: bash
+      - name: Algorithms Unit Tests under Python with Qiskit main ${{ matrix.python-version }}
+        uses: ./.github/actions/run-tests
+        with:
+          os: ${{ matrix.os }}
+          event-name: ${{ github.event_name }}
+          run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
+          python-version: ${{ matrix.python-version }}
+        if: ${{ !cancelled() }}
   Tutorials:
     if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
