@@ -252,11 +252,6 @@ nor does it have
 [test skip
  options](https://github.com/Qiskit/qiskit/blob/main/CONTRIBUTING.md#test-skip-options).    
 
-### Development Cycle
-
-The development cycle for qiskit-machine-learning is informed by release plans in the 
-[Qiskit rfcs repository](https://github.com/Qiskit/rfcs)
- 
 ### Branches
 
 * `main`:
@@ -267,7 +262,7 @@ can and will change on main as we introduce and refine new features.
 
 * `stable/*`:
 The stable branches are used to maintain the most recent released versions of
-qiskit-machine-learning. It contains the versions of the code corresponding to the minor
+qiskit-algorithms. It contains the versions of the code corresponding to the minor
 version release in the branch name release for The API on these branches are
 stable and the only changes merged to it are bugfixes.
 
