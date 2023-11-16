@@ -39,7 +39,7 @@ jobs:
           os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
-          pip install jupyter qiskit-terra[visualization]
+          pip install jupyter qiskit[visualization]
           sudo apt-get install -y pandoc graphviz
         shell: bash
       - name: Build and publish

@@ -134,7 +134,7 @@ class SciPyOptimizer(Optimizer):
             )
 
         # Workaround for L_BFGS_B because it does not accept np.ndarray.
-        # See https://github.com/Qiskit/qiskit-terra/pull/6373.
+        # See https://github.com/Qiskit/qiskit/pull/6373.
         if jac is not None and self._method == "l-bfgs-b":
             jac = self._wrap_gradient(jac)
 

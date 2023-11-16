@@ -229,7 +229,7 @@ jobs:
       - uses: ./.github/actions/install-algorithms
       - name: Install Dependencies
         run: |
-          pip install jupyter qiskit-terra[visualization]
+          pip install jupyter qiskit[visualization]
           sudo apt-get install -y pandoc graphviz
           echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
