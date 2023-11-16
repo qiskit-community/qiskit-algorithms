@@ -60,7 +60,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          terra-main: "false"
+          qiskit-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - name: Install Dependencies
@@ -135,7 +135,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          terra-main: "false"
+          qiskit-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - run: make lint
@@ -187,7 +187,7 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          terra-main: "true"
+          qiskit-main: "true"
       - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
