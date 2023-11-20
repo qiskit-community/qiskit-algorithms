@@ -73,60 +73,32 @@ please ensure that:
    there is a [.pylintdict](./.pylintdict) custom word list file in the root of the repo,
    where such words can be added, in alphabetic order, as needed.
    
-3. If you have added new unit tests that cover the changes and any new function.
+3. If it makes sense for your change that you have added new tests that
+   cover the changes and any new function.
    
-4. Ensure that, if your change has user-facing impact (new feature,
-   deprecation, removal, etc), you have added a reno (release note) for
+4. Ensure that if your change has an end user facing impact (new feature,
+   deprecation, removal etc) that you have added a reno release note for
    that change and that the PR is tagged for the changelog.
 
 5. Ensure all code, including unit tests, has the copyright header. The copyright
-
    date will be checked by CI build. The format of the date(s) is _year of creation,
-
    last year changed_. So for example:
-
    
    > \# (C) Copyright IBM 2018, 2021.
 
-
    If the _year of creation_ is the same as _last year changed_ then only
-
    one date is needed, for example:
 
-
    > \# (C) Copyright IBM 2021.
-
                                                                                                                                                                                                  
    If code is changed in a file make sure the copyright includes the current year.
-
    If there is just one date and it's a prior year then add the current year as the 2nd date, 
-
    otherwise simply change the 2nd date to the current year. The _year of creation_ date is
-
    never changed.
 
 ### Changelog generation
 
-The changelog is automatically generated as part of the release process
-automation. This works through a combination of the git log and the pull
-request. When a release is tagged and pushed to GitHub, the release automation
-bot looks at all commit messages from the git log for the release. It takes the
-PR numbers from the git log (assuming a squash merge) and checks if that PR had
-a `Changelog:` label on it. If there is a label it will add the git commit
-message summary line from the git log for the release to the changelog.
-
-If there are multiple `Changelog:` tags on a PR the git commit message summary
-line from the git log will be used for each changelog category tagged.
-
-The current categories for each label are as follows:
-
-| PR Label               | Changelog Category |
-| -----------------------|--------------------|
-| Changelog: Deprecation | Deprecated         |
-| Changelog: New Feature | Added              |
-| Changelog: API Change  | Changed            |
-| Changelog: Removal     | Removed            |
-| Changelog: Bugfix      | Fixed              |
+A changelog is manually generated as part of the release process from the release notes.
 
 ### Release Notes
 
@@ -210,8 +182,8 @@ deprecations:
 You can also look at other release notes for other examples.
 
 You can use any restructured text feature in them (code sections, tables,
-enumerated lists, bulleted list, etc) to express what is being changed as
-needed. In general you want the release notes to include as much detail as
+enumerated lists, bulleted list, etc.) to express what is being changed as
+needed. In general, you want the release notes to include as much detail as
 needed so that users will understand what has changed, why it changed, and how
 they'll have to update their code.
 
@@ -254,10 +226,8 @@ Please see the [Installing Qiskit Algorithms from
 Source](https://github.com/qiskit-community/qiskit-algorithms#installation)
 section of the Qiskit documentation.
 
-Note: Qiskit Algorithms depends on Terra, and has optional dependence on Aer, so
-these should be installed too. The main branch of Algorithms is kept working with those other element
-main branches so these should be installed from source too following the instructions at 
-the same location
+Note: Qiskit Algorithms depends on Qiskit, and has optional dependence on Aer, so
+these should be installed too.
 
 Algorithms also has some other optional dependents see 
 [Algorithms optional installs](https://github.com/qiskit-community/qiskit-algorithms#optional-installs) for
@@ -275,13 +245,13 @@ The test suite can be run from a command line or via your IDE. You can run `make
 run all unit tests. Another way to run the test suite is to use
 [**tox**](https://tox.readthedocs.io/en/latest/#). For more information about using tox please
 refer to
-[Terra CONTRIBUTING](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test)
+[Qiskit CONTRIBUTING](https://github.com/Qiskit/qiskit/blob/main/CONTRIBUTING.md#test)
 Test section. However please note Algorithms does not have any
-[online tests](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#online-tests)
+[online tests](https://github.com/Qiskit/qiskit/blob/main/CONTRIBUTING.md#online-tests)
 nor does it have
 [test skip
- options](https://github.com/Qiskit/qiskit-terra/blob/main/CONTRIBUTING.md#test-skip-options).
- 
+ options](https://github.com/Qiskit/qiskit/blob/main/CONTRIBUTING.md#test-skip-options).    
+
 ### Branches
 
 * `main`:
@@ -292,7 +262,7 @@ can and will change on main as we introduce and refine new features.
 
 * `stable/*`:
 The stable branches are used to maintain the most recent released versions of
-qiskit-machine-learning. It contains the versions of the code corresponding to the minor
+qiskit-algorithms. It contains the versions of the code corresponding to the minor
 version release in the branch name release for The API on these branches are
 stable and the only changes merged to it are bugfixes.
 
@@ -301,65 +271,29 @@ stable and the only changes merged to it are bugfixes.
 From time to time, we will release brand new versions of Qiskit Algorithms. These
 are well-tested versions of the software.
 
-When the time for a new release has come, we will:
-
-1.  Create a new tag with the version number and push it to github
-2.  Change the `main` version to the next release version.
-
-The release automation processes will be triggered by the new tag and perform
-
-the following steps:
-
-
-1.  Create a stable branch for the new minor version from the release tag
-
-    on the `main` branch
-
-2.  Build and upload binary wheels to pypi
-
-3.  Create a GitHub release page with a generated changelog
-
-
 The `stable/*` branches should only receive changes in the form of bug
 fixes.
 
 ## Dealing with the git blame ignore list
 
-
 In the qiskit-algorithms repository we maintain a list of commits for git blame
-
 to ignore. This is mostly commits that are code style changes that don't
-
 change the functionality but just change the code formatting (for example,
-
 when we migrated to use black for code formatting). This file,
-
 `.git-blame-ignore-revs` just contains a list of commit SHA1s you can tell git
-
 to ignore when using the `git blame` command. This can be done one time
-
 with something like
 
-
 ```
-
 git blame --ignore-revs-file .git-blame-ignore-revs qiskit_algorithms/version.py
-
 ```
-
 
 from the root of the repository. If you'd like to enable this by default you
-
 can update your local repository's configuration with:
 
-
 ```
-
 git config blame.ignoreRevsFile .git-blame-ignore-revs
-
 ```
-
 
 which will update your local repositories configuration to use the ignore list
-
 by default.
