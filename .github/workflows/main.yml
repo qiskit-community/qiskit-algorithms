@@ -111,12 +111,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9, '3.10', 3.11]
+        python-version: [3.8, 3.9, '3.10', 3.11, 3.12]
         include:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: 3.11
+            python-version: 3.12
           - os: windows-latest
             python-version: 3.8
           - os: windows-latest
@@ -172,7 +172,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.11]
+        python-version: [3.8, 3.12]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -208,7 +208,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.11]
+        python-version: [3.8, 3.12]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -278,12 +278,16 @@ jobs:
           path: /tmp/u311
       - uses: actions/download-artifact@v3
         with:
+          name: ubuntu-latest-3.12
+          path: /tmp/u312
+      - uses: actions/download-artifact@v3
+        with:
           name: macos-latest-3.8
           path: /tmp/m38
       - uses: actions/download-artifact@v3
         with:
-          name: macos-latest-3.11
-          path: /tmp/m311
+          name: macos-latest-3.12
+          path: /tmp/m312
       - uses: actions/download-artifact@v3
         with:
           name: windows-latest-3.8
@@ -297,7 +301,7 @@ jobs:
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/m38/alg.dep /tmp/m311/alg.dep /tmp/w38/alg.dep /tmp/w311/alg.dep || true
+          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/m38/alg.dep /tmp/m312/alg.dep /tmp/w38/alg.dep /tmp/w311/alg.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/u38/alg.dat
