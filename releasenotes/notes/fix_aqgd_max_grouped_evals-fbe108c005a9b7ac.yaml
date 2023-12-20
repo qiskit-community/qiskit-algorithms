@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    It has been fixed that the AQGD optimizer groups objective funtion calls by default.
+    The number of grouped evaluations can be controlled via the max_grouped_evals parameter.
+
