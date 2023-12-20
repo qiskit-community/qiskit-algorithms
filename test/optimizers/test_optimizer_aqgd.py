@@ -14,6 +14,7 @@
 
 import unittest
 from test import QiskitAlgorithmsTestCase
+import numpy as np
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
@@ -92,6 +93,43 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
         result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 
         self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
+
+    def test_max_grouped_evals(self):
+        """Tests max_grouped_evals parameter"""
+        # Test max_grouped_evals for an objective function that can be parallelized #
+        aqgd = AQGD(momentum=0.0, max_evals_grouped=2)
+
+        vqe = VQE(
+            self.estimator,
+            ansatz=RealAmplitudes(),
+            optimizer=aqgd,
+            gradient=self.gradient,
+        )
+        result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
+
+        self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
+        aqgd.set_max_evals_grouped(1)
+        self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
+
+        # Test max_grouped_evals for an objective function that cannot be parallelized #
+        # Define the objective function (toy example for functionality)
+        def quadratic_objective(x: np.array) -> float:
+            # Check if only a single point as parameters is passed
+            if np.array(x).ndim != 1:
+                raise ValueError("The function expects a vector.")
+
+            return x[0] ** 2 + x[1] ** 2 - 2 * x[0] * x[1]
+
+        # Define initial point
+        x0 = np.array([1, 2.23])
+        # Test max_evals_grouped raises no error for max_evals_grouped=1
+        aqgd = AQGD(maxiter=100, max_evals_grouped=1)
+        x_new = aqgd.minimize(quadratic_objective, x0).x
+        self.assertAlmostEqual(sum(np.round(x_new / max(x_new), 7)), 0)
+        # Test max_evals_grouped raises an error for max_evals_grouped=2
+        aqgd.set_max_evals_grouped(2)
+        with self.assertRaises(ValueError):
+            aqgd.minimize(quadratic_objective, x0)
 
 
 if __name__ == "__main__":
