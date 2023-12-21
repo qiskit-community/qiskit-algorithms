@@ -113,7 +113,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         # Test max_grouped_evals for an objective function that cannot be parallelized #
         # Define the objective function (toy example for functionality)
-        def quadratic_objective(x: np.array) -> float:
+        def quadratic_objective(x: np.ndarray) -> float:
             # Check if only a single point as parameters is passed
             if np.array(x).ndim != 1:
                 raise ValueError("The function expects a vector.")
