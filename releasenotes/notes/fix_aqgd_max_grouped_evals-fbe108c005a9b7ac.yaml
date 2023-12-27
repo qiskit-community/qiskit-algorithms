@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Fixed the AQGD optimizer grouping objective function calls by default so that a single point is now passed to the
+    objective function. For algorithms that can handle more than one gradient evaluations in their objective function,
+    such as a VQE in the algorithms here, the number of grouped evaluations can be controlled via the max_grouped_evals
+    parameter. Grouped evaluations allows a list of points to be handed over so that they can potentially be assessed
+    more efficiently in a single job.
+
