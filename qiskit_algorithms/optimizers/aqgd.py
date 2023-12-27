@@ -74,6 +74,7 @@ class AQGD(Optimizer):
             param_tol: Tolerance for change in norm of parameters.
             averaging: Length of window over which to average objective values for objective
                 convergence criterion
+            max_evals_grouped: Max number of default gradient evaluations performed simultaneously.
 
         Raises:
             AlgorithmError: If the length of ``maxiter``, `momentum``, and ``eta`` is not the same.

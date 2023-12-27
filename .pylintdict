@@ -31,6 +31,7 @@ bitstrings
 bloch
 boltzmann
 bool
+boolean
 boyer
 brassard
 broyden
@@ -238,6 +239,7 @@ optimizer's
 optimizers
 otimes
 o'brien
+parallelization
 parallelized
 param
 parameterizations
@@ -256,6 +258,7 @@ postprocess
 powell
 pre
 preconditioner
+prepend
 preprint
 preprocess
 preprocesses
@@ -298,6 +301,7 @@ rightarrow
 robert
 rosen
 runarsson
+runtime
 rz
 sanjiv
 sashank
@@ -311,6 +315,7 @@ scikit
 scipy
 sdg
 seealso
+serializable
 shanno
 skquant
 sle

@@ -15,6 +15,7 @@
 import unittest
 from test import QiskitAlgorithmsTestCase
 import numpy as np
+from ddt import ddt, data
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
@@ -27,6 +28,7 @@ from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.utils import algorithm_globals
 
 
+@ddt
 class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
     """Test AQGD optimizer using RY for analytic gradient with VQE"""
 
@@ -94,9 +96,9 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
 
-    def test_max_grouped_evals(self):
-        """Tests max_grouped_evals parameter"""
-        # Test max_grouped_evals for an objective function that can be parallelized #
+    @data(1, 2, 3)  # Values for max_grouped_evals
+    def test_max_grouped_evals_parallelizable(self, max_grouped_evals):
+        """Tests max_grouped_evals for an objective function that can be parallelized"""
         aqgd = AQGD(momentum=0.0, max_evals_grouped=2)
 
         vqe = VQE(
@@ -105,13 +107,14 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
             optimizer=aqgd,
             gradient=self.gradient,
         )
-        result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 
-        self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
-        aqgd.set_max_evals_grouped(1)
-        self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
+        with self.subTest(max_grouped_evals=max_grouped_evals):
+            aqgd.set_max_evals_grouped(max_grouped_evals)
+            result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
+            self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=3)
 
-        # Test max_grouped_evals for an objective function that cannot be parallelized #
+    def test_max_grouped_evals_non_parallelizable(self):
+        """Tests max_grouped_evals for an objective function that cannot be parallelized"""
         # Define the objective function (toy example for functionality)
         def quadratic_objective(x: np.ndarray) -> float:
             # Check if only a single point as parameters is passed
