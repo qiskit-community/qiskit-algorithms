@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 # Numpy 1.25 deprecated some behaviours that we used, and caused the isometry
 # tests to flake. See https://github.com/Qiskit/qiskit-terra/issues/10305,
 # remove pin when resolving that.
 numpy<1.25
+=======
+# Constraints may be listed here
+nbconvert<7.14  # workaround https://github.com/jupyter/nbconvert/issues/2092
+>>>>>>> 10a69bb (Pin nbconvert to < 7.14 to workaround issue (#119))
 
