@@ -2,4 +2,5 @@
 # tests to flake. See https://github.com/Qiskit/qiskit-terra/issues/10305,
 # remove pin when resolving that.
 numpy<1.25
+nbconvert<7.14  # workaround https://github.com/jupyter/nbconvert/issues/2092
 
