@@ -75,7 +75,7 @@ setuptools.setup(
     python_requires=">=3.8",
     project_urls={
         "Bug Tracker": "https://github.com/qiskit-community/qiskit-algorithms/issues",
-        "Documentation": "https://qiskit.org/ecosystem/algorithms/",
+        "Documentation": "https://qiskit-community.github.io/qiskit-algorithms/",
         "Source Code": "https://github.com/qiskit-community/qiskit-algorithms",
     },
     zip_safe=False,
