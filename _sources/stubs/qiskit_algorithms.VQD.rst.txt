@@ -1,0 +1,23 @@
+﻿VQD
+===
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: VQD
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: initial_point
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: compute_eigenvalues
+   .. automethod:: supports_aux_operators
+  

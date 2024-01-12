@@ -1,0 +1,25 @@
+﻿SamplingMinimumEigensolverResult
+================================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: SamplingMinimumEigensolverResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: aux_operators_evaluated
+   .. autoattribute:: best_measurement
+   .. autoattribute:: eigenstate
+   .. autoattribute:: eigenvalue
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

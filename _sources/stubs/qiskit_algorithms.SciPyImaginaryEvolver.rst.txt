@@ -1,0 +1,18 @@
+﻿SciPyImaginaryEvolver
+=====================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: SciPyImaginaryEvolver
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolve
+  

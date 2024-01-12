@@ -1,0 +1,19 @@
+﻿TellData
+========
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: TellData
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: eval_fun
+   .. autoattribute:: eval_jac
+  
+
+  
+  

@@ -1,0 +1,24 @@
+﻿NumPyEigensolver
+================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: NumPyEigensolver
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: filter_criterion
+   .. autoattribute:: k
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: compute_eigenvalues
+   .. automethod:: supports_aux_operators
+  

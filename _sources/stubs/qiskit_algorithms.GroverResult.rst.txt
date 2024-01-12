@@ -1,0 +1,27 @@
+﻿GroverResult
+============
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: GroverResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: assignment
+   .. autoattribute:: circuit_results
+   .. autoattribute:: iterations
+   .. autoattribute:: max_probability
+   .. autoattribute:: oracle_evaluation
+   .. autoattribute:: top_measurement
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

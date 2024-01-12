@@ -1,0 +1,24 @@
+﻿FiniteDiffEstimatorGradient
+===========================
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: FiniteDiffEstimatorGradient
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: derivative_type
+   .. autoattribute:: options
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: run
+   .. automethod:: update_default_options
+  

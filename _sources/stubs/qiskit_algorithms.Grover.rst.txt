@@ -1,0 +1,24 @@
+﻿Grover
+======
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: Grover
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: sampler
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: amplify
+   .. automethod:: construct_circuit
+   .. automethod:: optimal_num_iterations
+  

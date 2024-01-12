@@ -1,0 +1,25 @@
+﻿GradientDescentState
+====================
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: GradientDescentState
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: stepsize
+   .. autoattribute:: learning_rate
+   .. autoattribute:: x
+   .. autoattribute:: fun
+   .. autoattribute:: jac
+   .. autoattribute:: nfev
+   .. autoattribute:: njev
+   .. autoattribute:: nit
+  
+
+  
+  

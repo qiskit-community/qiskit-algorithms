@@ -1,0 +1,23 @@
+﻿OptimizerState
+==============
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: OptimizerState
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: x
+   .. autoattribute:: fun
+   .. autoattribute:: jac
+   .. autoattribute:: nfev
+   .. autoattribute:: njev
+   .. autoattribute:: nit
+  
+
+  
+  

@@ -1,0 +1,24 @@
+﻿HamiltonianPhaseEstimationResult
+================================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: HamiltonianPhaseEstimationResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: most_likely_eigenvalue
+   .. autoattribute:: phase
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+   .. automethod:: filter_phases
+  

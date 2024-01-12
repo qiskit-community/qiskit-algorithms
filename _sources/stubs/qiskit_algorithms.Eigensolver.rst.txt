@@ -1,0 +1,19 @@
+﻿Eigensolver
+===========
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: Eigensolver
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: compute_eigenvalues
+   .. automethod:: supports_aux_operators
+  

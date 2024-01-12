@@ -1,0 +1,27 @@
+﻿OptimizerResult
+===============
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: OptimizerResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: fun
+   .. autoattribute:: jac
+   .. autoattribute:: nfev
+   .. autoattribute:: nit
+   .. autoattribute:: njev
+   .. autoattribute:: x
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

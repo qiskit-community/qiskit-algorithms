@@ -1,0 +1,21 @@
+﻿StateFidelityResult
+===================
+
+.. currentmodule:: qiskit_algorithms.state_fidelities
+
+.. autoclass:: StateFidelityResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: fidelities
+   .. autoattribute:: raw_fidelities
+   .. autoattribute:: metadata
+   .. autoattribute:: options
+  
+
+  
+  

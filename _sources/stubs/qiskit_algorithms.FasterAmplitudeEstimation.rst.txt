@@ -1,0 +1,23 @@
+﻿FasterAmplitudeEstimation
+=========================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: FasterAmplitudeEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: sampler
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: construct_circuit
+   .. automethod:: estimate
+  

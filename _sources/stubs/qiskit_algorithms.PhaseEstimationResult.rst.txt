@@ -1,0 +1,25 @@
+﻿PhaseEstimationResult
+=====================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: PhaseEstimationResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: circuit_result
+   .. autoattribute:: phase
+   .. autoattribute:: phases
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+   .. automethod:: filter_phases
+  

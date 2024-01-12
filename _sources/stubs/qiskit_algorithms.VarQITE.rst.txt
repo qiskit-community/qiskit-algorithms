@@ -1,0 +1,18 @@
+﻿VarQITE
+=======
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: VarQITE
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolve
+  

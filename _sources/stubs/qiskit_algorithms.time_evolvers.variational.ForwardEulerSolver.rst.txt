@@ -1,0 +1,19 @@
+﻿ForwardEulerSolver
+==================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: ForwardEulerSolver
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: TOO_SMALL_STEP
+   .. autoattribute:: step_size
+  
+
+  
+  

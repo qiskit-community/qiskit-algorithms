@@ -1,0 +1,23 @@
+﻿EigensolverResult
+=================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: EigensolverResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: aux_operators_evaluated
+   .. autoattribute:: eigenvalues
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

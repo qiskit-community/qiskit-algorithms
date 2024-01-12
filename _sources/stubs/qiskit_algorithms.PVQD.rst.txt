@@ -1,0 +1,20 @@
+﻿PVQD
+====
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: PVQD
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolve
+   .. automethod:: get_loss
+   .. automethod:: step
+  

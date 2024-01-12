@@ -1,0 +1,18 @@
+﻿ImaginaryMcLachlanPrinciple
+===========================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: ImaginaryMcLachlanPrinciple
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolution_gradient
+  

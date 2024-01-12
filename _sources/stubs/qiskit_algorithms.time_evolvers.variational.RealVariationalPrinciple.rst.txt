@@ -1,0 +1,14 @@
+﻿RealVariationalPrinciple
+========================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: RealVariationalPrinciple
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  

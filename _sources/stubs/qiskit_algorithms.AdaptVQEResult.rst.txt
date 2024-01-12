@@ -1,0 +1,35 @@
+﻿AdaptVQEResult
+==============
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: AdaptVQEResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: aux_operators_evaluated
+   .. autoattribute:: cost_function_evals
+   .. autoattribute:: eigenvalue
+   .. autoattribute:: eigenvalue_history
+   .. autoattribute:: final_max_gradient
+   .. autoattribute:: num_iterations
+   .. autoattribute:: optimal_circuit
+   .. autoattribute:: optimal_parameters
+   .. autoattribute:: optimal_point
+   .. autoattribute:: optimal_value
+   .. autoattribute:: optimizer_evals
+   .. autoattribute:: optimizer_result
+   .. autoattribute:: optimizer_time
+   .. autoattribute:: termination_criterion
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

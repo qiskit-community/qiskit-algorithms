@@ -1,0 +1,20 @@
+﻿SamplerGradientResult
+=====================
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: SamplerGradientResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: gradients
+   .. autoattribute:: metadata
+   .. autoattribute:: options
+  
+
+  
+  

@@ -1,0 +1,25 @@
+﻿TrotterQRTE
+===========
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: TrotterQRTE
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: estimator
+   .. autoattribute:: num_timesteps
+   .. autoattribute:: product_formula
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolve
+   .. automethod:: supports_aux_operators
+  

@@ -1,0 +1,24 @@
+﻿ComputeUncompute
+================
+
+.. currentmodule:: qiskit_algorithms.state_fidelities
+
+.. autoclass:: ComputeUncompute
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: options
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: create_fidelity_circuit
+   .. automethod:: run
+   .. automethod:: update_default_options
+  

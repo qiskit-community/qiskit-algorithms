@@ -1,0 +1,19 @@
+﻿AskData
+=======
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: AskData
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: x_fun
+   .. autoattribute:: x_jac
+  
+
+  
+  

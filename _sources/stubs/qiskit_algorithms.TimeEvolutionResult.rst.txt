@@ -1,0 +1,18 @@
+﻿TimeEvolutionResult
+===================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: TimeEvolutionResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

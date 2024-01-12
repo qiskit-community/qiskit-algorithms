@@ -1,0 +1,51 @@
+﻿GradientDescent
+===============
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: GradientDescent
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: bounds_support_level
+   .. autoattribute:: gradient_support_level
+   .. autoattribute:: initial_point_support_level
+   .. autoattribute:: is_bounds_ignored
+   .. autoattribute:: is_bounds_required
+   .. autoattribute:: is_bounds_supported
+   .. autoattribute:: is_gradient_ignored
+   .. autoattribute:: is_gradient_required
+   .. autoattribute:: is_gradient_supported
+   .. autoattribute:: is_initial_point_ignored
+   .. autoattribute:: is_initial_point_required
+   .. autoattribute:: is_initial_point_supported
+   .. autoattribute:: perturbation
+   .. autoattribute:: setting
+   .. autoattribute:: settings
+   .. autoattribute:: state
+   .. autoattribute:: tol
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: ask
+   .. automethod:: continue_condition
+   .. automethod:: create_result
+   .. automethod:: evaluate
+   .. automethod:: get_support_level
+   .. automethod:: gradient_num_diff
+   .. automethod:: minimize
+   .. automethod:: print_options
+   .. automethod:: set_max_evals_grouped
+   .. automethod:: set_options
+   .. automethod:: start
+   .. automethod:: step
+   .. automethod:: tell
+   .. automethod:: wrap_function
+  

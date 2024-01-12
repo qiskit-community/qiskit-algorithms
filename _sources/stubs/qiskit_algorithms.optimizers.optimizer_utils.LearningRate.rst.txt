@@ -1,0 +1,24 @@
+LearningRate
+============
+
+.. currentmodule:: qiskit_algorithms.optimizers.optimizer_utils
+
+.. autoclass:: LearningRate
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: current
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: close
+   .. automethod:: send
+   .. automethod:: throw
+  

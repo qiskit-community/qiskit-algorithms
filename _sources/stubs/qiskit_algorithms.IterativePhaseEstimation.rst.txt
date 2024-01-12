@@ -1,0 +1,19 @@
+﻿IterativePhaseEstimation
+========================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: IterativePhaseEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: construct_circuit
+   .. automethod:: estimate
+  

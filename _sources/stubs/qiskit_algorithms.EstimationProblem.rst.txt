@@ -1,0 +1,27 @@
+﻿EstimationProblem
+=================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: EstimationProblem
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: grover_operator
+   .. autoattribute:: has_good_state
+   .. autoattribute:: is_good_state
+   .. autoattribute:: objective_qubits
+   .. autoattribute:: post_processing
+   .. autoattribute:: state_preparation
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: rescale
+  

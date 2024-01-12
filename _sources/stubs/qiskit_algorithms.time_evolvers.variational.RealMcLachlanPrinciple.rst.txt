@@ -1,0 +1,18 @@
+﻿RealMcLachlanPrinciple
+======================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: RealMcLachlanPrinciple
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolution_gradient
+  

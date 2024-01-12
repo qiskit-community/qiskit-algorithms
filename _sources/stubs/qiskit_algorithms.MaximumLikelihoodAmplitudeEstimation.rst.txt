@@ -1,0 +1,25 @@
+﻿MaximumLikelihoodAmplitudeEstimation
+====================================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: MaximumLikelihoodAmplitudeEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: sampler
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: compute_confidence_interval
+   .. automethod:: compute_mle
+   .. automethod:: construct_circuits
+   .. automethod:: estimate
+  

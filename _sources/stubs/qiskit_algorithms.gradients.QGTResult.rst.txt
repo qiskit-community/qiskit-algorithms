@@ -1,0 +1,21 @@
+﻿QGTResult
+=========
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: QGTResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: qgts
+   .. autoattribute:: derivative_type
+   .. autoattribute:: metadata
+   .. autoattribute:: options
+  
+
+  
+  

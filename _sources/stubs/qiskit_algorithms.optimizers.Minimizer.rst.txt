@@ -1,0 +1,14 @@
+﻿Minimizer
+=========
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: Minimizer
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  

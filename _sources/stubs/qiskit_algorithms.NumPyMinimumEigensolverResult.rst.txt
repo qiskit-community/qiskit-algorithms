@@ -1,0 +1,24 @@
+﻿NumPyMinimumEigensolverResult
+=============================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: NumPyMinimumEigensolverResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: aux_operators_evaluated
+   .. autoattribute:: eigenstate
+   .. autoattribute:: eigenvalue
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

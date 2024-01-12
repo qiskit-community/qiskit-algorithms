@@ -1,0 +1,31 @@
+﻿VQEResult
+=========
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: VQEResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: aux_operators_evaluated
+   .. autoattribute:: cost_function_evals
+   .. autoattribute:: eigenvalue
+   .. autoattribute:: optimal_circuit
+   .. autoattribute:: optimal_parameters
+   .. autoattribute:: optimal_point
+   .. autoattribute:: optimal_value
+   .. autoattribute:: optimizer_evals
+   .. autoattribute:: optimizer_result
+   .. autoattribute:: optimizer_time
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

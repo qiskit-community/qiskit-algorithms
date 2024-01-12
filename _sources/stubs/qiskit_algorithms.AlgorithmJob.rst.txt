@@ -1,0 +1,32 @@
+﻿AlgorithmJob
+============
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: AlgorithmJob
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: version
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: backend
+   .. automethod:: cancel
+   .. automethod:: cancelled
+   .. automethod:: done
+   .. automethod:: in_final_state
+   .. automethod:: job_id
+   .. automethod:: result
+   .. automethod:: running
+   .. automethod:: status
+   .. automethod:: submit
+   .. automethod:: wait_for_final_state
+  

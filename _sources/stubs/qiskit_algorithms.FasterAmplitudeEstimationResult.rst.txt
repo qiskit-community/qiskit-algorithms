@@ -1,0 +1,33 @@
+﻿FasterAmplitudeEstimationResult
+===============================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: FasterAmplitudeEstimationResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: circuit_results
+   .. autoattribute:: confidence_interval
+   .. autoattribute:: confidence_interval_processed
+   .. autoattribute:: estimation
+   .. autoattribute:: estimation_processed
+   .. autoattribute:: num_first_state_steps
+   .. autoattribute:: num_oracle_queries
+   .. autoattribute:: num_steps
+   .. autoattribute:: post_processing
+   .. autoattribute:: shots
+   .. autoattribute:: success_probability
+   .. autoattribute:: theta_intervals
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

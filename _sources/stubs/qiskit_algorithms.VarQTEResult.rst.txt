@@ -1,0 +1,18 @@
+﻿VarQTEResult
+============
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: VarQTEResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

@@ -1,0 +1,19 @@
+﻿VariationalPrinciple
+====================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: VariationalPrinciple
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: evolution_gradient
+   .. automethod:: metric_tensor
+  

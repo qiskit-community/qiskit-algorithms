@@ -1,0 +1,20 @@
+﻿QFIResult
+=========
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: QFIResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: qfis
+   .. autoattribute:: metadata
+   .. autoattribute:: options
+  
+
+  
+  

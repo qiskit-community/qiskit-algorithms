@@ -1,0 +1,18 @@
+﻿AmplitudeAmplifier
+==================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: AmplitudeAmplifier
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: amplify
+  

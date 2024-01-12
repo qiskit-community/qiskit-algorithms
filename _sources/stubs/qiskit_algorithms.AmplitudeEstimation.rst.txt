@@ -1,0 +1,26 @@
+﻿AmplitudeEstimation
+===================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: AmplitudeEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: sampler
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: compute_confidence_interval
+   .. automethod:: compute_mle
+   .. automethod:: construct_circuit
+   .. automethod:: estimate
+   .. automethod:: evaluate_measurements
+  

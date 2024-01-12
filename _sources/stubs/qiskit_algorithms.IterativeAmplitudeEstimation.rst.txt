@@ -1,0 +1,24 @@
+﻿IterativeAmplitudeEstimation
+============================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: IterativeAmplitudeEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: epsilon_target
+   .. autoattribute:: sampler
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: construct_circuit
+   .. automethod:: estimate
+  

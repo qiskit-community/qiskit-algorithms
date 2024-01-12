@@ -1,0 +1,18 @@
+﻿PVQDResult
+==========
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: PVQDResult
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: combine
+  

@@ -1,0 +1,18 @@
+﻿TimeEvolutionProblem
+====================
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: TimeEvolutionProblem
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: time
+  
+
+  
+  

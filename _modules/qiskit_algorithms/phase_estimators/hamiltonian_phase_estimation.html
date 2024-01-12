@@ -1,0 +1,595 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
+        <title>qiskit_algorithms.phase_estimators.hamiltonian_phase_estimation - Qiskit Algorithms 0.2.1</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../../../_static/js/web-components/top-nav-bar.js"></script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.2.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../../../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.1</span>
+</div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplificationProblem.html">AmplificationProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplitudeAmplifier.html">AmplitudeAmplifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.Grover.html">Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.GroverResult.html">GroverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplitudeEstimator.html">AmplitudeEstimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplitudeEstimatorResult.html">AmplitudeEstimatorResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplitudeEstimation.html">AmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AmplitudeEstimationResult.html">AmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.EstimationProblem.html">EstimationProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.FasterAmplitudeEstimation.html">FasterAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.FasterAmplitudeEstimationResult.html">FasterAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.IterativeAmplitudeEstimation.html">IterativeAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.IterativeAmplitudeEstimationResult.html">IterativeAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.html">MaximumLikelihoodAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html">MaximumLikelihoodAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.Eigensolver.html">Eigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.EigensolverResult.html">EigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.NumPyEigensolver.html">NumPyEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.NumPyEigensolverResult.html">NumPyEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VQD.html">VQD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VQDResult.html">VQDResult</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.gradients.html">Gradients (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.gradients</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Gradients (qiskit_algorithms.gradients)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.BaseEstimatorGradient.html">BaseEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.BaseQGT.html">BaseQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.BaseSamplerGradient.html">BaseSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.EstimatorGradientResult.html">EstimatorGradientResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.SamplerGradientResult.html">SamplerGradientResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.QGTResult.html">QGTResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html">FiniteDiffEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.FiniteDiffSamplerGradient.html">FiniteDiffSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.LinCombEstimatorGradient.html">LinCombEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.LinCombSamplerGradient.html">LinCombSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.LinCombQGT.html">LinCombQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.ParamShiftEstimatorGradient.html">ParamShiftEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.ParamShiftSamplerGradient.html">ParamShiftSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.QFIResult.html">QFIResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.QFI.html">QFI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.ReverseEstimatorGradient.html">ReverseEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.ReverseQGT.html">ReverseQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.SPSAEstimatorGradient.html">SPSAEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.gradients.SPSASamplerGradient.html">SPSASamplerGradient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.MinimumEigensolver.html">MinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.MinimumEigensolverResult.html">MinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VQE.html">VQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VQEResult.html">VQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AdaptVQE.html">AdaptVQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AdaptVQEResult.html">AdaptVQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.QAOA.html">QAOA</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_algorithms.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.optimizer_utils.html">qiskit_algorithms.optimizers.optimizer_utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of qiskit_algorithms.optimizers.optimizer_utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.optimizer_utils.LearningRate.html">LearningRate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html">SteppableOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.AskData.html">AskData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.TellData.html">TellData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.OptimizerState.html">OptimizerState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.ADAM.html">ADAM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.AQGD.html">AQGD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CG.html">CG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.L_BFGS_B.html">L_BFGS_B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.GSLS.html">GSLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html">GradientDescent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescentState.html">GradientDescentState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.NFT.html">NFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.P_BFGS.html">P_BFGS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.POWELL.html">POWELL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SLSQP.html">SLSQP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.QNSPSA.html">QNSPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.TNC.html">TNC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.UMDA.html">UMDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.ESCH.html">ESCH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.ISRES.html">ISRES</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.HamiltonianPhaseEstimation.html">HamiltonianPhaseEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.HamiltonianPhaseEstimationResult.html">HamiltonianPhaseEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.PhaseEstimationScale.html">PhaseEstimationScale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html">PhaseEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.PhaseEstimationResult.html">PhaseEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.IterativePhaseEstimation.html">IterativePhaseEstimation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.state_fidelities.html">State Fidelities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.state_fidelities</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of State Fidelities (qiskit_algorithms.state_fidelities)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.state_fidelities.BaseStateFidelity.html">BaseStateFidelity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.state_fidelities.ComputeUncompute.html">ComputeUncompute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.state_fidelities.StateFidelityResult.html">StateFidelityResult</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.RealTimeEvolver.html">RealTimeEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.ImaginaryTimeEvolver.html">ImaginaryTimeEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.TimeEvolutionResult.html">TimeEvolutionResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.TimeEvolutionProblem.html">TimeEvolutionProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.PVQD.html">PVQD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.PVQDResult.html">PVQDResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SciPyImaginaryEvolver.html">SciPyImaginaryEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.SciPyRealEvolver.html">SciPyRealEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.TrotterQRTE.html">TrotterQRTE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VarQITE.html">VarQITE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VarQRTE.html">VarQRTE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.VarQTEResult.html">VarQTEResult</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.time_evolvers.variational.html">Time Evolvers, Variational (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.time_evolvers.variational</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Time Evolvers, Variational (qiskit_algorithms.time_evolvers.variational)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.VariationalPrinciple.html">VariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.RealVariationalPrinciple.html">RealVariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.ImaginaryVariationalPrinciple.html">ImaginaryVariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html">RealMcLachlanPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.ImaginaryMcLachlanPrinciple.html">ImaginaryMcLachlanPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.time_evolvers.variational.ForwardEulerSolver.html">ForwardEulerSolver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.AlgorithmError.html">AlgorithmError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../stubs/qiskit_algorithms.AlgorithmJob.html">AlgorithmJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../apidocs/qiskit_algorithms.utils.algorithm_globals.html">utils.algorithm_globals</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/01_algorithms_introduction.html">An Introduction to Algorithms using Qiskit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/02_vqe_advanced_options.html">Advanced VQE Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/03_vqe_simulation_with_noise.html">VQE with Qiskit Aer Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/04_vqd.html">Variational Quantum Deflation (VQD) Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/05_qaoa.html">Quantum Approximate Optimization Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/06_grover.html">Grover’s Algorithm and Amplitude Amplification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/07_grover_examples.html">Grover’s algorithm examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/10_pvqd.html">Projected Variational Quantum Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/11_VarQTE.html">Variational Quantum Time Evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/12_gradients_framework.html">Gradient Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorials/13_trotterQRTE.html">Quantum Real Time Evolution using Trotterization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms">GitHub</a></li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for qiskit_algorithms.phase_estimators.hamiltonian_phase_estimation</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of a Qiskit project.</span>
+<span class="c1">#</span>
+<span class="c1"># (C) Copyright IBM 2020, 2023.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
+<span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
+<span class="c1"># of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.</span>
+<span class="c1">#</span>
+<span class="c1"># Any modifications or derivative works of this code must retain this</span>
+<span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
+<span class="c1"># that they have been altered from the originals.</span>
+
+<span class="sd">&quot;&quot;&quot;Phase estimation for the spectrum of a Hamiltonian&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span><span class="p">,</span> <span class="n">Statevector</span><span class="p">,</span> <span class="n">Pauli</span>
+<span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">EvolutionSynthesis</span>
+
+<span class="kn">from</span> <span class="nn">.phase_estimation</span> <span class="kn">import</span> <span class="n">PhaseEstimation</span>
+<span class="kn">from</span> <span class="nn">.hamiltonian_phase_estimation_result</span> <span class="kn">import</span> <span class="n">HamiltonianPhaseEstimationResult</span>
+<span class="kn">from</span> <span class="nn">.phase_estimation_scale</span> <span class="kn">import</span> <span class="n">PhaseEstimationScale</span>
+
+
+<div class="viewcode-block" id="HamiltonianPhaseEstimation"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.HamiltonianPhaseEstimation.html#qiskit_algorithms.HamiltonianPhaseEstimation">[docs]</a><span class="k">class</span> <span class="nc">HamiltonianPhaseEstimation</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Run the Quantum Phase Estimation algorithm to find the eigenvalues of a Hermitian operator.</span>
+
+<span class="sd">    This class is nearly the same as :class:`~qiskit_algorithms.PhaseEstimation`, differing only</span>
+<span class="sd">    in that the input in that class is a unitary operator, whereas here the input is a Hermitian</span>
+<span class="sd">    operator from which a unitary will be obtained by scaling and exponentiating. The scaling is</span>
+<span class="sd">    performed in order to prevent the phases from wrapping around :math:`2\pi`.</span>
+<span class="sd">    The problem of estimating eigenvalues :math:`\lambda_j` of the Hermitian operator</span>
+<span class="sd">    :math:`H` is solved by running a circuit representing</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \exp(i b H) |\psi\rangle = \sum_j \exp(i b \lambda_j) c_j |\lambda_j\rangle,</span>
+
+<span class="sd">    where the input state is</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        |\psi\rangle = \sum_j c_j |\lambda_j\rangle,</span>
+
+<span class="sd">    and :math:`\lambda_j` are the eigenvalues of :math:`H`.</span>
+
+<span class="sd">    Here, :math:`b` is a scaling factor sufficiently large to map positive :math:`\lambda` to</span>
+<span class="sd">    :math:`[0,\pi)` and negative :math:`\lambda` to :math:`[\pi,2\pi)`. Each time the circuit is</span>
+<span class="sd">    run, one measures a phase corresponding to :math:`lambda_j` with probability :math:`|c_j|^2`.</span>
+
+<span class="sd">    If :math:`H` is a Pauli sum, the bound :math:`b` is computed from the sum of the absolute</span>
+<span class="sd">    values of the coefficients of the terms. There is no way to reliably recover eigenvalues</span>
+<span class="sd">    from phases very near the endpoints of these intervals. Because of this you should be aware</span>
+<span class="sd">    that for degenerate cases, such as :math:`H=Z`, the eigenvalues :math:`\pm 1` will be</span>
+<span class="sd">    mapped to the same phase, :math:`\pi`, and so cannot be distinguished. In this case, you need</span>
+<span class="sd">    to specify a larger bound as an argument to the method ``estimate``.</span>
+
+<span class="sd">    This class uses and works together with :class:`~qiskit_algorithms.PhaseEstimationScale` to</span>
+<span class="sd">    manage scaling the Hamiltonian and the phases that are obtained by the QPE algorithm. This</span>
+<span class="sd">    includes setting, or computing, a bound on the eigenvalues of the operator, using this</span>
+<span class="sd">    bound to obtain a scale factor, scaling the operator, and shifting and scaling the measured</span>
+<span class="sd">    phases to recover the eigenvalues.</span>
+
+<span class="sd">    Note that, although we speak of &quot;evolving&quot; the state according the Hamiltonian, in the</span>
+<span class="sd">    present algorithm, we are not actually considering time evolution. Rather, the role of time is</span>
+<span class="sd">    played by the scaling factor, which is chosen to best extract the eigenvalues of the</span>
+<span class="sd">    Hamiltonian.</span>
+
+<span class="sd">    A few of the ideas in the algorithm may be found in Ref. [1].</span>
+
+<span class="sd">    **Reference:**</span>
+
+<span class="sd">    [1]: Quantum phase estimation of multiple eigenvalues for small-scale (noisy) experiments</span>
+<span class="sd">         T.E. O&#39;Brien, B. Tarasinski, B.M. Terhal</span>
+<span class="sd">         `arXiv:1809.09697 &lt;https://arxiv.org/abs/1809.09697&gt;`_</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_evaluation_qubits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will</span>
+<span class="sd">                be estimated as a binary string with this many bits.</span>
+<span class="sd">            sampler: The sampler primitive on which the circuit will be sampled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phase_estimation</span> <span class="o">=</span> <span class="n">PhaseEstimation</span><span class="p">(</span>
+            <span class="n">num_evaluation_qubits</span><span class="o">=</span><span class="n">num_evaluation_qubits</span><span class="p">,</span>
+            <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PhaseEstimationScale</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bound</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PhaseEstimationScale</span><span class="o">.</span><span class="n">from_pauli_sum</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PhaseEstimationScale</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_unitary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">pe_scale</span><span class="p">,</span> <span class="n">evolution</span><span class="p">:</span> <span class="n">EvolutionSynthesis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evolve the Hamiltonian to obtain a unitary.</span>
+
+<span class="sd">        Apply the scaling to the Hamiltonian that has been computed from an eigenvalue bound</span>
+<span class="sd">        and compute the unitary by applying the evolution object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">evo</span> <span class="o">=</span> <span class="n">PauliEvolutionGate</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="o">-</span><span class="n">pe_scale</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span> <span class="n">synthesis</span><span class="o">=</span><span class="n">evolution</span><span class="p">)</span>
+        <span class="n">unitary</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">evo</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
+        <span class="n">unitary</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">evo</span><span class="p">,</span> <span class="n">unitary</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">unitary</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+        <span class="c1"># Decomposing twice allows some 1Q Hamiltonians to give correct results</span>
+        <span class="c1"># when using MatrixEvolution(), that otherwise would give incorrect results.</span>
+        <span class="c1"># It does not break any others that we tested.</span>
+
+<div class="viewcode-block" id="HamiltonianPhaseEstimation.estimate"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.HamiltonianPhaseEstimation.html#qiskit_algorithms.HamiltonianPhaseEstimation.estimate">[docs]</a>    <span class="k">def</span> <span class="nf">estimate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">Pauli</span> <span class="o">|</span> <span class="n">SparsePauliOp</span><span class="p">,</span>
+        <span class="n">state_preparation</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="n">Statevector</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">evolution</span><span class="p">:</span> <span class="n">EvolutionSynthesis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bound</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HamiltonianPhaseEstimationResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the Hamiltonian phase estimation algorithm.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hamiltonian: A Hermitian operator. The allowed types are ``Pauli`` and ``SparsePauliOp``.</span>
+<span class="sd">            state_preparation: The state to be prepared, whose eigenphase will be</span>
+<span class="sd">                measured. If this parameter is omitted, no preparation circuit will be run and</span>
+<span class="sd">                input state will be the all-zero state in the computational basis.</span>
+<span class="sd">            evolution: An evolution synthesis class.</span>
+<span class="sd">            bound: An upper bound on the absolute value of the eigenvalues of</span>
+<span class="sd">                ``hamiltonian``. If omitted, then ``hamiltonian`` must be a SparsePauliOp,</span>
+<span class="sd">                in which case a bound will be computed. The tighter the bound,</span>
+<span class="sd">                the higher the resolution of computed phases.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``HamiltonianPhaseEstimationResult`` instance containing the result of the estimation</span>
+<span class="sd">            and diagnostic information.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If ``evolution`` is not of type ``EvolutionSynthesis``.</span>
+<span class="sd">            TypeError: If ``hamiltonian`` type is not ``Pauli`` or ``SparsePauliOp``.</span>
+<span class="sd">            ValueError: If ``bound`` is ``None`` and ``hamiltonian`` is not a Pauli sum.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">evolution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evolution</span><span class="p">,</span> <span class="n">EvolutionSynthesis</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expecting type EvolutionSynthesis, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">evolution</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="p">(</span><span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expecting Hamiltonian type Pauli, SparsePauliOp, &quot;</span> <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state_preparation</span><span class="p">,</span> <span class="n">Statevector</span><span class="p">):</span>
+            <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">state_preparation</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
+            <span class="n">circuit</span><span class="o">.</span><span class="n">prepare_state</span><span class="p">(</span><span class="n">state_preparation</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">state_preparation</span> <span class="o">=</span> <span class="n">circuit</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">SparsePauliOp</span><span class="p">):</span>
+            <span class="n">id_coefficient</span><span class="p">,</span> <span class="n">hamiltonian_no_id</span> <span class="o">=</span> <span class="n">_remove_identity</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_coefficient</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">hamiltonian_no_id</span> <span class="o">=</span> <span class="n">hamiltonian</span>
+
+        <span class="n">pe_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scale</span><span class="p">(</span><span class="n">hamiltonian_no_id</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+        <span class="n">unitary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_unitary</span><span class="p">(</span><span class="n">hamiltonian_no_id</span><span class="p">,</span> <span class="n">pe_scale</span><span class="p">,</span> <span class="n">evolution</span><span class="p">)</span>
+
+        <span class="c1"># run phase estimation</span>
+        <span class="n">phase_estimation_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phase_estimation</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span>
+            <span class="n">unitary</span><span class="o">=</span><span class="n">unitary</span><span class="p">,</span> <span class="n">state_preparation</span><span class="o">=</span><span class="n">state_preparation</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">HamiltonianPhaseEstimationResult</span><span class="p">(</span>
+            <span class="n">phase_estimation_result</span><span class="o">=</span><span class="n">phase_estimation_result</span><span class="p">,</span>
+            <span class="n">id_coefficient</span><span class="o">=</span><span class="n">id_coefficient</span><span class="p">,</span>
+            <span class="n">phase_estimation_scale</span><span class="o">=</span><span class="n">pe_scale</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_remove_identity</span><span class="p">(</span><span class="n">pauli_sum</span><span class="p">:</span> <span class="n">SparsePauliOp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove any identity operators from ``pauli_sum``. Return</span>
+<span class="sd">    the sum of the coefficients of the identities and the new operator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_identity</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">identity</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">identity</span> <span class="o">=</span> <span class="n">identity</span> <span class="o">^</span> <span class="n">SparsePauliOp</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">identity</span>
+
+    <span class="n">idcoeff</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pauli_sum</span><span class="p">,</span> <span class="n">SparsePauliOp</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">operator</span> <span class="ow">in</span> <span class="n">pauli_sum</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">operator</span><span class="o">.</span><span class="n">paulis</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;I&quot;</span> <span class="o">*</span> <span class="n">pauli_sum</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">]:</span>
+                <span class="n">idcoeff</span> <span class="o">+=</span> <span class="n">operator</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">pauli_sum</span> <span class="o">=</span> <span class="n">pauli_sum</span> <span class="o">-</span> <span class="n">operator</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">_get_identity</span><span class="p">(</span><span class="n">pauli_sum</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">idcoeff</span><span class="p">,</span> <span class="n">pauli_sum</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2024/01/12</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=158ece9d"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

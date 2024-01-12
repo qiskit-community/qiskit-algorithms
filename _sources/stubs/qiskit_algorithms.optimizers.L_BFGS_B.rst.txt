@@ -1,0 +1,41 @@
+﻿L\_BFGS\_B
+==========
+
+.. currentmodule:: qiskit_algorithms.optimizers
+
+.. autoclass:: L_BFGS_B
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: bounds_support_level
+   .. autoattribute:: gradient_support_level
+   .. autoattribute:: initial_point_support_level
+   .. autoattribute:: is_bounds_ignored
+   .. autoattribute:: is_bounds_required
+   .. autoattribute:: is_bounds_supported
+   .. autoattribute:: is_gradient_ignored
+   .. autoattribute:: is_gradient_required
+   .. autoattribute:: is_gradient_supported
+   .. autoattribute:: is_initial_point_ignored
+   .. autoattribute:: is_initial_point_required
+   .. autoattribute:: is_initial_point_supported
+   .. autoattribute:: setting
+   .. autoattribute:: settings
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: get_support_level
+   .. automethod:: gradient_num_diff
+   .. automethod:: minimize
+   .. automethod:: print_options
+   .. automethod:: set_max_evals_grouped
+   .. automethod:: set_options
+   .. automethod:: wrap_function
+  

@@ -1,0 +1,24 @@
+﻿LinCombSamplerGradient
+======================
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: LinCombSamplerGradient
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: SUPPORTED_GATES
+   .. autoattribute:: options
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: run
+   .. automethod:: update_default_options
+  

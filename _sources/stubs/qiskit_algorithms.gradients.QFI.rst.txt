@@ -1,0 +1,23 @@
+﻿QFI
+===
+
+.. currentmodule:: qiskit_algorithms.gradients
+
+.. autoclass:: QFI
+   :no-members:
+   :show-inheritance:
+
+
+  
+   .. rubric:: Attributes
+    
+   .. autoattribute:: options
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: run
+   .. automethod:: update_default_options
+  

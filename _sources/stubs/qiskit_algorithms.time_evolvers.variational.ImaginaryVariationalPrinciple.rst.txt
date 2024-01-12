@@ -1,0 +1,14 @@
+﻿ImaginaryVariationalPrinciple
+=============================
+
+.. currentmodule:: qiskit_algorithms.time_evolvers.variational
+
+.. autoclass:: ImaginaryVariationalPrinciple
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  

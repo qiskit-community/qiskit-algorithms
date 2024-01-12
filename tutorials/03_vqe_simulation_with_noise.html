@@ -1,0 +1,766 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Variational Quantum Deflation (VQD) Algorithm" href="04_vqd.html" /><link rel="prev" title="Advanced VQE Options" href="02_vqe_advanced_options.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
+        <title>VQE with Qiskit Aer Primitives - Qiskit Algorithms 0.2.1</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="../_static/js/web-components/top-nav-bar.js"></script></head>
+  <body>
+    
+    <script>document.body.dataset.theme = "light";</script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <path d="M28,4H4A2,2,0,0,0,2,6V26a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM4,6H20V26H4ZM28,26H22V6h6Z"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+      <defs><style>.cls-1{fill:none;}</style></defs>
+      <rect x="4" y="6" width="24" height="2"/>
+      <rect x="4" y="24" width="24" height="2"/>
+      <rect x="4" y="12" width="24" height="2"/>
+      <rect x="4" y="18" width="24" height="2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
+      <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><div class="sidebar-brand">
+  <a href="https://www.qiskit.org/ecosystem">
+    <div class="sidebar-logo-container">
+      <img class="sidebar-logo" src="../_static/images/ecosystem-logo.svg" alt="Qiskit Ecosystem logo"/>
+    </div>
+  </a>
+  
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.1</span>
+</div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../apidocs/qiskit_algorithms.html">API References</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API References</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplificationProblem.html">AmplificationProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplitudeAmplifier.html">AmplitudeAmplifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.Grover.html">Grover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.GroverResult.html">GroverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplitudeEstimator.html">AmplitudeEstimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplitudeEstimatorResult.html">AmplitudeEstimatorResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplitudeEstimation.html">AmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AmplitudeEstimationResult.html">AmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.EstimationProblem.html">EstimationProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.FasterAmplitudeEstimation.html">FasterAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.FasterAmplitudeEstimationResult.html">FasterAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.IterativeAmplitudeEstimation.html">IterativeAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.IterativeAmplitudeEstimationResult.html">IterativeAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.html">MaximumLikelihoodAmplitudeEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html">MaximumLikelihoodAmplitudeEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.Eigensolver.html">Eigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.EigensolverResult.html">EigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.NumPyEigensolver.html">NumPyEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.NumPyEigensolverResult.html">NumPyEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VQD.html">VQD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VQDResult.html">VQDResult</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_algorithms.gradients.html">Gradients (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.gradients</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Gradients (qiskit_algorithms.gradients)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.BaseEstimatorGradient.html">BaseEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.BaseQGT.html">BaseQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.BaseSamplerGradient.html">BaseSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.EstimatorGradientResult.html">EstimatorGradientResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.SamplerGradientResult.html">SamplerGradientResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.QGTResult.html">QGTResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html">FiniteDiffEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.FiniteDiffSamplerGradient.html">FiniteDiffSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.LinCombEstimatorGradient.html">LinCombEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.LinCombSamplerGradient.html">LinCombSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.LinCombQGT.html">LinCombQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.ParamShiftEstimatorGradient.html">ParamShiftEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.ParamShiftSamplerGradient.html">ParamShiftSamplerGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.QFIResult.html">QFIResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.QFI.html">QFI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.ReverseEstimatorGradient.html">ReverseEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.ReverseQGT.html">ReverseQGT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.SPSAEstimatorGradient.html">SPSAEstimatorGradient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.gradients.SPSASamplerGradient.html">SPSASamplerGradient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.MinimumEigensolver.html">MinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.MinimumEigensolverResult.html">MinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.NumPyMinimumEigensolverResult.html">NumPyMinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VQE.html">VQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VQEResult.html">VQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AdaptVQE.html">AdaptVQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AdaptVQEResult.html">AdaptVQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SamplingMinimumEigensolver.html">SamplingMinimumEigensolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SamplingMinimumEigensolverResult.html">SamplingMinimumEigensolverResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SamplingVQE.html">SamplingVQE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SamplingVQEResult.html">SamplingVQEResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.QAOA.html">QAOA</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_algorithms.optimizers.html">Optimizers (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.optimizers</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Optimizers (qiskit_algorithms.optimizers)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.OptimizerResult.html">OptimizerResult</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.Optimizer.html">Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.optimizer_utils.html">qiskit_algorithms.optimizers.optimizer_utils</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of qiskit_algorithms.optimizers.optimizer_utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.optimizer_utils.LearningRate.html">LearningRate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html">SteppableOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.AskData.html">AskData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.TellData.html">TellData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.OptimizerState.html">OptimizerState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.ADAM.html">ADAM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.AQGD.html">AQGD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CG.html">CG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.COBYLA.html">COBYLA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.L_BFGS_B.html">L_BFGS_B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.GSLS.html">GSLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.GradientDescent.html">GradientDescent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.GradientDescentState.html">GradientDescentState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.NELDER_MEAD.html">NELDER_MEAD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.NFT.html">NFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.P_BFGS.html">P_BFGS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.POWELL.html">POWELL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SLSQP.html">SLSQP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SPSA.html">SPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.QNSPSA.html">QNSPSA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.TNC.html">TNC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SciPyOptimizer.html">SciPyOptimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.UMDA.html">UMDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.ESCH.html">ESCH</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.ISRES.html">ISRES</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.HamiltonianPhaseEstimation.html">HamiltonianPhaseEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.HamiltonianPhaseEstimationResult.html">HamiltonianPhaseEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.PhaseEstimationScale.html">PhaseEstimationScale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.PhaseEstimation.html">PhaseEstimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.PhaseEstimationResult.html">PhaseEstimationResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.IterativePhaseEstimation.html">IterativePhaseEstimation</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_algorithms.state_fidelities.html">State Fidelities (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.state_fidelities</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of State Fidelities (qiskit_algorithms.state_fidelities)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.state_fidelities.BaseStateFidelity.html">BaseStateFidelity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.state_fidelities.ComputeUncompute.html">ComputeUncompute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.state_fidelities.StateFidelityResult.html">StateFidelityResult</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.RealTimeEvolver.html">RealTimeEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.ImaginaryTimeEvolver.html">ImaginaryTimeEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.TimeEvolutionResult.html">TimeEvolutionResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.TimeEvolutionProblem.html">TimeEvolutionProblem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.PVQD.html">PVQD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.PVQDResult.html">PVQDResult</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SciPyImaginaryEvolver.html">SciPyImaginaryEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.SciPyRealEvolver.html">SciPyRealEvolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.TrotterQRTE.html">TrotterQRTE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VarQITE.html">VarQITE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VarQRTE.html">VarQRTE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.VarQTEResult.html">VarQTEResult</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../apidocs/qiskit_algorithms.time_evolvers.variational.html">Time Evolvers, Variational (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.time_evolvers.variational</span></code>)</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Time Evolvers, Variational (qiskit_algorithms.time_evolvers.variational)</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.VariationalPrinciple.html">VariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.RealVariationalPrinciple.html">RealVariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.ImaginaryVariationalPrinciple.html">ImaginaryVariationalPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html">RealMcLachlanPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.ImaginaryMcLachlanPrinciple.html">ImaginaryMcLachlanPrinciple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.time_evolvers.variational.ForwardEulerSolver.html">ForwardEulerSolver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_algorithms.AlgorithmError.html">AlgorithmError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stubs/qiskit_algorithms.AlgorithmJob.html">AlgorithmJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../apidocs/qiskit_algorithms.utils.algorithm_globals.html">utils.algorithm_globals</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_algorithms_introduction.html">An Introduction to Algorithms using Qiskit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_vqe_advanced_options.html">Advanced VQE Options</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">VQE with Qiskit Aer Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_vqd.html">Variational Quantum Deflation (VQD) Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_qaoa.html">Quantum Approximate Optimization Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_grover.html">Grover’s Algorithm and Amplitude Amplification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_grover_examples.html">Grover’s algorithm examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_pvqd.html">Projected Variational Quantum Dynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_VarQTE.html">Variational Quantum Time Evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_gradients_framework.html">Gradient Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_trotterQRTE.html">Quantum Real Time Evolution using Trotterization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms">GitHub</a></li>
+</ul>
+
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.2/docs/tutorials/03_vqe_simulation_with_noise.ipynb">docs/tutorials/03_vqe_simulation_with_noise.ipynb</a>.</p>
+</div>
+<section id="VQE-with-Qiskit-Aer-Primitives">
+<h1>VQE with Qiskit Aer Primitives<a class="headerlink" href="#VQE-with-Qiskit-Aer-Primitives" title="Permalink to this heading">#</a></h1>
+<p>This notebook demonstrates how to leverage the <a class="reference external" href="https://qiskit.org/ecosystem/aer/apidocs/aer_primitives.html">Qiskit Aer Primitives</a> to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.</p>
+<p>For further information on the Qiskit Aer noise model, you can consult the <a class="reference external" href="https://qiskit.org/ecosystem/aer/apidocs/aer_noise.html">Qiskit Aer documentation</a>, as well the tutorial for <a class="reference external" href="https://qiskit.org/ecosystem/aer/tutorials/3_building_noise_models.html">building noise models</a>.</p>
+<p>The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.SparsePauliOp.html#sparsepauliop">SparsePauliOp</a> class.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+
+<span class="n">H2_op</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;II&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.052373245772859</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;IZ&quot;</span><span class="p">,</span> <span class="mf">0.39793742484318045</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;ZI&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.39793742484318045</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01128010425623538</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;XX&quot;</span><span class="p">,</span> <span class="mf">0.18093119978423156</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of qubits: </span><span class="si">{</span><span class="n">H2_op</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Number of qubits: 2
+</pre></div></div>
+</div>
+<p>As the above problem is still easily tractable classically, you can use <code class="docutils literal notranslate"><span class="pre">NumPyMinimumEigensolver</span></code> to compute a reference value to compare the results later.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+
+<span class="n">numpy_solver</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">numpy_solver</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
+<span class="n">ref_value</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference value: </span><span class="si">{</span><span class="n">ref_value</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reference value: -1.85728
+</pre></div></div>
+</div>
+<p>The following examples will all use the same ansatz and optimizer, defined as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define ansatz and optimizer</span>
+<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
+
+<span class="n">iterations</span> <span class="o">=</span> <span class="mi">125</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
+<span class="n">spsa</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="n">iterations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Performance-without-noise">
+<h2>Performance <em>without</em> noise<a class="headerlink" href="#Performance-without-noise" title="Permalink to this heading">#</a></h2>
+<p>Let’s first run the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> on the default Aer simulator without adding noise, with a fixed seed for the run and transpilation to obtain reproducible results. This result should be relatively close to the reference value from the exact computation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define callback</span>
+<span class="c1"># note: Re-run this cell to restart lists before training</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+    <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eval_count</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define Aer Estimator for noiseless statevector simulation</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span> <span class="k">as</span> <span class="n">AerEstimator</span>
+
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">170</span>
+<span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="n">seed</span>
+
+<span class="n">noiseless_estimator</span> <span class="o">=</span> <span class="n">AerEstimator</span><span class="p">(</span>
+    <span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">},</span>
+    <span class="n">transpile_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed_transpiler&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># instantiate and run VQE</span>
+<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VQE</span>
+
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
+    <span class="n">noiseless_estimator</span><span class="p">,</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">spsa</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">store_intermediate_result</span>
+<span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VQE on Aer qasm simulator (no noise): </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Delta from reference energy value is </span><span class="si">{</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ref_value</span><span class="p">)</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+VQE on Aer qasm simulator (no noise): -1.85160
+Delta from reference energy value is 0.00567
+</pre></div></div>
+</div>
+<p>You captured the energy values above during the convergence, so you can track the process in the graph below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylab</span>
+
+<span class="n">pylab</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Eval count&quot;</span><span class="p">)</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
+<span class="n">pylab</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Convergence with no noise&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Convergence with no noise&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_03_vqe_simulation_with_noise_12_1.png" src="../_images/tutorials_03_vqe_simulation_with_noise_12_1.png" />
+</div>
+</div>
+</section>
+<section id="Performance-with-noise">
+<h2>Performance <em>with</em> noise<a class="headerlink" href="#Performance-with-noise" title="Permalink to this heading">#</a></h2>
+<p>Now, let’s add noise to our simulation. In particular, you will extract a noise model from a (fake) device. As stated in the introduction, it is also possible to create custom noise models from scratch, but this task is beyond the scope of this notebook.</p>
+<p>First, you need to get an actual device backend and from its <code class="docutils literal notranslate"><span class="pre">configuration</span></code> and <code class="docutils literal notranslate"><span class="pre">properties</span></code> you can setup a coupling map and a noise model to match the device. Note: You can also use this coupling map as the entanglement map for the variational form if you choose to.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.noise</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
+<span class="kn">from</span> <span class="nn">qiskit.providers.fake_provider</span> <span class="kn">import</span> <span class="n">FakeVigo</span>
+
+<span class="c1"># fake providers contain data from real IBM Quantum devices stored in Qiskit,</span>
+<span class="c1"># and are useful for extracting realistic noise models.</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">FakeVigo</span><span class="p">()</span>
+
+<span class="n">coupling_map</span> <span class="o">=</span> <span class="n">device</span><span class="o">.</span><span class="n">configuration</span><span class="p">()</span><span class="o">.</span><span class="n">coupling_map</span>
+<span class="n">noise_model</span> <span class="o">=</span> <span class="n">NoiseModel</span><span class="o">.</span><span class="n">from_backend</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">noise_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+NoiseModel:
+  Basis gates: [&#39;cx&#39;, &#39;id&#39;, &#39;rz&#39;, &#39;sx&#39;, &#39;x&#39;]
+  Instructions with noise: [&#39;sx&#39;, &#39;id&#39;, &#39;cx&#39;, &#39;x&#39;, &#39;measure&#39;]
+  Qubits with noise: [0, 1, 2, 3, 4]
+  Specific qubit errors: [(&#39;id&#39;, (0,)), (&#39;id&#39;, (1,)), (&#39;id&#39;, (2,)), (&#39;id&#39;, (3,)), (&#39;id&#39;, (4,)), (&#39;sx&#39;, (0,)), (&#39;sx&#39;, (1,)), (&#39;sx&#39;, (2,)), (&#39;sx&#39;, (3,)), (&#39;sx&#39;, (4,)), (&#39;x&#39;, (0,)), (&#39;x&#39;, (1,)), (&#39;x&#39;, (2,)), (&#39;x&#39;, (3,)), (&#39;x&#39;, (4,)), (&#39;cx&#39;, (3, 4)), (&#39;cx&#39;, (4, 3)), (&#39;cx&#39;, (3, 1)), (&#39;cx&#39;, (1, 3)), (&#39;cx&#39;, (1, 2)), (&#39;cx&#39;, (2, 1)), (&#39;cx&#39;, (0, 1)), (&#39;cx&#39;, (1, 0)), (&#39;measure&#39;, (0,)), (&#39;measure&#39;, (1,)), (&#39;measure&#39;, (2,)), (&#39;measure&#39;, (3,)), (&#39;measure&#39;, (4,))]
+</pre></div></div>
+</div>
+<p>Once the noise model is defined, you can run <code class="docutils literal notranslate"><span class="pre">VQE</span></code> using an Aer <code class="docutils literal notranslate"><span class="pre">Estimator</span></code>, where you can pass the noise model to the underlying simulator using the <code class="docutils literal notranslate"><span class="pre">backend_options</span></code> dictionary. Please note that this simulation will take longer than the noiseless one.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_estimator</span> <span class="o">=</span> <span class="n">AerEstimator</span><span class="p">(</span>
+    <span class="n">backend_options</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;density_matrix&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coupling_map&quot;</span><span class="p">:</span> <span class="n">coupling_map</span><span class="p">,</span>
+        <span class="s2">&quot;noise_model&quot;</span><span class="p">:</span> <span class="n">noise_model</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">},</span>
+    <span class="n">transpile_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed_transpiler&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Instead of defining a new instance of the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> class, you can now simply assign a new estimator to our previous <code class="docutils literal notranslate"><span class="pre">VQE</span></code> instance. As the callback method will be re-used, you will also need to re-start the <code class="docutils literal notranslate"><span class="pre">counts</span></code> and <code class="docutils literal notranslate"><span class="pre">values</span></code> variables to be able to plot the convergence graph later on.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># re-start callback variables</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vqe</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">noisy_estimator</span>
+
+<span class="n">result1</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VQE on Aer qasm simulator (with noise): </span><span class="si">{</span><span class="n">result1</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Delta from reference energy value is </span><span class="si">{</span><span class="p">(</span><span class="n">result1</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ref_value</span><span class="p">)</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+VQE on Aer qasm simulator (with noise): -1.75227
+Delta from reference energy value is 0.10501
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">counts</span> <span class="ow">or</span> <span class="n">values</span><span class="p">:</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Eval count&quot;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Energy&quot;</span><span class="p">)</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Convergence with noise&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_03_vqe_simulation_with_noise_20_0.png" src="../_images/tutorials_03_vqe_simulation_with_noise_20_0.png" />
+</div>
+</div>
+</section>
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Permalink to this heading">#</a></h2>
+<p>In this tutorial, you compared three calculations for the H2 molecule ground state. First, you produced a reference value using a classical minimum eigensolver. Then, you proceeded to run <code class="docutils literal notranslate"><span class="pre">VQE</span></code> using the Qiskit Aer <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> with 1024 shots. Finally, you extracted a noise model from a backend and used it to define a new <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> for noisy simulations. The results are:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reference value: </span><span class="si">{</span><span class="n">ref_value</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VQE on Aer qasm simulator (no noise): </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VQE on Aer qasm simulator (with noise): </span><span class="si">{</span><span class="n">result1</span><span class="o">.</span><span class="n">eigenvalue</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reference value: -1.85728
+VQE on Aer qasm simulator (no noise): -1.85160
+VQE on Aer qasm simulator (with noise): -1.75227
+</pre></div></div>
+</div>
+<p>You can notice that, while the noiseless simulation’s result is closer to the exact reference value, there is still some difference. This is due to the sampling noise, introduced by limiting the number of shots to 1024. A larger number of shots would decrease this sampling error and close the gap between these two values.</p>
+<p>As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/">Qiskit Runtime Primitives</a> have enabled error mitigation through the <code class="docutils literal notranslate"><span class="pre">resilience_level</span></code> option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/tutorials/Error-Suppression-and-Error-Mitigation.html">this
+tutorial</a> for further information.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+
+<span class="o">%</span><span class="k">qiskit_version_table</span>
+<span class="o">%</span><span class="k">qiskit_copyright</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.1</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.606903076171875</td></tr><tr><td colspan='2'>Fri Jan 12 15:13:41 2024 UTC</td></tr></table></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+</div>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {"7461ecc0df1a4f8c91c5a9d731184113": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "e0cb2d9ba80d41b0adae24de0b9c9f98": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "bacb8c2fd74d4f53bf2592aca6956aa2": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_7461ecc0df1a4f8c91c5a9d731184113", "placeholder": "\u200b", "style": "IPY_MODEL_e0cb2d9ba80d41b0adae24de0b9c9f98", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+</script></section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        <div class="related-pages">
+          <a class="next-page" href="04_vqd.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Variational Quantum Deflation (VQD) Algorithm</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="02_vqe_advanced_options.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Advanced VQE Options</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2024/01/12</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">VQE with Qiskit Aer Primitives</a><ul>
+<li><a class="reference internal" href="#Performance-without-noise">Performance <em>without</em> noise</a></li>
+<li><a class="reference internal" href="#Performance-with-noise">Performance <em>with</em> noise</a></li>
+<li><a class="reference internal" href="#Summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=158ece9d"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>

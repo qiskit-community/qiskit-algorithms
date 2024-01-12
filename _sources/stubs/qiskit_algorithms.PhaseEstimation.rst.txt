@@ -1,0 +1,20 @@
+﻿PhaseEstimation
+===============
+
+.. currentmodule:: qiskit_algorithms
+
+.. autoclass:: PhaseEstimation
+   :no-members:
+   :show-inheritance:
+
+
+  
+
+  
+  
+   .. rubric:: Methods
+    
+   .. automethod:: construct_circuit
+   .. automethod:: estimate
+   .. automethod:: estimate_from_pe_circuit
+  
