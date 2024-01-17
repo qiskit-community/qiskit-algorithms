@@ -16,7 +16,7 @@ pip install qiskit-algorithms
 If you want to work on the very latest work-in-progress versions, either to try features ahead of
 their official release or if you want to contribute to Algorithms, then you can install from source.
 To do this follow the instructions in the
- [documentation](https://qiskit.org/ecosystem/algorithms/getting_started.html#installation).
+ [documentation](https://qiskit-community.github.io/qiskit-algorithms/getting_started.html#installation).
 
 
 ----------------------------------------------------------------------------------------------------
