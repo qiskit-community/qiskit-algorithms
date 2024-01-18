@@ -329,6 +329,7 @@ steppable
 stepsize
 str
 subcircuits
+subclassed
 subclasses
 subcomponents
 subspaces
