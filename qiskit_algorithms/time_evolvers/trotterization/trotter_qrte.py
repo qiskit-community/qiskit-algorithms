@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -72,7 +72,8 @@ class TrotterQRTE(RealTimeEvolver):
                 (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
                 ``TimeEvolutionProblem.aux_operators``.
-            insert_barriers: If True, insert a barrier after the initial state and after each Trotter step
+            insert_barriers: If True, insert a barrier after the initial state and after each Trotter
+                step
         """
 
         self.product_formula = product_formula
@@ -232,7 +233,7 @@ class TrotterQRTE(RealTimeEvolver):
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
             if self.insert_barriers:
                 evolved_state.barrier()
-                
+
             if evolution_problem.aux_operators is not None:
                 observables.append(
                     estimate_observables(
