@@ -211,6 +211,30 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         """Test TrotterQRTE with raising errors for evolution problem content."""
         self._run_error_test(initial_state, operator, None, None, None, None)
 
+    def test_barriers(self):
+        """Test TrotterQRTE to insert barriers correctly."""
+        initial_state = QuantumCircuit(1)
+        initial_state.x(0)
+
+        expected_circuit = QuantumCircuit(1)
+        expected_circuit.append(initial_state, expected_circuit.qubits)
+        expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        expected_circuit.barrier()
+
+        operator = SparsePauliOp(["X", "Y"])
+        evolution_problem = TimeEvolutionProblem(operator, 1, initial_state)
+        trotter_qrte = TrotterQRTE(num_timesteps=2, insert_barriers=True)
+        evolution_result = trotter_qrte.evolve(evolution_problem)
+
+        self.assertEqual(
+            expected_circuit.decompose(reps=3), evolution_result.evolved_state.decompose(reps=5)
+        )
+
     @staticmethod
     def _run_error_test(initial_state, operator, aux_ops, estimator, t_param, param_value_dict):
         time = 1
