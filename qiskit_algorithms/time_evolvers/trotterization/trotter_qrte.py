@@ -72,6 +72,7 @@ class TrotterQRTE(RealTimeEvolver):
                 (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
                 ``TimeEvolutionProblem.aux_operators``.
+            insert_barriers: If True, insert a barrier after the initial state and after each Trotter step
         """
 
         self.product_formula = product_formula
