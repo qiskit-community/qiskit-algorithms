@@ -58,6 +58,7 @@ class TrotterQRTE(RealTimeEvolver):
         product_formula: ProductFormula | None = None,
         estimator: BaseEstimator | None = None,
         num_timesteps: int = 1,
+        *,
         insert_barriers: bool = False,
     ) -> None:
         """
@@ -68,12 +69,12 @@ class TrotterQRTE(RealTimeEvolver):
                 ``num_timesteps`` and an evaluation of :attr:`.TimeEvolutionProblem.aux_operators`
                 at every time-step. If ``reps`` is larger than 1, the true number of time-steps will
                 be ``num_timesteps * reps``.
-            num_timesteps: The number of time-steps the full evolution time is divided into
-                (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
                 ``TimeEvolutionProblem.aux_operators``.
+            num_timesteps: The number of time-steps the full evolution time is divided into
+                (repetitions of ``product_formula``).
             insert_barriers: If True, insert a barrier after the initial state and after each Trotter
-                step
+                step.
         """
 
         self.product_formula = product_formula
