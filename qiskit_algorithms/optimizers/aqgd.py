@@ -57,6 +57,7 @@ class AQGD(Optimizer):
         momentum: float | list[float] = 0.25,
         param_tol: float = 1e-6,
         averaging: int = 10,
+        max_evals_grouped: int = 1,
     ) -> None:
         """
         Performs Analytical Quantum Gradient Descent (AQGD) with Epochs.
@@ -73,6 +74,7 @@ class AQGD(Optimizer):
             param_tol: Tolerance for change in norm of parameters.
             averaging: Length of window over which to average objective values for objective
                 convergence criterion
+            max_evals_grouped: Max number of default gradient evaluations performed simultaneously.
 
         Raises:
             AlgorithmError: If the length of ``maxiter``, `momentum``, and ``eta`` is not the same.
@@ -98,6 +100,7 @@ class AQGD(Optimizer):
         self._param_tol = param_tol
         self._tol = tol
         self._averaging = averaging
+        self.set_max_evals_grouped(max_evals_grouped)
 
         # state
         self._avg_objval: float | None = None
@@ -156,7 +159,15 @@ class AQGD(Optimizer):
         )
         # Evaluate,
         # reshaping to flatten, as expected by objective function
-        values = np.array(obj(param_sets_to_eval.reshape(-1)))
+        if self._max_evals_grouped > 1:
+            batches = [
+                param_sets_to_eval[i : i + self._max_evals_grouped]
+                for i in range(0, len(param_sets_to_eval), self._max_evals_grouped)
+            ]
+            values = np.array(np.concatenate([obj(b) for b in batches]))
+        else:
+            batches = param_sets_to_eval
+            values = np.array([obj(b) for b in batches])
 
         # Update number of objective function evaluations
         self._eval_count += 2 * num_params + 1
@@ -312,7 +323,6 @@ class AQGD(Optimizer):
 
         iter_count = 0
         logger.info("Initial Params: %s", params)
-
         epoch = 0
         converged = False
         for (eta, mom_coeff) in zip(self._eta, self._momenta_coeff):
@@ -327,7 +337,6 @@ class AQGD(Optimizer):
                 converged = self._converged_parameter(params, self._param_tol)
                 if converged:
                     break
-
                 # Calculate objective function and estimate of analytical gradient
                 if jac is None:
                     objval, gradient = self._compute_objective_fn_and_gradient(params, fun)
