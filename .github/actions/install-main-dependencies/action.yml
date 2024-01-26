@@ -32,8 +32,13 @@ runs:
     - name: Terra Cache
       env:
         CACHE_VERSION: v1
+<<<<<<< HEAD
       id: terra-cache
       uses: actions/cache@v3
+=======
+      id: qiskit-cache
+      uses: actions/cache@v4
+>>>>>>> b6894e9 (Update actions using deprecated Node.js (#139))
       with:
         path: terra-cache
         key: terra-cache-${{ inputs.os }}-${{ inputs.python-version }}-${{ env.TERRA_HASH }}-${{ env.CACHE_VERSION }}
