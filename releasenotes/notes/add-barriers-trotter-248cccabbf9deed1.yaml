@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Added input argument `insert_barriers` to `TrotterQRTE` to add barriers between Trotter layers.

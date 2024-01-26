@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -58,6 +58,8 @@ class TrotterQRTE(RealTimeEvolver):
         product_formula: ProductFormula | None = None,
         estimator: BaseEstimator | None = None,
         num_timesteps: int = 1,
+        *,
+        insert_barriers: bool = False,
     ) -> None:
         """
         Args:
@@ -67,15 +69,18 @@ class TrotterQRTE(RealTimeEvolver):
                 ``num_timesteps`` and an evaluation of :attr:`.TimeEvolutionProblem.aux_operators`
                 at every time-step. If ``reps`` is larger than 1, the true number of time-steps will
                 be ``num_timesteps * reps``.
-            num_timesteps: The number of time-steps the full evolution time is divided into
-                (repetitions of ``product_formula``)
             estimator: An estimator primitive used for calculating expectation values of
                 ``TimeEvolutionProblem.aux_operators``.
+            num_timesteps: The number of time-steps the full evolution time is divided into
+                (repetitions of ``product_formula``).
+            insert_barriers: If True, insert a barrier after the initial state and after each Trotter
+                step.
         """
 
         self.product_formula = product_formula
         self.num_timesteps = num_timesteps
         self.estimator = estimator
+        self._insert_barriers = insert_barriers
 
     @property
     def product_formula(self) -> ProductFormula:
@@ -192,6 +197,8 @@ class TrotterQRTE(RealTimeEvolver):
 
         evolved_state = QuantumCircuit(initial_state.num_qubits)
         evolved_state.append(initial_state, evolved_state.qubits)
+        if self._insert_barriers:
+            evolved_state.barrier()
 
         if evolution_problem.aux_operators is not None:
             observables = []
@@ -225,6 +232,8 @@ class TrotterQRTE(RealTimeEvolver):
                     synthesis=self.product_formula,
                 )
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
+            if self._insert_barriers:
+                evolved_state.barrier()
 
             if evolution_problem.aux_operators is not None:
                 observables.append(

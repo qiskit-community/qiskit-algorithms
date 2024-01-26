@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -210,6 +210,34 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
     def test_trotter_qrte_trotter_hamiltonian_errors(self, operator, initial_state):
         """Test TrotterQRTE with raising errors for evolution problem content."""
         self._run_error_test(initial_state, operator, None, None, None, None)
+
+    @data(True, False)
+    def test_barriers(self, insert_barrier):
+        """Test TrotterQRTE to insert barriers correctly."""
+        initial_state = QuantumCircuit(1)
+        initial_state.x(0)
+
+        expected_circuit = QuantumCircuit(1)
+        expected_circuit.append(initial_state, expected_circuit.qubits)
+        if insert_barrier:
+            expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        if insert_barrier:
+            expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        if insert_barrier:
+            expected_circuit.barrier()
+
+        operator = SparsePauliOp(["X", "Y"])
+        evolution_problem = TimeEvolutionProblem(operator, 1, initial_state)
+        trotter_qrte = TrotterQRTE(num_timesteps=2, insert_barriers=insert_barrier)
+        evolution_result = trotter_qrte.evolve(evolution_problem)
+
+        self.assertEqual(
+            expected_circuit.decompose(reps=3), evolution_result.evolved_state.decompose(reps=5)
+        )
 
     @staticmethod
     def _run_error_test(initial_state, operator, aux_ops, estimator, t_param, param_value_dict):
