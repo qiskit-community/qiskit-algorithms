@@ -80,7 +80,7 @@ class TrotterQRTE(RealTimeEvolver):
         self.product_formula = product_formula
         self.num_timesteps = num_timesteps
         self.estimator = estimator
-        self.insert_barriers = insert_barriers
+        self._insert_barriers = insert_barriers
 
     @property
     def product_formula(self) -> ProductFormula:
@@ -197,7 +197,7 @@ class TrotterQRTE(RealTimeEvolver):
 
         evolved_state = QuantumCircuit(initial_state.num_qubits)
         evolved_state.append(initial_state, evolved_state.qubits)
-        if self.insert_barriers:
+        if self._insert_barriers:
             evolved_state.barrier()
 
         if evolution_problem.aux_operators is not None:
@@ -232,7 +232,7 @@ class TrotterQRTE(RealTimeEvolver):
                     synthesis=self.product_formula,
                 )
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
-            if self.insert_barriers:
+            if self._insert_barriers:
                 evolved_state.barrier()
 
             if evolution_problem.aux_operators is not None:
