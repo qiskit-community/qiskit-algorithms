@@ -245,6 +245,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
         operator = Operator(np.array([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, 2, 0], [0, 0, 0, 3]]))
+        operator = SparsePauliOp.from_operator(operator)
 
         with self.subTest(msg="assert vqe works on re-use."):
             result = vqe.compute_minimum_eigenvalue(operator=operator)
