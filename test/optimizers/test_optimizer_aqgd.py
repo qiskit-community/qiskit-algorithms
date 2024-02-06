@@ -13,13 +13,9 @@
 """Test of AQGD optimizer"""
 
 import unittest
-<<<<<<< HEAD
-from test import QiskitAlgorithmsTestCase
-=======
+
 from test import QiskitAlgorithmsTestCase, slow_test
-import numpy as np
-from ddt import ddt, data
->>>>>>> 2245288 (Add slow_test as it's no longer part of Qiskit 1.0 (#141))
+
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
