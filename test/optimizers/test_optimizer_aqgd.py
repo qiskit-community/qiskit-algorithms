@@ -13,13 +13,12 @@
 """Test of AQGD optimizer"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase, slow_test
 import numpy as np
 from ddt import ddt, data
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.test import slow_test
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import LinCombEstimatorGradient
