@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023
+# (C) Copyright IBM 2019, 2024
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,11 +13,12 @@
 """Test of AQGD optimizer"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
+from test import QiskitAlgorithmsTestCase, slow_test
+
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.test import slow_test
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import LinCombEstimatorGradient

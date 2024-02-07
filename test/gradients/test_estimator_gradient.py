@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -24,7 +24,7 @@ from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate, RYYGate, RZXGate, RZZGate
 from qiskit.primitives import Estimator
-from qiskit.quantum_info import Operator, SparsePauliOp, Pauli
+from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.quantum_info.random import random_pauli_list
 
 from qiskit_algorithms.gradients import (
@@ -68,9 +68,6 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         value = gradient.run([qc], [op], [param]).result().gradients[0]
         self.assertAlmostEqual(value[0], correct_result, 3)
         op = SparsePauliOp.from_list([("Z", 1)])
-        value = gradient.run([qc], [op], [param]).result().gradients[0]
-        self.assertAlmostEqual(value[0], correct_result, 3)
-        op = Operator.from_label("Z")
         value = gradient.run([qc], [op], [param]).result().gradients[0]
         self.assertAlmostEqual(value[0], correct_result, 3)
 
