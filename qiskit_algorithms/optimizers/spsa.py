@@ -99,13 +99,8 @@ class SPSA(Optimizer):
             estimator = Estimator()
 
             def loss(x):
-<<<<<<< HEAD
-                bound = ansatz.bind_parameters(x)
-                return np.real((StateFn(observable, is_measurement=True) @ StateFn(bound)).eval())
-=======
                 job = estimator.run([ansatz], [observable], [x])
                 return job.result().values[0]
->>>>>>> b62c8c0 (Update SPSA examples in class docstring (#148))
 
             spsa = SPSA(maxiter=300)
             result = spsa.minimize(loss, x0=initial_point)
