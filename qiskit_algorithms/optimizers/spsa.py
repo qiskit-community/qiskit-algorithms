@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,7 +12,7 @@
 
 """Simultaneous Perturbation Stochastic Approximation (SPSA) optimizer.
 
-This implementation allows both, standard first-order as well as second-order SPSA.
+This implementation allows both standard first-order and second-order SPSA.
 """
 from __future__ import annotations
 
@@ -52,7 +52,7 @@ class SPSA(Optimizer):
     measurements of the objective function, regardless of the dimension of the optimization
     problem.
 
-    Additionally to standard, first-order SPSA, where only gradient information is used, this
+    Additionally, to standard first-order SPSA, where only gradient information is used, this
     implementation also allows second-order SPSA (2-SPSA) [2]. In 2-SPSA we also estimate the
     Hessian of the loss with a stochastic approximation and multiply the gradient with the
     inverse Hessian to take local curvature into account and improve convergence.
@@ -68,7 +68,7 @@ class SPSA(Optimizer):
         simulator or a real device, SPSA would be the most recommended choice among the optimizers
         provided here.
 
-    The optimization process can includes a calibration phase if neither the ``learning_rate`` nor
+    The optimization process can include a calibration phase if neither the ``learning_rate`` nor
     ``perturbation`` is provided, which requires additional functional evaluations.
     (Note that either both or none must be set.) For further details on the automatic calibration,
     please refer to the supplementary information section IV. of [3].
@@ -90,18 +90,25 @@ class SPSA(Optimizer):
             import numpy as np
             from qiskit_algorithms.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.quantum_info import Pauli
+            from qiskit.primitives import Estimator
+            from qiskit.quantum_info import SparsePauliOp
 
             ansatz = PauliTwoDesign(2, reps=1, seed=2)
-            observable = Pauli("Z") ^ Pauli("Z")
+            observable = SparsePauliOp("ZZ")
             initial_point = np.random.random(ansatz.num_parameters)
+            estimator = Estimator()
 
             def loss(x):
+<<<<<<< HEAD
                 bound = ansatz.bind_parameters(x)
                 return np.real((StateFn(observable, is_measurement=True) @ StateFn(bound)).eval())
+=======
+                job = estimator.run([ansatz], [observable], [x])
+                return job.result().values[0]
+>>>>>>> b62c8c0 (Update SPSA examples in class docstring (#148))
 
             spsa = SPSA(maxiter=300)
-            result = spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
+            result = spsa.minimize(loss, x0=initial_point)
 
         To use the Hessian information, i.e. 2-SPSA, you can add `second_order=True` to the
         initializer of the `SPSA` class, the rest of the code remains the same.
@@ -109,7 +116,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             two_spsa = SPSA(maxiter=300, second_order=True)
-            result = two_spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
+            result = two_spsa.minimize(loss, x0=initial_point)
 
         The `termination_checker` can be used to implement a custom termination criterion.
 
@@ -140,9 +147,8 @@ class SPSA(Optimizer):
                     return False
 
             spsa = SPSA(maxiter=200, termination_checker=TerminationChecker(10))
-            parameters, value, niter = spsa.optimize(2, objective, initial_point=[0.5, 0.5])
-            print(f'SPSA completed after {niter} iterations')
-
+            result = spsa.minimize(objective, x0=[0.5, 0.5])
+            print(f'SPSA completed after {result.nit} iterations')
 
     References:
 
