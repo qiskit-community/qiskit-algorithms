@@ -15,7 +15,7 @@
 Qiskit Algorithms (:mod:`qiskit_algorithms`)
 ============================================
 Qiskit Algorithms is a library of quantum algorithms for quantum computing with
-`Qiskit <https://qiskit.org>`_.
+`Qiskit <https://www.ibm.com/quantum/qiskit>`__.
 These algorithms can be used to carry out research and investigate how to solve
 problems in different domains on simulators and near-term real quantum devices
 using shallow circuits.
@@ -31,7 +31,7 @@ These elements are frequently used in a variety of applications, such as variati
 time evolution and quantum machine learning.
 
 The quantum algorithms here all use
-`Primitives <https://qiskit.org/documentation/apidoc/primitives.html>`__
+`Primitives <https://docs.quantum.ibm.com/run/primitives>`__
 to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
 probability distributions. Refer to the specific algorithm for more information in this regard.
