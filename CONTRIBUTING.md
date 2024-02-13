@@ -5,7 +5,7 @@
 We follow the general Qiskit contribution guidelines, which can be found
 in the Qiskit documentation:
 
-https://qiskit.org/documentation/contributing_to_qiskit.html
+https://github.com/Qiskit/qiskit/blob/main/CONTRIBUTING.md
 
 ## Contributing to Qiskit Algorithms
 
@@ -61,8 +61,7 @@ please ensure that:
    to see the changes formatted output is as expected. You will find an index.html
    file in `docs\_build\html` and you can navigate from there.
    
-   Please note that the CI will run a spell check on the docstrings, as the text will
-   become part of the online [API Documentation](https://qiskit.org/documentation/).
+   Please note that the CI will run a spell check on the docstrings.
    
    You can run `make spell` locally to check the spelling, though you would need to
    [install pyenchant](https://pyenchant.github.io/pyenchant/install.html) and be using
