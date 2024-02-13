@@ -19,5 +19,5 @@ prelude: |
         any deprecated algorithm function.
 
     The decision to migrate the :mod:`qiskit.algorithms` module to a
-    separate package was made to clarify the purpose of `Qiskit <https:\\qiskit.org>`_ and
+    separate package was made to clarify the purpose of `Qiskit <https://www.ibm.com/quantum/qiskit>`__ and
     make a distinction between the tools and libraries built on top of it.
