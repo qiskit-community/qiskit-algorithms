@@ -145,6 +145,15 @@ class SciPyOptimizer(Optimizer):
             swapped_deprecated_args = True
             self._options["maxfun"] = self._options.pop("maxiter")
 
+        # Avoid clashing bounds defined in kwargs or _options
+        if 'bounds' in self._kwargs and not self.is_bounds_ignored:
+            bounds = self._kwargs['bounds']
+            del self._kwargs['bounds']
+
+        if 'bounds' in self._options and not self.is_bounds_ignored:
+            bounds = self._options['bounds']
+            del self._options['bounds']
+
         raw_result = minimize(
             fun=fun,
             x0=x0,
