@@ -6,16 +6,16 @@
    "source": [
     "# VQE with Qiskit Aer Primitives\n",
     "\n",
-    "This notebook demonstrates how to leverage the [Qiskit Aer Primitives](https://qiskit.org/ecosystem/aer/apidocs/aer_primitives.html) to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.\n",
+    "This notebook demonstrates how to leverage the [Qiskit Aer Primitives](https://qiskit.github.io/qiskit-aer/apidocs/aer_primitives.html) to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.\n",
     "\n",
-    "For further information on the Qiskit Aer noise model, you can consult the [Qiskit Aer documentation](https://qiskit.org/ecosystem/aer/apidocs/aer_noise.html), as well the tutorial for [building noise models](https://qiskit.org/ecosystem/aer/tutorials/3_building_noise_models.html)."
+    "For further information on the Qiskit Aer noise model, you can consult the [Qiskit Aer documentation](https://qiskit.github.io/qiskit-aer/apidocs/aer_noise.html), as well the tutorial for [building noise models](https://qiskit.github.io/qiskit-aer/tutorials/3_building_noise_models.html)."
    ]
   },
   {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the [SparsePauliOp](https://qiskit.org/documentation/stubs/qiskit.quantum_info.SparsePauliOp.html#sparsepauliop) class."
+    "The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the [SparsePauliOp](https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.SparsePauliOp) class."
    ]
   },
   {
@@ -401,7 +401,7 @@
    "source": [
     "You can notice that, while the noiseless simulation's result is closer to the exact reference value, there is still some difference. This is due to the sampling noise, introduced by limiting the number of shots to 1024. A larger number of shots would decrease this sampling error and close the gap between these two values.\n",
     "\n",
-    "As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The [Qiskit Runtime Primitives](https://qiskit.org/documentation/partners/qiskit_ibm_runtime/) have enabled error mitigation through the `resilience_level` option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult [this tutorial](https://qiskit.org/documentation/partners/qiskit_ibm_runtime/tutorials/Error-Suppression-and-Error-Mitigation.html) for further information."
+    "As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The [Qiskit Runtime Primitives](https://docs.quantum.ibm.com/api/qiskit-ibm-runtime) have enabled error mitigation through the `resilience_level` option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult [this documentation](https://docs.quantum.ibm.com/run/configure-error-mitigation) for further information."
    ]
   },
   {

@@ -360,7 +360,7 @@
 <p>This introduction to algorithms using Qiskit provides a high-level overview to get started with the <code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code> library.</p>
 <section id="How-is-the-algorithm-library-structured?">
 <h2>How is the algorithm library structured?<a class="headerlink" href="#How-is-the-algorithm-library-structured?" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code> provides a number of <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/apidocs/algorithms.html">algorithms</a> grouped by category, according to the task they can perform. For instance <code class="docutils literal notranslate"><span class="pre">Minimum</span> <span class="pre">Eigensolvers</span></code> to find the smallest eigen value of an operator, for example ground state energy of a chemistry Hamiltonian or a solution to an optimization problem when expressed as an Ising Hamiltonian. There are <code class="docutils literal notranslate"><span class="pre">Time</span> <span class="pre">Evolvers</span></code> for the time evolution of quantum systems and
+<p><code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code> provides a number of <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/apidocs/algorithms.html">algorithms</a> grouped by category, according to the task they can perform. For instance <code class="docutils literal notranslate"><span class="pre">Minimum</span> <span class="pre">Eigensolvers</span></code> to find the smallest eigen value of an operator, for example ground state energy of a chemistry Hamiltonian or a solution to an optimization problem when expressed as an Ising Hamiltonian. There are <code class="docutils literal notranslate"><span class="pre">Time</span> <span class="pre">Evolvers</span></code> for the time evolution of quantum systems and
 <code class="docutils literal notranslate"><span class="pre">Amplitude</span> <span class="pre">Estimators</span></code> for value estimation that can be used say in financial applications. The full set of categories can be seen in the documentation link above.</p>
 <p>Algorithms are configurable, and part of the configuration will often be in the form of smaller building blocks. For instance <code class="docutils literal notranslate"><span class="pre">VQE</span></code>, the Variational Quantum Eigensolver, it takes a trial wavefunction, in the form of a <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> and a classical optimizer among other things.</p>
 <p>Let’s take a look at an example to construct a VQE instance. Here, <code class="docutils literal notranslate"><span class="pre">TwoLocal</span></code> is the variational form (trial wavefunction), a parameterized circuit which can be varied, and <code class="docutils literal notranslate"><span class="pre">SLSQP</span></code> a classical optimizer. These are created as separate instances and passed to VQE when it is constructed. Trying, for example, a different classical optimizer, or variational form is simply a case of creating an instance of the one you want and passing it into VQE.</p>
@@ -399,7 +399,7 @@
 <section id="How-to-run-an-algorithm?">
 <h2>How to run an algorithm?<a class="headerlink" href="#How-to-run-an-algorithm?" title="Permalink to this heading">#</a></h2>
 <p>Algorithms rely on the primitives to evaluate expectation values or sample circuits. The primitives can be based on a simulator or real device and can be used interchangeably in the algorithms, as they all implement the same interface.</p>
-<p>In the VQE, we have to evaluate expectation values, so for example we can use the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.Estimator.html">qiskit.primitives.Estimator</a> which is shipped with the default Qiskit installation.</p>
+<p>In the VQE, we have to evaluate expectation values, so for example we can use the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.Estimator">qiskit.primitives.Estimator</a> which is shipped with the default Qiskit installation.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -410,7 +410,7 @@
 </pre></div>
 </div>
 </div>
-<p>This estimator uses an exact, statevector simulation to evaluate the expectation values. We can also use a shot-based and noisy simulators or real backends instead. For more information of the simulators you can check out <a class="reference external" href="https://qiskit.org/ecosystem/aer/apidocs/aer_primitives.html">Qiskit Aer</a> and for the actual hardware <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/">Qiskit IBM Runtime</a>.</p>
+<p>This estimator uses an exact, statevector simulation to evaluate the expectation values. We can also use a shot-based and noisy simulators or real backends instead. For more information of the simulators you can check out <a class="reference external" href="https://qiskit.github.io/qiskit-aer/apidocs/aer_primitives.html">Qiskit Aer</a> and for the actual hardware <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime">Qiskit IBM Runtime</a>.</p>
 <p>With all the ingredients ready, we can now instantiate the VQE:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -422,7 +422,7 @@
 </pre></div>
 </div>
 </div>
-<p>Now we can call the <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.compute_minimum_eigenvalue">compute_mininum_eigenvalue()</a> method. The latter is the interface of choice for the application modules, such as Nature and Optimization, in order that they can work interchangeably with any algorithm within the specific category.</p>
+<p>Now we can call the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.compute_minimum_eigenvalue">compute_mininum_eigenvalue()</a> method. The latter is the interface of choice for the application modules, such as Nature and Optimization, in order that they can work interchangeably with any algorithm within the specific category.</p>
 </section>
 <section id="A-complete-working-example">
 <h2>A complete working example<a class="headerlink" href="#A-complete-working-example" title="Permalink to this heading">#</a></h2>
@@ -459,23 +459,23 @@
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
-    &#39;cost_function_evals&#39;: 114,
-    &#39;eigenvalue&#39;: -1.857275029771289,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7feba99be1f0&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): 2.6646543627888017,
-                              ParameterVectorElement(θ[2]): 0.723029637750241,
-                              ParameterVectorElement(θ[3]): 4.9847694687404465,
-                              ParameterVectorElement(θ[4]): 6.985534033895813,
-                              ParameterVectorElement(θ[5]): -3.106902166009056,
-                              ParameterVectorElement(θ[6]): 5.370185448585177,
-                              ParameterVectorElement(θ[7]): 1.2824850097828833,
-                              ParameterVectorElement(θ[0]): -1.7072402964871873},
-    &#39;optimal_point&#39;: array([-1.7072403 ,  2.66465436,  0.72302964,  4.98476947,  6.98553403,
-       -3.10690217,  5.37018545,  1.28248501]),
-    &#39;optimal_value&#39;: -1.857275029771289,
+    &#39;cost_function_evals&#39;: 56,
+    &#39;eigenvalue&#39;: -1.8572750097072421,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fe6c2509910&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): -5.127467420976311,
+                              ParameterVectorElement(θ[0]): 3.998108416312631,
+                              ParameterVectorElement(θ[2]): 5.965233301056655,
+                              ParameterVectorElement(θ[3]): -2.8353037799063903,
+                              ParameterVectorElement(θ[4]): -4.097286929536383,
+                              ParameterVectorElement(θ[5]): -1.0969242531358394,
+                              ParameterVectorElement(θ[6]): 1.5605314774739636,
+                              ParameterVectorElement(θ[7]): 3.622465143176244},
+    &#39;optimal_point&#39;: array([ 3.99810842, -5.12746742,  5.9652333 , -2.83530378, -4.09728693,
+       -1.09692425,  1.56053148,  3.62246514]),
+    &#39;optimal_value&#39;: -1.8572750097072421,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7feba9959eb0&gt;,
-    &#39;optimizer_time&#39;: 0.2616255283355713}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe6bf2e41c0&gt;,
+    &#39;optimizer_time&#39;: 0.12650489807128906}
 </pre></div></div>
 </div>
 <p>From the above result we can see the number of cost function (=energy) evaluations the optimizer took until it found the minimum eigenvalue of <span class="math notranslate nohighlight">\(\approx -1.85727\)</span> which is the electronic ground state energy of the given H2 molecule. The optimal parameters of the ansatz can also be seen which are the values that were in the ansatz at the minimum value.</p>
@@ -483,8 +483,7 @@
 <section id="Updating-the-primitive-inside-VQE">
 <h2>Updating the primitive inside VQE<a class="headerlink" href="#Updating-the-primitive-inside-VQE" title="Permalink to this heading">#</a></h2>
 <p>To close off let’s also change the estimator primitive inside the a VQE. Maybe you’re satisfied with the simulation results and now want to use a shot-based simulator, or run on hardware!</p>
-<p>In this example we’re changing to a shot-based estimator, still using Qiskit’s reference primitive. However, you could replace the primitive by e.g. Qiskit Aer’s estimator (<a class="reference external" href="https://qiskit.org/ecosystem/aer/stubs/qiskit_aer.primitives.Estimator.html#qiskit_aer.primitives.Estimator">qiskit_aer.primitives.Estimator</a>) or even a real backend
-(<a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/stubs/qiskit_ibm_runtime.Estimator.html#qiskit_ibm_runtime.Estimator">qiskit_ibm_runtime.Estimator</a>).</p>
+<p>In this example we’re changing to a shot-based estimator, still using Qiskit’s reference primitive. However, you could replace the primitive by e.g. Qiskit Aer’s estimator (<a class="reference external" href="https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.primitives.Estimator.html#qiskit_aer.primitives.Estimator">qiskit_aer.primitives.Estimator</a>) or even a real backend (<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/qiskit_ibm_runtime.Estimator">qiskit_ibm_runtime.Estimator</a>).</p>
 <p>For noisy loss functions, the SPSA optimizer typically performs well, so we also update the optimizer. See also the <a class="reference internal" href="03_vqe_simulation_with_noise.html"><span class="doc">noisy VQE tutorial</span></a> for more details on shot-based and noisy simulations.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -508,22 +507,22 @@
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 200,
-    &#39;eigenvalue&#39;: -1.8573209790810083,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7febacb87670&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): -0.633839865547798,
-                              ParameterVectorElement(θ[2]): 1.2933519634111537,
-                              ParameterVectorElement(θ[3]): -2.7256642867791387,
-                              ParameterVectorElement(θ[4]): -2.181490942767868,
-                              ParameterVectorElement(θ[5]): 6.444487693227272,
-                              ParameterVectorElement(θ[6]): -0.3625610381919772,
-                              ParameterVectorElement(θ[7]): -3.152683601101757,
-                              ParameterVectorElement(θ[0]): -6.254822868268873},
-    &#39;optimal_point&#39;: array([-6.25482287, -0.63383987,  1.29335196, -2.72566429, -2.18149094,
-        6.44448769, -0.36256104, -3.1526836 ]),
-    &#39;optimal_value&#39;: -1.8573209790810083,
+    &#39;eigenvalue&#39;: -1.8578219103628553,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fe70d6ca1f0&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): 0.46354534338994463,
+                              ParameterVectorElement(θ[0]): 0.5622610074127993,
+                              ParameterVectorElement(θ[2]): -3.8602468515827626,
+                              ParameterVectorElement(θ[3]): 1.23658993034723,
+                              ParameterVectorElement(θ[4]): 5.308460814757,
+                              ParameterVectorElement(θ[5]): -1.4158031818757537,
+                              ParameterVectorElement(θ[6]): -0.7241710155972244,
+                              ParameterVectorElement(θ[7]): -3.207592085792305},
+    &#39;optimal_point&#39;: array([ 0.56226101,  0.46354534, -3.86024685,  1.23658993,  5.30846081,
+       -1.41580318, -0.72417102, -3.20759209]),
+    &#39;optimal_value&#39;: -1.8578219103628553,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7feba9959cd0&gt;,
-    &#39;optimizer_time&#39;: 0.5955655574798584}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe6bf2e4070&gt;,
+    &#39;optimizer_time&#39;: 0.5842266082763672}
 </pre></div></div>
 </div>
 <p>Note: We do not fix the random seed in the simulators here, so re-running gives slightly varying results.</p>
@@ -541,8 +540,17 @@
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2198/2169806890.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
+  import qiskit.tools.jupyter
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.606903076171875</td></tr><tr><td colspan='2'>Fri Jan 19 16:18:28 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:48:01 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -551,7 +559,7 @@
 <div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"2aae6ff4bb7a43d6b7a65186badd9d4f": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "c80e5c5530aa4fb4979ae846ed300879": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "5b642c5858b0479698c68596b9f3e23a": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_2aae6ff4bb7a43d6b7a65186badd9d4f", "placeholder": "\u200b", "style": "IPY_MODEL_c80e5c5530aa4fb4979ae846ed300879", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"850ed0c41ba14fa78ac292d597a90571": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "6d34de6508a4407ab8b9d22821ab97b1": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "36dbfa0e0a9544d58432dd9ee22d286c": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_850ed0c41ba14fa78ac292d597a90571", "placeholder": "\u200b", "style": "IPY_MODEL_6d34de6508a4407ab8b9d22821ab97b1", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 
@@ -589,7 +597,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

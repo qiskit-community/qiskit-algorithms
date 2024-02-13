@@ -357,9 +357,9 @@
 </div>
 <section id="VQE-with-Qiskit-Aer-Primitives">
 <h1>VQE with Qiskit Aer Primitives<a class="headerlink" href="#VQE-with-Qiskit-Aer-Primitives" title="Permalink to this heading">#</a></h1>
-<p>This notebook demonstrates how to leverage the <a class="reference external" href="https://qiskit.org/ecosystem/aer/apidocs/aer_primitives.html">Qiskit Aer Primitives</a> to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.</p>
-<p>For further information on the Qiskit Aer noise model, you can consult the <a class="reference external" href="https://qiskit.org/ecosystem/aer/apidocs/aer_noise.html">Qiskit Aer documentation</a>, as well the tutorial for <a class="reference external" href="https://qiskit.org/ecosystem/aer/tutorials/3_building_noise_models.html">building noise models</a>.</p>
-<p>The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.quantum_info.SparsePauliOp.html#sparsepauliop">SparsePauliOp</a> class.</p>
+<p>This notebook demonstrates how to leverage the <a class="reference external" href="https://qiskit.github.io/qiskit-aer/apidocs/aer_primitives.html">Qiskit Aer Primitives</a> to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.</p>
+<p>For further information on the Qiskit Aer noise model, you can consult the <a class="reference external" href="https://qiskit.github.io/qiskit-aer/apidocs/aer_noise.html">Qiskit Aer documentation</a>, as well the tutorial for <a class="reference external" href="https://qiskit.github.io/qiskit-aer/tutorials/3_building_noise_models.html">building noise models</a>.</p>
+<p>The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.SparsePauliOp">SparsePauliOp</a> class.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -543,16 +543,25 @@ Text(0.5, 1.0, &#39;Convergence with no noise&#39;)
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 NoiseModel:
   Basis gates: [&#39;cx&#39;, &#39;id&#39;, &#39;rz&#39;, &#39;sx&#39;, &#39;x&#39;]
-  Instructions with noise: [&#39;cx&#39;, &#39;sx&#39;, &#39;id&#39;, &#39;measure&#39;, &#39;x&#39;]
+  Instructions with noise: [&#39;id&#39;, &#39;cx&#39;, &#39;sx&#39;, &#39;measure&#39;, &#39;x&#39;]
   Qubits with noise: [0, 1, 2, 3, 4]
   Specific qubit errors: [(&#39;id&#39;, (0,)), (&#39;id&#39;, (1,)), (&#39;id&#39;, (2,)), (&#39;id&#39;, (3,)), (&#39;id&#39;, (4,)), (&#39;sx&#39;, (0,)), (&#39;sx&#39;, (1,)), (&#39;sx&#39;, (2,)), (&#39;sx&#39;, (3,)), (&#39;sx&#39;, (4,)), (&#39;x&#39;, (0,)), (&#39;x&#39;, (1,)), (&#39;x&#39;, (2,)), (&#39;x&#39;, (3,)), (&#39;x&#39;, (4,)), (&#39;cx&#39;, (3, 4)), (&#39;cx&#39;, (4, 3)), (&#39;cx&#39;, (3, 1)), (&#39;cx&#39;, (1, 3)), (&#39;cx&#39;, (1, 2)), (&#39;cx&#39;, (2, 1)), (&#39;cx&#39;, (0, 1)), (&#39;cx&#39;, (1, 0)), (&#39;measure&#39;, (0,)), (&#39;measure&#39;, (1,)), (&#39;measure&#39;, (2,)), (&#39;measure&#39;, (3,)), (&#39;measure&#39;, (4,))]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2945/1013747364.py:6: DeprecationWarning: All fake backend instances based on real device snapshots (`FakeVigo`,`FakeSherbrooke`,...) have been migrated to the `qiskit_ibm_runtime` package. These classes are deprecated as of qiskit 0.46.0 and will be removed in qiskit 1.0.0. To migrate your code, run `pip install qiskit-ibm-runtime` and use `from qiskit_ibm_runtime.fake_provider import FakeExample` instead of `from qiskit.providers.fake_provider import FakeExample`. If you are using a custom fake backend implementation, you don&#39;t need to take any action.
+  device = FakeVigo()
 </pre></div></div>
 </div>
 <p>Once the noise model is defined, you can run <code class="docutils literal notranslate"><span class="pre">VQE</span></code> using an Aer <code class="docutils literal notranslate"><span class="pre">Estimator</span></code>, where you can pass the noise model to the underlying simulator using the <code class="docutils literal notranslate"><span class="pre">backend_options</span></code> dictionary. Please note that this simulation will take longer than the noiseless one.</p>
@@ -652,8 +661,8 @@ VQE on Aer qasm simulator (with noise): -1.75227
 </pre></div></div>
 </div>
 <p>You can notice that, while the noiseless simulation’s result is closer to the exact reference value, there is still some difference. This is due to the sampling noise, introduced by limiting the number of shots to 1024. A larger number of shots would decrease this sampling error and close the gap between these two values.</p>
-<p>As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/">Qiskit Runtime Primitives</a> have enabled error mitigation through the <code class="docutils literal notranslate"><span class="pre">resilience_level</span></code> option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult <a class="reference external" href="https://qiskit.org/documentation/partners/qiskit_ibm_runtime/tutorials/Error-Suppression-and-Error-Mitigation.html">this
-tutorial</a> for further information.</p>
+<p>As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime">Qiskit Runtime Primitives</a> have enabled error mitigation through the <code class="docutils literal notranslate"><span class="pre">resilience_level</span></code> option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult <a class="reference external" href="https://docs.quantum.ibm.com/run/configure-error-mitigation">this
+documentation</a> for further information.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -668,8 +677,17 @@ tutorial</a> for further information.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2945/909902925.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
+  import qiskit.tools.jupyter
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.606903076171875</td></tr><tr><td colspan='2'>Fri Jan 19 16:18:45 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:48:18 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -678,7 +696,7 @@ tutorial</a> for further information.</p>
 <div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"1e61e98047ed45e0aa0b4adda7818843": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "6a5070f4dbf645dcae4ab6e66b4e3cee": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "8d28decdd4f84346ada166b407918270": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_1e61e98047ed45e0aa0b4adda7818843", "placeholder": "\u200b", "style": "IPY_MODEL_6a5070f4dbf645dcae4ab6e66b4e3cee", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"1f95773ee17d4078823857a8bc421b71": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "f71f5e5ec48d4b7c9f3a0c943b2debec": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "e668dc819f294fb4a87c9a386fb54c43": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_1f95773ee17d4078823857a8bc421b71", "placeholder": "\u200b", "style": "IPY_MODEL_f71f5e5ec48d4b7c9f3a0c943b2debec", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 
@@ -716,7 +734,7 @@ tutorial</a> for further information.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

@@ -6,7 +6,7 @@
    "source": [
     "# Advanced VQE Options\n",
     "\n",
-    "In the first algorithms tutorial, you learned how to set up a basic [VQE](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQE.html) algorithm. Now, you will see how to provide more advanced configuration parameters to explore the full range of the variational algorithms provided in this library: [VQE](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQE.html), [QAOA](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.QAOA.html) and [VQD](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQD.html) among others. In particular, this tutorial will cover how to set up a `callback` to monitor convergence and the use of custom `initial point`s and `gradient`s."
+    "In the first algorithms tutorial, you learned how to set up a basic [VQE](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html) algorithm. Now, you will see how to provide more advanced configuration parameters to explore the full range of the variational algorithms provided in this library: [VQE](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html), [QAOA](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.QAOA.html) and [VQD](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQD.html) among others. In particular, this tutorial will cover how to set up a `callback` to monitor convergence and the use of custom `initial point`s and `gradient`s."
    ]
   },
   {
@@ -33,7 +33,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "First, you need a qubit operator for VQE. For this example, you can use the same operator as used in the algorithms introduction, which was originally computed by [Qiskit Nature](https://qiskit.org/ecosystem/nature/) for an H2 molecule."
+    "First, you need a qubit operator for VQE. For this example, you can use the same operator as used in the algorithms introduction, which was originally computed by [Qiskit Nature](https://qiskit-community.github.io/qiskit-nature/) for an H2 molecule."
    ]
   },
   {
@@ -59,7 +59,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "The next step is to instantiate the `Estimator` of choice for the evaluation of expectation values within `VQE`. For simplicity, you can select the [qiskit.primitives.Estimator](https://qiskit.org/documentation/stubs/qiskit.primitives.Estimator.html#qiskit.primitives.Estimator) that comes as part of Qiskit."
+    "The next step is to instantiate the `Estimator` of choice for the evaluation of expectation values within `VQE`. For simplicity, you can select the [qiskit.primitives.Estimator](https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.Estimator) that comes as part of Qiskit."
    ]
   },
   {
@@ -177,7 +177,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Finally, since the above problem is still easily tractable classically, you can use [NumPyMinimumEigensolver](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html) to compute a reference value for the solution."
+    "Finally, since the above problem is still easily tractable classically, you can use [NumPyMinimumEigensolver](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html) to compute a reference value for the solution."
    ]
   },
   {
@@ -246,7 +246,7 @@
    "source": [
     "## Gradients\n",
     "\n",
-    "In the variational algorithms, if the provided optimizer uses a gradient-based technique, the default gradient method will be finite differences. However, these classes include an option to pass custom gradients via the `gradient` parameter, which can be any of the provided methods within the [gradient](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.gradients.html) framework, which fully supports the use of primitives. This section shows how to use custom gradients in the VQE workflow.\n",
+    "In the variational algorithms, if the provided optimizer uses a gradient-based technique, the default gradient method will be finite differences. However, these classes include an option to pass custom gradients via the `gradient` parameter, which can be any of the provided methods within the [gradient](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.html) framework, which fully supports the use of primitives. This section shows how to use custom gradients in the VQE workflow.\n",
     "\n",
     "The first step is to initialize both the corresponding primitive and primitive gradient:"
    ]
@@ -267,7 +267,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Now, you can inspect an SLSQP run using the [FiniteDiffEstimatorGradient](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html) from above:"
+    "Now, you can inspect an SLSQP run using the [FiniteDiffEstimatorGradient](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html) from above:"
    ]
   },
   {

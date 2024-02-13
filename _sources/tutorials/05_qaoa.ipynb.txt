@@ -6,7 +6,7 @@
    "source": [
     "# Quantum Approximate Optimization Algorithm\n",
     "\n",
-    "This notebook demonstrates the implementation of the Quantum Approximate Optimization Algorithm ([QAOA](https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.QAOA.html)) for a graph partitioning problem (finding the maximum cut), and compares it to a solution using the brute-force approach."
+    "This notebook demonstrates the implementation of the Quantum Approximate Optimization Algorithm ([QAOA](https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.QAOA.html)) for a graph partitioning problem (finding the maximum cut), and compares it to a solution using the brute-force approach."
    ]
   },
   {

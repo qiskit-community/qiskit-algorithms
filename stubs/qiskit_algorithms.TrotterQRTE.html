@@ -358,7 +358,7 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TrotterQRTE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_formula</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.RealTimeEvolver.html#qiskit_algorithms.RealTimeEvolver" title="qiskit_algorithms.time_evolvers.real_time_evolver.RealTimeEvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeEvolver</span></code></a></p>
 <p>Quantum Real Time Evolution using Trotterization.</p>
-<p>The type of Trotterization is defined by the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.synthesis.ProductFormula.html#qiskit.synthesis.ProductFormula" title="(in Qiskit v0.45)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProductFormula</span></code></a>
+<p>The type of Trotterization is defined by the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.ProductFormula" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProductFormula</span></code></a>
 provided to the algorithm.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span>
@@ -380,7 +380,7 @@ provided to the algorithm.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product_formula</strong> (<em>ProductFormula</em><em> | </em><em>None</em>) – A Lie-Trotter-Suzuki product formula. If <code class="docutils literal notranslate"><span class="pre">None</span></code> provided (default),
-the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.synthesis.LieTrotter.html#qiskit.synthesis.LieTrotter" title="(in Qiskit v0.45)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LieTrotter</span></code></a> first order product formula with a single
+the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.LieTrotter" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LieTrotter</span></code></a> first order product formula with a single
 repetition is used. <code class="docutils literal notranslate"><span class="pre">reps</span></code> should be 1 to obtain a number of time-steps equal to
 <code class="docutils literal notranslate"><span class="pre">num_timesteps</span></code> and an evaluation of <a class="reference internal" href="qiskit_algorithms.TimeEvolutionProblem.html#qiskit_algorithms.TimeEvolutionProblem.aux_operators" title="qiskit_algorithms.TimeEvolutionProblem.aux_operators"><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimeEvolutionProblem.aux_operators</span></code></a>
 at every time-step. If <code class="docutils literal notranslate"><span class="pre">reps</span></code> is larger than 1, the true number of time-steps will
@@ -498,7 +498,7 @@ evaluated, <code class="docutils literal notranslate"><span class="pre">False</s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

@@ -352,7 +352,7 @@
           <h1>Source code for qiskit_algorithms.optimizers.spsa</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2018, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2018, 2024.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -364,7 +364,7 @@
 
 <span class="sd">&quot;&quot;&quot;Simultaneous Perturbation Stochastic Approximation (SPSA) optimizer.</span>
 
-<span class="sd">This implementation allows both, standard first-order as well as second-order SPSA.</span>
+<span class="sd">This implementation allows both standard first-order and second-order SPSA.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
@@ -404,7 +404,7 @@
 <span class="sd">    measurements of the objective function, regardless of the dimension of the optimization</span>
 <span class="sd">    problem.</span>
 
-<span class="sd">    Additionally to standard, first-order SPSA, where only gradient information is used, this</span>
+<span class="sd">    Additionally, to standard first-order SPSA, where only gradient information is used, this</span>
 <span class="sd">    implementation also allows second-order SPSA (2-SPSA) [2]. In 2-SPSA we also estimate the</span>
 <span class="sd">    Hessian of the loss with a stochastic approximation and multiply the gradient with the</span>
 <span class="sd">    inverse Hessian to take local curvature into account and improve convergence.</span>
@@ -420,7 +420,7 @@
 <span class="sd">        simulator or a real device, SPSA would be the most recommended choice among the optimizers</span>
 <span class="sd">        provided here.</span>
 
-<span class="sd">    The optimization process can includes a calibration phase if neither the ``learning_rate`` nor</span>
+<span class="sd">    The optimization process can include a calibration phase if neither the ``learning_rate`` nor</span>
 <span class="sd">    ``perturbation`` is provided, which requires additional functional evaluations.</span>
 <span class="sd">    (Note that either both or none must be set.) For further details on the automatic calibration,</span>
 <span class="sd">    please refer to the supplementary information section IV. of [3].</span>
@@ -442,18 +442,20 @@
 <span class="sd">            import numpy as np</span>
 <span class="sd">            from qiskit_algorithms.optimizers import SPSA</span>
 <span class="sd">            from qiskit.circuit.library import PauliTwoDesign</span>
-<span class="sd">            from qiskit.quantum_info import Pauli</span>
+<span class="sd">            from qiskit.primitives import Estimator</span>
+<span class="sd">            from qiskit.quantum_info import SparsePauliOp</span>
 
 <span class="sd">            ansatz = PauliTwoDesign(2, reps=1, seed=2)</span>
-<span class="sd">            observable = Pauli(&quot;Z&quot;) ^ Pauli(&quot;Z&quot;)</span>
+<span class="sd">            observable = SparsePauliOp(&quot;ZZ&quot;)</span>
 <span class="sd">            initial_point = np.random.random(ansatz.num_parameters)</span>
+<span class="sd">            estimator = Estimator()</span>
 
 <span class="sd">            def loss(x):</span>
-<span class="sd">                bound = ansatz.bind_parameters(x)</span>
-<span class="sd">                return np.real((StateFn(observable, is_measurement=True) @ StateFn(bound)).eval())</span>
+<span class="sd">                job = estimator.run([ansatz], [observable], [x])</span>
+<span class="sd">                return job.result().values[0]</span>
 
 <span class="sd">            spsa = SPSA(maxiter=300)</span>
-<span class="sd">            result = spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)</span>
+<span class="sd">            result = spsa.minimize(loss, x0=initial_point)</span>
 
 <span class="sd">        To use the Hessian information, i.e. 2-SPSA, you can add `second_order=True` to the</span>
 <span class="sd">        initializer of the `SPSA` class, the rest of the code remains the same.</span>
@@ -461,7 +463,7 @@
 <span class="sd">        .. code-block:: python</span>
 
 <span class="sd">            two_spsa = SPSA(maxiter=300, second_order=True)</span>
-<span class="sd">            result = two_spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)</span>
+<span class="sd">            result = two_spsa.minimize(loss, x0=initial_point)</span>
 
 <span class="sd">        The `termination_checker` can be used to implement a custom termination criterion.</span>
 
@@ -492,9 +494,8 @@
 <span class="sd">                    return False</span>
 
 <span class="sd">            spsa = SPSA(maxiter=200, termination_checker=TerminationChecker(10))</span>
-<span class="sd">            parameters, value, niter = spsa.optimize(2, objective, initial_point=[0.5, 0.5])</span>
-<span class="sd">            print(f&#39;SPSA completed after {niter} iterations&#39;)</span>
-
+<span class="sd">            result = spsa.minimize(objective, x0=[0.5, 0.5])</span>
+<span class="sd">            print(f&#39;SPSA completed after {result.nit} iterations&#39;)</span>
 
 <span class="sd">    References:</span>
 
@@ -1137,7 +1138,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

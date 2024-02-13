@@ -368,7 +368,7 @@ adaptive modeling, and simulation optimization.</p>
 <p>The main feature of SPSA is the stochastic gradient approximation, which requires only two
 measurements of the objective function, regardless of the dimension of the optimization
 problem.</p>
-<p>Additionally to standard, first-order SPSA, where only gradient information is used, this
+<p>Additionally, to standard first-order SPSA, where only gradient information is used, this
 implementation also allows second-order SPSA (2-SPSA) [2]. In 2-SPSA we also estimate the
 Hessian of the loss with a stochastic approximation and multiply the gradient with the
 inverse Hessian to take local curvature into account and improve convergence.
@@ -383,7 +383,7 @@ If you are executing a variational algorithm using a Quantum ASseMbly Language (
 simulator or a real device, SPSA would be the most recommended choice among the optimizers
 provided here.</p>
 </div>
-<p>The optimization process can includes a calibration phase if neither the <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code> nor
+<p>The optimization process can include a calibration phase if neither the <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code> nor
 <code class="docutils literal notranslate"><span class="pre">perturbation</span></code> is provided, which requires additional functional evaluations.
 (Note that either both or none must be set.) For further details on the automatic calibration,
 please refer to the supplementary information section IV. of [3].</p>
@@ -399,24 +399,26 @@ observable where the ansatz is a <code class="docutils literal notranslate"><spa
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliTwoDesign</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
+<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">ansatz</span> <span class="o">=</span> <span class="n">PauliTwoDesign</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">observable</span> <span class="o">=</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span> <span class="o">^</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+<span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">)</span>
 <span class="n">initial_point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">bound</span> <span class="o">=</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">bind_parameters</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">((</span><span class="n">StateFn</span><span class="p">(</span><span class="n">observable</span><span class="p">,</span> <span class="n">is_measurement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">@</span> <span class="n">StateFn</span><span class="p">(</span><span class="n">bound</span><span class="p">))</span><span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">ansatz</span><span class="p">],</span> <span class="p">[</span><span class="n">observable</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">spsa</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">spsa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">spsa</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To use the Hessian information, i.e. 2-SPSA, you can add <cite>second_order=True</cite> to the
 initializer of the <cite>SPSA</cite> class, the rest of the code remains the same.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">two_spsa</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">second_order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">two_spsa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">two_spsa</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <cite>termination_checker</cite> can be used to implement a custom termination criterion.</p>
@@ -445,8 +447,8 @@ initializer of the <cite>SPSA</cite> class, the rest of the code remains the sam
         <span class="k">return</span> <span class="kc">False</span>
 
 <span class="n">spsa</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">termination_checker</span><span class="o">=</span><span class="n">TerminationChecker</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-<span class="n">parameters</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">niter</span> <span class="o">=</span> <span class="n">spsa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">initial_point</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SPSA completed after </span><span class="si">{</span><span class="n">niter</span><span class="si">}</span><span class="s1"> iterations&#39;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">spsa</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SPSA completed after </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">nit</span><span class="si">}</span><span class="s1"> iterations&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -793,7 +795,7 @@ a set of key/values when the given optimizer is constructed.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

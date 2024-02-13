@@ -407,7 +407,7 @@ required if you already transitioned to seeding the <code class="docutils litera
 </ul>
 <ul class="simple">
 <li><p>A couple of algorithms here, <a class="reference internal" href="stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD" title="qiskit_algorithms.PVQD"><code class="xref py py-class docutils literal notranslate"><span class="pre">PVQD</span></code></a>, <a class="reference internal" href="stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE" title="qiskit_algorithms.AdaptVQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptVQE</span></code></a> and optimizer
-<a class="reference internal" href="stubs/qiskit_algorithms.optimizers.SNOBFIT.html#qiskit_algorithms.optimizers.SNOBFIT" title="qiskit_algorithms.optimizers.SNOBFIT"><code class="xref py py-class docutils literal notranslate"><span class="pre">SNOBFIT</span></code></a>, directly raised a <a class="reference external" href="https://qiskit.org/documentation/apidoc/exceptions.html#qiskit.exceptions.QiskitError" title="(in Qiskit v0.45)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QiskitError</span></code></a>.
+<a class="reference internal" href="stubs/qiskit_algorithms.optimizers.SNOBFIT.html#qiskit_algorithms.optimizers.SNOBFIT" title="qiskit_algorithms.optimizers.SNOBFIT"><code class="xref py py-class docutils literal notranslate"><span class="pre">SNOBFIT</span></code></a>, directly raised a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/exceptions#qiskit.exceptions.QiskitError" title="(in Qiskit v0.46)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QiskitError</span></code></a>.
 These have been changed to raise an <a class="reference internal" href="apidocs/qiskit_algorithms.AlgorithmError.html#qiskit_algorithms.AlgorithmError" title="qiskit_algorithms.AlgorithmError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmError</span></code></a> instead. Algorithms
 have now been moved out of <code class="docutils literal notranslate"><span class="pre">Qiskit</span></code> and this better distinguishes the exception to the
 algorithms when raised. Now <code class="docutils literal notranslate"><span class="pre">AlgorithmError</span></code> was already raised elsewhere by the algorithms
@@ -453,7 +453,7 @@ results derived from that, such as returned by <a class="reference internal" hre
 new standalone library, <code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code>.</p>
 <p>As of Qiskit’s 0.25 release, active development of new
 algorithm features has moved to this new package.</p>
-<p>If you’re relying on <a class="reference external" href="https://qiskit.org/documentation/apidoc/algorithms.html#module-qiskit.algorithms" title="(in Qiskit v0.45)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code></a> you should update your
+<p>If you’re relying on <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/algorithms#module-qiskit.algorithms" title="(in Qiskit v0.46)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code></a> you should update your
 requirements to also include <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> and update the imports
 from <code class="docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code> to <code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code>.</p>
 <div class="admonition note">
@@ -464,7 +464,7 @@ you should first follow the migration guidelines in <a class="reference external
 to complete the migration of your code, as this package does not include
 any deprecated algorithm function.</p>
 </div>
-<p>The decision to migrate the <a class="reference external" href="https://qiskit.org/documentation/apidoc/algorithms.html#module-qiskit.algorithms" title="(in Qiskit v0.45)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code></a> module to a
+<p>The decision to migrate the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/algorithms#module-qiskit.algorithms" title="(in Qiskit v0.46)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit.algorithms</span></code></a> module to a
 separate package was made to clarify the purpose of <a class="reference external" href="https:\qiskit.org">Qiskit</a> and
 make a distinction between the tools and libraries built on top of it.</p>
 </section>
@@ -511,7 +511,7 @@ you should follow the migration guidelines in <a class="reference external" href
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             

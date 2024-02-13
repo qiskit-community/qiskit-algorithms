@@ -357,14 +357,14 @@
 </div>
 <section id="Advanced-VQE-Options">
 <h1>Advanced VQE Options<a class="headerlink" href="#Advanced-VQE-Options" title="Permalink to this heading">#</a></h1>
-<p>In the first algorithms tutorial, you learned how to set up a basic <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a> algorithm. Now, you will see how to provide more advanced configuration parameters to explore the full range of the variational algorithms provided in this library: <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a>, <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.QAOA.html">QAOA</a> and
-<a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.VQD.html">VQD</a> among others. In particular, this tutorial will cover how to set up a <code class="docutils literal notranslate"><span class="pre">callback</span></code> to monitor convergence and the use of custom <code class="docutils literal notranslate"><span class="pre">initial</span> <span class="pre">point</span></code>s and <code class="docutils literal notranslate"><span class="pre">gradient</span></code>s.</p>
+<p>In the first algorithms tutorial, you learned how to set up a basic <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a> algorithm. Now, you will see how to provide more advanced configuration parameters to explore the full range of the variational algorithms provided in this library: <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a>,
+<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.QAOA.html">QAOA</a> and <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQD.html">VQD</a> among others. In particular, this tutorial will cover how to set up a <code class="docutils literal notranslate"><span class="pre">callback</span></code> to monitor convergence and the use of custom <code class="docutils literal notranslate"><span class="pre">initial</span> <span class="pre">point</span></code>s and <code class="docutils literal notranslate"><span class="pre">gradient</span></code>s.</p>
 <section id="Callback">
 <h2>Callback<a class="headerlink" href="#Callback" title="Permalink to this heading">#</a></h2>
 <p>Callback methods can be used to monitor optimization progress as the algorithm runs and converges to the minimum. The callback is invoked for each functional evaluation by the optimizer and provides the current optimizer value, evaluation count, current optimizer parameters etc. Note that, depending on the specific optimizer this may not be each iteration (step) of the optimizer, so for example if the optimizer is calling the cost function to compute a finite difference based gradient this will
 be visible via the callback.</p>
 <p>This section demonstrates how to leverage callbacks in <code class="docutils literal notranslate"><span class="pre">VQE</span></code> to plot the convergence path to the ground state energy with a selected set of optimizers.</p>
-<p>First, you need a qubit operator for VQE. For this example, you can use the same operator as used in the algorithms introduction, which was originally computed by <a class="reference external" href="https://qiskit.org/ecosystem/nature/">Qiskit Nature</a> for an H2 molecule.</p>
+<p>First, you need a qubit operator for VQE. For this example, you can use the same operator as used in the algorithms introduction, which was originally computed by <a class="reference external" href="https://qiskit-community.github.io/qiskit-nature/">Qiskit Nature</a> for an H2 molecule.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -383,7 +383,7 @@ be visible via the callback.</p>
 </pre></div>
 </div>
 </div>
-<p>The next step is to instantiate the <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> of choice for the evaluation of expectation values within <code class="docutils literal notranslate"><span class="pre">VQE</span></code>. For simplicity, you can select the <a class="reference external" href="https://qiskit.org/documentation/stubs/qiskit.primitives.Estimator.html#qiskit.primitives.Estimator">qiskit.primitives.Estimator</a> that comes as part of Qiskit.</p>
+<p>The next step is to instantiate the <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> of choice for the evaluation of expectation values within <code class="docutils literal notranslate"><span class="pre">VQE</span></code>. For simplicity, you can select the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.Estimator">qiskit.primitives.Estimator</a> that comes as part of Qiskit.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -465,7 +465,7 @@ Optimization complete
 <img alt="../_images/tutorials_02_vqe_advanced_options_10_0.png" src="../_images/tutorials_02_vqe_advanced_options_10_0.png" />
 </div>
 </div>
-<p>Finally, since the above problem is still easily tractable classically, you can use <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a> to compute a reference value for the solution.</p>
+<p>Finally, since the above problem is still easily tractable classically, you can use <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.NumPyMinimumEigensolver.html">NumPyMinimumEigensolver</a> to compute a reference value for the solution.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -517,8 +517,8 @@ Reference value: -1.85728
 </section>
 <section id="Gradients">
 <h2>Gradients<a class="headerlink" href="#Gradients" title="Permalink to this heading">#</a></h2>
-<p>In the variational algorithms, if the provided optimizer uses a gradient-based technique, the default gradient method will be finite differences. However, these classes include an option to pass custom gradients via the <code class="docutils literal notranslate"><span class="pre">gradient</span></code> parameter, which can be any of the provided methods within the <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.gradients.html">gradient</a> framework, which fully supports the use of primitives. This section shows how to use custom gradients in the
-VQE workflow.</p>
+<p>In the variational algorithms, if the provided optimizer uses a gradient-based technique, the default gradient method will be finite differences. However, these classes include an option to pass custom gradients via the <code class="docutils literal notranslate"><span class="pre">gradient</span></code> parameter, which can be any of the provided methods within the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.html">gradient</a> framework, which fully supports the use of primitives. This section shows how to use custom
+gradients in the VQE workflow.</p>
 <p>The first step is to initialize both the corresponding primitive and primitive gradient:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -531,7 +531,7 @@ VQE workflow.</p>
 </pre></div>
 </div>
 </div>
-<p>Now, you can inspect an SLSQP run using the <a class="reference external" href="https://qiskit.org/ecosystem/algorithms/stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html">FiniteDiffEstimatorGradient</a> from above:</p>
+<p>Now, you can inspect an SLSQP run using the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html">FiniteDiffEstimatorGradient</a> from above:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -610,21 +610,21 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 9,
     &#39;eigenvalue&#39;: -1.8572750175655812,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fa5cf15b070&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[4]): -2.5983266516732413,
-                              ParameterVectorElement(θ[5]): 1.5683250498281824,
-                              ParameterVectorElement(θ[6]): -4.717616147449719,
-                              ParameterVectorElement(θ[7]): 0.3602101747090262,
-                              ParameterVectorElement(θ[0]): 4.296519450348691,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f76852e2b50&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): 4.296519450348691,
                               ParameterVectorElement(θ[2]): 0.5470777607659962,
                               ParameterVectorElement(θ[1]): 4.426962358395507,
-                              ParameterVectorElement(θ[3]): 6.092947832766949},
+                              ParameterVectorElement(θ[3]): 6.092947832766949,
+                              ParameterVectorElement(θ[4]): -2.5983266516732413,
+                              ParameterVectorElement(θ[5]): 1.5683250498281824,
+                              ParameterVectorElement(θ[6]): -4.717616147449719,
+                              ParameterVectorElement(θ[7]): 0.3602101747090262},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: -1.8572750175655812,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fa5d5e4df40&gt;,
-    &#39;optimizer_time&#39;: 0.1905813217163086}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f76852e2760&gt;,
+    &#39;optimizer_time&#39;: 0.1974484920501709}
 </pre></div></div>
 </div>
 <p>Now, you can take the <code class="docutils literal notranslate"><span class="pre">optimal_point</span></code> from the above result and use it as the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> for a follow-up computation.</p>
@@ -659,7 +659,7 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 1,
     &#39;eigenvalue&#39;: -1.8572750175655812,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fa5cf14f040&gt;,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f76cc3514f0&gt;,
     &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): 4.426962358395507,
                               ParameterVectorElement(θ[0]): 4.296519450348691,
                               ParameterVectorElement(θ[2]): 0.5470777607659962,
@@ -672,8 +672,8 @@ Value using Gradient: -1.85728
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: -1.8572750175655812,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fa620f25520&gt;,
-    &#39;optimizer_time&#39;: 0.029110193252563477}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f76852a0af0&gt;,
+    &#39;optimizer_time&#39;: 0.035246849060058594}
 
 </pre></div></div>
 </div>
@@ -712,8 +712,17 @@ solution as the starting point for the next step. There also exist more complex 
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_2516/909902925.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
+  import qiskit.tools.jupyter
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.45.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.606903076171875</td></tr><tr><td colspan='2'>Fri Jan 19 16:18:33 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:48:06 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -722,7 +731,7 @@ solution as the starting point for the next step. There also exist more complex 
 <div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"a7b9229cb5344d01bf3ce1f34c4c4bd5": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "0262c88d57d5454e9672c1dd0201b4b5": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "44dc82af8489471fbd3945ef23dff9e5": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_a7b9229cb5344d01bf3ce1f34c4c4bd5", "placeholder": "\u200b", "style": "IPY_MODEL_0262c88d57d5454e9672c1dd0201b4b5", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"b94d02a2017e4653a177c3ef9534429c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "12bee799adf648f1a214e62433e67b74": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "a3476a01ca9b48f1a7c8e874f6fa919b": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_b94d02a2017e4653a177c3ef9534429c", "placeholder": "\u200b", "style": "IPY_MODEL_12bee799adf648f1a214e62433e67b74", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 
@@ -760,7 +769,7 @@ solution as the starting point for the next step. There also exist more complex 
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/01/19</div>
+              Last updated on 2024/02/13</div>
           </div>
           <div class="right-details">
             
