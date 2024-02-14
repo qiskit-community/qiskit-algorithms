@@ -19,6 +19,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import minimize
 
+from qiskit_algorithms.exceptions import QiskitAlgorithmsOptimizersWarning
 from qiskit_algorithms.utils.validation import validate_min
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
@@ -116,9 +117,25 @@ class SciPyOptimizer(Optimizer):
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
-        # Remove ignored parameters to suppress the warning of scipy.optimize.minimize
-        if self.is_bounds_ignored:
+        # Loop up for bounds specified in options or kwargs
+        if 'bounds' in self._kwargs:
+            bounds = self._kwargs['bounds']
+            del self._kwargs['bounds']
+
+        if 'bounds' in self._options:
+            bounds = self._options['bounds']
+            del self._options['bounds']
+
+        # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
+        if self.is_bounds_ignored and bounds is not None:
+            warnings.warn(
+                (f'Optimizer method {self._method:s} does not support bounds. '
+                 f'Got bounds={bounds}, setting bounds=None.'),
+                QiskitAlgorithmsOptimizersWarning
+            )
             bounds = None
+            
+        # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
             jac = None
 
@@ -144,15 +161,6 @@ class SciPyOptimizer(Optimizer):
         if self._method == "tnc" and "maxiter" in self._options:
             swapped_deprecated_args = True
             self._options["maxfun"] = self._options.pop("maxiter")
-
-        # Avoid clashing bounds defined in kwargs or _options
-        if 'bounds' in self._kwargs and not self.is_bounds_ignored:
-            bounds = self._kwargs['bounds']
-            del self._kwargs['bounds']
-
-        if 'bounds' in self._options and not self.is_bounds_ignored:
-            bounds = self._options['bounds']
-            del self._options['bounds']
 
         raw_result = minimize(
             fun=fun,
