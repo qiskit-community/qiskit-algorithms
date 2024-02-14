@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any
+import warnings
 
 import numpy as np
 from scipy.optimize import minimize
@@ -129,8 +130,7 @@ class SciPyOptimizer(Optimizer):
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored and bounds is not None:
             warnings.warn(
-                (f'Optimizer method {self._method:s} does not support bounds. '
-                 f'Got bounds={bounds}, setting bounds=None.'),
+                f'Optimizer method {self._method} does not support bounds.',
                 QiskitAlgorithmsOptimizersWarning
             )
             bounds = None
