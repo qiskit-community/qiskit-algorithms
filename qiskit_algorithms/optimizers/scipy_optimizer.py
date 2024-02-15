@@ -119,22 +119,22 @@ class SciPyOptimizer(Optimizer):
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
         # Loop up for bounds specified in options or kwargs
-        if 'bounds' in self._kwargs:
-            bounds = self._kwargs['bounds']
-            del self._kwargs['bounds']
+        if "bounds" in self._kwargs:
+            bounds = self._kwargs["bounds"]
+            del self._kwargs["bounds"]
 
-        if 'bounds' in self._options:
-            bounds = self._options['bounds']
-            del self._options['bounds']
+        if "bounds" in self._options:
+            bounds = self._options["bounds"]
+            del self._options["bounds"]
 
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored and bounds is not None:
             warnings.warn(
-                f'Optimizer method {self._method} does not support bounds.',
-                QiskitAlgorithmsOptimizersWarning
+                f"Optimizer method {self._method} does not support bounds.",
+                QiskitAlgorithmsOptimizersWarning,
             )
             bounds = None
-            
+
         # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
             jac = None
