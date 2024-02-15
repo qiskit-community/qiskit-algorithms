@@ -13,13 +13,13 @@
 """Exception and warnings for errors raised by Algorithms module."""
 
 from qiskit.exceptions import QiskitError
-import warnings
 
 
 class AlgorithmError(QiskitError):
     """For Algorithm specific errors."""
 
     pass
+
 
 class QiskitAlgorithmsWarning(UserWarning):
     """Base class for warnings raised by Qiskit Algorithms."""
@@ -32,8 +32,9 @@ class QiskitAlgorithmsWarning(UserWarning):
     def __str__(self):
         """Return the message."""
         return repr(self.message)
-    
+
+
 class QiskitAlgorithmsOptimizersWarning(QiskitAlgorithmsWarning):
     """For Algorithm specific warnings."""
-    
+
     pass
