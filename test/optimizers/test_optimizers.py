@@ -49,6 +49,7 @@ from qiskit_algorithms.optimizers import (
     SciPyOptimizer,
 )
 from qiskit_algorithms.utils import algorithm_globals
+from qiskit_algorithms.exceptions import QiskitAlgorithmsOptimizersWarning
 
 
 @ddt
@@ -182,6 +183,133 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         optimizer = SciPyOptimizer("BFGS", options={"maxiter": 1000}, callback=callback)
         self.run_optimizer(optimizer, max_nfev=10000)
         self.assertTrue(values)  # Check the list is nonempty.
+
+    def test_scipy_optimizer_parse_bounds(self):
+        """
+        Test the parsing of bounds in SciPyOptimizer.
+
+        This function tests the behavior of parsing bounds in the SciPyOptimizer class.
+        It checks whether the bounds are correctly allocated and raises an assertion error
+        if unexpected TypeErrors are encountered during parsing.
+
+        Cases:
+        1. Test parsing bounds specified in the 'options' parameter of SciPyOptimizer.
+        2. Test parsing bounds specified directly in the 'bounds' parameter (as kwarg) of SciPyOptimizer.
+        3. Test parsing bounds specified directly in the 'minimize' method of SciPyOptimizer.
+
+        This function aims to ensure that bounds are correctly allocated within the object attributes
+        and not in the 'options' or 'kwargs' dictionaries, to avoid known parsing issues.
+
+        Raises:
+            AssertionError: If unexpected TypeErrors are raised during parsing of bounds.
+        """
+
+        cases = {}
+
+        try:
+            optimizer = SciPyOptimizer('SLSQP', maxiter=10, options={'bounds': [(0., 1.)]})
+
+            # Make sure the minimize method takes place
+            optimizer.minimize(lambda x: -x, 1.)
+
+        except TypeError:
+            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
+            self.fail("TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer._options.")
+
+        cases['SciPyOptimizer._options'] = optimizer
+
+        try:
+            optimizer = SciPyOptimizer('SLSQP', maxiter=10, bounds=[(0., 1.)])
+            optimizer.minimize(lambda x: -x, 1.)
+
+        except TypeError:
+            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
+            self.fail("TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer._kwargs.")
+
+        cases['SciPyOptimizer._kwargs'] = optimizer
+
+        try:
+            optimizer = SciPyOptimizer('SLSQP', maxiter=10)
+            optimizer.minimize(lambda x: -x, 1., bounds=[(0., 1.)])
+
+        except TypeError:
+            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
+            self.fail("TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer.minimize(...).")
+
+        cases['SciPyOptimizer.minimize'] = optimizer
+
+        # Check that the bounds are correctly allocated in the attr and not in dicts
+        # This avoids the Scipy parsing issue documented in
+        # https://github.com/qiskit-community/qiskit-machine-learning/issues/570
+        for optimizer in cases.values():
+            self.assertTrue(hasattr(optimizer, '_bounds'))
+            self.assertFalse('bounds' in optimizer._options)
+            self.assertFalse('bounds' in optimizer._kwargs)
+            self.assertFalse(optimizer._bounds is None)  # Because we set bounds to a non-empty tuple
+
+    def test_scipy_optimizer_bounds_overwrite(self):
+        """
+            Test bounds overwrite behavior of SciPyOptimizer.
+
+            This function tests the behavior of SciPyOptimizer when new bounds are supplied to it
+            after initial bounds have been set. It verifies that the new bounds overwrite the old
+            ones correctly.
+
+            Raises:
+                AssertionError: If the bounds overwrite behavior is incorrect.
+            """
+        # Initialize SciPyOptimizer with initial bounds
+        optimizer = SciPyOptimizer('SLSQP', maxiter=10, bounds=[(0., 1.)])
+
+        # Record the old bounds
+        old_bounds = np.asarray(list(optimizer._bounds[0]))
+
+        # Call the minimize method with new bounds
+        optimizer.minimize(lambda x: -x, 1., bounds=[(2., 3.)])
+
+        # Record the new bounds
+        new_bounds = np.asarray(list(optimizer._bounds[0]))
+
+        # Verify that the old bounds and new bounds are not identical
+        self.assertFalse(np.any(old_bounds == new_bounds))
+
+        # Verify that the new bounds match the expected values
+        self.assertTrue(np.all(new_bounds == np.array([2., 3.])))
+
+    def test_scipy_optimizer_warning(self):
+        """
+        Test warning behavior of SciPyOptimizer with unsupported bounds.
+
+        This function tests the warning behavior of SciPyOptimizer when using the COBYLA optimizer
+        with bounds supplied, which are unsupported by COBYLA. The function verifies that a specific
+        warning, QiskitAlgorithmsOptimizersWarning, is raised when bounds are supplied to COBYLA,
+        and the optimizer ignores them as expected.
+
+        Cases:
+        1. Test warning when bounds are supplied via 'options' parameter.
+        2. Test warning when bounds are supplied directly as kwargs.
+        3. Test warning when bounds are supplied via 'minimize' method.
+
+        Raises:
+            AssertionError: If the expected warning is not raised.
+        """
+
+        # Cobyla does not support bounds and is expected to warn if bounds (then ignored) are supplied
+        optimizer = SciPyOptimizer('cobyla', maxiter=10, options={'bounds': [(0., 1.)]})
+
+        # Using lambda function to pass a function that will raise the specific warning
+        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
+            optimizer.minimize(lambda x: -x, 1.)
+
+        # The same should happen with bounds parsed as kwargs
+        optimizer = SciPyOptimizer('cobyla', maxiter=10, bounds=[(0., 1.)])
+        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
+            optimizer.minimize(lambda x: -x, 1.)
+
+        # The same should happen with bounds parsed via minimize(...)
+        optimizer = SciPyOptimizer('cobyla', maxiter=10)
+        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
+            optimizer.minimize(lambda x: -x, 1., bounds=[(0., 1.)])
 
     # ESCH and ISRES do not do well with rosen
     @data(
@@ -346,7 +474,7 @@ class TestOptimizerSerialization(QiskitAlgorithmsTestCase):
         def powerlaw():
             n = 0
             while True:
-                yield rate**n
+                yield rate ** n
                 n += 1
 
         def steps():
