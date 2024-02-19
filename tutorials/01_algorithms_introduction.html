@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Advanced VQE Options" href="02_vqe_advanced_options.html" /><link rel="prev" title="Algorithms Tutorials" href="index.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>An Introduction to Algorithms using Qiskit - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>An Introduction to Algorithms using Qiskit - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
     
     
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -353,7 +367,7 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.2/docs/tutorials/01_algorithms_introduction.ipynb">docs/tutorials/01_algorithms_introduction.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/01_algorithms_introduction.ipynb">docs/tutorials/01_algorithms_introduction.ipynb</a>.</p>
 </div>
 <section id="An-Introduction-to-Algorithms-using-Qiskit">
 <h1>An Introduction to Algorithms using Qiskit<a class="headerlink" href="#An-Introduction-to-Algorithms-using-Qiskit" title="Permalink to this heading">#</a></h1>
@@ -382,7 +396,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ansatz</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;iqx&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ansatz</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -433,13 +447,15 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
-<span class="n">H2_op</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;II&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.052373245772859</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;IZ&quot;</span><span class="p">,</span> <span class="mf">0.39793742484318045</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;ZI&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.39793742484318045</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01128010425623538</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;XX&quot;</span><span class="p">,</span> <span class="mf">0.18093119978423156</span><span class="p">)</span>
-<span class="p">])</span>
+<span class="n">H2_op</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;II&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.052373245772859</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;IZ&quot;</span><span class="p">,</span> <span class="mf">0.39793742484318045</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;ZI&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.39793742484318045</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01128010425623538</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;XX&quot;</span><span class="p">,</span> <span class="mf">0.18093119978423156</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -459,23 +475,23 @@
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
-    &#39;cost_function_evals&#39;: 56,
-    &#39;eigenvalue&#39;: -1.8572750097072421,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fe6c2509910&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): -5.127467420976311,
-                              ParameterVectorElement(θ[0]): 3.998108416312631,
-                              ParameterVectorElement(θ[2]): 5.965233301056655,
-                              ParameterVectorElement(θ[3]): -2.8353037799063903,
-                              ParameterVectorElement(θ[4]): -4.097286929536383,
-                              ParameterVectorElement(θ[5]): -1.0969242531358394,
-                              ParameterVectorElement(θ[6]): 1.5605314774739636,
-                              ParameterVectorElement(θ[7]): 3.622465143176244},
-    &#39;optimal_point&#39;: array([ 3.99810842, -5.12746742,  5.9652333 , -2.83530378, -4.09728693,
-       -1.09692425,  1.56053148,  3.62246514]),
-    &#39;optimal_value&#39;: -1.8572750097072421,
+    &#39;cost_function_evals&#39;: 45,
+    &#39;eigenvalue&#39;: -1.8572750127515036,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f2c807c7370&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): 5.795734515413679,
+                              ParameterVectorElement(θ[1]): -5.427759513373138,
+                              ParameterVectorElement(θ[2]): -5.70391816089665,
+                              ParameterVectorElement(θ[3]): -0.04637958451254646,
+                              ParameterVectorElement(θ[4]): 3.7610660976026247,
+                              ParameterVectorElement(θ[5]): -6.055896669724794,
+                              ParameterVectorElement(θ[6]): -0.6588047909262453,
+                              ParameterVectorElement(θ[7]): -5.291900054098673},
+    &#39;optimal_point&#39;: array([ 5.79573452, -5.42775951, -5.70391816, -0.04637958,  3.7610661 ,
+       -6.05589667, -0.65880479, -5.29190005]),
+    &#39;optimal_value&#39;: -1.8572750127515036,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe6bf2e41c0&gt;,
-    &#39;optimizer_time&#39;: 0.12650489807128906}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f2c363c9520&gt;,
+    &#39;optimizer_time&#39;: 0.10162496566772461}
 </pre></div></div>
 </div>
 <p>From the above result we can see the number of cost function (=energy) evaluations the optimizer took until it found the minimum eigenvalue of <span class="math notranslate nohighlight">\(\approx -1.85727\)</span> which is the electronic ground state energy of the given H2 molecule. The optimal parameters of the ansatz can also be seen which are the values that were in the ansatz at the minimum value.</p>
@@ -507,60 +523,50 @@
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 200,
-    &#39;eigenvalue&#39;: -1.8578219103628553,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7fe70d6ca1f0&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): 0.46354534338994463,
-                              ParameterVectorElement(θ[0]): 0.5622610074127993,
-                              ParameterVectorElement(θ[2]): -3.8602468515827626,
-                              ParameterVectorElement(θ[3]): 1.23658993034723,
-                              ParameterVectorElement(θ[4]): 5.308460814757,
-                              ParameterVectorElement(θ[5]): -1.4158031818757537,
-                              ParameterVectorElement(θ[6]): -0.7241710155972244,
-                              ParameterVectorElement(θ[7]): -3.207592085792305},
-    &#39;optimal_point&#39;: array([ 0.56226101,  0.46354534, -3.86024685,  1.23658993,  5.30846081,
-       -1.41580318, -0.72417102, -3.20759209]),
-    &#39;optimal_value&#39;: -1.8578219103628553,
+    &#39;eigenvalue&#39;: -1.8581060254428572,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f2c36352040&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): 6.705192131820564,
+                              ParameterVectorElement(θ[1]): -1.9167697971871003,
+                              ParameterVectorElement(θ[2]): 2.9564505542102073,
+                              ParameterVectorElement(θ[3]): 3.582900202913573,
+                              ParameterVectorElement(θ[4]): 6.1646586502417655,
+                              ParameterVectorElement(θ[5]): -1.6563036880800672,
+                              ParameterVectorElement(θ[6]): 5.7206519942941085,
+                              ParameterVectorElement(θ[7]): 2.8404127053676915},
+    &#39;optimal_point&#39;: array([ 6.70519213, -1.9167698 ,  2.95645055,  3.5829002 ,  6.16465865,
+       -1.65630369,  5.72065199,  2.84041271]),
+    &#39;optimal_value&#39;: -1.8581060254428572,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe6bf2e4070&gt;,
-    &#39;optimizer_time&#39;: 0.5842266082763672}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f2c3a7f4100&gt;,
+    &#39;optimizer_time&#39;: 0.5537986755371094}
 </pre></div></div>
 </div>
 <p>Note: We do not fix the random seed in the simulators here, so re-running gives slightly varying results.</p>
-<p>This concludes this introduction to algorithms in Qiskit. Please check out the other algorithm tutorials in this series for both broader as well as more in depth coverage of the algorithms.</p>
+<p>This concludes this introduction to algorithms using Qiskit. Please check out the other algorithm tutorials in this series for both broader as well as more in depth coverage of the algorithms.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
-<br/></pre></div>
+</pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_2198/2169806890.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
-  import qiskit.tools.jupyter
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:48:01 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Feb 19 12:17:47 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
-<script type="application/vnd.jupyter.widget-state+json">
-{"state": {"850ed0c41ba14fa78ac292d597a90571": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "6d34de6508a4407ab8b9d22821ab97b1": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "36dbfa0e0a9544d58432dd9ee22d286c": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_850ed0c41ba14fa78ac292d597a90571", "placeholder": "\u200b", "style": "IPY_MODEL_6d34de6508a4407ab8b9d22821ab97b1", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
-</script></section>
+</section>
 </section>
 
         </article>
@@ -597,7 +603,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -636,7 +642,7 @@
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

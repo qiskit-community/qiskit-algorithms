@@ -9,16 +9,11 @@
 
 
   
-   .. rubric:: Attributes
-    
-   .. autoattribute:: version
-  
 
   
   
    .. rubric:: Methods
     
-   .. automethod:: backend
    .. automethod:: cancel
    .. automethod:: cancelled
    .. automethod:: done
@@ -28,5 +23,4 @@
    .. automethod:: running
    .. automethod:: status
    .. automethod:: submit
-   .. automethod:: wait_for_final_state
   

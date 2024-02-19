@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Projected Variational Quantum Dynamics" href="10_pvqd.html" /><link rel="prev" title="Grover’s Algorithm and Amplitude Amplification" href="06_grover.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>Grover’s algorithm examples - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Grover’s algorithm examples - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
     
     
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -353,7 +367,7 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.2/docs/tutorials/07_grover_examples.ipynb">docs/tutorials/07_grover_examples.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/07_grover_examples.ipynb">docs/tutorials/07_grover_examples.ipynb</a>.</p>
 </div>
 <section id="Grover's-algorithm-examples">
 <h1>Grover’s algorithm examples<a class="headerlink" href="#Grover's-algorithm-examples" title="Permalink to this heading">#</a></h1>
@@ -365,15 +379,15 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_3sat_instance</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">c example DIMACS-CNF 3-SAT</span>
-<span class="s1">p cnf 3 5</span>
-<span class="s1">-1 -2 -3 0</span>
-<span class="s1">1 -2 3 0</span>
-<span class="s1">1 2 -3 0</span>
-<span class="s1">1 -2 -3 0</span>
-<span class="s1">-1 2 3 0</span>
-<span class="s1">&#39;&#39;&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_3sat_instance</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">c example DIMACS-CNF 3-SAT</span>
+<span class="s2">p cnf 3 5</span>
+<span class="s2">-1 -2 -3 0</span>
+<span class="s2">1 -2 3 0</span>
+<span class="s2">1 2 -3 0</span>
+<span class="s2">1 -2 -3 0</span>
+<span class="s2">-1 2 3 0</span>
+<span class="s2">&quot;&quot;&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -393,7 +407,7 @@
 <span class="kn">from</span> <span class="nn">qiskit.exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalLibraryError</span>
 <span class="kn">from</span> <span class="nn">qiskit.circuit.library.phase_oracle</span> <span class="kn">import</span> <span class="n">PhaseOracle</span>
 
-<span class="n">fp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+t&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w+t&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_3sat_instance</span><span class="p">)</span>
 <span class="n">file_name</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">name</span>
 <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -450,27 +464,18 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.tools.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
 
 <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">display</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">circuit_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7445/1817241885.py:4: DeprecationWarning: Using plot_histogram() ``data`` argument with QuasiDistribution, ProbDistribution, or a distribution dictionary is deprecated as of qiskit-terra 0.22.0. It will be removed no earlier than 3 months after the release date. Instead, use ``plot_distribution()``.
-  display(plot_histogram(result.circuit_results[0]))
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_07_grover_examples_10_1.png" src="../_images/tutorials_07_grover_examples_10_1.png" />
+<img alt="../_images/tutorials_07_grover_examples_10_0.png" src="../_images/tutorials_07_grover_examples_10_0.png" />
 </div>
 </div>
 </section>
@@ -481,7 +486,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expression</span> <span class="o">=</span> <span class="s1">&#39;(w ^ x) &amp; ~(y ^ z) &amp; (x &amp; y &amp; z)&#39;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;(w ^ x) &amp; ~(y ^ z) &amp; (x &amp; y &amp; z)&quot;</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracle</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
     <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">is_good_state</span><span class="o">=</span><span class="n">oracle</span><span class="o">.</span><span class="n">evaluate_bitstring</span><span class="p">)</span>
@@ -493,20 +498,11 @@
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7445/2610379270.py:7: DeprecationWarning: Using plot_histogram() ``data`` argument with QuasiDistribution, ProbDistribution, or a distribution dictionary is deprecated as of qiskit-terra 0.22.0. It will be removed no earlier than 3 months after the release date. Instead, use ``plot_distribution()``.
-  display(plot_histogram(result.circuit_results[0]))
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_07_grover_examples_12_1.png" src="../_images/tutorials_07_grover_examples_12_1.png" />
+<img alt="../_images/tutorials_07_grover_examples_12_0.png" src="../_images/tutorials_07_grover_examples_12_0.png" />
 </div>
 </div>
 <p>In the example above, the input Boolean logical expression <code class="docutils literal notranslate"><span class="pre">'(w</span> <span class="pre">^</span> <span class="pre">x)</span> <span class="pre">&amp;</span> <span class="pre">~(y</span> <span class="pre">^</span> <span class="pre">z)</span> <span class="pre">&amp;</span> <span class="pre">(x</span> <span class="pre">&amp;</span> <span class="pre">y</span> <span class="pre">&amp;</span> <span class="pre">z)'</span></code> should be quite self-explanatory, where <code class="docutils literal notranslate"><span class="pre">^</span></code>, <code class="docutils literal notranslate"><span class="pre">~</span></code>, and <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> represent the Boolean logical XOR, NOT, and AND operators, respectively. It should be quite easy to figure out the satisfying solution by examining its parts: <code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">^</span> <span class="pre">x</span></code> calls for <code class="docutils literal notranslate"><span class="pre">w</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> taking different values; <code class="docutils literal notranslate"><span class="pre">~(y</span> <span class="pre">^</span> <span class="pre">z)</span></code> requires <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> be the same; <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&amp;</span> <span class="pre">y</span> <span class="pre">&amp;</span> <span class="pre">z</span></code> dictates all three to be <code class="docutils literal notranslate"><span class="pre">True</span></code>. Putting these
@@ -515,36 +511,26 @@ together, we get the satisfying solution <code class="docutils literal notransla
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
-<br/></pre></div>
+</pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7445/2169806890.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
-  import qiskit.tools.jupyter
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:48:46 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.3</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Feb 19 12:18:26 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
-<script type="application/vnd.jupyter.widget-state+json">
-{"state": {"0aee1b5539f148619d767732764491bb": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "a803bd94d1064becba1c4c6b96dcaf89": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "44557f09fe1441539083a96d576c81f5": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_0aee1b5539f148619d767732764491bb", "placeholder": "\u200b", "style": "IPY_MODEL_a803bd94d1064becba1c4c6b96dcaf89", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
-</script></section>
+</section>
 </section>
 
         </article>
@@ -581,7 +567,7 @@ together, we get the satisfying solution <code class="docutils literal notransla
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -618,7 +604,7 @@ together, we get the satisfying solution <code class="docutils literal notransla
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

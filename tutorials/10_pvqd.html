@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Variational Quantum Time Evolution" href="11_VarQTE.html" /><link rel="prev" title="Grover’s algorithm examples" href="07_grover_examples.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>Projected Variational Quantum Dynamics - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Projected Variational Quantum Dynamics - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
     
     
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -353,7 +367,7 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.2/docs/tutorials/10_pvqd.ipynb">docs/tutorials/10_pvqd.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/10_pvqd.ipynb">docs/tutorials/10_pvqd.ipynb</a>.</p>
 </div>
 <section id="Projected-Variational-Quantum-Dynamics">
 <h1>Projected Variational Quantum Dynamics<a class="headerlink" href="#Projected-Variational-Quantum-Dynamics" title="Permalink to this heading">#</a></h1>
@@ -378,9 +392,14 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">final_time</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_sparse_list</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
-<span class="p">],</span> <span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_sparse_list</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">num_qubits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">observable</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZI&quot;</span><span class="p">,</span> <span class="s2">&quot;IZ&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -404,7 +423,7 @@
 <span class="c1"># from qiskit.circuit.library import EfficientSU2</span>
 <span class="c1"># ansatz = EfficientSU2(2, reps=1)</span>
 
-<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;iqx&quot;</span><span class="p">)</span>
+<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;clifford&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -463,12 +482,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">PVQD</span>
 
 <span class="n">pvqd</span> <span class="o">=</span> <span class="n">PVQD</span><span class="p">(</span>
-    <span class="n">fidelity</span><span class="p">,</span>
-    <span class="n">ansatz</span><span class="p">,</span>
-    <span class="n">initial_parameters</span><span class="p">,</span>
-    <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span>
-    <span class="n">num_timesteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">optimizer</span><span class="o">=</span><span class="n">bfgs</span>
+    <span class="n">fidelity</span><span class="p">,</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">initial_parameters</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">bfgs</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -480,7 +494,9 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
 
-<span class="n">problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">final_time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="p">[</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">observable</span><span class="p">])</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span>
+    <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">final_time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="p">[</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">observable</span><span class="p">]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -499,312 +515,312 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{   &#39;aux_ops_evaluated&#39;: array([ 0.10446968, -0.82488667]),
-    &#39;estimated_error&#39;: 2.4020200682928206e-06,
-    &#39;evolved_state&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fabd77f73a0&gt;,
+{   &#39;aux_ops_evaluated&#39;: array([ 0.10680874, -0.82395076]),
+    &#39;estimated_error&#39;: 1.2141100973472874e-06,
+    &#39;evolved_state&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f5939776730&gt;,
     &#39;fidelities&#39;: [   1.0,
-                      0.9999999981359374,
-                      0.9999999897485944,
-                      0.9999999746246854,
-                      0.9999999999374378,
-                      0.9999999989938644,
-                      0.9999999950666985,
-                      0.99999998818885,
-                      0.9999999984645426,
-                      0.9999999974045624,
-                      0.999999996065293,
-                      0.9999999997404067,
-                      0.999999999643631,
-                      0.9999999995162608,
-                      0.9999999993516822,
-                      0.9999999991424006,
-                      0.9999999988799936,
-                      0.9999999985550566,
-                      0.999999998157149,
-                      0.9999999976747462,
-                      0.9999999970951958,
-                      0.9999999964046712,
-                      0.9999999955881383,
-                      0.999999995056334,
-                      0.999999994401884,
-                      0.999999993763711,
-                      0.9999999929880454,
-                      0.9999999921859388,
-                      0.9999999912459336,
-                      0.999999990095427,
-                      0.9999999894564546,
-                      0.9999999879746138,
-                      0.9999999863231575,
-                      0.9999999847039132,
-                      0.999999982700822,
-                      0.9999999811266864,
-                      0.9999999789345172,
-                      0.999999976518057,
-                      0.9999999743835062,
-                      0.9999999718101295,
-                      0.9999999692082604,
-                      0.9999999663500811,
-                      0.9999999636468382,
-                      0.9999999604904204,
-                      0.9999999574445734,
-                      0.999999953857522,
-                      0.9999999499921922,
-                      0.9999999467218786,
-                      0.9999999427433002,
-                      0.9999999384861068,
-                      0.9999999346367694,
-                      0.9999999301521056,
-                      0.9999999258642638,
-                      0.9999999212451915,
-                      0.999999917021805,
-                      0.9999999121639078,
-                      0.9999999070309086,
-                      0.9999999029544936,
-                      0.9999998979092009,
-                      0.9999998926120854,
-                      0.9999998881467111,
-                      0.9999998828532926,
-                      0.9999999775187708,
-                      0.99999997937707,
-                      0.9999999812641834,
-                      0.999999982363262,
-                      0.9999999840125304,
-                      0.9999999853011984,
-                      0.999999985790086,
-                      0.9999999864290672,
-                      0.9999999867057546,
-                      0.9999999866081442,
-                      0.9999999861962172,
-                      0.999999985714655,
-                      0.9999999847109564,
-                      0.9999999829887082,
-                      0.9999999813659216,
-                      0.9999999786912696,
-                      0.9999999761008688,
-                      0.9999999723165008,
-                      0.9999999964604986,
-                      0.9999999950421498,
-                      0.9999999933205236,
-                      0.9999999910396646,
-                      0.9999999886112512,
-                      0.999999985424626,
-                      0.9999999819806322,
-                      0.9999999777046832,
-                      0.9999999734480854,
-                      0.9999999679927039,
-                      0.9999999617634848,
-                      0.9999999995555702,
-                      0.9999999994177986,
-                      0.9999999990652546,
-                      0.9999999985902354,
-                      0.9999999977712039,
-                      0.9999999966524634,
-                      0.9999999952005004,
-                      0.9999999935708044,
-                      0.9999999914439464,
-                      0.9999999888850344],
+                      0.9999999983290364,
+                      0.999999991084008,
+                      0.9999999781161836,
+                      0.9999999999499158,
+                      0.9999999984116914,
+                      0.9999999933541682,
+                      0.9999999991633746,
+                      0.9999999982103234,
+                      0.9999999968509325,
+                      0.9999999995288557,
+                      0.9999999994311378,
+                      0.9999999993194492,
+                      0.9999999991942896,
+                      0.9999999990561018,
+                      0.9999999989052418,
+                      0.999999998741947,
+                      0.999999998566298,
+                      0.9999999985455444,
+                      0.9999999983514714,
+                      0.9999999981442074,
+                      0.9999999979228298,
+                      0.9999999976860978,
+                      0.999999997432429,
+                      0.9999999971598728,
+                      0.999999996866095,
+                      0.9999999965483622,
+                      0.9999999962035262,
+                      0.9999999958280242,
+                      0.9999999954178768,
+                      0.9999999949686882,
+                      0.9999999944756616,
+                      0.999999993933608,
+                      0.9999999933369744,
+                      0.999999992679864,
+                      0.9999999922095282,
+                      0.9999999917580507,
+                      0.9999999910257236,
+                      0.9999999904913706,
+                      0.999999989984747,
+                      0.9999999891875772,
+                      0.9999999885733386,
+                      0.9999999879947514,
+                      0.9999999871407206,
+                      0.9999999864449718,
+                      0.9999999857893276,
+                      0.999999984883683,
+                      0.9999999841230214,
+                      0.9999999834022832,
+                      0.9999999824502492,
+                      0.9999999816551483,
+                      0.9999999808946184,
+                      0.9999999799075222,
+                      0.9999999791146084,
+                      0.9999999783447062,
+                      0.999999977344216,
+                      0.9999999765916422,
+                      0.9999999758448036,
+                      0.9999999750642476,
+                      0.9999999741004199,
+                      0.9999999737282182,
+                      0.9999999729391292,
+                      0.9999999721135407,
+                      0.9999999712502682,
+                      0.9999999709198854,
+                      0.9999999702187095,
+                      0.9999999694930533,
+                      0.9999999694795844,
+                      0.9999999689870264,
+                      0.999999968485997,
+                      0.9999999687657882,
+                      0.9999999685162237,
+                      0.9999999682737102,
+                      0.99999996803964,
+                      0.999999968635055,
+                      0.9999999686861594,
+                      0.999999968759524,
+                      0.9999999688563568,
+                      0.999999995576646,
+                      0.9999999959910558,
+                      0.9999999963663022,
+                      0.9999999966905952,
+                      0.9999999969508988,
+                      0.9999999971328576,
+                      0.999999997390808,
+                      0.9999999974047714,
+                      0.9999999972939164,
+                      0.999999997038513,
+                      0.9999999966172564,
+                      0.9999999960072212,
+                      0.999999995183825,
+                      0.9999999941208008,
+                      0.999999992790179,
+                      0.9999999913878151,
+                      0.9999999895108448,
+                      0.9999999872831846,
+                      0.9999999846710532,
+                      0.9999999816390795,
+                      0.9999999781503592,
+                      0.9999999994488756,
+                      0.9999999990590857],
     &#39;observables&#39;: [   array([0.1, 2. ]),
-                       array([0.10008203, 1.99960001]),
-                       array([0.1003281 , 1.99840024]),
-                       array([0.10073809, 1.9964013 ]),
-                       array([0.10071853, 1.99360386]),
-                       array([0.10058981, 1.99000905]),
-                       array([0.10035246, 1.9856183 ]),
-                       array([0.10000718, 1.98043336]),
-                       array([0.09986506, 1.97445157]),
-                       array([0.09968996, 1.967679  ]),
-                       array([0.09948268, 1.96011839]),
-                       array([0.09944992, 1.95178157]),
-                       array([0.09942281, 1.94266493]),
-                       array([0.09940221, 1.93277227]),
-                       array([0.09938904, 1.92210766]),
-                       array([0.09938425, 1.91067554]),
-                       array([0.09938889, 1.89848062]),
-                       array([0.09940404, 1.88552796]),
-                       array([0.09943086, 1.87182293]),
-                       array([0.09947052, 1.85737121]),
-                       array([0.09952428, 1.84217877]),
-                       array([0.09959342, 1.82625192]),
-                       array([0.09967927, 1.80959724]),
-                       array([0.09976966, 1.79220162]),
-                       array([0.0998604 , 1.77411048]),
-                       array([0.09995485, 1.75529013]),
-                       array([0.10004713, 1.73579118]),
-                       array([0.10014326, 1.71557688]),
-                       array([0.1002349 , 1.69470101]),
-                       array([0.10033924, 1.67312875]),
-                       array([0.10039059, 1.65090668]),
-                       array([0.10046007, 1.62802796]),
-                       array([0.10054947, 1.60450198]),
-                       array([0.10065537, 1.58031624]),
-                       array([0.10078449, 1.55550169]),
-                       array([0.10088352, 1.53004498]),
-                       array([0.10100669, 1.50397883]),
-                       array([0.10115582, 1.47731396]),
-                       array([0.1013039 , 1.45008908]),
-                       array([0.10146748, 1.42226423]),
-                       array([0.10163374, 1.39390175]),
-                       array([0.10181949, 1.36495808]),
-                       array([0.10198608, 1.33549785]),
-                       array([0.10217733, 1.3054826 ]),
-                       array([0.10235017, 1.27495099]),
-                       array([0.10255592, 1.24391402]),
-                       array([0.10279633, 1.21238436]),
-                       array([0.10298934, 1.18037007]),
-                       array([0.10321765, 1.14788855]),
-                       array([0.10348296, 1.11495301]),
-                       array([0.1037285 , 1.08155596]),
-                       array([0.10401252, 1.04773113]),
-                       array([0.10429636, 1.01351355]),
-                       array([0.10460965, 0.97886613]),
-                       array([0.10489325, 0.94383956]),
-                       array([0.10521784, 0.90844064]),
-                       array([0.10558477, 0.87268375]),
-                       array([0.10590345, 0.836584  ]),
-                       array([0.10626463, 0.80015501]),
-                       array([0.1066695 , 0.76341153]),
-                       array([0.10704832, 0.72634174]),
-                       array([0.1074714, 0.6889866]),
-                       array([0.10760641, 0.65137165]),
-                       array([0.10773341, 0.61350313]),
-                       array([0.10787066, 0.5753929 ]),
-                       array([0.10794079, 0.53705252]),
-                       array([0.10804509, 0.498501  ]),
-                       array([0.10814491, 0.45975413]),
-                       array([0.10818238, 0.420824  ]),
-                       array([0.10823665, 0.38173952]),
-                       array([0.10827891, 0.34248464]),
-                       array([0.1082882 , 0.30313217]),
-                       array([0.10827341, 0.26361946]),
-                       array([0.10825785, 0.2240334 ]),
-                       array([0.10822862, 0.18434704]),
-                       array([0.10813882, 0.14458883]),
-                       array([0.10805803, 0.10477899]),
-                       array([0.10791542, 0.06492946]),
-                       array([0.10777752, 0.0250634 ]),
-                       array([ 0.10757598, -0.01481014]),
-                       array([ 0.10753135, -0.05464561]),
-                       array([ 0.10744566, -0.09445527]),
-                       array([ 0.10733507, -0.13424535]),
-                       array([ 0.10718085, -0.17397758]),
-                       array([ 0.10701655, -0.21361353]),
-                       array([ 0.10680555, -0.25315971]),
-                       array([ 0.10657515, -0.29262282]),
-                       array([ 0.10629488, -0.33196421]),
-                       array([ 0.10600699, -0.37114999]),
-                       array([ 0.10566568, -0.41018241]),
-                       array([ 0.10526959, -0.44904581]),
-                       array([ 0.10530978, -0.48771128]),
-                       array([ 0.10533114, -0.52617477]),
-                       array([ 0.10533181, -0.56442082]),
-                       array([ 0.10529706, -0.60244985]),
-                       array([ 0.10523838, -0.64023072]),
-                       array([ 0.10515383, -0.67774824]),
-                       array([ 0.10504149, -0.71498733]),
-                       array([ 0.10488231, -0.75193338]),
-                       array([ 0.10469235, -0.7885714 ]),
-                       array([ 0.10446968, -0.82488667])],
+                       array([0.10007531, 1.99960001]),
+                       array([0.10030117, 1.99840025]),
+                       array([0.10067738, 1.99640126]),
+                       array([0.10064488, 1.99360378]),
+                       array([0.10049375, 1.99000894]),
+                       array([0.10022454, 1.98561816]),
+                       array([0.10011484, 1.9804293 ]),
+                       array([0.099965  , 1.97444727]),
+                       array([0.0997756 , 1.96767449]),
+                       array([0.099726  , 1.96012541]),
+                       array([0.09967284, 1.95179378]),
+                       array([0.09961662, 1.94268297]),
+                       array([0.09955789, 1.9327967 ]),
+                       array([0.09949725, 1.922139  ]),
+                       array([0.09943533, 1.9107142 ]),
+                       array([0.09937282, 1.89852695]),
+                       array([0.09931041, 1.88558221]),
+                       array([0.09924937, 1.871874  ]),
+                       array([0.09919001, 1.85741795]),
+                       array([0.09913315, 1.84221996]),
+                       array([0.09907962, 1.82628623]),
+                       array([0.09903027, 1.80962325]),
+                       array([0.09898598, 1.79223781]),
+                       array([0.09894766, 1.774137  ]),
+                       array([0.09891621, 1.7553282 ]),
+                       array([0.09889256, 1.73581908]),
+                       array([0.09887766, 1.71561758]),
+                       array([0.09887244, 1.69473195]),
+                       array([0.09887786, 1.67317068]),
+                       array([0.09889487, 1.65094258]),
+                       array([0.09892442, 1.62805669]),
+                       array([0.09896745, 1.60452235]),
+                       array([0.0990249 , 1.58034914]),
+                       array([0.0990977 , 1.55554691]),
+                       array([0.09917184, 1.53010209]),
+                       array([0.09924015, 1.50407027]),
+                       array([0.09932493, 1.47744034]),
+                       array([0.09941187, 1.45019709]),
+                       array([0.09949002, 1.42240017]),
+                       array([0.09958575, 1.39403817]),
+                       array([0.09968526, 1.36509564]),
+                       array([0.09977445, 1.33563342]),
+                       array([0.09988238, 1.30564114]),
+                       array([0.09999582, 1.27510391]),
+                       array([0.10009954, 1.24408271]),
+                       array([0.10022321, 1.21256835]),
+                       array([0.10035337, 1.18054625]),
+                       array([0.10047624, 1.14807877]),
+                       array([0.10062022, 1.11515683]),
+                       array([0.10077026, 1.0817649 ]),
+                       array([0.10091599, 1.04796915]),
+                       array([0.10108386, 1.01375929]),
+                       array([0.10125581, 0.97911774]),
+                       array([0.1014262 , 0.94411614]),
+                       array([0.1016195 , 0.90874227]),
+                       array([0.10181378, 0.87297619]),
+                       array([0.10200887, 0.83689527]),
+                       array([0.1022125 , 0.80045523]),
+                       array([0.10243962, 0.76370026]),
+                       array([0.10262891, 0.72664477]),
+                       array([0.10284138, 0.689304  ]),
+                       array([0.10307714, 0.65169307]),
+                       array([0.10333625, 0.61382721]),
+                       array([0.1035678 , 0.57573237]),
+                       array([0.10382222, 0.53741325]),
+                       array([0.10409939, 0.49888532]),
+                       array([0.10434066, 0.46015306]),
+                       array([0.10460392, 0.42124284]),
+                       array([0.10488885, 0.38217039]),
+                       array([0.1051401 , 0.34294924]),
+                       array([0.10541196, 0.30359719]),
+                       array([0.10570393, 0.26413011]),
+                       array([0.10601541, 0.22456394]),
+                       array([0.10629001, 0.18490413]),
+                       array([0.10658275, 0.14517685]),
+                       array([0.10689283, 0.10539813]),
+                       array([0.10721938, 0.06558399]),
+                       array([0.10736647, 0.02573808]),
+                       array([ 0.10750817, -0.0141121 ]),
+                       array([ 0.10764324, -0.0539505 ]),
+                       array([ 0.10777038, -0.0937611 ]),
+                       array([ 0.10788824, -0.13352788]),
+                       array([ 0.10799541, -0.17323484]),
+                       array([ 0.10806639, -0.21286533]),
+                       array([ 0.1081242 , -0.25240425]),
+                       array([ 0.10816736, -0.29183572]),
+                       array([ 0.10819429, -0.33114387]),
+                       array([ 0.10820341, -0.3703129 ]),
+                       array([ 0.10819306, -0.40932708]),
+                       array([ 0.10816156, -0.44817073]),
+                       array([ 0.10810721, -0.48682822]),
+                       array([ 0.10802825, -0.52528404]),
+                       array([ 0.10790345, -0.56354577]),
+                       array([ 0.10775132, -0.60157491]),
+                       array([ 0.10757007, -0.63935618]),
+                       array([ 0.10735789, -0.6768744 ]),
+                       array([ 0.10711297, -0.71411448]),
+                       array([ 0.10683346, -0.75106146]),
+                       array([ 0.10683096, -0.78766755]),
+                       array([ 0.10680874, -0.82395076])],
     &#39;parameters&#39;: [   array([0., 0., 0., 0., 0.]),
-                      array([0.00950504, 0.01024232, 0.00617994, 0.01049518, 0.00975794]),
-                      array([0.01901009, 0.02048464, 0.01235987, 0.02099035, 0.01951588]),
-                      array([0.02851513, 0.03072695, 0.01853981, 0.03148553, 0.02927381]),
-                      array([0.03698296, 0.03981775, 0.01768898, 0.04301735, 0.04018256]),
-                      array([0.04545078, 0.04890855, 0.01683815, 0.05454918, 0.05109131]),
-                      array([0.05391861, 0.05799935, 0.01598733, 0.066081  , 0.06200006]),
-                      array([0.06238643, 0.06709015, 0.0151365 , 0.07761282, 0.07290881]),
-                      array([0.07096412, 0.07629049, 0.01638252, 0.08904858, 0.0837263 ]),
-                      array([0.07954181, 0.08549084, 0.01762853, 0.10048433, 0.09454379]),
-                      array([0.0881195 , 0.09469118, 0.01887455, 0.11192009, 0.10536128]),
-                      array([0.09674821, 0.10392526, 0.02114061, 0.12328907, 0.11612302]),
-                      array([0.10537692, 0.11315934, 0.02340667, 0.13465806, 0.12688476]),
-                      array([0.11400564, 0.12239341, 0.02567273, 0.14602704, 0.1376465 ]),
-                      array([0.12263435, 0.13162749, 0.02793879, 0.15739603, 0.14840824]),
-                      array([0.13126306, 0.14086157, 0.03020485, 0.16876501, 0.15916999]),
-                      array([0.13989177, 0.15009564, 0.03247091, 0.18013399, 0.16993173]),
-                      array([0.14852049, 0.15932972, 0.03473697, 0.19150298, 0.18069347]),
-                      array([0.1571492 , 0.1685638 , 0.03700303, 0.20287196, 0.19145521]),
-                      array([0.16577791, 0.17779788, 0.03926909, 0.21424095, 0.20221695]),
-                      array([0.17440662, 0.18703195, 0.04153515, 0.22560993, 0.2129787 ]),
-                      array([0.18303534, 0.19626603, 0.04380122, 0.23697891, 0.22374044]),
-                      array([0.19166405, 0.20550011, 0.04606728, 0.2483479 , 0.23450218]),
-                      array([0.20030328, 0.21474348, 0.048302  , 0.25972779, 0.24527798]),
-                      array([0.20893203, 0.223972  , 0.05049218, 0.27109761, 0.25604565]),
-                      array([0.21757209, 0.23321056, 0.05265072, 0.28247854, 0.2668281 ]),
-                      array([0.22620206, 0.2424337 , 0.05476112, 0.29384885, 0.27760228]),
-                      array([0.23484366, 0.25166718, 0.05684137, 0.30522974, 0.28839127]),
-                      array([0.24347637, 0.26088524, 0.05887045, 0.31659968, 0.29917224]),
-                      array([0.25211886, 0.27011333, 0.06088735, 0.32797854, 0.30996496]),
-                      array([0.26075931, 0.27932208, 0.06275991, 0.3393459 , 0.32075801]),
-                      array([0.26939976, 0.28853083, 0.06463247, 0.35071327, 0.33155106]),
-                      array([0.27804021, 0.29773958, 0.06650503, 0.36208064, 0.34234412]),
-                      array([0.28668937, 0.30695808, 0.06836959, 0.37345487, 0.35314786]),
-                      array([0.29533854, 0.31617657, 0.07023416, 0.38482909, 0.3639516 ]),
-                      array([0.30400348, 0.32539847, 0.07200609, 0.39620548, 0.37476816]),
-                      array([0.31266842, 0.33462038, 0.07377802, 0.40758188, 0.38558473]),
-                      array([0.32133336, 0.34384229, 0.07554995, 0.41895828, 0.39640129]),
-                      array([0.3299926 , 0.35305265, 0.07727452, 0.43031842, 0.40720957]),
-                      array([0.3386634 , 0.36227068, 0.07898015, 0.44168498, 0.41802644]),
-                      array([0.34732911, 0.37147834, 0.08064333, 0.45303566, 0.42883481]),
-                      array([0.35600737, 0.38069501, 0.08229143, 0.46439419, 0.43965249]),
-                      array([0.36468629, 0.38990232, 0.08386348, 0.47573258, 0.45046224]),
-                      array([0.37337676, 0.3991179 , 0.0854265 , 0.48707748, 0.46127966]),
-                      array([0.38208135, 0.40833403, 0.08691556, 0.49840554, 0.47209454]),
-                      array([0.39078594, 0.41755015, 0.08840463, 0.5097336 , 0.48290942]),
-                      array([0.39949053, 0.42676628, 0.0898937 , 0.52106166, 0.49372429]),
-                      array([0.40822065, 0.43598745, 0.09126822, 0.53236482, 0.50453422]),
-                      array([0.41695076, 0.44520861, 0.09264275, 0.54366799, 0.51534414]),
-                      array([0.42568087, 0.45442978, 0.09401727, 0.55497115, 0.52615407]),
-                      array([0.43443999, 0.46366326, 0.09531522, 0.5662565 , 0.53696146]),
-                      array([0.4431991 , 0.47289674, 0.09661317, 0.57754184, 0.54776884]),
-                      array([0.4519684 , 0.48213032, 0.09785887, 0.58880228, 0.55856328]),
-                      array([0.46075334, 0.49137449, 0.09909111, 0.60006518, 0.56936276]),
-                      array([0.46957285, 0.5006319 , 0.10023304, 0.6112864 , 0.58014255]),
-                      array([0.47839236, 0.50988931, 0.10137497, 0.62250762, 0.59092234]),
-                      array([0.48721187, 0.51914671, 0.10251689, 0.63372883, 0.60170213]),
-                      array([0.49609289, 0.52843407, 0.10354512, 0.64488453, 0.61244789]),
-                      array([0.50497392, 0.53772143, 0.10457335, 0.65604023, 0.62319366]),
-                      array([0.51385494, 0.54700878, 0.10560158, 0.66719593, 0.63393942]),
-                      array([0.5227821 , 0.55632373, 0.10654605, 0.67831738, 0.6446684 ]),
-                      array([0.53170926, 0.56563868, 0.10749052, 0.68943884, 0.65539738]),
-                      array([0.55139018, 0.58192542, 0.10714751, 0.6897611 , 0.6591042 ]),
-                      array([0.57105102, 0.59824411, 0.10687439, 0.69009583, 0.6627841 ]),
-                      array([0.59068126, 0.61461368, 0.10668649, 0.69045983, 0.66641701]),
-                      array([0.61031151, 0.63098326, 0.10649859, 0.69082383, 0.67004991]),
-                      array([0.6299158 , 0.64739635, 0.1064154 , 0.6912174 , 0.67364053]),
-                      array([0.64949393, 0.66384641, 0.10639324, 0.69164197, 0.6771907 ]),
-                      array([0.66907206, 0.68029647, 0.10637108, 0.69206654, 0.68074088]),
-                      array([0.68863632, 0.69676175, 0.10642905, 0.69250157, 0.68427268]),
-                      array([0.70819083, 0.71325024, 0.10653659, 0.6929572 , 0.68779394]),
-                      array([0.72772662, 0.72973902, 0.10667132, 0.69341413, 0.69129597]),
-                      array([0.74726302, 0.74624854, 0.10684267, 0.69389102, 0.69480098]),
-                      array([0.76677262, 0.7627675 , 0.10707325, 0.69438265, 0.69828325]),
-                      array([0.78626419, 0.77930562, 0.10735053, 0.69489919, 0.70175658]),
-                      array([0.80575575, 0.79584373, 0.10762782, 0.69541572, 0.7052299 ]),
-                      array([0.82521662, 0.8123972 , 0.10797527, 0.69596438, 0.70868926]),
-                      array([0.84467749, 0.82895068, 0.10832272, 0.69651304, 0.71214863]),
-                      array([0.86410296, 0.84551436, 0.10873769, 0.69709711, 0.71559774]),
-                      array([0.88352844, 0.86207804, 0.10915265, 0.69768118, 0.71904685]),
-                      array([0.89931692, 0.87878338, 0.10971246, 0.70189661, 0.72235059]),
-                      array([0.91510541, 0.89548873, 0.11027227, 0.70611203, 0.72565433]),
-                      array([0.93089952, 0.91219414, 0.11085004, 0.71033521, 0.72896905]),
-                      array([0.94669362, 0.92889954, 0.11142781, 0.71455838, 0.73228377]),
-                      array([0.96247977, 0.94559198, 0.11204178, 0.71877965, 0.73560303]),
-                      array([0.97826593, 0.96228443, 0.11265576, 0.72300092, 0.73892229]),
-                      array([0.99405422, 0.97897194, 0.11330021, 0.72723465, 0.74225869]),
-                      array([1.00984252, 0.99565945, 0.11394467, 0.73146837, 0.7455951 ]),
-                      array([1.02560876, 1.01231061, 0.1146348 , 0.7357175 , 0.74896225]),
-                      array([1.04137499, 1.02896178, 0.11532493, 0.73996663, 0.75232941]),
-                      array([1.05714123, 1.04561294, 0.11601506, 0.74421576, 0.75569657]),
-                      array([1.07035473, 1.05840482, 0.1168154 , 0.75102885, 0.76292764]),
-                      array([1.08356824, 1.07119669, 0.11761573, 0.75784195, 0.77015872]),
-                      array([1.09678175, 1.08398857, 0.11841607, 0.76465504, 0.7773898 ]),
-                      array([1.1099931 , 1.09678605, 0.11920022, 0.77147243, 0.78462723]),
-                      array([1.12320445, 1.10958354, 0.11998436, 0.77828981, 0.79186465]),
-                      array([1.1364158 , 1.12238103, 0.12076851, 0.7851072 , 0.79910208]),
-                      array([1.14962715, 1.13517851, 0.12155266, 0.79192458, 0.8063395 ]),
-                      array([1.16283029, 1.14796834, 0.12231205, 0.79875215, 0.81357872]),
-                      array([1.17603343, 1.16075817, 0.12307144, 0.80557972, 0.82081793]),
-                      array([1.18923657, 1.173548  , 0.12383083, 0.81240728, 0.82805715])],
+                      array([0.01272394, 0.01098577, 0.00486367, 0.00727608, 0.00901425]),
+                      array([0.02544788, 0.02197155, 0.00972735, 0.01455217, 0.01802849]),
+                      array([0.03817183, 0.03295732, 0.01459102, 0.02182825, 0.02704274]),
+                      array([0.05025283, 0.04342218, 0.01372189, 0.02974659, 0.0365774 ]),
+                      array([0.06233383, 0.05388704, 0.01285275, 0.03766493, 0.04611206]),
+                      array([0.07441483, 0.06435191, 0.01198361, 0.04558326, 0.05564672]),
+                      array([0.08656151, 0.07488363, 0.01283024, 0.05345271, 0.06512705]),
+                      array([0.09870819, 0.08541535, 0.01367687, 0.06132216, 0.07460737]),
+                      array([0.11085487, 0.09594707, 0.0145235 , 0.06919161, 0.08408769]),
+                      array([0.12300515, 0.10649917, 0.01614925, 0.07702397, 0.09352338]),
+                      array([0.13515542, 0.11705127, 0.01777499, 0.08485633, 0.10295908]),
+                      array([0.14730569, 0.12760338, 0.01940074, 0.0926887 , 0.11239477]),
+                      array([0.15945596, 0.13815548, 0.02102648, 0.10052106, 0.12183046]),
+                      array([0.17160623, 0.14870759, 0.02265223, 0.10835342, 0.13126615]),
+                      array([0.1837565 , 0.15925969, 0.02427797, 0.11618578, 0.14070185]),
+                      array([0.19590677, 0.1698118 , 0.02590371, 0.12401814, 0.15013754]),
+                      array([0.20805704, 0.1803639 , 0.02752946, 0.1318505 , 0.15957323]),
+                      array([0.22021611, 0.19092349, 0.02915803, 0.13969199, 0.16901552]),
+                      array([0.23237518, 0.20148307, 0.03078659, 0.14753348, 0.1784578 ]),
+                      array([0.24453425, 0.21204266, 0.03241516, 0.15537497, 0.18790009]),
+                      array([0.25669332, 0.22260224, 0.03404372, 0.16321646, 0.19734237]),
+                      array([0.26885239, 0.23316183, 0.03567229, 0.17105796, 0.20678466]),
+                      array([0.28101146, 0.24372142, 0.03730086, 0.17889945, 0.21622695]),
+                      array([0.29317053, 0.254281  , 0.03892942, 0.18674094, 0.22566923]),
+                      array([0.3053296 , 0.26484059, 0.04055799, 0.19458243, 0.23511152]),
+                      array([0.31748866, 0.27540017, 0.04218655, 0.20242392, 0.2445538 ]),
+                      array([0.32964773, 0.28595976, 0.04381512, 0.21026541, 0.25399609]),
+                      array([0.3418068 , 0.29651935, 0.04544369, 0.2181069 , 0.26343837]),
+                      array([0.35396587, 0.30707893, 0.04707225, 0.22594839, 0.27288066]),
+                      array([0.36612494, 0.31763852, 0.04870082, 0.23378988, 0.28232295]),
+                      array([0.37828401, 0.3281981 , 0.05032938, 0.24163137, 0.29176523]),
+                      array([0.39044308, 0.33875769, 0.05195795, 0.24947286, 0.30120752]),
+                      array([0.40260215, 0.34931728, 0.05358652, 0.25731435, 0.3106498 ]),
+                      array([0.41476122, 0.35987686, 0.05521508, 0.26515584, 0.32009209]),
+                      array([0.42692648, 0.37044864, 0.05682428, 0.27300761, 0.32954211]),
+                      array([0.43908019, 0.38101502, 0.05840146, 0.28085488, 0.33897847]),
+                      array([0.45123389, 0.39158139, 0.05997864, 0.28870215, 0.34841483]),
+                      array([0.46339404, 0.40216063, 0.0615373 , 0.2965599 , 0.35785883]),
+                      array([0.47554226, 0.41273608, 0.06306039, 0.30441377, 0.36728791]),
+                      array([0.48769047, 0.42331152, 0.06458349, 0.31226764, 0.37671699]),
+                      array([0.49984497, 0.43390004, 0.06608963, 0.32013171, 0.386153  ]),
+                      array([0.5119877 , 0.44448711, 0.06755872, 0.32799276, 0.39557303]),
+                      array([0.52413043, 0.45507418, 0.06902781, 0.33585382, 0.40499306]),
+                      array([0.53627907, 0.46567441, 0.07048135, 0.3437246 , 0.41441893]),
+                      array([0.5484164 , 0.47627546, 0.07189884, 0.35159293, 0.42382785]),
+                      array([0.56055373, 0.48687651, 0.07331633, 0.35946126, 0.43323676]),
+                      array([0.57269669, 0.49749111, 0.07471861, 0.36733901, 0.44265042]),
+                      array([0.58482881, 0.50810781, 0.0760877 , 0.37521415, 0.45204626]),
+                      array([0.59696093, 0.51872452, 0.07745678, 0.38308929, 0.4614421 ]),
+                      array([0.60909871, 0.52935581, 0.07880946, 0.39097396, 0.47084183]),
+                      array([0.62122601, 0.53998933, 0.08013215, 0.39885522, 0.48022309]),
+                      array([0.63335332, 0.55062285, 0.08145485, 0.40673648, 0.48960435]),
+                      array([0.64548657, 0.56127253, 0.0827585 , 0.41462762, 0.49898882]),
+                      array([0.65760959, 0.57192396, 0.08403503, 0.42251435, 0.50835428]),
+                      array([0.66973261, 0.58257538, 0.08531156, 0.43040108, 0.51771975]),
+                      array([0.68186193, 0.5932448 , 0.08656558, 0.43829802, 0.52708766]),
+                      array([0.69398123, 0.60391545, 0.08779501, 0.4461896 , 0.536436  ]),
+                      array([0.70610615, 0.61460301, 0.08900982, 0.45408987, 0.54578507]),
+                      array([0.71823108, 0.62529056, 0.09022462, 0.46199014, 0.55513415]),
+                      array([0.73034969, 0.6360101 , 0.09137599, 0.46989496, 0.56444966]),
+                      array([0.7424683 , 0.64672964, 0.09252736, 0.47779977, 0.57376517]),
+                      array([0.75458691, 0.65744918, 0.09367873, 0.48570459, 0.58308068]),
+                      array([0.76670552, 0.66816873, 0.0948301 , 0.49360941, 0.59239619]),
+                      array([0.77881745, 0.67890411, 0.09592973, 0.50151244, 0.60168961]),
+                      array([0.79092938, 0.6896395 , 0.09702937, 0.50941547, 0.61098303]),
+                      array([0.80304131, 0.70037488, 0.098129  , 0.5173185 , 0.62027645]),
+                      array([0.81515251, 0.71114844, 0.09917013, 0.52522577, 0.62953515]),
+                      array([0.8272637 , 0.721922  , 0.10021125, 0.53313305, 0.63879384]),
+                      array([0.8393749 , 0.73269556, 0.10125238, 0.54104032, 0.64805254]),
+                      array([0.85148411, 0.7435235 , 0.10223859, 0.54894831, 0.6572558 ]),
+                      array([0.86359332, 0.75435145, 0.10322481, 0.55685629, 0.66645905]),
+                      array([0.87570253, 0.7651794 , 0.10421103, 0.56476427, 0.67566231]),
+                      array([0.88781174, 0.77600735, 0.10519724, 0.57267226, 0.68486556]),
+                      array([0.89992206, 0.78688245, 0.106128  , 0.58058079, 0.69402533]),
+                      array([0.91203239, 0.79775755, 0.10705876, 0.58848931, 0.70318511]),
+                      array([0.92414272, 0.80863265, 0.10798952, 0.59639784, 0.71234488]),
+                      array([0.93625304, 0.81950775, 0.10892028, 0.60430637, 0.72150466]),
+                      array([0.94859634, 0.83383276, 0.10973781, 0.61197904, 0.72721532]),
+                      array([0.96093964, 0.84815777, 0.11055535, 0.61965171, 0.73292598]),
+                      array([0.97328294, 0.86248279, 0.11137289, 0.62732438, 0.73863664]),
+                      array([0.98562624, 0.8768078 , 0.11219042, 0.63499705, 0.7443473 ]),
+                      array([0.99796954, 0.89113281, 0.11300796, 0.64266973, 0.75005797]),
+                      array([1.01031284, 0.90545782, 0.1138255 , 0.6503424 , 0.75576863]),
+                      array([1.02266082, 0.91977731, 0.1146172 , 0.65800933, 0.761482  ]),
+                      array([1.0350088 , 0.93409679, 0.11540891, 0.66567626, 0.76719537]),
+                      array([1.04735677, 0.94841628, 0.11620062, 0.6733432 , 0.77290874]),
+                      array([1.05970475, 0.96273576, 0.11699233, 0.68101013, 0.77862211]),
+                      array([1.07205273, 0.97705525, 0.11778403, 0.68867706, 0.78433548]),
+                      array([1.08440071, 0.99137473, 0.11857574, 0.696344  , 0.79004885]),
+                      array([1.09674868, 1.00569422, 0.11936745, 0.70401093, 0.79576222]),
+                      array([1.10909666, 1.02001371, 0.12015916, 0.71167786, 0.80147559]),
+                      array([1.12144464, 1.03433319, 0.12095086, 0.7193448 , 0.80718896]),
+                      array([1.13379828, 1.04864468, 0.1217179 , 0.72701679, 0.81291988]),
+                      array([1.14615193, 1.06295617, 0.12248494, 0.73468878, 0.8186508 ]),
+                      array([1.15850558, 1.07726767, 0.12325198, 0.74236077, 0.82438172]),
+                      array([1.17085923, 1.09157916, 0.12401902, 0.75003277, 0.83011264]),
+                      array([1.18321288, 1.10589065, 0.12478605, 0.75770476, 0.83584357]),
+                      array([1.19556653, 1.12020214, 0.12555309, 0.76537675, 0.84157449]),
+                      array([1.20712778, 1.13186099, 0.126336  , 0.77383599, 0.84993942]),
+                      array([1.21868903, 1.14351984, 0.1271189 , 0.78229523, 0.85830435])],
     &#39;times&#39;: [   0.0,
                  0.01,
                  0.02,
@@ -956,6 +972,7 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sc</span>
 
+
 <span class="k">def</span> <span class="nf">exact</span><span class="p">(</span><span class="n">final_time</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the exact values for energy and the observable.&quot;&quot;&quot;</span>
     <span class="n">O</span> <span class="o">=</span> <span class="n">observable</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">()</span>
@@ -979,25 +996,18 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
 
-<span class="n">initial_state</span> <span class="o">=</span> <span class="n">Statevector</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">bind_parameters</span><span class="p">(</span><span class="n">initial_parameters</span><span class="p">))</span>
-<span class="n">exact_times</span><span class="p">,</span> <span class="n">exact_energies</span><span class="p">,</span> <span class="n">exact_magnetizations</span> <span class="o">=</span> <span class="n">exact</span><span class="p">(</span><span class="n">final_time</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">)</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">Statevector</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">(</span><span class="n">initial_parameters</span><span class="p">))</span>
+<span class="n">exact_times</span><span class="p">,</span> <span class="n">exact_energies</span><span class="p">,</span> <span class="n">exact_magnetizations</span> <span class="o">=</span> <span class="n">exact</span><span class="p">(</span>
+    <span class="n">final_time</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">initial_state</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7557/4229986699.py:3: DeprecationWarning: The method ``qiskit.circuit.quantumcircuit.QuantumCircuit.bind_parameters()`` is deprecated as of qiskit 0.45.0. It will be removed in the Qiskit 1.0.0 release. Use assign_parameters() instead
-  initial_state = Statevector(ansatz.bind_parameters(initial_parameters))
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -1020,7 +1030,7 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7fabd8b25550&gt;
+&lt;matplotlib.legend.Legend at 0x7f593958c8b0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1089,9 +1099,9 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">energies_gd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">result_gd</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">times</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">energies</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BFGS&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">times</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">energies</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BFGS&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result_gd</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="n">energies_gd</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Gradient descent&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exact_times</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">exact_energies</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exact_times</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">exact_energies</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time $t$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;energy $E$&quot;</span><span class="p">)</span>
@@ -1122,9 +1132,9 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">magnetizations_gd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">result_gd</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">times</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">magnetizations</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;crimson&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BFGS&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">times</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">magnetizations</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;crimson&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;BFGS&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">result_gd</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="n">magnetizations_gd</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;crimson&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Gradient descent&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exact_times</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">exact_magnetizations</span><span class="p">[:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exact_times</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">exact_magnetizations</span><span class="p">[:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time $t$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;magnetization $\langle Z_1 + Z_2 \rangle$&quot;</span><span class="p">)</span>
@@ -1153,36 +1163,26 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
-<br/></pre></div>
+</pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7557/2169806890.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
-  import qiskit.tools.jupyter
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:49:19 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.13.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Feb 19 12:18:58 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
-<script type="application/vnd.jupyter.widget-state+json">
-{"state": {"451c2d4b4fb6418bbbe768171536ca2b": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "74e742bd91294edbb04ad976e4171556": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "c243e94503394a838b950c338e071d89": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_451c2d4b4fb6418bbbe768171536ca2b", "placeholder": "\u200b", "style": "IPY_MODEL_74e742bd91294edbb04ad976e4171556", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
-</script></section>
+</section>
 </section>
 
         </article>
@@ -1219,7 +1219,7 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -1255,7 +1255,7 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

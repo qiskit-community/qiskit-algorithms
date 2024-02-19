@@ -4,15 +4,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>qiskit_algorithms.time_evolvers.trotterization.trotter_qrte - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>qiskit_algorithms.time_evolvers.trotterization.trotter_qrte - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
@@ -70,6 +70,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -130,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -157,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -352,7 +366,7 @@
           <h1>Source code for qiskit_algorithms.time_evolvers.trotterization.trotter_qrte</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2021, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2021, 2024.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -410,6 +424,8 @@
         <span class="n">product_formula</span><span class="p">:</span> <span class="n">ProductFormula</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">insert_barriers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -419,15 +435,18 @@
 <span class="sd">                ``num_timesteps`` and an evaluation of :attr:`.TimeEvolutionProblem.aux_operators`</span>
 <span class="sd">                at every time-step. If ``reps`` is larger than 1, the true number of time-steps will</span>
 <span class="sd">                be ``num_timesteps * reps``.</span>
-<span class="sd">            num_timesteps: The number of time-steps the full evolution time is divided into</span>
-<span class="sd">                (repetitions of ``product_formula``)</span>
 <span class="sd">            estimator: An estimator primitive used for calculating expectation values of</span>
 <span class="sd">                ``TimeEvolutionProblem.aux_operators``.</span>
+<span class="sd">            num_timesteps: The number of time-steps the full evolution time is divided into</span>
+<span class="sd">                (repetitions of ``product_formula``).</span>
+<span class="sd">            insert_barriers: If True, insert a barrier after the initial state and after each Trotter</span>
+<span class="sd">                step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">product_formula</span> <span class="o">=</span> <span class="n">product_formula</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span> <span class="o">=</span> <span class="n">num_timesteps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span> <span class="o">=</span> <span class="n">insert_barriers</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">product_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProductFormula</span><span class="p">:</span>
@@ -544,6 +563,8 @@
 
         <span class="n">evolved_state</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">initial_state</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
         <span class="n">evolved_state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initial_state</span><span class="p">,</span> <span class="n">evolved_state</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span><span class="p">:</span>
+            <span class="n">evolved_state</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">aux_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">observables</span> <span class="o">=</span> <span class="p">[]</span>
@@ -577,6 +598,8 @@
                     <span class="n">synthesis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">product_formula</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="n">evolved_state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single_step_evolution_gate</span><span class="p">,</span> <span class="n">evolved_state</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span><span class="p">:</span>
+                <span class="n">evolved_state</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">aux_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">observables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -593,7 +616,9 @@
         <span class="k">if</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">aux_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">evaluated_aux_ops</span> <span class="o">=</span> <span class="n">observables</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">TimeEvolutionResult</span><span class="p">(</span><span class="n">evolved_state</span><span class="p">,</span> <span class="n">evaluated_aux_ops</span><span class="p">,</span> <span class="n">observables</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">TimeEvolutionResult</span><span class="p">(</span>
+            <span class="n">evolved_state</span><span class="p">,</span> <span class="n">evaluated_aux_ops</span><span class="p">,</span> <span class="n">observables</span>  <span class="c1"># type: ignore[arg-type]</span>
+        <span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>
@@ -611,7 +636,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -628,7 +653,7 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

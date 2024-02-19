@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="VQDResult" href="qiskit_algorithms.VQDResult.html" /><link rel="prev" title="NumPyEigensolverResult" href="qiskit_algorithms.NumPyEigensolverResult.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>VQD - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>VQD - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
     
     
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -508,18 +522,18 @@ metadata, and the current step.</p>
 <li><p><strong>optimizer</strong> (<a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><em>Optimizer</em></a><em> | </em><a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><em>Minimizer</em></a><em> | </em><em>Sequence</em><em>[</em><a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><em>Optimizer</em></a><em> | </em><a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><em>Minimizer</em></a><em>]</em>) – A classical optimizer or a list of optimizers, one for every k-th eigenvalue.</p></li>
 <li><p><strong>callable</strong> (<em>Can either be a Qiskit optimizer</em><em> or </em><em>a</em>) – that takes an array as input and returns a Qiskit or SciPy optimization result.</p></li>
 <li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The number of eigenvalues to return. Returns the lowest k eigenvalues.</p></li>
-<li><p><strong>betas</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>None</em>) – Beta parameters in the VQD paper.
+<li><p><strong>betas</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – Beta parameters in the VQD paper.
 Should have length k - 1, with k the number of excited states.
 These hyperparameters balance the contribution of each overlap term to the cost
 function and have a default value computed as the mean square sum of the
 coefficients of the observable.</p></li>
-<li><p><strong>initial_point</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>] </em><em>| </em><em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – An optional initial point (i.e. initial parameter values)
+<li><p><strong>initial_point</strong> (<em>np.ndarray</em><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>[</em><em>np.ndarray</em><em>] </em><em>| </em><em>None</em>) – An optional initial point (i.e. initial parameter values)
 or a list of initial points (one for every k-th eigenvalue)
 for the optimizer.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> then VQD will look to the ansatz for a preferred
 point and if not will simply compute a random one.</p></li>
-<li><p><strong>callback</strong> (<em>Callable</em><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>np.ndarray</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>Any</em><em>]</em><em>]</em><em>, </em><em>None</em><em>] </em><em>| </em><em>None</em>) – A callback that can access the intermediate data
-during the optimization. Four parameter values are passed to the callback as
+<li><p><strong>callback</strong> (<em>Callable</em><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>np.ndarray</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>Any</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>]</em><em>, </em><em>None</em><em>] </em><em>| </em><em>None</em>) – A callback that can access the intermediate data
+during the optimization. Five parameter values are passed to the callback as
 follows during each evaluation by the optimizer: the evaluation count,
 the optimizer parameters for the ansatz, the estimated value,
 the estimation metadata, and the current step.</p></li>
@@ -612,7 +626,7 @@ the expectation value of the <code class="docutils literal notranslate"><span cl
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -660,7 +674,7 @@ the expectation value of the <code class="docutils literal notranslate"><span cl
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

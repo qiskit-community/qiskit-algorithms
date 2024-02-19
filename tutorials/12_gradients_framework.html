@@ -5,15 +5,15 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Quantum Real Time Evolution using Trotterization" href="13_trotterQRTE.html" /><link rel="prev" title="Variational Quantum Time Evolution" href="11_VarQTE.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.05.20 -->
-        <title>Gradient Framework - Qiskit Algorithms 0.2.2</title>
-      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Gradient Framework - Qiskit Algorithms 0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=4f054d5c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
     
     
@@ -71,6 +71,20 @@
     <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
          viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve"><polygon points="22,16 12,26 10.6,24.6 19.2,16 10.6,7.4 12,6 " stroke="currentColor"/>
       <rect id="_x3C_Transparent_Rectangle_x3E_" fill="none" width="32" height="32"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-new-tab" viewBox="0 0 32 32">
+    <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <style>
+          .cls-1 {
+            fill: none;
+          }
+        </style>
+      </defs>
+      <path fill="#6929C4" d="M26,28H6a2.0027,2.0027,0,0,1-2-2V6A2.0027,2.0027,0,0,1,6,4H16V6H6V26H26V16h2V26A2.0027,2.0027,0,0,1,26,28Z"/>
+      <polygon fill="#6929C4" points="20 2 20 4 26.586 4 18 12.586 19.414 14 28 5.414 28 12 30 12 30 2 20 2"/>
+      <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" class="cls-1" width="32" height="32"/>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
@@ -131,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.2.2</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -158,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.2.2</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -353,7 +367,7 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.2/docs/tutorials/12_gradients_framework.ipynb">docs/tutorials/12_gradients_framework.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/12_gradients_framework.ipynb">docs/tutorials/12_gradients_framework.ipynb</a>.</p>
 </div>
 <section id="Gradient-Framework">
 <h1>Gradient Framework<a class="headerlink" href="#Gradient-Framework" title="Permalink to this heading">#</a></h1>
@@ -430,39 +444,30 @@ Approximation (SPSA) Gradients</p>
 <span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1">#Instantiate the quantum circuit</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="c1"># Instantiate the quantum circuit</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
 <span class="n">q</span> <span class="o">=</span> <span class="n">QuantumRegister</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 <span class="n">qc</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">qc</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-<span class="n">display</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s1">&#39;mpl&#39;</span><span class="p">))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">))</span>
 
-<span class="c1">#Instantiate the Hamiltonian observable 2X+Z</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">([(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)])</span>
+<span class="c1"># Instantiate the Hamiltonian observable 2X+Z</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">([(</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
 
-<span class="c1">#Parameter list</span>
+<span class="c1"># Parameter list</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/qiskit/visualization/circuit/matplotlib.py:266: FutureWarning: The default matplotlib drawer scheme will be changed to &#34;iqp&#34; in a following release. To silence this warning, specify the current default explicitly as style=&#34;clifford&#34;, or the new default as style=&#34;iqp&#34;.
-  self._style, def_font_ratio = load_style(self._style)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_12_gradients_framework_8_1.png" src="../_images/tutorials_12_gradients_framework_8_1.png" />
+<img alt="../_images/tutorials_12_gradients_framework_8_0.png" src="../_images/tutorials_12_gradients_framework_8_0.png" />
 </div>
 </div>
 <p>We can now choose a gradient type to evaluate the gradient of the circuit ansatz.</p>
@@ -488,15 +493,15 @@ Approximation (SPSA) Gradients</p>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
 <span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">ParamShiftEstimatorGradient</span>
 
-<span class="c1">#Define the estimator</span>
+<span class="c1"># Define the estimator</span>
 <span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
-<span class="c1">#Define the gradient</span>
+<span class="c1"># Define the gradient</span>
 <span class="n">gradient</span> <span class="o">=</span> <span class="n">ParamShiftEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
 
 <span class="c1"># Evaluate the gradient of the circuits using parameter shift gradients</span>
-<span class="n">pse_grad_result</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span>  <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
+<span class="n">pse_grad_result</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;State estimator gradient computed with parameter shift&#39;</span><span class="p">,</span> <span class="n">pse_grad_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State estimator gradient computed with parameter shift&quot;</span><span class="p">,</span> <span class="n">pse_grad_result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -517,35 +522,26 @@ State estimator gradient computed with parameter shift [array([-1.41421356,  0.7
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instantiate the quantum state with two parameters</span>
-<span class="n">a</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
 
 <span class="n">q</span> <span class="o">=</span> <span class="n">QuantumRegister</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">qc_sample</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 <span class="n">qc_sample</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 <span class="n">qc_sample</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">qc_sample</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">qc_sample</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span> <span class="c1">#important for sampler</span>
+<span class="n">qc_sample</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>  <span class="c1"># important for sampler</span>
 
-<span class="n">qc_sample</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+<span class="n">qc_sample</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/qiskit/visualization/circuit/matplotlib.py:266: FutureWarning: The default matplotlib drawer scheme will be changed to &#34;iqp&#34; in a following release. To silence this warning, specify the current default explicitly as style=&#34;clifford&#34;, or the new default as style=&#34;iqp&#34;.
-  self._style, def_font_ratio = load_style(self._style)
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_12_gradients_framework_13_1.png" src="../_images/tutorials_12_gradients_framework_13_1.png" />
+<img alt="../_images/tutorials_12_gradients_framework_13_0.png" src="../_images/tutorials_12_gradients_framework_13_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -555,11 +551,11 @@ State estimator gradient computed with parameter shift [array([-1.41421356,  0.7
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
 <span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">ParamShiftSamplerGradient</span>
 
-<span class="n">param_vals</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]]</span>
+<span class="n">param_vals</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]]</span>
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">()</span>
 <span class="n">gradient</span> <span class="o">=</span> <span class="n">ParamShiftSamplerGradient</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
 <span class="n">pss_grad_result</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc_sample</span><span class="p">,</span> <span class="n">param_vals</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;State sampler gradient computed with parameter shift&#39;</span><span class="p">,</span> <span class="n">pss_grad_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State sampler gradient computed with parameter shift&quot;</span><span class="p">,</span> <span class="n">pss_grad_result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -596,7 +592,7 @@ State sampler gradient computed with parameter shift [[{0: 0.35355339059327373, 
 
 <span class="c1"># Evaluate the gradient</span>
 <span class="n">lce_grad_result</span> <span class="o">=</span> <span class="n">state_grad</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;State estimator gradient computed with the linear combination method&#39;</span><span class="p">,</span> <span class="n">lce_grad_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State estimator gradient computed with the linear combination method&quot;</span><span class="p">,</span> <span class="n">lce_grad_result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -623,11 +619,11 @@ State estimator gradient computed with the linear combination method [array([-1.
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">FiniteDiffEstimatorGradient</span>
 
-<span class="n">state_grad</span> <span class="o">=</span> <span class="n">FiniteDiffEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="n">state_grad</span> <span class="o">=</span> <span class="n">FiniteDiffEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
 
 <span class="c1"># Evaluate the gradient</span>
 <span class="n">fde_grad_result</span> <span class="o">=</span> <span class="n">state_grad</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;State estimator gradient computed with finite difference&#39;</span><span class="p">,</span> <span class="n">fde_grad_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State estimator gradient computed with finite difference&quot;</span><span class="p">,</span> <span class="n">fde_grad_result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -649,11 +645,11 @@ State estimator gradient computed with finite difference [array([-1.41421333,  0
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">SPSAEstimatorGradient</span>
 
-<span class="n">state_grad</span> <span class="o">=</span> <span class="n">SPSAEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">state_grad</span> <span class="o">=</span> <span class="n">SPSAEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 
 <span class="c1"># Evaluate the gradient</span>
 <span class="n">spsae_grad_result</span> <span class="o">=</span> <span class="n">state_grad</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">gradients</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;State estimator gradient computed with SPSA:&#39;</span><span class="p">,</span> <span class="n">spsae_grad_result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;State estimator gradient computed with SPSA:&quot;</span><span class="p">,</span> <span class="n">spsae_grad_result</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -686,11 +682,11 @@ State estimator gradient computed with SPSA: [array([-1.41421333,  0.70710631])]
 
 <span class="n">qgt</span> <span class="o">=</span> <span class="n">LinCombQGT</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">derivative_type</span><span class="o">=</span><span class="n">DerivativeType</span><span class="o">.</span><span class="n">COMPLEX</span><span class="p">)</span>
 
-<span class="n">param_vals</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
+<span class="n">param_vals</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
 
-<span class="c1">#Evaluate the QGTs</span>
+<span class="c1"># Evaluate the QGTs</span>
 <span class="n">qgt_result</span> <span class="o">=</span> <span class="n">qgt</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">param_vals</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">qgts</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;QGT:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QGT:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">qgt_result</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -723,12 +719,12 @@ QFI_{kl} &amp;= 4 * \text{Re}(QGT_{kl}) \\
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">QFI</span>
 
-<span class="c1">#Define the QFI metric for the QGT</span>
+<span class="c1"># Define the QFI metric for the QGT</span>
 <span class="n">qfi</span> <span class="o">=</span> <span class="n">QFI</span><span class="p">(</span><span class="n">qgt</span><span class="p">)</span>
 
 <span class="c1"># Evaluate the QFI</span>
 <span class="n">qfi_result</span> <span class="o">=</span> <span class="n">qfi</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">param_vals</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">qfis</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;QFI:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QFI:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">qfi_result</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -757,17 +753,16 @@ QFI:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">ParameterVector</span>
 
 <span class="c1"># Instantiate the system Hamiltonian</span>
-<span class="n">h2_hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">([(</span><span class="s1">&#39;II&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.05</span><span class="p">),</span>
-                                          <span class="p">(</span><span class="s1">&#39;IZ&#39;</span><span class="p">,</span>  <span class="mf">0.39</span><span class="p">),</span>
-                                          <span class="p">(</span><span class="s1">&#39;ZI&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.39</span><span class="p">),</span>
-                                          <span class="p">(</span><span class="s1">&#39;ZZ&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">)])</span>
+<span class="n">h2_hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;II&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.05</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;IZ&quot;</span><span class="p">,</span> <span class="mf">0.39</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ZI&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.39</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">)]</span>
+<span class="p">)</span>
 
 <span class="c1"># This is the target energy</span>
 <span class="n">h2_energy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.85727503</span>
 
 <span class="c1"># Define the Ansatz</span>
 <span class="n">wavefunction</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">params</span> <span class="o">=</span> <span class="n">ParameterVector</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">ParameterVector</span><span class="p">(</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 <span class="n">wavefunction</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">wavefunction</span><span class="o">.</span><span class="n">ry</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
@@ -779,7 +774,7 @@ QFI:
 <span class="n">wavefunction</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">wavefunction</span><span class="o">.</span><span class="n">rz</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="n">wavefunction</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+<span class="n">wavefunction</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -795,7 +790,7 @@ QFI:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Make circuit copies for different VQEs</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make circuit copies for different VQEs</span>
 <span class="n">wavefunction_1</span> <span class="o">=</span> <span class="n">wavefunction</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">wavefunction_2</span> <span class="o">=</span> <span class="n">wavefunction</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 </pre></div>
@@ -809,16 +804,16 @@ QFI:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">CG</span>
 <span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VQE</span><span class="p">,</span> <span class="n">SamplingVQE</span>
 
-<span class="c1">#Conjugate Gradient algorithm</span>
+<span class="c1"># Conjugate Gradient algorithm</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">CG</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 
 <span class="c1"># Gradient callable</span>
 <span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
-<span class="n">grad</span> <span class="o">=</span> <span class="n">LinCombEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span> <span class="c1"># optional estimator gradient</span>
+<span class="n">grad</span> <span class="o">=</span> <span class="n">LinCombEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>  <span class="c1"># optional estimator gradient</span>
 <span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">wavefunction</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="n">grad</span><span class="p">)</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">h2_hamiltonian</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result of Estimator VQE:&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimal_value</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Reference:&#39;</span><span class="p">,</span> <span class="n">h2_energy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result of Estimator VQE:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">optimal_value</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Reference:&quot;</span><span class="p">,</span> <span class="n">h2_energy</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -827,7 +822,7 @@ QFI:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Result of Estimator VQE: -1.8199999999669974
+Result of Estimator VQE: -1.819999999983664
 Reference: -1.85727503
 </pre></div></div>
 </div>
@@ -841,11 +836,11 @@ Reference: -1.85727503
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 
-<span class="c1">#Classical optimizer</span>
+<span class="c1"># Classical optimizer</span>
 <span class="n">vqe_classical</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">wavefunction_2</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">minimize</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="n">grad</span><span class="p">)</span>
 
 <span class="n">result_classical</span> <span class="o">=</span> <span class="n">vqe_classical</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">h2_hamiltonian</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result of classical optimizer:&#39;</span><span class="p">,</span> <span class="n">result_classical</span><span class="o">.</span><span class="n">optimal_value</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Reference:&#39;</span><span class="p">,</span> <span class="n">h2_energy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result of classical optimizer:&quot;</span><span class="p">,</span> <span class="n">result_classical</span><span class="o">.</span><span class="n">optimal_value</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Reference:&quot;</span><span class="p">,</span> <span class="n">h2_energy</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -854,7 +849,7 @@ Reference: -1.85727503
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Result of classical optimizer: -1.819999999947168
+Result of classical optimizer: -1.8199999999594383
 Reference: -1.85727503
 </pre></div></div>
 </div>
@@ -862,36 +857,26 @@ Reference: -1.85727503
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">qiskit.tools.jupyter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
-<br/></pre></div>
+</pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_27978/2169806890.py:1: DeprecationWarning: qiskit.tools.jupyter is deprecated and will be removed in Qiskit 1.0.0
-  import qiskit.tools.jupyter
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>0.46.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.2.2</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>Python compiler</td><td>GCC 11.4.0</td></tr><tr><td>Python build</td><td>default, Aug 28 2023 08:27:22</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>15.60690689086914</td></tr><tr><td colspan='2'>Tue Feb 13 19:53:52 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Feb 19 12:23:32 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of Qiskit</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
-<script type="application/vnd.jupyter.widget-state+json">
-{"state": {"856e6ae29be3416bb185e9ffb4942b20": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": "0px 0px 10px 0px", "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "d77d2d9303c64be88c0c520c35c059b2": {"model_name": "HTMLStyleModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLStyleModel", "_view_count": null, "_view_module": "@jupyter-widgets/base", "_view_module_version": "2.0.0", "_view_name": "StyleView", "background": null, "description_width": "", "font_size": null, "text_color": null}}, "5fe227ca85bb4244b73a8206790eda39": {"model_name": "HTMLModel", "model_module": "@jupyter-widgets/controls", "model_module_version": "2.0.0", "state": {"_dom_classes": [], "_model_module": "@jupyter-widgets/controls", "_model_module_version": "2.0.0", "_model_name": "HTMLModel", "_view_count": null, "_view_module": "@jupyter-widgets/controls", "_view_module_version": "2.0.0", "_view_name": "HTMLView", "description": "", "description_allow_html": false, "layout": "IPY_MODEL_856e6ae29be3416bb185e9ffb4942b20", "placeholder": "\u200b", "style": "IPY_MODEL_d77d2d9303c64be88c0c520c35c059b2", "tabbable": null, "tooltip": null, "value": "<p style='font-family: IBM Plex Sans, Arial, Helvetica, sans-serif; font-size: 20px; font-weight: medium;'>Circuit Properties</p>"}}}, "version_major": 2, "version_minor": 0}
-</script></section>
+</section>
 </section>
 </section>
 
@@ -929,7 +914,7 @@ Reference: -1.85727503
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/13</div>
+              Last updated on 2024/02/19</div>
           </div>
           <div class="right-details">
             
@@ -993,7 +978,7 @@ Reference: -1.85727503
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=227644f7"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
