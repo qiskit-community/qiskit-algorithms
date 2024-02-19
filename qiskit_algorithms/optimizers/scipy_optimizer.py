@@ -78,6 +78,17 @@ class SciPyOptimizer(Optimizer):
         self._max_evals_grouped = max_evals_grouped
         self._kwargs = kwargs
 
+        # Initialise bounds and re-allocate if definition in options or kwargs
+        self._bounds = None
+
+        if "bounds" in self._kwargs:
+            self._bounds = self._kwargs["bounds"]
+            del self._kwargs["bounds"]
+
+        if "bounds" in self._options:
+            self._bounds = self._options["bounds"]
+            del self._options["bounds"]
+
     def get_support_level(self):
         """Return support level dictionary"""
         return {
@@ -118,22 +129,18 @@ class SciPyOptimizer(Optimizer):
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
-        # Loop up for bounds specified in options or kwargs
-        if "bounds" in self._kwargs:
-            bounds = self._kwargs["bounds"]
-            del self._kwargs["bounds"]
 
-        if "bounds" in self._options:
-            bounds = self._options["bounds"]
-            del self._options["bounds"]
+        # Overwrite the previous bounds if bounds are parsed in .minimize()
+        if bounds is not None:
+            self._bounds = bounds
 
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
-        if self.is_bounds_ignored and bounds is not None:
+        if self.is_bounds_ignored and self._bounds is not None:
             warnings.warn(
                 f"Optimizer method {self._method} does not support bounds.",
                 QiskitAlgorithmsOptimizersWarning,
             )
-            bounds = None
+            self._bounds = None
 
         # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
@@ -167,7 +174,7 @@ class SciPyOptimizer(Optimizer):
             x0=x0,
             method=self._method,
             jac=jac,
-            bounds=bounds,
+            bounds=self._bounds,
             options=self._options,
             **self._kwargs,
         )
