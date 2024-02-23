@@ -7,10 +7,18 @@ concurrency:
   group: ${{ github.repository }}-${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}
   cancel-in-progress: true
 jobs:
-  neko:
-    name: Qiskit Neko Integration Tests
+  neko-nature:
+    name: Qiskit Neko Integration Tests - nature
     runs-on: ubuntu-latest
     steps:
       - uses: Qiskit/qiskit-neko@main
         with:
           test_selection: nature
+
+  neko-nature:
+    name: Qiskit Neko Integration Tests - primitives
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Qiskit/qiskit-neko@main
+        with:
+          test_selection: primitives
