@@ -82,12 +82,15 @@ class SciPyOptimizer(Optimizer):
         self._bounds = None
 
         if "bounds" in self._kwargs:
-            self._bounds = self._kwargs["bounds"]
-            del self._kwargs["bounds"]
-
+            raise RuntimeError(
+                "Optimizer bounds should be parsed in SciPyOptimizer.minimize() and not in "
+                "SciPyOptimizer.__init__()."
+            )
         if "bounds" in self._options:
-            self._bounds = self._options["bounds"]
-            del self._options["bounds"]
+            raise RuntimeError(
+                "Optimizer bounds should be parsed in SciPyOptimizer.minimize() as a kwarg and not as "
+                "options."
+            )
 
     def get_support_level(self):
         """Return support level dictionary"""
@@ -130,17 +133,24 @@ class SciPyOptimizer(Optimizer):
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
 
-        # Overwrite the previous bounds if bounds are parsed in .minimize()
+        # Overwrite the previous bounds
         if bounds is not None:
             self._bounds = bounds
 
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored and self._bounds is not None:
             warnings.warn(
-                f"Optimizer method {self._method} does not support bounds.",
+                f"Optimizer method {self._method} does not support bounds. Bounds ignored.",
                 QiskitAlgorithmsOptimizersWarning,
             )
             self._bounds = None
+        elif not self.is_bounds_ignored and self._bounds is None:
+            warnings.warn(
+                f"Optimizer method {self._method} may require defining bounds. "
+                f"Check the Scipy documentation for more info: "
+                f"https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html",
+                QiskitAlgorithmsOptimizersWarning,
+            )
 
         # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:

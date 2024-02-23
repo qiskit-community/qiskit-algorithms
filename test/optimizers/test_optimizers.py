@@ -186,55 +186,34 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
 
     def test_scipy_optimizer_parse_bounds(self):
         """
-        Test the parsing of bounds in SciPyOptimizer.
-
-        This function tests the behavior of parsing bounds in the SciPyOptimizer class.
-        It checks whether the bounds are correctly allocated and raises an assertion error
-        if unexpected TypeErrors are encountered during parsing.
-
-        Cases:
-        1. Test parsing bounds specified in the 'options' parameter of SciPyOptimizer.
-        2. Test parsing bounds specified directly in the 'bounds' parameter (as kwarg) of SciPyOptimizer.
-        3. Test parsing bounds specified directly in the 'minimize' method of SciPyOptimizer.
-
-        This function aims to ensure that bounds are correctly allocated within the object attributes
-        and not in the 'options' or 'kwargs' dictionaries, to avoid known parsing issues.
+        Test the parsing of bounds in SciPyOptimizer.minimize method. Verifies that the bounds are
+        correctly parsed and set within the optimizer object.
 
         Raises:
-            AssertionError: If unexpected TypeErrors are raised during parsing of bounds.
+            AssertionError: If any of the assertions fail.
+            AssertionError: If a TypeError is raised unexpectedly while parsing bounds.
+
         """
-
-        optimizer_instances = []
-
         try:
-            optimizer = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
-
-            # Make sure the minimize method takes place
-            optimizer.minimize(lambda x: -x, 1.0)
-
-        except TypeError:
-            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
-            self.fail(
-                "TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer._options."
-            )
-
-        optimizer_instances.append(optimizer)
-
-        try:
-            optimizer = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
-            optimizer.minimize(lambda x: -x, 1.0)
-
-        except TypeError:
-            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
-            self.fail(
-                "TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer._kwargs."
-            )
-
-        optimizer_instances.append(optimizer)
-
-        try:
+            # Initialize SciPyOptimizer instance with SLSQP method
             optimizer = SciPyOptimizer("SLSQP")
+
+            # Ensure that _bounds attribute is initially present and =None
+            self.assertTrue(hasattr(optimizer, "_bounds"))
+            self.assertTrue(optimizer._bounds is None)
+
+            # Call minimize method with a simple lambda function and bounds
             optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
+
+            # Assert that _bounds attribute is set after minimize method call
+            self.assertTrue(hasattr(optimizer, "_bounds"))
+
+            # Assert that "bounds" is not present in optimizer options and kwargs
+            self.assertFalse("bounds" in optimizer._options)
+            self.assertFalse("bounds" in optimizer._kwargs)
+
+            # Assert that _bounds attribute is not None after setting bounds
+            self.assertFalse(optimizer._bounds is None)
 
         except TypeError:
             # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
@@ -242,82 +221,47 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
                 "TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer.minimize(...)."
             )
 
-        optimizer_instances.append(optimizer)
-
-        # Check that the bounds are correctly allocated in the attr and not in dicts
-        # This avoids the Scipy parsing issue documented in
-        # https://github.com/qiskit-community/qiskit-machine-learning/issues/570
-        for optimizer in optimizer_instances:
-            self.assertTrue(hasattr(optimizer, "_bounds"))
-            self.assertFalse("bounds" in optimizer._options)
-            self.assertFalse("bounds" in optimizer._kwargs)
-            self.assertFalse(
-                optimizer._bounds is None
-            )  # Because we set bounds to a non-empty tuple
-
-    def test_scipy_optimizer_bounds_overwrite(self):
-        """
-        Test bounds overwrite behavior of SciPyOptimizer.
-
-        This function tests the behavior of SciPyOptimizer when new bounds are supplied to it
-        after initial bounds have been set. It verifies that the new bounds overwrite the old
-        ones correctly.
-
-        Raises:
-            AssertionError: If the bounds overwrite behavior is incorrect.
-        """
-        # Initialize SciPyOptimizer with initial bounds
-        optimizer = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
-
-        # Record the old bounds
-        old_bounds = np.asarray(list(optimizer._bounds[0]))
-
-        # Call the minimize method with new bounds
-        optimizer.minimize(lambda x: -x, 1.0, bounds=[(2.0, 3.0)])
-
-        # Record the new bounds
-        new_bounds = np.asarray(list(optimizer._bounds[0]))
-
-        # Verify that the old bounds and new bounds are not identical
-        self.assertFalse(np.any(old_bounds == new_bounds))
-
-        # Verify that the new bounds match the expected values
-        self.assertTrue(np.all(new_bounds == np.array([2.0, 3.0])))
+        # Finally, expect exceptions if bounds are parsed incorrectly, i.e. differently than as in Scipy
+        with self.assertRaises(RuntimeError):
+            _ = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
+        with self.assertRaises(RuntimeError):
+            _ = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
 
     def test_scipy_optimizer_warning(self):
         """
-        Test warning behavior of SciPyOptimizer with unsupported bounds.
-
-        This function tests the warning behavior of SciPyOptimizer when using the COBYLA optimizer
-        with bounds supplied, which are unsupported by COBYLA. The function verifies that a specific
-        warning, QiskitAlgorithmsOptimizersWarning, is raised when bounds are supplied to COBYLA,
-        and the optimizer ignores them as expected.
-
-        Cases:
-        1. Test warning when bounds are supplied via 'options' parameter.
-        2. Test warning when bounds are supplied directly as kwargs.
-        3. Test warning when bounds are supplied via 'minimize' method.
+        Test warning handling in SciPyOptimizer.minimize method when using unsupported
+        optimizer. Verifies that a warning is raised when attempting to use an
+        optimizer that does not support bounds.
 
         Raises:
             AssertionError: If the expected warning is not raised.
+
         """
-
-        # Cobyla does not support bounds and is expected to warn if bounds (then ignored) are supplied
-        optimizer = SciPyOptimizer("cobyla", options={"bounds": [(0.0, 1.0)]})
-
-        # Using lambda function to pass a function that will raise the specific warning
-        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
-            optimizer.minimize(lambda x: -x, 1.0)
-
-        # The same should happen with bounds parsed as kwargs
-        optimizer = SciPyOptimizer("cobyla", bounds=[(0.0, 1.0)])
-        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
-            optimizer.minimize(lambda x: -x, 1.0)
-
-        # The same should happen with bounds parsed via minimize(...)
+        # Initialize SciPyOptimizer instance with "cobyla" method
         optimizer = SciPyOptimizer("cobyla")
+
+        # Use assertWarns context manager to check if the expected warning is raised
         with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
+            # Call minimize method with a simple lambda function and bounds for unsupported optimizer
             optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
+
+    def test_scipy_optimizer_bounds_required(self):
+        """
+        Test bounds requirement handling in SciPyOptimizer.minimize method for optimizers
+        that require bounds. Verifies that an exception is raised when attempting to use
+        an optimizer that requires bounds without supplying them.
+
+        Raises:
+            AssertionError: If the expected exception is not raised.
+
+        """
+        # Initialize SciPyOptimizer instance with "SLSQP" method
+        optimizer = SciPyOptimizer("SLSQP")
+
+        # Use assertWarns context manager to check if the expected exception is raised
+        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
+            # Call minimize method with a simple lambda function without supplying required bounds
+            optimizer.minimize(lambda x: -x, 1.0)
 
     # ESCH and ISRES do not do well with rosen
     @data(
