@@ -79,7 +79,7 @@ class SciPyOptimizer(Optimizer):
         self._kwargs = kwargs
 
         # Initialise bounds and re-allocate if definition in options or kwargs
-        self._bounds = None
+        self._bounds: list[tuple[float, float]] | None = None
 
         if "bounds" in self._kwargs:
             raise RuntimeError(
