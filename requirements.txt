@@ -1,4 +1,3 @@
 qiskit>=0.44
 scipy>=1.4
 numpy>=1.17
-scikit-quant
