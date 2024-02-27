@@ -83,8 +83,8 @@ class SciPyOptimizer(Optimizer):
 
         if "bounds" in self._kwargs:
             raise RuntimeError(
-                "Optimizer bounds should be parsed in SciPyOptimizer.minimize() and not in "
-                "SciPyOptimizer.__init__()."
+                "Optimizer bounds should be passed to SciPyOptimizer.minimize() and is not  "
+                "supported in SciPyOptimizer constructor kwargs."
             )
         if "bounds" in self._options:
             raise RuntimeError(
