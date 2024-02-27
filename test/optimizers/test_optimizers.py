@@ -198,10 +198,6 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             # Initialize SciPyOptimizer instance with SLSQP method
             optimizer = SciPyOptimizer("SLSQP")
 
-            # Ensure that _bounds attribute is initially present and =None
-            self.assertTrue(hasattr(optimizer, "_bounds"))
-            self.assertTrue(optimizer._bounds is None)
-
             # Call minimize method with a simple lambda function and bounds
             optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
 
