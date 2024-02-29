@@ -131,7 +131,7 @@ class SciPyOptimizer(Optimizer):
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
 
-        # Allocate bounds
+        # Allocate bounds attribute
         if bounds is not None:
             self._bounds = bounds
 
