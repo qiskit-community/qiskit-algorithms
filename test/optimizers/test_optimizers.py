@@ -49,7 +49,6 @@ from qiskit_algorithms.optimizers import (
     SciPyOptimizer,
 )
 from qiskit_algorithms.utils import algorithm_globals
-from qiskit_algorithms.exceptions import QiskitAlgorithmsOptimizersWarning
 
 
 @ddt
@@ -222,42 +221,6 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             _ = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
         with self.assertRaises(RuntimeError):
             _ = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
-
-    def test_scipy_optimizer_warning(self):
-        """
-        Test warning handling in SciPyOptimizer.minimize method when using unsupported
-        optimizer. Verifies that a warning is raised when attempting to use an
-        optimizer that does not support bounds.
-
-        Raises:
-            AssertionError: If the expected warning is not raised.
-
-        """
-        # Initialize SciPyOptimizer instance with "cobyla" method
-        optimizer = SciPyOptimizer("cobyla")
-
-        # Use assertWarns context manager to check if the expected warning is raised
-        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
-            # Call minimize method with a simple lambda function and bounds for unsupported optimizer
-            optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
-
-    def test_scipy_optimizer_bounds_required(self):
-        """
-        Test bounds requirement handling in SciPyOptimizer.minimize method for optimizers
-        that require bounds. Verifies that an exception is raised when attempting to use
-        an optimizer that requires bounds without supplying them.
-
-        Raises:
-            AssertionError: If the expected exception is not raised.
-
-        """
-        # Initialize SciPyOptimizer instance with "SLSQP" method
-        optimizer = SciPyOptimizer("SLSQP")
-
-        # Use assertWarns context manager to check if the expected exception is raised
-        with self.assertWarns(QiskitAlgorithmsOptimizersWarning):
-            # Call minimize method with a simple lambda function without supplying required bounds
-            optimizer.minimize(lambda x: -x, 1.0)
 
     # ESCH and ISRES do not do well with rosen
     @data(

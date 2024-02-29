@@ -15,12 +15,10 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any
-import warnings
 
 import numpy as np
 from scipy.optimize import minimize
 
-from qiskit_algorithms.exceptions import QiskitAlgorithmsOptimizersWarning
 from qiskit_algorithms.utils.validation import validate_min
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
@@ -133,24 +131,13 @@ class SciPyOptimizer(Optimizer):
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
 
-        # Overwrite the previous bounds
+        # Allocate bounds
         if bounds is not None:
             self._bounds = bounds
 
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
-        if self.is_bounds_ignored and self._bounds is not None:
-            warnings.warn(
-                f"Optimizer method {self._method} does not support bounds. Bounds ignored.",
-                QiskitAlgorithmsOptimizersWarning,
-            )
+        if self.is_bounds_ignored:
             self._bounds = None
-        elif not self.is_bounds_ignored and self._bounds is None:
-            warnings.warn(
-                f"Optimizer method {self._method} may require defining bounds. "
-                f"Check the Scipy documentation for more info: "
-                f"https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html",
-                QiskitAlgorithmsOptimizersWarning,
-            )
 
         # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
