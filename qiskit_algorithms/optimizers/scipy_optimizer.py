@@ -76,9 +76,6 @@ class SciPyOptimizer(Optimizer):
         self._max_evals_grouped = max_evals_grouped
         self._kwargs = kwargs
 
-        # Initialize bounds and re-allocate if definition in options or kwargs
-        self._bounds: list[tuple[float, float]] | None = None
-
         if "bounds" in self._kwargs:
             raise RuntimeError(
                 "Optimizer bounds should be passed to SciPyOptimizer.minimize() and is not  "
@@ -131,13 +128,9 @@ class SciPyOptimizer(Optimizer):
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
 
-        # Allocate bounds attribute
-        if bounds is not None:
-            self._bounds = bounds
-
         # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored:
-            self._bounds = None
+            bounds = None
 
         # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
@@ -171,7 +164,7 @@ class SciPyOptimizer(Optimizer):
             x0=x0,
             method=self._method,
             jac=jac,
-            bounds=self._bounds,
+            bounds=bounds,
             options=self._options,
             **self._kwargs,
         )
