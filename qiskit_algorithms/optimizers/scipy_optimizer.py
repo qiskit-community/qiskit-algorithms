@@ -86,7 +86,7 @@ class SciPyOptimizer(Optimizer):
             )
         if "bounds" in self._options:
             raise RuntimeError(
-                "Optimizer bounds should be passed to SciPyOptimizer.minimize() and is not as "
+                "Optimizer bounds should be passed to SciPyOptimizer.minimize() and not as "
                 "options."
             )
 
