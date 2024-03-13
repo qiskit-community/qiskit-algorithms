@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2017, 2023.
+# (C) Copyright IBM 2017, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -10,12 +10,31 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 
-"""Exception for errors raised by Algorithms module."""
+"""Exception and warnings for errors raised by Algorithms module."""
 
 from qiskit.exceptions import QiskitError
 
 
 class AlgorithmError(QiskitError):
     """For Algorithm specific errors."""
+
+    pass
+
+
+class QiskitAlgorithmsWarning(UserWarning):
+    """Base class for warnings raised by Qiskit Algorithms."""
+
+    def __init__(self, *message):
+        """Set the error message."""
+        super().__init__(" ".join(message))
+        self.message = " ".join(message)
+
+    def __str__(self):
+        """Return the message."""
+        return repr(self.message)
+
+
+class QiskitAlgorithmsOptimizersWarning(QiskitAlgorithmsWarning):
+    """For Algorithm specific warnings."""
 
     pass

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -149,7 +149,7 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             max_eval=10000,
             min_step_size=1.0e-12,
         )
-        x_0 = [1.3, 0.7, 0.8, 1.9, 1.2]
+        x_0 = np.asarray([1.3, 0.7, 0.8, 1.9, 1.2])
 
         algorithm_globals.random_seed = 1
         res = optimizer.minimize(rosen, x_0)
@@ -182,6 +182,39 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         optimizer = SciPyOptimizer("BFGS", options={"maxiter": 1000}, callback=callback)
         self.run_optimizer(optimizer, max_nfev=10000)
         self.assertTrue(values)  # Check the list is nonempty.
+
+    def test_scipy_optimizer_parse_bounds(self):
+        """
+        Test the parsing of bounds in SciPyOptimizer.minimize method. Verifies that the bounds are
+        correctly parsed and set within the optimizer object.
+
+        Raises:
+            AssertionError: If any of the assertions fail.
+            AssertionError: If a TypeError is raised unexpectedly while parsing bounds.
+
+        """
+        try:
+            # Initialize SciPyOptimizer instance with SLSQP method
+            optimizer = SciPyOptimizer("SLSQP")
+
+            # Call minimize method with a simple lambda function and bounds
+            optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
+
+            # Assert that "bounds" is not present in optimizer options and kwargs
+            self.assertFalse("bounds" in optimizer._options)
+            self.assertFalse("bounds" in optimizer._kwargs)
+
+        except TypeError:
+            # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
+            self.fail(
+                "TypeError was raised unexpectedly when parsing bounds in SciPyOptimizer.minimize(...)."
+            )
+
+        # Finally, expect exceptions if bounds are parsed incorrectly, i.e. differently than as in Scipy
+        with self.assertRaises(RuntimeError):
+            _ = SciPyOptimizer("SLSQP", bounds=[(0.0, 1.0)])
+        with self.assertRaises(RuntimeError):
+            _ = SciPyOptimizer("SLSQP", options={"bounds": [(0.0, 1.0)]})
 
     # ESCH and ISRES do not do well with rosen
     @data(
