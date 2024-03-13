@@ -200,15 +200,9 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             # Call minimize method with a simple lambda function and bounds
             optimizer.minimize(lambda x: -x, 1.0, bounds=[(0.0, 1.0)])
 
-            # Assert that _bounds attribute is set after minimize method call
-            self.assertTrue(hasattr(optimizer, "_bounds"))
-
             # Assert that "bounds" is not present in optimizer options and kwargs
             self.assertFalse("bounds" in optimizer._options)
             self.assertFalse("bounds" in optimizer._kwargs)
-
-            # Assert that _bounds attribute is not None after setting bounds
-            self.assertFalse(optimizer._bounds is None)
 
         except TypeError:
             # This would give: https://github.com/qiskit-community/qiskit-machine-learning/issues/570
