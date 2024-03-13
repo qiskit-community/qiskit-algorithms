@@ -110,7 +110,7 @@ class GSLS(Optimizer):
         fun: Callable[[POINT], float],
         x0: POINT,
         jac: Callable[[POINT], POINT] | None = None,
-        bounds: list[tuple[float, float]] | list[tuple[None, None]] | None = None,
+        bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
         if not isinstance(x0, np.ndarray):
             x0 = np.asarray(x0)
