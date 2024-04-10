@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="VQE with Qiskit Aer Primitives" href="03_vqe_simulation_with_noise.html" /><link rel="prev" title="An Introduction to Algorithms using Qiskit" href="01_algorithms_introduction.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
         <title>Advanced VQE Options - Qiskit Algorithms 0.3.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
@@ -622,21 +622,21 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 9,
     &#39;eigenvalue&#39;: -1.8572750175655812,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f0ab7ea7e50&gt;,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f73af601df0&gt;,
     &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[2]): 0.5470777607659962,
+                              ParameterVectorElement(θ[0]): 4.296519450348691,
+                              ParameterVectorElement(θ[1]): 4.426962358395507,
                               ParameterVectorElement(θ[3]): 6.092947832766949,
                               ParameterVectorElement(θ[4]): -2.5983266516732413,
                               ParameterVectorElement(θ[5]): 1.5683250498281824,
                               ParameterVectorElement(θ[6]): -4.717616147449719,
-                              ParameterVectorElement(θ[7]): 0.3602101747090262,
-                              ParameterVectorElement(θ[1]): 4.426962358395507,
-                              ParameterVectorElement(θ[0]): 4.296519450348691},
+                              ParameterVectorElement(θ[7]): 0.3602101747090262},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: -1.8572750175655812,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f0ab7f09df0&gt;,
-    &#39;optimizer_time&#39;: 0.17185592651367188}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f73af604370&gt;,
+    &#39;optimizer_time&#39;: 0.18030476570129395}
 </pre></div></div>
 </div>
 <p>Now, you can take the <code class="docutils literal notranslate"><span class="pre">optimal_point</span></code> from the above result and use it as the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> for a follow-up computation.</p>
@@ -669,21 +669,21 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 1,
     &#39;eigenvalue&#39;: -1.8572750175655812,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f0ab7eb4070&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): 4.296519450348691,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7f73af5b0d30&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[6]): -4.717616147449719,
+                              ParameterVectorElement(θ[7]): 0.3602101747090262,
                               ParameterVectorElement(θ[1]): 4.426962358395507,
+                              ParameterVectorElement(θ[0]): 4.296519450348691,
                               ParameterVectorElement(θ[2]): 0.5470777607659962,
                               ParameterVectorElement(θ[3]): 6.092947832766949,
                               ParameterVectorElement(θ[4]): -2.5983266516732413,
-                              ParameterVectorElement(θ[5]): 1.5683250498281824,
-                              ParameterVectorElement(θ[6]): -4.717616147449719,
-                              ParameterVectorElement(θ[7]): 0.3602101747090262},
+                              ParameterVectorElement(θ[5]): 1.5683250498281824},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: -1.8572750175655812,
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f0ab7ebd970&gt;,
-    &#39;optimizer_time&#39;: 0.02574014663696289}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f73af5d41c0&gt;,
+    &#39;optimizer_time&#39;: 0.03479146957397461}
 
 </pre></div></div>
 </div>
@@ -723,7 +723,7 @@ solution as the starting point for the next step. There also exist more complex 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.0</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Feb 19 12:17:52 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Apr 10 17:18:29 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -768,7 +768,7 @@ solution as the starting point for the next step. There also exist more complex 
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/19</div>
+              Last updated on 2024/04/10</div>
           </div>
           <div class="right-details">
             

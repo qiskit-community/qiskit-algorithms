@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
         <title>qiskit_algorithms.eigensolvers.vqd - Qiskit Algorithms 0.3.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
@@ -366,7 +366,7 @@
           <h1>Source code for qiskit_algorithms.eigensolvers.vqd</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2022, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2022, 2024.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -460,7 +460,7 @@
 <span class="sd">                overlap estimation as indicated in the VQD paper.</span>
 <span class="sd">            ansatz (QuantumCircuit): A parameterized circuit used as ansatz for the wave function.</span>
 <span class="sd">            optimizer(Optimizer | Sequence[Optimizer]): A classical optimizer or a list of optimizers,</span>
-<span class="sd">            one for every k-th eigenvalue. Can either be a Qiskit optimizer or a callable</span>
+<span class="sd">                one for every k-th eigenvalue. Can either be a Qiskit optimizer or a callable</span>
 <span class="sd">                that takes an array as input and returns a Qiskit or SciPy optimization result.</span>
 <span class="sd">            k (int): the number of eigenvalues to return. Returns the lowest k eigenvalues.</span>
 <span class="sd">            betas (list[float]): Beta parameters in the VQD paper.</span>
@@ -468,11 +468,6 @@
 <span class="sd">                These hyper-parameters balance the contribution of each overlap term to the cost</span>
 <span class="sd">                function and have a default value computed as the mean square sum of the</span>
 <span class="sd">                coefficients of the observable.</span>
-<span class="sd">            initial point (Sequence[float] | Sequence[Sequence[float]] | None): An optional initial</span>
-<span class="sd">                point (i.e. initial parameter values) or a list of initial points</span>
-<span class="sd">                (one for every k-th eigenvalue) for the optimizer.</span>
-<span class="sd">                If ``None`` then VQD will look to the ansatz for a</span>
-<span class="sd">                preferred point and if not will simply compute a random one.</span>
 <span class="sd">            callback (Callable[[int, np.ndarray, float, dict[str, Any]], None] | None):</span>
 <span class="sd">                A callback that can access the intermediate data</span>
 <span class="sd">                during the optimization. Four parameter values are passed to the callback as</span>
@@ -500,7 +495,7 @@
 <span class="sd">            fidelity: The fidelity class using primitives.</span>
 <span class="sd">            ansatz: A parameterized circuit used as ansatz for the wave function.</span>
 <span class="sd">            optimizer: A classical optimizer or a list of optimizers, one for every k-th eigenvalue.</span>
-<span class="sd">            Can either be a Qiskit optimizer or a callable</span>
+<span class="sd">                Can either be a Qiskit optimizer or a callable</span>
 <span class="sd">                that takes an array as input and returns a Qiskit or SciPy optimization result.</span>
 <span class="sd">            k: The number of eigenvalues to return. Returns the lowest k eigenvalues.</span>
 <span class="sd">            betas: Beta parameters in the VQD paper.</span>
@@ -927,7 +922,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/02/19</div>
+              Last updated on 2024/04/10</div>
           </div>
           <div class="right-details">
             
