@@ -230,7 +230,8 @@ def linkcode_resolve(domain, info):
     if full_file_name is None:
         return None
     try:
-        file_name = Path(full_file_name).resolve().relative_to(REPO_ROOT)
+        relative_file_name = Path(full_file_name).resolve().relative_to(REPO_ROOT)
+        file_name = re.sub(r"\.tox\/.+\/site-packages\/", "", str(relative_file_name))
     except ValueError:
         return None
 
@@ -242,5 +243,6 @@ def linkcode_resolve(domain, info):
         ending_lineno = lineno + len(source) - 1
         linespec = f"#L{lineno}-L{ending_lineno}"
 
-    repo_name = "Qiskit/qiskit/" if "qiskit/" in str(file_name) else "qiskit-community/qiskit-algorithms"
+    repo_name = "Qiskit/qiskit/" if "qiskit/" in str(file_name) else \
+        "qiskit-community/qiskit-algorithms"
     return f"https://github.com/{repo_name}/tree/{GITHUB_BRANCH}/{file_name}{linespec}"
