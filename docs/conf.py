@@ -18,8 +18,12 @@
 import datetime
 import doctest
 
+import importlib
+import inspect
 import os
+import re
 import sys
+from pathlib import Path
 
 import qiskit_algorithms
 
@@ -46,7 +50,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.mathjax",
-    "sphinx.ext.viewcode",
+    "sphinx.ext.linkcode",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
     "sphinx.ext.doctest",
@@ -164,3 +168,80 @@ doctest_default_flags = (
 # >> code
 # output
 doctest_test_doctest_blocks = ""
+# ----------------------------------------------------------------------------------
+# Source code links
+# ----------------------------------------------------------------------------------
+
+def determine_github_branch() -> str:
+    """Determine the GitHub branch name to use for source code links.
+
+    We need to decide whether to use `stable/<version>` vs. `main` for dev builds.
+    Refer to https://docs.github.com/en/actions/learn-github-actions/variables
+    for how we determine this with GitHub Actions.
+    """
+    # If CI env vars not set, default to `main`. This is relevant for local builds.
+    if "GITHUB_REF_NAME" not in os.environ:
+        return "main"
+
+    # PR workflows set the branch they're merging into.
+    if base_ref := os.environ.get("GITHUB_BASE_REF"):
+        return base_ref
+
+    ref_name = os.environ["GITHUB_REF_NAME"]
+
+    # Check if the ref_name is a tag like `1.0.0` or `1.0.0rc1`. If so, we need
+    # to transform it to a Git branch like `stable/1.0`.
+    version_without_patch = re.match(r"(\d+\.\d+)", ref_name)
+    return (
+        f"stable/{version_without_patch.group()}"
+        if version_without_patch
+        else ref_name
+    )
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+GITHUB_BRANCH = determine_github_branch()
+
+
+def linkcode_resolve(domain, info):
+    if domain != "py":
+        return None
+
+    module_name = info["module"]
+    if "qiskit_algorithms" not in module_name:
+        return None
+
+    try:
+        module = importlib.import_module(module_name)
+    except ModuleNotFoundError:
+        return None
+
+    obj = module
+    for part in info["fullname"].split("."):
+        try:
+            obj = getattr(obj, part)
+        except AttributeError:
+            return None
+
+    try:
+        full_file_name = inspect.getsourcefile(obj)
+    except TypeError:
+        return None
+    if full_file_name is None:
+        return None
+    try:
+        relative_file_name = Path(full_file_name).resolve().relative_to(REPO_ROOT)
+        file_name = re.sub(r"\.tox\/.+\/site-packages\/", "", str(relative_file_name))
+    except ValueError:
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except (OSError, TypeError):
+        linespec = ""
+    else:
+        ending_lineno = lineno + len(source) - 1
+        linespec = f"#L{lineno}-L{ending_lineno}"
+
+    repo_name = "Qiskit/qiskit/" if "qiskit/" in file_name else "qiskit-community/qiskit-algorithms"
+    return f"https://github.com/{repo_name}/tree/{GITHUB_BRANCH}/{file_name}{linespec}"
