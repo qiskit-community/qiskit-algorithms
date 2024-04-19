@@ -172,6 +172,7 @@ doctest_test_doctest_blocks = ""
 # Source code links
 # ----------------------------------------------------------------------------------
 
+
 def determine_github_branch() -> str:
     """Determine the GitHub branch name to use for source code links.
 
@@ -192,11 +193,7 @@ def determine_github_branch() -> str:
     # Check if the ref_name is a tag like `1.0.0` or `1.0.0rc1`. If so, we need
     # to transform it to a Git branch like `stable/1.0`.
     version_without_patch = re.match(r"(\d+\.\d+)", ref_name)
-    return (
-        f"stable/{version_without_patch.group()}"
-        if version_without_patch
-        else ref_name
-    )
+    return f"stable/{version_without_patch.group()}" if version_without_patch else ref_name
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -230,7 +227,7 @@ def linkcode_resolve(domain, info):
     if full_file_name is None:
         return None
     try:
-        relative_file_name = (Path(full_file_name).resolve().relative_to(REPO_ROOT))
+        relative_file_name = Path(full_file_name).resolve().relative_to(REPO_ROOT)
         file_name = re.sub(r"\.tox\/.+\/site-packages\/", "", str(relative_file_name))
     except ValueError:
         return None
@@ -243,6 +240,7 @@ def linkcode_resolve(domain, info):
         ending_lineno = lineno + len(source) - 1
         linespec = f"#L{lineno}-L{ending_lineno}"
 
-    repo_name = "Qiskit/qiskit/" if "qiskit/" in str(file_name) else \
-        "qiskit-community/qiskit-algorithms"
+    repo_name = (
+        "Qiskit/qiskit/" if "qiskit/" in str(file_name) else "qiskit-community/qiskit-algorithms"
+    )
     return f"https://github.com/{repo_name}/tree/{GITHUB_BRANCH}/{file_name}{linespec}"
