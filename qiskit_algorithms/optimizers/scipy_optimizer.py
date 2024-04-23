@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -76,6 +76,17 @@ class SciPyOptimizer(Optimizer):
         self._max_evals_grouped = max_evals_grouped
         self._kwargs = kwargs
 
+        if "bounds" in self._kwargs:
+            raise RuntimeError(
+                "Optimizer bounds should be passed to SciPyOptimizer.minimize() and is not  "
+                "supported in SciPyOptimizer constructor kwargs."
+            )
+        if "bounds" in self._options:
+            raise RuntimeError(
+                "Optimizer bounds should be passed to SciPyOptimizer.minimize() and not as "
+                "options."
+            )
+
     def get_support_level(self):
         """Return support level dictionary"""
         return {
@@ -116,9 +127,12 @@ class SciPyOptimizer(Optimizer):
         jac: Callable[[POINT], POINT] | None = None,
         bounds: list[tuple[float, float]] | None = None,
     ) -> OptimizerResult:
-        # Remove ignored parameters to suppress the warning of scipy.optimize.minimize
+
+        # Remove ignored bounds to suppress the warning of scipy.optimize.minimize
         if self.is_bounds_ignored:
             bounds = None
+
+        # Remove ignored gradient to suppress the warning of scipy.optimize.minimize
         if self.is_gradient_ignored:
             jac = None
 
