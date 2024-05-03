@@ -148,7 +148,7 @@ def derive_circuit(
     gradient = []
     for product_rule_term in itertools.product(*summands):
         summand_circuit = QuantumCircuit(*circuit.qregs)
-        c = 1
+        c = complex(1)
         for i, term in enumerate(product_rule_term):
             c *= term[0]
             summand_circuit.data.append([term[1], *op_context[i]])
