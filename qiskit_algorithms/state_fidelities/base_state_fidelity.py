@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -171,7 +171,7 @@ class BaseStateFidelity(ABC):
             )
 
         circuits = []
-        for (circuit_1, circuit_2) in zip(circuits_1, circuits_2):
+        for circuit_1, circuit_2 in zip(circuits_1, circuits_2):
 
             # Use the same key for circuits as qiskit.primitives use.
             circuit = self._circuit_cache.get((_circuit_key(circuit_1), _circuit_key(circuit_2)))
@@ -230,7 +230,7 @@ class BaseStateFidelity(ABC):
         elif len(values_1[0]) == 0:
             values = list(values_2)
         else:
-            for (val_1, val_2) in zip(values_1, values_2):
+            for val_1, val_2 in zip(values_1, values_2):
                 # the `+` operation concatenates the lists
                 # and then this new list gets appended to the values list
                 values.append(val_1 + val_2)

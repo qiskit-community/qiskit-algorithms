@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -36,9 +36,9 @@ class EstimationProblem:
         state_preparation: QuantumCircuit,
         objective_qubits: int | list[int],
         grover_operator: QuantumCircuit | None = None,
-        post_processing: Callable[[list[float]], list[float]]
-        | Callable[[float], float]
-        | None = None,
+        post_processing: (
+            Callable[[list[float]], list[float]] | Callable[[float], float] | None
+        ) = None,
         is_good_state: Callable[[str], bool] | None = None,
     ) -> None:
         r"""
