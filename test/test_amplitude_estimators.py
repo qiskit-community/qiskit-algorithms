@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -47,7 +47,9 @@ class BernoulliGrover(QuantumCircuit):
         self.angle = 2 * np.arcsin(np.sqrt(probability))
         self.ry(2 * self.angle, 0)
 
-    def power(self, power, matrix_power=False):
+    # Disable for pylint needed for Qiskit < 1.1.0 where annotated does not exist
+    # pylint: disable=unused-argument
+    def power(self, power, matrix_power=False, annotated: bool = False):
         if matrix_power:
             return super().power(power, True)
 
