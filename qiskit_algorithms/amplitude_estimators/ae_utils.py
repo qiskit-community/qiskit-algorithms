@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -203,9 +203,11 @@ def pdf_a(x, p, m):
     # 0 and 1, respectively
     pr = np.array(
         [
-            _pdf_a_single_angle(xi, p, m, _alpha) + _pdf_a_single_angle(xi, p, m, _beta)
-            if (xi not in [0, 1])
-            else _pdf_a_single_angle(xi, p, m, _alpha)
+            (
+                _pdf_a_single_angle(xi, p, m, _alpha) + _pdf_a_single_angle(xi, p, m, _beta)
+                if (xi not in [0, 1])
+                else _pdf_a_single_angle(xi, p, m, _alpha)
+            )
             for xi in x
         ]
     ).flatten()

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -266,9 +266,10 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         operator: BaseOperator,
         ansatz: QuantumCircuit,
         return_best_measurement: bool = False,
-    ) -> Callable[[np.ndarray], np.ndarray | float] | tuple[
-        Callable[[np.ndarray], np.ndarray | float], dict[str, Any]
-    ]:
+    ) -> (
+        Callable[[np.ndarray], np.ndarray | float]
+        | tuple[Callable[[np.ndarray], np.ndarray | float], dict[str, Any]]
+    ):
         """Returns a function handle to evaluate the energy at given parameters.
 
         This is the objective function to be passed to the optimizer that is used for evaluation.

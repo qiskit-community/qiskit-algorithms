@@ -114,6 +114,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
     def test_max_grouped_evals_non_parallelizable(self):
         """Tests max_grouped_evals for an objective function that cannot be parallelized"""
+
         # Define the objective function (toy example for functionality)
         def quadratic_objective(x: np.ndarray) -> float:
             # Check if only a single point as parameters is passed
