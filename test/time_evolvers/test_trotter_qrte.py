@@ -262,6 +262,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         observables = [obs.to_matrix() for obs in observables]
 
         psi = Statevector(init_state).data
+        ops = []  # Define to avoid possibly undefined error later on the line where it's used
         if t_param is None:
             ops = [Pauli(op).to_matrix() * np.real(coeff) for op, coeff in operator.to_list()]
 

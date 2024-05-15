@@ -248,6 +248,13 @@ class VQD(VariationalAlgorithm, Eigensolver):
         # the same parameters to the ansatz if we do multiple steps
         prev_states = []
 
+        # These two variables are defined inside if statements and static analysis, e.g. lint can
+        # see this as a potential error of them not being defined before use. Following the logic
+        # they do end up being defined before use so the setting of these here, these values would
+        # not be used in practice.
+        initial_point = np.asarray([])
+        initial_points = np.asarray([])
+
         num_initial_points = 0
         if self.initial_point is not None:
             initial_points = np.reshape(self.initial_point, (-1, self.ansatz.num_parameters))
