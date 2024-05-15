@@ -135,7 +135,7 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
             # otherwise lint errors out. I left the if block as it has been coded though
             # as the values are checked in the constructor I could have made the last elif
             # a simple else instead of defining this here.
-            gradient = 0
+            gradient = None
             if self._method == "central":
                 result = results.values[partial_sum_n : partial_sum_n + n]
                 gradient = (result[: n // 2] - result[n // 2 :]) / (2 * self._epsilon)
