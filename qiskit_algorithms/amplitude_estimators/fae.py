@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2017, 2023.
+# (C) Copyright IBM 2017, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -198,6 +198,12 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         def cos_estimate(power, shots):
             return self._cos_estimate(problem, power, shots)
+
+        # v is first defined in an if below and referenced after in the else where static analysis
+        # e.g. lint, may determine that v might not be defined before used. So this defines it here
+        # to avoid lint error. Note the code cannot exit the first stage path until its defined so
+        # this value here will never get used in practice.
+        v = 0
 
         for j in range(1, self._maxiter + 1):
             num_steps += 1

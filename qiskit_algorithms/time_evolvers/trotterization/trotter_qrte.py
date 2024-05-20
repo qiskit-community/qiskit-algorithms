@@ -214,6 +214,9 @@ class TrotterQRTE(RealTimeEvolver):
         else:
             observables = None
 
+        # Empty define to avoid possibly undefined lint error later here
+        single_step_evolution_gate = None
+
         if t_param is None:
             # the evolution gate
             single_step_evolution_gate = PauliEvolutionGate(
