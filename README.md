@@ -3,8 +3,8 @@
 [![License](https://img.shields.io/github/license/qiskit-community/qiskit-algorithms.svg?style=popout-square)](https://opensource.org/licenses/Apache-2.0)<!--- long-description-skip-begin -->[![Build Status](https://github.com/qiskit-community/qiskit-algorithms/workflows/Algorithms%20Unit%20Tests/badge.svg?branch=main)](https://github.com/qiskit-community/qiskit-algorithms/actions?query=workflow%3A"Algorithms%20Unit%20Tests"+branch%3Amain+event%3Apush)[![](https://img.shields.io/github/release/qiskit-community/qiskit-algorithms.svg?style=popout-square)](https://github.com/qiskit-community/qiskit-algorithms/releases)[![](https://img.shields.io/pypi/dm/qiskit-algorithms.svg?style=popout-square)](https://pypi.org/project/qiskit-algorithms/)[![Coverage Status](https://coveralls.io/repos/github/qiskit-community/qiskit-algorithms/badge.svg?branch=main)](https://coveralls.io/github/qiskit-community/qiskit-algorithms?branch=main)<!--- long-description-skip-end -->
 
 > [!WARNING]  
-> **Qiskit Algorithms is not longer officially supported by IBM Quantum**.  
-> Like any other Apache 2 code, you are free to use it or/and extend it, but please be aware that it is under your own risk. 
+> **Qiskit Algorithms is no longer officially supported by IBM Quantum**.  
+> Like any other Apache 2 licensed code, you are free to use it or/and extend it, but please be aware that it is under your own risk. 
 
 ## Installation
 
