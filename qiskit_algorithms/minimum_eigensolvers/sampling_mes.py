@@ -123,15 +123,3 @@ class SamplingMinimumEigensolverResult(AlgorithmResult):
     def best_measurement(self, value: Mapping[str, Any]) -> None:
         """Set the best measurement over the entire optimization."""
         self._best_measurement = value
-
-    def __str__(self) -> str:
-        """Return a string representation of the result."""
-        disp = (
-            "SamplingMinimumEigensolverResult:\n"
-            + f"\tEigenvalue: {self.eigenvalue}\n"
-            + f"\tBest measurement\n: {self.best_measurement}\n"
-        )
-        if self.aux_operators_evaluated is not None:
-            disp += f"\n\tAuxiliary operator values: {self.aux_operators_evaluated}\n"
-
-        return disp

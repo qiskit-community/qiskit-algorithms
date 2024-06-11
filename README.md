@@ -20,7 +20,7 @@ pip install qiskit-algorithms
 If you want to work on the very latest work-in-progress versions, either to try features ahead of
 their official release or if you want to contribute to Algorithms, then you can install from source.
 To do this follow the instructions in the
- [documentation](https://qiskit.org/ecosystem/algorithms/getting_started.html#installation).
+ [documentation](https://qiskit-community.github.io/qiskit-algorithms/getting_started.html#installation).
 
 
 ----------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ Algorithms continues to grow with the help and work of
 [many people](https://github.com/qiskit-community/qiskit-algorithms/graphs/contributors), who contribute
 to the project at different levels.
 If you use Qiskit, please cite as per the provided
-[BibTeX file](https://github.com/Qiskit/qiskit/blob/master/Qiskit.bib).
+[BibTeX file](https://github.com/Qiskit/qiskit/blob/main/CITATION.bib).
 
 ## License
 

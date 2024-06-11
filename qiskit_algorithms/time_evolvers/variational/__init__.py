@@ -10,13 +10,13 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """
-Variational Quantum Time Evolutions (:mod:`qiskit_algorithms.time_evolvers.variational`)
-========================================================================================
+Time Evolvers, Variational (:mod:`qiskit_algorithms.time_evolvers.variational`)
+===============================================================================
 
 Algorithms for performing Variational Quantum Time Evolution of quantum states,
 which can be tailored to near-term devices.
 :class:`~qiskit_algorithms.time_evolvers.variational.VarQTE` base class exposes an interface, compliant
-with the Quantum Time Evolution Framework in Qiskit Terra, that is implemented by
+with the Quantum Time Evolution Framework, that is implemented by
 :class:`~qiskit_algorithms.VarQRTE` and :class:`~qiskit_algorithms.VarQITE` classes for real and
 imaginary time evolution respectively. The variational approach is taken according to a variational
 principle chosen by a user.
@@ -68,6 +68,7 @@ Wick-rotated Schroedinger equation.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
    :template: autosummary/class_no_inherited_members.rst
 
     VariationalPrinciple
@@ -84,6 +85,7 @@ e.g. RK45.
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
    :template: autosummary/class_no_inherited_members.rst
 
    ForwardEulerSolver

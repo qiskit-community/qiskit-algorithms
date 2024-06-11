@@ -51,7 +51,7 @@ class QNSPSA(SPSA):
 
         This component has some function that is normally random. If you want to reproduce behavior
         then you should set the random number generator seed in the algorithm_globals
-        (``qiskit.utils.algorithm_globals.random_seed = seed``).
+        (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
 
     Examples:
 

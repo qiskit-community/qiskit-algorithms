@@ -21,8 +21,8 @@ from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.primitives import BaseSampler
-from qiskit.utils.validation import validate_min
 
+from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.optimizers import Minimizer, Optimizer
 
 from .sampling_vqe import SamplingVQE
@@ -56,7 +56,7 @@ class QAOA(SamplingVQE):
     Attributes:
         sampler (BaseSampler): The sampler primitive to sample the circuits.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
-            can either be a Qiskit :class:`.Optimizer` or a callable implementing the
+            can either be an :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
         reps (int): The integer parameter :math:`p`. Has a minimum valid value of 1.
         initial_state: An optional initial state to prepend the QAOA circuit with.
@@ -69,8 +69,8 @@ class QAOA(SamplingVQE):
             value.
         callback (Callable[[int, np.ndarray, float, dict[str, Any]], None] | None): A callback
             that can access the intermediate data at each optimization step. These data are: the
-            evaluation count, the optimizer parameters for the ansatz, the evaluated value, the
-            the metadata dictionary, and the best measurement.
+            evaluation count, the optimizer parameters for the ansatz, the evaluated value, and
+            the metadata dictionary.
 
     References:
         [1]: Farhi, E., Goldstone, J., Gutmann, S., "A Quantum Approximate Optimization Algorithm"
@@ -98,8 +98,8 @@ class QAOA(SamplingVQE):
         r"""
         Args:
             sampler: The sampler primitive to sample the circuits.
-            optimizer: A classical optimizer to find the minimum energy. This can either be a
-                Qiskit :class:`.Optimizer` or a callable implementing the :class:`.Minimizer`
+            optimizer: A classical optimizer to find the minimum energy. This can either be
+                an :class:`.Optimizer` or a callable implementing the :class:`.Minimizer`
                 protocol.
             reps: The integer parameter :math:`p`. Has a minimum valid value of 1.
             initial_state: An optional initial state to prepend the QAOA circuit with.

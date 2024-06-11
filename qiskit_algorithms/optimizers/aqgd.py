@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,8 @@ from collections.abc import Callable
 from typing import Any
 
 import numpy as np
-from qiskit.utils.validation import validate_range_exclusive_max
+
+from qiskit_algorithms.utils.validation import validate_range_exclusive_max
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 from ..exceptions import AlgorithmError
 
@@ -56,6 +57,7 @@ class AQGD(Optimizer):
         momentum: float | list[float] = 0.25,
         param_tol: float = 1e-6,
         averaging: int = 10,
+        max_evals_grouped: int = 1,
     ) -> None:
         """
         Performs Analytical Quantum Gradient Descent (AQGD) with Epochs.
@@ -72,6 +74,7 @@ class AQGD(Optimizer):
             param_tol: Tolerance for change in norm of parameters.
             averaging: Length of window over which to average objective values for objective
                 convergence criterion
+            max_evals_grouped: Max number of default gradient evaluations performed simultaneously.
 
         Raises:
             AlgorithmError: If the length of ``maxiter``, `momentum``, and ``eta`` is not the same.
@@ -97,6 +100,7 @@ class AQGD(Optimizer):
         self._param_tol = param_tol
         self._tol = tol
         self._averaging = averaging
+        self.set_max_evals_grouped(max_evals_grouped)
 
         # state
         self._avg_objval: float | None = None
@@ -155,7 +159,15 @@ class AQGD(Optimizer):
         )
         # Evaluate,
         # reshaping to flatten, as expected by objective function
-        values = np.array(obj(param_sets_to_eval.reshape(-1)))
+        if self._max_evals_grouped > 1:
+            batches = [
+                param_sets_to_eval[i : i + self._max_evals_grouped]
+                for i in range(0, len(param_sets_to_eval), self._max_evals_grouped)
+            ]
+            values = np.array(np.concatenate([obj(b) for b in batches]))
+        else:
+            batches = param_sets_to_eval
+            values = np.array([obj(b) for b in batches])
 
         # Update number of objective function evaluations
         self._eval_count += 2 * num_params + 1
@@ -222,7 +234,7 @@ class AQGD(Optimizer):
         # and current windowed average of objective values
         prev_avg = np.mean(self._prev_loss[:window_size])
         curr_avg = np.mean(self._prev_loss[1 : window_size + 1])
-        self._avg_objval = curr_avg
+        self._avg_objval = curr_avg  # type: ignore[assignment]
 
         # Update window of objective values
         # (Remove earliest value)
@@ -311,10 +323,9 @@ class AQGD(Optimizer):
 
         iter_count = 0
         logger.info("Initial Params: %s", params)
-
         epoch = 0
         converged = False
-        for (eta, mom_coeff) in zip(self._eta, self._momenta_coeff):
+        for eta, mom_coeff in zip(self._eta, self._momenta_coeff):
             logger.info("Epoch: %4d | Stepsize: %6.4f | Momentum: %6.4f", epoch, eta, mom_coeff)
 
             sum_max_iters = sum(self._maxiter[0 : epoch + 1])
@@ -326,13 +337,12 @@ class AQGD(Optimizer):
                 converged = self._converged_parameter(params, self._param_tol)
                 if converged:
                     break
-
                 # Calculate objective function and estimate of analytical gradient
                 if jac is None:
                     objval, gradient = self._compute_objective_fn_and_gradient(params, fun)
                 else:
                     objval = fun(params)
-                    gradient = jac(params)
+                    gradient = jac(params)  # type: ignore[assignment]
 
                 logger.info(
                     " Iter: %4d | Obj: %11.6f | Grad Norm: %f",

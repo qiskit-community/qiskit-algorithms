@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -131,6 +131,11 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         gradients = []
         partial_sum_n = 0
         for n in all_n:
+            # Ensure gradient is always defined for the append below after the if block
+            # otherwise lint errors out. I left the if block as it has been coded though
+            # as the values are checked in the constructor I could have made the last elif
+            # a simple else instead of defining this here.
+            gradient = None
             if self._method == "central":
                 result = results.values[partial_sum_n : partial_sum_n + n]
                 gradient = (result[: n // 2] - result[n // 2 :]) / (2 * self._epsilon)

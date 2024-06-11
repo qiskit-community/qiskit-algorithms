@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,12 +22,12 @@ from numpy.testing import assert_raises
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
-from qiskit.utils import algorithm_globals
 from qiskit.circuit import Parameter
 from qiskit.primitives import Estimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
 
-from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, TrotterQRTE
+from qiskit_algorithms import TimeEvolutionProblem, TrotterQRTE
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt
@@ -175,8 +175,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         time = 1
         evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
 
-        algorithm_globals.random_seed = 0
-        trotter_qrte = TrotterQRTE(product_formula=QDrift())
+        trotter_qrte = TrotterQRTE(product_formula=QDrift(seed=0))
 
         evolution_result = trotter_qrte.evolve(evolution_problem)
 
@@ -212,6 +211,34 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         """Test TrotterQRTE with raising errors for evolution problem content."""
         self._run_error_test(initial_state, operator, None, None, None, None)
 
+    @data(True, False)
+    def test_barriers(self, insert_barrier):
+        """Test TrotterQRTE to insert barriers correctly."""
+        initial_state = QuantumCircuit(1)
+        initial_state.x(0)
+
+        expected_circuit = QuantumCircuit(1)
+        expected_circuit.append(initial_state, expected_circuit.qubits)
+        if insert_barrier:
+            expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        if insert_barrier:
+            expected_circuit.barrier()
+        expected_circuit.rx(1, 0)
+        expected_circuit.ry(1, 0)
+        if insert_barrier:
+            expected_circuit.barrier()
+
+        operator = SparsePauliOp(["X", "Y"])
+        evolution_problem = TimeEvolutionProblem(operator, 1, initial_state)
+        trotter_qrte = TrotterQRTE(num_timesteps=2, insert_barriers=insert_barrier)
+        evolution_result = trotter_qrte.evolve(evolution_problem)
+
+        self.assertEqual(
+            expected_circuit.decompose(reps=3), evolution_result.evolved_state.decompose(reps=5)
+        )
+
     @staticmethod
     def _run_error_test(initial_state, operator, aux_ops, estimator, t_param, param_value_dict):
         time = 1
@@ -235,6 +262,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         observables = [obs.to_matrix() for obs in observables]
 
         psi = Statevector(init_state).data
+        ops = []  # Define to avoid possibly undefined error later on the line where it's used
         if t_param is None:
             ops = [Pauli(op).to_matrix() * np.real(coeff) for op, coeff in operator.to_list()]
 

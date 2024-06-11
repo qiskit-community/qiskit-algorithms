@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
+from typing import cast, List
 import logging
 
 import numpy as np
@@ -81,21 +82,21 @@ class ReverseQGT(BaseQGT):
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
-        parameter_sets: Sequence[set[Parameter]],
+        parameters: Sequence[Sequence[Parameter]],
         **options,
     ) -> QGTResult:
         """Compute the QGT on the given circuits."""
         g_circuits, g_parameter_values, g_parameter_sets = self._preprocess(
-            circuits, parameter_values, parameter_sets, self.SUPPORTED_GATES
+            circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets, **options)
-        return self._postprocess(results, circuits, parameter_values, parameter_sets)
+        return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
-        parameter_sets: Sequence[set[Parameter]],
+        parameter_sets: Sequence[Sequence[Parameter]],
         **options,  # pylint: disable=unused-argument
     ) -> QGTResult:
         num_qgts = len(circuits)
@@ -120,7 +121,7 @@ class ReverseQGT(BaseQGT):
 
             # initialize the state variables -- naming convention is the same as the paper
             parameter_binds = dict(zip(circuit.parameters, values))
-            bound_unitaries = bind(unitaries, parameter_binds)
+            bound_unitaries = cast(List[QuantumCircuit], bind(unitaries, parameter_binds))
 
             chi = Statevector(bound_unitaries[0])
             psi = chi.copy()
@@ -157,7 +158,7 @@ class ReverseQGT(BaseQGT):
                 grad_coeffs = [coeff for coeff, _ in deriv]
                 grad_states = [phi.evolve(gate) for _, gate in deriv]
 
-                # compute the digaonal element L_{j, j}
+                # compute the diagonal element L_{j, j}
                 metric[j, j] += _l_term(grad_coeffs, grad_states, grad_coeffs, grad_states)
 
                 # compute the off diagonal elements L_{i, j}

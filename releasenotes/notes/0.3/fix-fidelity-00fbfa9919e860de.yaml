@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixes state fidelity :class:`.ComputeUncompute` to correct an issue arising from
+    the threading used for the job result. This issue could be seen sometimes if more
+    than one job was created and their results fetched back-to-back, such that more than
+    one internal thread was active processing these results.

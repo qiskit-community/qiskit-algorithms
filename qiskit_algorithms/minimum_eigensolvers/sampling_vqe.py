@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 import logging
 from time import time
 from typing import Any
@@ -95,7 +95,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         sampler (BaseSampler): The sampler primitive to sample the circuits.
         ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
-            can either be a Qiskit :class:`.Optimizer` or a callable implementing the
+            can either be an :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
         aggregation (float | Callable[[list[tuple[float, complex]], float] | None):
             A float or callable to specify how the objective function evaluated on the basis states
@@ -120,7 +120,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
-        initial_point: Sequence[float] | None = None,
+        initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
     ) -> None:
@@ -128,7 +128,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         Args:
             sampler: The sampler primitive to sample the circuits.
             ansatz: A parameterized quantum circuit to prepare the trial state.
-            optimizer: A classical optimizer to find the minimum energy. This can either be a Qiskit
+            optimizer: A classical optimizer to find the minimum energy. This can either be an
                 :class:`.Optimizer` or a callable implementing the :class:`.Minimizer` protocol.
             initial_point: An optional initial point (i.e. initial parameter values) for the
                 optimizer. The length of the initial point must match the number of :attr:`ansatz`
@@ -153,12 +153,12 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         self._initial_point = initial_point
 
     @property
-    def initial_point(self) -> Sequence[float] | None:
+    def initial_point(self) -> np.ndarray | None:
         """Return the initial point."""
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, value: Sequence[float] | None) -> None:
+    def initial_point(self, value: np.ndarray | None) -> None:
         """Set the initial point."""
         self._initial_point = value
 
@@ -202,21 +202,30 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
         bounds = validate_bounds(self.ansatz)
 
-        evaluate_energy, best_measurement = self._get_evaluate_energy(
+        # NOTE: we type ignore below because the `return_best_measurement=True` is guaranteed to
+        # return a tuple
+        evaluate_energy, best_measurement = self._get_evaluate_energy(  # type: ignore[misc]
             operator, self.ansatz, return_best_measurement=True
         )
 
         start_time = time()
 
         if callable(self.optimizer):
-            optimizer_result = self.optimizer(fun=evaluate_energy, x0=initial_point, bounds=bounds)
+            optimizer_result = self.optimizer(
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                jac=None,
+                bounds=bounds,
+            )
         else:
             # we always want to submit as many estimations per job as possible for minimal
             # overhead on the hardware
             was_updated = _set_default_batchsize(self.optimizer)
 
             optimizer_result = self.optimizer.minimize(
-                fun=evaluate_energy, x0=initial_point, bounds=bounds
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                bounds=bounds,
             )
 
             # reset to original value
@@ -238,7 +247,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
                 _DiagonalEstimator(sampler=self.sampler),
                 self.ansatz,
                 aux_operators,
-                optimizer_result.x,
+                optimizer_result.x,  # type: ignore[arg-type]
             )
         else:
             aux_operators_evaluated = None
@@ -246,7 +255,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         return self._build_sampling_vqe_result(
             self.ansatz.copy(),
             optimizer_result,
-            aux_operators_evaluated,
+            aux_operators_evaluated,  # type: ignore[arg-type]
             best_measurement,
             final_state,
             optimizer_time,
@@ -257,9 +266,10 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         operator: BaseOperator,
         ansatz: QuantumCircuit,
         return_best_measurement: bool = False,
-    ) -> Callable[[np.ndarray], np.ndarray | float] | tuple[
-        Callable[[np.ndarray], np.ndarray | float], dict[str, Any]
-    ]:
+    ) -> (
+        Callable[[np.ndarray], np.ndarray | float]
+        | tuple[Callable[[np.ndarray], np.ndarray | float], dict[str, Any]]
+    ):
         """Returns a function handle to evaluate the energy at given parameters.
 
         This is the objective function to be passed to the optimizer that is used for evaluation.
@@ -295,7 +305,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
                     best_measurement["best"] = best_i
 
         estimator = _DiagonalEstimator(
-            sampler=self.sampler, callback=store_best_measurement, aggregation=self.aggregation
+            sampler=self.sampler,
+            callback=store_best_measurement,
+            aggregation=self.aggregation,  # type: ignore[arg-type]
         )
 
         def evaluate_energy(parameters: np.ndarray) -> np.ndarray | float:
@@ -335,11 +347,13 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         result = SamplingVQEResult()
         result.eigenvalue = optimizer_result.fun
         result.cost_function_evals = optimizer_result.nfev
-        result.optimal_point = optimizer_result.x
-        result.optimal_parameters = dict(zip(self.ansatz.parameters, optimizer_result.x))
+        result.optimal_point = optimizer_result.x  # type: ignore[assignment]
+        result.optimal_parameters = dict(
+            zip(self.ansatz.parameters, optimizer_result.x)  # type: ignore[arg-type]
+        )
         result.optimal_value = optimizer_result.fun
         result.optimizer_time = optimizer_time
-        result.aux_operators_evaluated = aux_operators_evaluated
+        result.aux_operators_evaluated = aux_operators_evaluated  # type: ignore[assignment]
         result.optimizer_result = optimizer_result
         result.best_measurement = best_measurement["best"]
         result.eigenstate = final_state
@@ -348,7 +362,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
 
 class SamplingVQEResult(VariationalResult, SamplingMinimumEigensolverResult):
-    """VQE Result."""
+    """The SamplingVQE Result."""
 
     def __init__(self) -> None:
         super().__init__()

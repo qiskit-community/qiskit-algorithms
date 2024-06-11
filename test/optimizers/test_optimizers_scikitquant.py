@@ -19,13 +19,13 @@ from ddt import ddt, data, unpack
 
 import numpy
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.utils import algorithm_globals
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.optimizers import BOBYQA, SNOBFIT, IMFIL
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt
@@ -63,7 +63,8 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             self.skipTest(str(ex))
 
     @unittest.skipIf(
-        tuple(map(int, numpy.__version__.split("."))) >= (1, 24, 0),
+        # NB: numpy.__version__ may contain letters, e.g. "1.26.0b1"
+        tuple(map(int, numpy.__version__.split(".")[:2])) >= (1, 24),
         "scikit's SnobFit currently incompatible with NumPy 1.24.0.",
     )
     def test_snobfit(self):
@@ -75,7 +76,8 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
             self.skipTest(str(ex))
 
     @unittest.skipIf(
-        tuple(map(int, numpy.__version__.split("."))) >= (1, 24, 0),
+        # NB: numpy.__version__ may contain letters, e.g. "1.26.0b1"
+        tuple(map(int, numpy.__version__.split(".")[:2])) >= (1, 24),
         "scikit's SnobFit currently incompatible with NumPy 1.24.0.",
     )
     @data((None,), ([(-1, 1), (None, None)],))

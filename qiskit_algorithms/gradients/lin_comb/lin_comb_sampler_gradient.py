@@ -100,6 +100,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         all_n = []
         for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
             # Prepare circuits for the gradient of the specified parameters.
+            # TODO: why is this not wrapped into another list level like it is done elsewhere?
             metadata.append({"parameters": parameters_})
             circuit_key = _circuit_key(circuit)
             if circuit_key not in self._lin_comb_cache:

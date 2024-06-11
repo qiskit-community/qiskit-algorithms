@@ -125,6 +125,6 @@ class VarQTELinearSolver:
             hamiltonian, self._ansatz, param_values, self._gradient_params
         )
 
-        x = self._lse_solver(metric_tensor_lse_lhs, evolution_grad_lse_rhs)
+        x = self._lse_solver(metric_tensor_lse_lhs, evolution_grad_lse_rhs)  # type: ignore[arg-type]
 
-        return np.real(x), metric_tensor_lse_lhs, evolution_grad_lse_rhs
+        return np.real(x), np.asarray(metric_tensor_lse_lhs), evolution_grad_lse_rhs

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,18 +18,18 @@ from functools import partial
 import numpy as np
 from ddt import data, ddt, unpack
 
-from qiskit import QiskitError
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
-from qiskit.test import QiskitTestCase
-from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
 from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, OptimizerResult
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.time_evolvers.pvqd import PVQD
+from qiskit_algorithms.utils import algorithm_globals
+
 
 # pylint: disable=unused-argument, invalid-name
 def gradient_supplied(fun, x0, jac, info):
@@ -48,7 +48,7 @@ class WhatAmI(Gate):
     def __init__(self, angle):
         super().__init__(name="whatami", num_qubits=2, params=[angle])
 
-    def inverse(self):
+    def inverse(self, annotated: bool = False):
         return WhatAmI(-self.params[0])
 
 
@@ -222,7 +222,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             optimizer=SPSA(maxiter=10, learning_rate=0.1, perturbation=0.01),
         )
 
-        with self.assertRaises(QiskitError):
+        with self.assertRaises(AlgorithmError):
             _ = pvqd.evolve(problem)
 
     def test_initial_state_raises(self):
@@ -270,7 +270,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             _ = pvqd.evolve(problem)
 
 
-class TestPVQDUtils(QiskitTestCase):
+class TestPVQDUtils(QiskitAlgorithmsTestCase):
     """Test some utility functions for PVQD."""
 
     def setUp(self):

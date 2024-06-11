@@ -23,9 +23,9 @@ from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms.utils import algorithm_globals
 
-from ...exceptions import AlgorithmError, QiskitError
+from ...exceptions import AlgorithmError
 from ...optimizers import Minimizer, Optimizer
 from ...state_fidelities.base_state_fidelity import BaseStateFidelity
 from ..real_time_evolver import RealTimeEvolver
@@ -199,9 +199,11 @@ class PVQD(RealTimeEvolver):
             initial_guess = algorithm_globals.random.random(self.initial_parameters.size) * 0.01
 
         if isinstance(self.optimizer, Optimizer):
-            optimizer_result = self.optimizer.minimize(loss, initial_guess, gradient)
+            optimizer_result = self.optimizer.minimize(
+                loss, initial_guess, gradient  # type: ignore[arg-type]
+            )
         else:
-            optimizer_result = self.optimizer(loss, initial_guess, gradient)
+            optimizer_result = self.optimizer(loss, initial_guess, gradient)  # type: ignore[call-arg]
 
         # clip the fidelity to [0, 1]
         fidelity = np.clip(1 - optimizer_result.fun, 0, 1)
@@ -231,7 +233,7 @@ class PVQD(RealTimeEvolver):
         self._validate_setup(skip={"optimizer"})
 
         # use Trotterization to evolve the current state
-        trotterized = ansatz.bind_parameters(current_parameters)
+        trotterized = ansatz.assign_parameters(current_parameters)
 
         evolution_gate = PauliEvolutionGate(hamiltonian, time=dt, synthesis=self.evolution)
 
@@ -283,7 +285,7 @@ class PVQD(RealTimeEvolver):
             def evaluate_gradient(displacement: np.ndarray) -> np.ndarray:
                 """Evaluate the gradient with the parameter-shift rule.
 
-                This is hardcoded here since the gradient framework does not support computing
+                This is hard-coded here since the gradient framework does not support computing
                 gradients for overlaps.
 
                 Args:
@@ -297,7 +299,7 @@ class PVQD(RealTimeEvolver):
                 plus_shifts = (displacement + np.pi / 2 * np.identity(dim)).tolist()
                 minus_shifts = (displacement - np.pi / 2 * np.identity(dim)).tolist()
 
-                evaluated = evaluate_loss(plus_shifts + minus_shifts)
+                evaluated = np.asarray(evaluate_loss(plus_shifts + minus_shifts))
 
                 gradient = (evaluated[:dim] - evaluated[dim:]) / 2
 
@@ -306,14 +308,14 @@ class PVQD(RealTimeEvolver):
         else:
             evaluate_gradient = None
 
-        return evaluate_loss, evaluate_gradient
+        return evaluate_loss, evaluate_gradient  # type: ignore[return-value]
 
     def _transpose_param_dicts(self, params: dict) -> list[dict[Parameter, float]]:
         p_0 = list(params.values())[0]
         if isinstance(p_0, (list, np.ndarray)):
             num_parameterizations = len(p_0)
             param_bindings = [
-                {param: value_list[i] for param, value_list in params.items()}  # type: ignore
+                {param: value_list[i] for param, value_list in params.items()}
                 for i in range(num_parameterizations)
             ]
         else:
@@ -387,18 +389,18 @@ class PVQD(RealTimeEvolver):
             if observables is not None:
                 observable_values.append(evaluate_observables(next_parameters))
 
-        evolved_state = self.ansatz.bind_parameters(parameters[-1])
+        evolved_state = self.ansatz.assign_parameters(parameters[-1])
 
         result = PVQDResult(
             evolved_state=evolved_state,
             times=times,
             parameters=parameters,
             fidelities=fidelities,
-            estimated_error=1 - np.prod(fidelities),
+            estimated_error=1 - float(np.prod(fidelities)),
         )
         if observables is not None:
-            result.observables = observable_values
-            result.aux_ops_evaluated = observable_values[-1]
+            result.observables = observable_values  # type: ignore[assignment]
+            result.aux_ops_evaluated = observable_values[-1]  # type: ignore[assignment]
 
         return result
 
@@ -420,12 +422,12 @@ class PVQD(RealTimeEvolver):
             )
 
         if self.ansatz.num_parameters == 0:
-            raise QiskitError(
+            raise AlgorithmError(
                 "The ansatz cannot have 0 parameters, otherwise it cannot be trained."
             )
 
         if len(self.initial_parameters) != self.ansatz.num_parameters:
-            raise QiskitError(
+            raise AlgorithmError(
                 f"Mismatching number of parameters in the ansatz ({self.ansatz.num_parameters}) "
                 f"and the initial parameters ({len(self.initial_parameters)})."
             )

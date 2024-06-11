@@ -20,9 +20,9 @@ import numpy as np
 from qiskit.circuit.library import PauliTwoDesign
 from qiskit.primitives import Estimator, Sampler
 from qiskit.quantum_info import SparsePauliOp, Statevector
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt
@@ -47,7 +47,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         )
 
         def objective(x):
-            bound_circ = circuit.bind_parameters(dict(zip(parameters, x)))
+            bound_circ = circuit.assign_parameters(dict(zip(parameters, x)))
             return Statevector(bound_circ).expectation_value(obs).real
 
         settings = {"maxiter": 100, "blocking": True, "allowed_increase": 0}
@@ -80,7 +80,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             self.assertEqual(result.nfev, expected_nfev)  # function evaluations
 
     def test_recalibrate_at_optimize(self):
-        """Test SPSA calibrates anew upon each optimization run, if no autocalibration is set."""
+        """Test SPSA calibrates anew upon each optimization run, if no auto-calibration is set."""
 
         def objective(x):
             return -(x**2)

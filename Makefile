@@ -35,29 +35,32 @@ endif
 # You can set this variable from the command line.
 SPHINXOPTS    =
 
-.PHONY: lint style black test test_ci spell copyright html doctest clean_sphinx coverage clean
+.PHONY: lint mypy style black test test_ci spell copyright html doctest clean_sphinx coverage clean
 
-all_check: spell style lint copyright clean_sphinx html doctest
+all_check: spell style lint copyright mypy clean_sphinx html doctest
 
 lint:
 	pylint -rn qiskit_algorithms test tools
 	python tools/verify_headers.py qiskit_algorithms test tools
 
+mypy:
+	python -m mypy qiskit_algorithms test tools
+
 style:
-	black --check qiskit_algorithms test tools
+	python -m black --check qiskit_algorithms test tools docs
 
 black:
-	black qiskit_algorithms test tools
+	python -m black qiskit_algorithms test tools docs
 
 test:
 	python -m unittest discover -v test
 
 test_ci:
 	echo "Detected $(NPROCS) CPUs running with $(CONCURRENCY) workers"
-	stestr run --concurrency $(CONCURRENCY)
+	python -m stestr run --concurrency $(CONCURRENCY)
 
 spell:
-	pylint -rn --disable=all --enable=spelling --spelling-dict=en_US --spelling-private-dict-file=.pylintdict qiskit_algorithms test tools
+	python -m pylint -rn --disable=all --enable=spelling --spelling-dict=en_US qiskit_algorithms test tools
 	sphinx-build -M spelling docs docs/_build -W -T --keep-going $(SPHINXOPTS)
 
 copyright:
@@ -73,10 +76,10 @@ clean_sphinx:
 	make -C docs clean
 
 coverage:
-	coverage3 run --source qiskit_algorithms -m unittest discover -s test -q
-	coverage3 report
+	python -m coverage3 run --source qiskit_algorithms -m unittest discover -s test -q
+	python -m coverage3 report
 
 coverage_erase:
-	coverage erase
+	python -m coverage erase
 
-clean: coverage_erase;
+clean: clean_sphinx coverage_erase;

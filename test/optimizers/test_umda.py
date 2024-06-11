@@ -17,9 +17,8 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from scipy.optimize import rosen
 
-from qiskit.utils import algorithm_globals
-
 from qiskit_algorithms.optimizers.umda import UMDA
+from qiskit_algorithms.utils import algorithm_globals
 
 
 class TestUMDA(QiskitAlgorithmsTestCase):

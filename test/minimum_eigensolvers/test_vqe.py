@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -24,7 +24,6 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
 from qiskit.primitives import Estimator, Sampler
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import ParamShiftEstimatorGradient
@@ -42,6 +41,8 @@ from qiskit_algorithms.optimizers import (
     TNC,
 )
 from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_algorithms.utils import algorithm_globals
+
 
 # pylint: disable=invalid-name
 def _mock_optimizer(fun, x0, jac=None, bounds=None, inputs=None) -> OptimizerResult:
@@ -80,9 +81,9 @@ class TestVQE(QiskitAlgorithmsTestCase):
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
     @data(L_BFGS_B(), COBYLA())
-    def test_basic_aer_statevector(self, estimator):
+    def test_using_ref_estimator(self, optimizer):
         """Test VQE using reference Estimator."""
-        vqe = VQE(Estimator(), self.ryrz_wavefunction, estimator)
+        vqe = VQE(Estimator(), self.ryrz_wavefunction, optimizer)
 
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -244,6 +245,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
         operator = Operator(np.array([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, 2, 0], [0, 0, 0, 3]]))
+        operator = SparsePauliOp.from_operator(operator)
 
         with self.subTest(msg="assert vqe works on re-use."):
             result = vqe.compute_minimum_eigenvalue(operator=operator)

@@ -172,7 +172,11 @@ class VarQTE(ABC):
         evaluated_aux_ops = observables[-1] if len(observables) > 0 else None
 
         return VarQTEResult(
-            evolved_state, evaluated_aux_ops, observables, time_points, param_values
+            evolved_state,
+            evaluated_aux_ops,  # type: ignore[arg-type]
+            observables,  # type: ignore[arg-type]
+            time_points,  # type: ignore[arg-type]
+            param_values,  # type: ignore[arg-type]
         )
 
     def _evolve(
@@ -250,7 +254,7 @@ class VarQTE(ABC):
             TypeError: If an unsupported type of ``param_values`` provided.
         """
         if isinstance(param_values, Mapping):
-            init_state_parameter_values: Sequence[float] = []
+            init_state_parameter_values: list[float] = []
             for param in init_state_parameters:
                 if param in param_values.keys():
                     init_state_parameter_values.append(param_values[param])
@@ -269,7 +273,7 @@ class VarQTE(ABC):
                     f" list of values has {len(param_values)} elements. They should be"
                     f" equal in length."
                 )
-            init_state_parameter_values = param_values
+            init_state_parameter_values = list(param_values)
         else:
             raise TypeError(f"Unsupported type of param_values provided: {type(param_values)}.")
 

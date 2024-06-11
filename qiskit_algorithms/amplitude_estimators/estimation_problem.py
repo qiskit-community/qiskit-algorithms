@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -36,7 +36,9 @@ class EstimationProblem:
         state_preparation: QuantumCircuit,
         objective_qubits: int | list[int],
         grover_operator: QuantumCircuit | None = None,
-        post_processing: Callable[[float], float] | None = None,
+        post_processing: (
+            Callable[[list[float]], list[float]] | Callable[[float], float] | None
+        ) = None,
         is_good_state: Callable[[str], bool] | None = None,
     ) -> None:
         r"""
@@ -100,7 +102,7 @@ class EstimationProblem:
         self._objective_qubits = objective_qubits
 
     @property
-    def post_processing(self) -> Callable[[float], float]:
+    def post_processing(self) -> Callable[[list[float]], list[float]] | Callable[[float], float]:
         """Apply post processing to the input value.
 
         Returns:
@@ -112,7 +114,10 @@ class EstimationProblem:
         return self._post_processing
 
     @post_processing.setter
-    def post_processing(self, post_processing: Callable[[float], float] | None) -> None:
+    def post_processing(
+        self,
+        post_processing: Callable[[list[float]], list[float]] | Callable[[float], float] | None,
+    ) -> None:
         """Set the post processing function.
 
         Args:
@@ -171,8 +176,8 @@ class EstimationProblem:
             return self._grover_operator
 
         # build the reflection about the bad state: a MCZ with open controls (thus X gates
-        # around the controls) and X gates around the target to change from a phaseflip on
-        # |1> to a phaseflip on |0>
+        # around the controls) and X gates around the target to change from a phase flip on
+        # |1> to a phase flip on |0>
         num_state_qubits = self.state_preparation.num_qubits - self.state_preparation.num_ancillas
 
         oracle = QuantumCircuit(num_state_qubits)

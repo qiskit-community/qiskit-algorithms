@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,14 +15,15 @@ Base state fidelity interface
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from collections.abc import Sequence, Mapping
+from collections.abc import MutableMapping
+from typing import cast, Sequence, List
 import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import ParameterVector
+from qiskit.primitives.utils import _circuit_key
 
 from ..algorithm_job import AlgorithmJob
-from .state_fidelity_result import StateFidelityResult
 
 
 class BaseStateFidelity(ABC):
@@ -44,13 +45,13 @@ class BaseStateFidelity(ABC):
     def __init__(self) -> None:
 
         # use cache for preventing unnecessary circuit compositions
-        self._circuit_cache: Mapping[tuple[int, int], QuantumCircuit] = {}
+        self._circuit_cache: MutableMapping[tuple[int, int], QuantumCircuit] = {}
 
     @staticmethod
     def _preprocess_values(
         circuits: QuantumCircuit | Sequence[QuantumCircuit],
         values: Sequence[float] | Sequence[Sequence[float]] | None = None,
-    ) -> Sequence[Sequence[float]]:
+    ) -> Sequence[list[float]]:
         """
         Checks whether the passed values match the shape of the parameters
         of the corresponding circuits and formats values to 2D list.
@@ -96,9 +97,11 @@ class BaseStateFidelity(ABC):
 
             # ensure 2d
             if len(values) > 0 and not isinstance(values[0], Sequence) or len(values) == 0:
-                values = [values]
+                values = [cast(List[float], values)]
 
-            return values
+            # we explicitly cast the type here because mypy appears to be unable to understand the
+            # above few lines where we ensure that values are 2d
+            return cast(Sequence[List[float]], values)
 
     def _check_qubits_match(self, circuit_1: QuantumCircuit, circuit_2: QuantumCircuit) -> None:
         """
@@ -168,10 +171,10 @@ class BaseStateFidelity(ABC):
             )
 
         circuits = []
-        for (circuit_1, circuit_2) in zip(circuits_1, circuits_2):
+        for circuit_1, circuit_2 in zip(circuits_1, circuits_2):
 
-            # TODO: improve caching, what if the circuit is modified without changing the id?
-            circuit = self._circuit_cache.get((id(circuit_1), id(circuit_2)))
+            # Use the same key for circuits as qiskit.primitives use.
+            circuit = self._circuit_cache.get((_circuit_key(circuit_1), _circuit_key(circuit_2)))
 
             if circuit is not None:
                 circuits.append(circuit)
@@ -179,7 +182,7 @@ class BaseStateFidelity(ABC):
                 self._check_qubits_match(circuit_1, circuit_2)
 
                 # re-parametrize input circuits
-                # TODO: make smarter checks to avoid unnecesary reparametrizations
+                # TODO: make smarter checks to avoid unnecessary re-parametrizations
                 parameters_1 = ParameterVector("x", circuit_1.num_parameters)
                 parametrized_circuit_1 = circuit_1.assign_parameters(parameters_1)
                 parameters_2 = ParameterVector("y", circuit_2.num_parameters)
@@ -190,7 +193,7 @@ class BaseStateFidelity(ABC):
                 )
                 circuits.append(circuit)
                 # update cache
-                self._circuit_cache[id(circuit_1), id(circuit_2)] = circuit
+                self._circuit_cache[_circuit_key(circuit_1), _circuit_key(circuit_2)] = circuit
 
         return circuits
 
@@ -200,7 +203,7 @@ class BaseStateFidelity(ABC):
         circuits_2: Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
-    ) -> list[float]:
+    ) -> list[list[float]]:
         """
         Preprocesses input parameter values to match the fidelity
         circuit parametrization, and return in list format.
@@ -214,11 +217,12 @@ class BaseStateFidelity(ABC):
            values_2: Numerical parameters to be bound to the second circuits.
 
         Returns:
-             List of parameter values for fidelity circuit.
+             List of lists of parameter values for fidelity circuit.
 
         """
         values_1 = self._preprocess_values(circuits_1, values_1)
         values_2 = self._preprocess_values(circuits_2, values_2)
+        # now, values_1 and values_2 are explicitly made 2d lists
 
         values = []
         if len(values_2[0]) == 0:
@@ -226,9 +230,12 @@ class BaseStateFidelity(ABC):
         elif len(values_1[0]) == 0:
             values = list(values_2)
         else:
-            for (val_1, val_2) in zip(values_1, values_2):
+            for val_1, val_2 in zip(values_1, values_2):
+                # the `+` operation concatenates the lists
+                # and then this new list gets appended to the values list
                 values.append(val_1 + val_2)
 
+        # values is guaranteed to be 2d
         return values
 
     @abstractmethod
@@ -239,7 +246,7 @@ class BaseStateFidelity(ABC):
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
         **options,
-    ) -> StateFidelityResult:
+    ) -> AlgorithmJob:
         r"""
         Computes the state overlap (fidelity) calculation between two
         (parametrized) circuits (first and second) for a specific set of parameter
@@ -256,7 +263,7 @@ class BaseStateFidelity(ABC):
                 Higher priority setting overrides lower priority setting.
 
         Returns:
-            The result of the fidelity calculation.
+            A newly constructed algorithm job instance to get the fidelity result.
         """
         raise NotImplementedError
 
@@ -286,15 +293,15 @@ class BaseStateFidelity(ABC):
 
         Returns:
             Primitive job for the fidelity calculation.
-            The job's result is an instance of ``StateFidelityResult``.
+            The job's result is an instance of :class:`.StateFidelityResult`.
         """
-
-        job = AlgorithmJob(self._run, circuits_1, circuits_2, values_1, values_2, **options)
+        job = self._run(circuits_1, circuits_2, values_1, values_2, **options)
 
         job.submit()
         return job
 
-    def _truncate_fidelities(self, fidelities: Sequence[float]) -> Sequence[float]:
+    @staticmethod
+    def _truncate_fidelities(fidelities: Sequence[float]) -> Sequence[float]:
         """
         Ensures fidelity result in [0,1].
 

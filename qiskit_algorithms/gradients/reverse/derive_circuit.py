@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -148,7 +148,7 @@ def derive_circuit(
     gradient = []
     for product_rule_term in itertools.product(*summands):
         summand_circuit = QuantumCircuit(*circuit.qregs)
-        c = 1
+        c = complex(1)
         for i, term in enumerate(product_rule_term):
             c *= term[0]
             summand_circuit.data.append([term[1], *op_context[i]])

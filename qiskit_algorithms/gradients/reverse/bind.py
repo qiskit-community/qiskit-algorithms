@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,6 +17,7 @@ from collections.abc import Iterable
 
 from qiskit.circuit import QuantumCircuit, Parameter
 
+
 # pylint: disable=inconsistent-return-statements
 def bind(
     circuits: QuantumCircuit | Iterable[QuantumCircuit],
@@ -26,7 +27,7 @@ def bind(
     """Bind parameters in a circuit (or list of circuits).
 
     This method also allows passing parameter binds to parameters that are not in the circuit,
-    and thereby differs to :meth:`.QuantumCircuit.bind_parameters`.
+    and thereby differs to :meth:`.QuantumCircuit.assign_parameters`.
 
     Args:
         circuits: Input circuit(s).
@@ -51,3 +52,5 @@ def bind(
 
     if not inplace:
         return bound if return_list else bound[0]
+
+    return None

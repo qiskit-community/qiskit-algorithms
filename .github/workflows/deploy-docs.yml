@@ -28,10 +28,10 @@ jobs:
         os: [ubuntu-latest]
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - uses: ./.github/actions/install-algorithms
@@ -39,18 +39,21 @@ jobs:
           os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
-          pip install jupyter qiskit-terra[visualization]
+          pip install jupyter qiskit[visualization]
           sudo apt-get install -y pandoc graphviz
         shell: bash
-      - name: Build and publish
+      - name: Build docs
         env:
-          encrypted_rclone_key: ${{ secrets.encrypted_rclone_key }}
-          encrypted_rclone_iv: ${{ secrets.encrypted_rclone_iv }}
           QISKIT_PARALLEL: False
           QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
           echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
           tools/ignore_untagged_notes.sh
           make html
-          tools/deploy_documentation.sh
         shell: bash
+      - name: Bypass Jekyll Processing # Necessary for setting the correct css path
+        run: touch docs/_build/html/.nojekyll
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/_build/html/

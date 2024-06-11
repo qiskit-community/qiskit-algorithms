@@ -38,8 +38,8 @@ class TimeEvolutionResult(AlgorithmResult):
     def __init__(
         self,
         evolved_state: QuantumCircuit | Statevector,
-        aux_ops_evaluated: ListOrDict[tuple[complex, complex]] | None = None,
-        observables: ListOrDict[tuple[np.ndarray, np.ndarray]] | None = None,
+        aux_ops_evaluated: ListOrDict[tuple[complex, dict[str, complex]]] | None = None,
+        observables: list[ListOrDict[tuple[complex, dict[str, complex]]]] | None = None,
         times: np.ndarray | None = None,
     ):
         """

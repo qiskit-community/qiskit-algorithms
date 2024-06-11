@@ -10,26 +10,28 @@
 # copyright notice, and modified files need to carry a notice indicating
 # that they have been altered from the originals.
 """
-=====================================================================
-State Fidelity Interfaces (:mod:`qiskit_algorithms.state_fidelities`)
-=====================================================================
+State Fidelities (:mod:`qiskit_algorithms.state_fidelities`)
+============================================================
+Algorithms that compute the fidelity of pairs of quantum states.
 
 .. currentmodule:: qiskit_algorithms.state_fidelities
 
 State Fidelities
-================
+----------------
 
 .. autosummary::
    :toctree: ../stubs/
+   :nosignatures:
 
    BaseStateFidelity
    ComputeUncompute
 
 Results
-=======
+-------
 
- .. autosummary::
-    :toctree: ../stubs/
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
 
     StateFidelityResult
 

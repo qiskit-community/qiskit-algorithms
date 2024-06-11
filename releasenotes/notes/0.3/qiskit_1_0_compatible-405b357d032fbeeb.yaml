@@ -1,0 +1,5 @@
+---
+prelude: >
+    This release now supports `Qiskit 1.0 <https://docs.quantum.ibm.com/api/qiskit/release-notes/1.0>`__
+    while continuing to work with the Qiskit 0.46 release for those still navigating the changes brought
+    about in the Qiskit 1.0 release.

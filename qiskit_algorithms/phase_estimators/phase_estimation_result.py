@@ -70,18 +70,18 @@ class PhaseEstimationResult(PhaseEstimatorResult):
         r"""Return the most likely phase as a number in :math:`[0.0, 1.0)`.
 
         1.0 corresponds to a phase of :math:`2\pi`. This selects the phase corresponding
-        to the bit string with the highesest probability. This is the most likely phase.
+        to the bit string with the highest probability. This is the most likely phase.
         """
         if isinstance(self.phases, dict):
             binary_phase_string = max(self.phases, key=self.phases.get)
         else:
             # numpy.argmax ignores complex part of number. But, we take abs anyway
             idx = numpy.argmax(abs(self.phases))
-            binary_phase_string = numpy.binary_repr(idx, self._num_evaluation_qubits)[::-1]
+            binary_phase_string = f"{idx:0{self._num_evaluation_qubits}b}"[::-1]
         phase = _bit_string_to_phase(binary_phase_string)
         return phase
 
-    def filter_phases(self, cutoff: float = 0.0, as_float: bool = True) -> dict:
+    def filter_phases(self, cutoff: float = 0.0, as_float: bool = True) -> dict[str | float, float]:
         """Return a filtered dict of phases (keys) and frequencies (values).
 
         Only phases with frequencies (counts) larger than `cutoff` are included.
@@ -101,6 +101,7 @@ class PhaseEstimationResult(PhaseEstimatorResult):
         Returns:
             A filtered dict of phases (keys) and frequencies (values).
         """
+        phases: dict[str | float, float]
         if isinstance(self.phases, dict):
             counts = self.phases
             if as_float:

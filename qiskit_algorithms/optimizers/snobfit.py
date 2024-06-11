@@ -17,7 +17,7 @@ from collections.abc import Callable
 from typing import Any
 
 import numpy as np
-from qiskit.exceptions import QiskitError
+from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.utils import optionals as _optionals
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
@@ -53,13 +53,12 @@ class SNOBFIT(Optimizer):
 
         Raises:
             MissingOptionalLibraryError: scikit-quant or SQSnobFit not installed
-            QiskitError: If NumPy 1.24.0 or above is installed.
+            AlgorithmError: If NumPy 1.24.0 or above is installed.
                 See https://github.com/scikit-quant/scikit-quant/issues/24 for more details.
         """
         # check version
-        version = tuple(map(int, np.__version__.split(".")))
-        if version >= (1, 24, 0):
-            raise QiskitError(
+        if tuple(map(int, np.__version__.split(".")[:2])) >= (1, 24):
+            raise AlgorithmError(
                 "SnobFit is incompatible with NumPy 1.24.0 or above, please "
                 "install a previous version. See also scikit-quant/scikit-quant#24."
             )

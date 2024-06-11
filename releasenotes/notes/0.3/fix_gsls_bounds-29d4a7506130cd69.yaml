@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes :class:`.GSLS` optimizer :meth:`~.GSLS.minimize` so that if the ``bounds`` parameter
+    is passed with tuples that have entries of ``None`` then the entry is treated
+    as equivalent to infinity.

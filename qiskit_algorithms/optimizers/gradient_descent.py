@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -98,13 +98,13 @@ class GradientDescent(SteppableOptimizer):
             def learning_rate():
                 power = 0.6
                 constant_coeff = 0.1
-                def powerlaw():
+                def power_law():
                     n = 0
                     while True:
                         yield constant_coeff * (n ** power)
                         n += 1
 
-                return powerlaw()
+                return power_law()
 
             def f(x):
                 return (np.linalg.norm(x) - 1) ** 2
@@ -157,7 +157,7 @@ class GradientDescent(SteppableOptimizer):
                     evaluated_gradient = grad(ask_data.x_center)
                     optimizer.state.njev += 1
 
-                optmizer.state.nit += 1
+                optimizer.state.nit += 1
 
                 tell_data = TellData(eval_jac=evaluated_gradient)
                 optimizer.tell(ask_data=ask_data, tell_data=tell_data)
@@ -177,10 +177,9 @@ class GradientDescent(SteppableOptimizer):
     def __init__(
         self,
         maxiter: int = 100,
-        learning_rate: float
-        | list[float]
-        | np.ndarray
-        | Callable[[], Generator[float, None, None]] = 0.01,
+        learning_rate: (
+            float | list[float] | np.ndarray | Callable[[], Generator[float, None, None]]
+        ) = 0.01,
         tol: float = 1e-7,
         callback: CALLBACK | None = None,
         perturbation: float | None = None,
@@ -197,7 +196,7 @@ class GradientDescent(SteppableOptimizer):
                 perturbation in both directions (defaults to 1e-2 if required).
                 Ignored when we have an explicit function for the gradient.
         Raises:
-            ValueError: If ``learning_rate`` is an array and its lenght is less than ``maxiter``.
+            ValueError: If ``learning_rate`` is an array and its length is less than ``maxiter``.
         """
         super().__init__(maxiter=maxiter)
         self.callback = callback
@@ -213,7 +212,7 @@ class GradientDescent(SteppableOptimizer):
                 )
         self.learning_rate = learning_rate
 
-    @property
+    @property  # type: ignore[override]
     def state(self) -> GradientDescentState:
         """Return the current state of the optimizer."""
         return self._state
@@ -250,7 +249,7 @@ class GradientDescent(SteppableOptimizer):
 
     def _callback_wrapper(self) -> None:
         """
-        Wraps the callback function to accomodate GradientDescent.
+        Wraps the callback function to accommodate GradientDescent.
 
         Will call :attr:`~.callback` and pass the following arguments:
         current number of function values, current parameters, current function value,
@@ -259,7 +258,7 @@ class GradientDescent(SteppableOptimizer):
         if self.callback is not None:
             self.callback(
                 self.state.nfev,
-                self.state.x,
+                self.state.x,  # type: ignore[arg-type]
                 self.state.fun(self.state.x),
                 self.state.stepsize,
             )
@@ -267,13 +266,10 @@ class GradientDescent(SteppableOptimizer):
     @property
     def settings(self) -> dict[str, Any]:
         # if learning rate or perturbation are custom iterators expand them
+        learning_rate = self.learning_rate
         if callable(self.learning_rate):
             iterator = self.learning_rate()
-            learning_rate: float | np.ndarray = np.array(
-                [next(iterator) for _ in range(self.maxiter)]
-            )
-        else:
-            learning_rate = self.learning_rate
+            learning_rate = np.array([next(iterator) for _ in range(self.maxiter)])
 
         return {
             "maxiter": self.maxiter,
@@ -295,7 +291,7 @@ class GradientDescent(SteppableOptimizer):
 
     def tell(self, ask_data: AskData, tell_data: TellData) -> None:
         """
-        Updates :attr:`.~GradientDescentState.x` by an ammount proportional to the learning
+        Updates :attr:`.~GradientDescentState.x` by an amount proportional to the learning
         rate and value of the gradient at that point.
 
         Args:
@@ -305,10 +301,10 @@ class GradientDescent(SteppableOptimizer):
         Raises:
             ValueError: If the gradient passed doesn't have the right dimension.
         """
-        if np.shape(self.state.x) != np.shape(tell_data.eval_jac):
+        if np.shape(self.state.x) != np.shape(tell_data.eval_jac):  # type: ignore[arg-type]
             raise ValueError("The gradient does not have the correct dimension")
         self.state.x = self.state.x - next(self.state.learning_rate) * tell_data.eval_jac
-        self.state.stepsize = np.linalg.norm(tell_data.eval_jac)
+        self.state.stepsize = np.linalg.norm(tell_data.eval_jac)  # type: ignore[arg-type,assignment]
         self.state.nit += 1
 
     def evaluate(self, ask_data: AskData) -> TellData:
@@ -334,9 +330,9 @@ class GradientDescent(SteppableOptimizer):
                 epsilon=eps,
                 max_evals_grouped=self._max_evals_grouped,
             )
-            self.state.nfev += 1 + len(ask_data.x_jac)
+            self.state.nfev += 1 + len(ask_data.x_jac)  # type: ignore[arg-type]
         else:
-            grad = self.state.jac(ask_data.x_jac)
+            grad = self.state.jac(ask_data.x_jac)  # type: ignore[arg-type]
             self.state.njev += 1
 
         return TellData(eval_jac=grad)

@@ -13,6 +13,7 @@
 """Test Classical Imaginary Evolver."""
 import unittest
 from test import QiskitAlgorithmsTestCase
+from typing import cast
 from ddt import data, ddt, unpack
 import numpy as np
 
@@ -97,7 +98,7 @@ class TestSciPyImaginaryEvolver(QiskitAlgorithmsTestCase):
         classic_evolver = SciPyImaginaryEvolver(num_timesteps=300)
         result = classic_evolver.evolve(evolution_problem)
 
-        z_mean, z_std = result.observables["Z"]
+        z_mean, z_std = cast(dict, result.observables)["Z"]
 
         time_vector = result.times
         expected_z = 1 / (np.cosh(time_vector) ** 2 + np.sinh(time_vector) ** 2)

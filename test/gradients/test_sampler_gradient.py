@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,6 +14,7 @@
 """Test Sampler Gradients"""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 from typing import List
 
 import numpy as np
@@ -25,7 +26,6 @@ from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import Sampler
 from qiskit.result import QuasiDistribution
-from qiskit.test import QiskitTestCase
 
 from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
@@ -46,7 +46,7 @@ gradient_factories = [
 
 
 @ddt
-class TestSamplerGradient(QiskitTestCase):
+class TestSamplerGradient(QiskitAlgorithmsTestCase):
     """Test Sampler Gradient"""
 
     @data(*gradient_factories)
@@ -563,7 +563,7 @@ class TestSamplerGradient(QiskitTestCase):
         qc.crz(params[2] * -2, 0, 1)
         qc.dcx(0, 1)
         qc.csdg(0, 1)
-        qc.toffoli(0, 1, 2)
+        qc.ccx(0, 1, 2)
         qc.iswap(0, 2)
         qc.swap(1, 2)
         qc.global_phase = params[0] * params[1] + params[2].cos().exp()

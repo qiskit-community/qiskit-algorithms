@@ -16,10 +16,11 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from typing import Any
+
 import numpy as np
 from scipy.stats import norm
-from qiskit.utils import algorithm_globals
 
+from qiskit_algorithms.utils import algorithm_globals
 from .optimizer import OptimizerResult, POINT
 from .scipy_optimizer import Optimizer, OptimizerSupportLevel
 
@@ -47,7 +48,7 @@ class UMDA(Optimizer):
     have been obtained [1]. UMDA seems to provide very good solutions for those circuits in which
     the number of layers is not big.
 
-    The optimization process can be personalized depending on the paremeters chosen in the
+    The optimization process can be personalized depending on the parameters chosen in the
     initialization. The main parameter is the population size. The bigger it is, the final result
     will be better. However, this increases the complexity of the algorithm and the runtime will
     be much heavier. In the work [1] different experiments have been performed where population
@@ -72,7 +73,6 @@ class UMDA(Optimizer):
 
             from qiskit_algorithms.optimizers import UMDA
             from qiskit_algorithms import QAOA
-            from qiskit.utils import QuantumInstance
             from qiskit.quantum_info import Pauli
             from qiskit.primitives import Sampler
 
@@ -102,6 +102,11 @@ class UMDA(Optimizer):
             qaoa = QAOA(Sampler(), opt,reps=p)
             result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
+    .. note::
+
+        This component has some function that is normally random. If you want to reproduce behavior
+        then you should set the random number generator seed in the algorithm_globals
+        (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
 
     References:
 
@@ -121,7 +126,7 @@ class UMDA(Optimizer):
         maxiter: int = 100,
         size_gen: int = 20,
         alpha: float = 0.5,
-        callback: Callable[[int, np.array, float], None] | None = None,
+        callback: Callable[[int, np.ndarray, float], None] | None = None,
     ) -> None:
         r"""
         Args:
@@ -146,7 +151,7 @@ class UMDA(Optimizer):
         super().__init__()
 
         self._best_cost_global: float | None = None
-        self._best_ind_global: int | None = None
+        self._best_ind_global: np.ndarray | None = None
         self._evaluations: np.ndarray | None = None
 
         self._n_variables: int | None = None
@@ -211,11 +216,11 @@ class UMDA(Optimizer):
         result = OptimizerResult()
 
         if isinstance(x0, float):
-            x0 = [x0]
+            x0 = np.asarray([x0])
         self._n_variables = len(x0)
 
         self._best_cost_global = 999999999999
-        self._best_ind_global = 9999999
+        self._best_ind_global = None
         history = []
         self._evaluations = np.array(0)
 

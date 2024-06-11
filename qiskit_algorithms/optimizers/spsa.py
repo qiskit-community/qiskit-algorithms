@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,7 +12,7 @@
 
 """Simultaneous Perturbation Stochastic Approximation (SPSA) optimizer.
 
-This implementation allows both, standard first-order as well as second-order SPSA.
+This implementation allows both standard first-order and second-order SPSA.
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from time import time
 import scipy
 import numpy as np
 
-from qiskit.utils import algorithm_globals
+from qiskit_algorithms.utils import algorithm_globals
 
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 
@@ -52,7 +52,7 @@ class SPSA(Optimizer):
     measurements of the objective function, regardless of the dimension of the optimization
     problem.
 
-    Additionally to standard, first-order SPSA, where only gradient information is used, this
+    Additionally, to standard first-order SPSA, where only gradient information is used, this
     implementation also allows second-order SPSA (2-SPSA) [2]. In 2-SPSA we also estimate the
     Hessian of the loss with a stochastic approximation and multiply the gradient with the
     inverse Hessian to take local curvature into account and improve convergence.
@@ -68,7 +68,7 @@ class SPSA(Optimizer):
         simulator or a real device, SPSA would be the most recommended choice among the optimizers
         provided here.
 
-    The optimization process can includes a calibration phase if neither the ``learning_rate`` nor
+    The optimization process can include a calibration phase if neither the ``learning_rate`` nor
     ``perturbation`` is provided, which requires additional functional evaluations.
     (Note that either both or none must be set.) For further details on the automatic calibration,
     please refer to the supplementary information section IV. of [3].
@@ -77,7 +77,7 @@ class SPSA(Optimizer):
 
         This component has some function that is normally random. If you want to reproduce behavior
         then you should set the random number generator seed in the algorithm_globals
-        (``qiskit.utils.algorithm_globals.random_seed = seed``).
+        (``qiskit_algorithms.utils.algorithm_globals.random_seed = seed``).
 
 
     Examples:
@@ -90,18 +90,20 @@ class SPSA(Optimizer):
             import numpy as np
             from qiskit_algorithms.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.quantum_info import Pauli
+            from qiskit.primitives import Estimator
+            from qiskit.quantum_info import SparsePauliOp
 
             ansatz = PauliTwoDesign(2, reps=1, seed=2)
-            observable = Pauli("Z") ^ Pauli("Z")
+            observable = SparsePauliOp("ZZ")
             initial_point = np.random.random(ansatz.num_parameters)
+            estimator = Estimator()
 
             def loss(x):
-                bound = ansatz.bind_parameters(x)
-                return np.real((StateFn(observable, is_measurement=True) @ StateFn(bound)).eval())
+                job = estimator.run([ansatz], [observable], [x])
+                return job.result().values[0]
 
             spsa = SPSA(maxiter=300)
-            result = spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
+            result = spsa.minimize(loss, x0=initial_point)
 
         To use the Hessian information, i.e. 2-SPSA, you can add `second_order=True` to the
         initializer of the `SPSA` class, the rest of the code remains the same.
@@ -109,7 +111,7 @@ class SPSA(Optimizer):
         .. code-block:: python
 
             two_spsa = SPSA(maxiter=300, second_order=True)
-            result = two_spsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
+            result = two_spsa.minimize(loss, x0=initial_point)
 
         The `termination_checker` can be used to implement a custom termination criterion.
 
@@ -140,9 +142,8 @@ class SPSA(Optimizer):
                     return False
 
             spsa = SPSA(maxiter=200, termination_checker=TerminationChecker(10))
-            parameters, value, niter = spsa.optimize(2, objective, initial_point=[0.5, 0.5])
-            print(f'SPSA completed after {niter} iterations')
-
+            result = spsa.minimize(objective, x0=[0.5, 0.5])
+            print(f'SPSA completed after {result.nit} iterations')
 
     References:
 
@@ -291,9 +292,9 @@ class SPSA(Optimizer):
         modelspace: bool = False,
         max_evals_grouped: int = 1,
     ) -> tuple[Callable, Callable]:
-        r"""Calibrate SPSA parameters with a powerseries as learning rate and perturbation coeffs.
+        r"""Calibrate SPSA parameters with a power series as learning rate and perturbation coeffs.
 
-        The powerseries are:
+        The power series are:
 
         .. math::
 
@@ -306,15 +307,15 @@ class SPSA(Optimizer):
             stability_constant: The value of `A`.
             target_magnitude: The target magnitude for the first update step, defaults to
                 :math:`2\pi / 10`.
-            alpha: The exponent of the learning rate powerseries.
-            gamma: The exponent of the perturbation powerseries.
+            alpha: The exponent of the learning rate power series.
+            gamma: The exponent of the perturbation power series.
             modelspace: Whether the target magnitude is the difference of parameter values
                 or function values (= model space).
             max_evals_grouped: The number of grouped evaluations supported by the loss function.
                 Defaults to 1, i.e. no grouping.
 
         Returns:
-            tuple(generator, generator): A tuple of powerseries generators, the first one for the
+            tuple(generator, generator): A tuple of power series generators, the first one for the
                 learning rate and the second one for the perturbation.
         """
         logger.info("SPSA: Starting calibration of learning rate and perturbation.")
@@ -327,7 +328,7 @@ class SPSA(Optimizer):
         steps = 25
         points = []
         for _ in range(steps):
-            # compute the random directon
+            # compute the random direction
             pert = bernoulli_perturbation(dim)
             points += [initial_point + c * pert, initial_point - c * pert]
 
@@ -359,7 +360,7 @@ class SPSA(Optimizer):
         )
         logger.info(" -- Perturbation: c / (n ^ gamma) with c = %s, gamma = %s", c, gamma)
 
-        # set up the powerseries
+        # set up the power series
         def learning_rate():
             return powerseries(a, alpha, stability_constant)
 
@@ -386,13 +387,13 @@ class SPSA(Optimizer):
             iterator = self.learning_rate()
             learning_rate = np.array([next(iterator) for _ in range(self.maxiter)])
         else:
-            learning_rate = self.learning_rate
+            learning_rate = self.learning_rate  # type: ignore[assignment]
 
         if callable(self.perturbation):
             iterator = self.perturbation()
             perturbation = np.array([next(iterator) for _ in range(self.maxiter)])
         else:
-            perturbation = self.perturbation
+            perturbation = self.perturbation  # type: ignore[assignment]
 
         return {
             "maxiter": self.maxiter,
@@ -509,6 +510,7 @@ class SPSA(Optimizer):
     ) -> OptimizerResult:
         # ensure learning rate and perturbation are correctly set: either none or both
         # this happens only here because for the calibration the loss function is required
+        x0 = np.asarray(x0)
         if self.learning_rate is None and self.perturbation is None:
             get_eta, get_eps = self.calibrate(fun, x0, max_evals_grouped=self._max_evals_grouped)
         else:
@@ -517,10 +519,9 @@ class SPSA(Optimizer):
             )
         eta, eps = get_eta(), get_eps()
 
+        lse_solver = self.lse_solver
         if self.lse_solver is None:
             lse_solver = np.linalg.solve
-        else:
-            lse_solver = self.lse_solver
 
         # prepare some initials
         x = np.asarray(x0)
@@ -629,7 +630,7 @@ class SPSA(Optimizer):
         logger.info("SPSA: Finished in %s", time() - start)
 
         if self.last_avg > 1:
-            x = np.mean(last_steps, axis=0)
+            x = np.mean(np.asarray(last_steps), axis=0)
 
         result = OptimizerResult()
         result.x = x
@@ -664,7 +665,7 @@ def bernoulli_perturbation(dim, perturbation_dims=None):
 
 
 def powerseries(eta=0.01, power=2, offset=0):
-    """Yield a series decreasing by a powerlaw."""
+    """Yield a series decreasing by a power law."""
 
     n = 1
     while True:

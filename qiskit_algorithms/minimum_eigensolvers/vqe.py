@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from time import time
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from typing import Any
 
 import numpy as np
@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 
 class VQE(VariationalAlgorithm, MinimumEigensolver):
-    r"""The variational quantum eigensolver (VQE) algorithm.
+    r"""The Variational Quantum Eigensolver (VQE) algorithm.
 
     VQE is a hybrid quantum-classical algorithm that uses a variational technique to find the
     minimum eigenvalue of a given Hamiltonian operator :math:`H`.
@@ -119,7 +119,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         optimizer: Optimizer | Minimizer,
         *,
         gradient: BaseEstimatorGradient | None = None,
-        initial_point: Sequence[float] | None = None,
+        initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
     ) -> None:
         r"""
@@ -151,11 +151,11 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self.callback = callback
 
     @property
-    def initial_point(self) -> Sequence[float] | None:
+    def initial_point(self) -> np.ndarray | None:
         return self._initial_point
 
     @initial_point.setter
-    def initial_point(self, value: Sequence[float] | None) -> None:
+    def initial_point(self, value: np.ndarray | None) -> None:
         self._initial_point = value
 
     def compute_minimum_eigenvalue(
@@ -181,7 +181,10 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         # perform optimization
         if callable(self.optimizer):
             optimizer_result = self.optimizer(
-                fun=evaluate_energy, x0=initial_point, jac=evaluate_gradient, bounds=bounds
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                jac=evaluate_gradient,
+                bounds=bounds,
             )
         else:
             # we always want to submit as many estimations per job as possible for minimal
@@ -189,7 +192,10 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             was_updated = _set_default_batchsize(self.optimizer)
 
             optimizer_result = self.optimizer.minimize(
-                fun=evaluate_energy, x0=initial_point, jac=evaluate_gradient, bounds=bounds
+                fun=evaluate_energy,  # type: ignore[arg-type]
+                x0=initial_point,
+                jac=evaluate_gradient,  # type: ignore[arg-type]
+                bounds=bounds,
             )
 
             # reset to original value
@@ -206,13 +212,19 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         if aux_operators is not None:
             aux_operators_evaluated = estimate_observables(
-                self.estimator, self.ansatz, aux_operators, optimizer_result.x
+                self.estimator,
+                self.ansatz,
+                aux_operators,
+                optimizer_result.x,  # type: ignore[arg-type]
             )
         else:
             aux_operators_evaluated = None
 
         return self._build_vqe_result(
-            self.ansatz, optimizer_result, aux_operators_evaluated, optimizer_time
+            self.ansatz,
+            optimizer_result,
+            aux_operators_evaluated,  # type: ignore[arg-type]
+            optimizer_time,
         )
 
     @classmethod
@@ -290,7 +302,9 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         def evaluate_gradient(parameters: np.ndarray) -> np.ndarray:
             # broadcasting not required for the estimator gradients
             try:
-                job = self.gradient.run([ansatz], [operator], [parameters])
+                job = self.gradient.run(
+                    [ansatz], [operator], [parameters]  # type: ignore[list-item]
+                )
                 gradients = job.result().gradients
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the gradient failed!") from exc
@@ -330,17 +344,19 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         result.optimal_circuit = ansatz.copy()
         result.eigenvalue = optimizer_result.fun
         result.cost_function_evals = optimizer_result.nfev
-        result.optimal_point = optimizer_result.x
-        result.optimal_parameters = dict(zip(self.ansatz.parameters, optimizer_result.x))
+        result.optimal_point = optimizer_result.x  # type: ignore[assignment]
+        result.optimal_parameters = dict(
+            zip(self.ansatz.parameters, optimizer_result.x)  # type: ignore[arg-type]
+        )
         result.optimal_value = optimizer_result.fun
         result.optimizer_time = optimizer_time
-        result.aux_operators_evaluated = aux_operators_evaluated
+        result.aux_operators_evaluated = aux_operators_evaluated  # type: ignore[assignment]
         result.optimizer_result = optimizer_result
         return result
 
 
 class VQEResult(VariationalResult, MinimumEigensolverResult):
-    """Variational quantum eigensolver result."""
+    """The Variational Quantum Eigensolver (VQE) result."""
 
     def __init__(self) -> None:
         super().__init__()

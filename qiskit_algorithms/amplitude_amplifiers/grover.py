@@ -22,9 +22,9 @@ import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSampler
 from qiskit.quantum_info import Statevector
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.exceptions import AlgorithmError
+from qiskit_algorithms.utils import algorithm_globals
 
 from .amplification_problem import AmplificationProblem
 from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
@@ -160,7 +160,7 @@ class Grover(AmplitudeAmplifier):
         elif isinstance(iterations, int):
             self._iterations = [iterations]
         else:
-            self._iterations = iterations
+            self._iterations = iterations  # type: ignore[assignment]
 
         self._sampler = sampler
         self._sample_from_iterations = sample_from_iterations
@@ -248,7 +248,9 @@ class Grover(AmplitudeAmplifier):
                 circuit_results: dict[str, Any] | Statevector | np.ndarray = {
                     np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
                 }
-                top_measurement, max_probability = max(circuit_results.items(), key=lambda x: x[1])
+                top_measurement, max_probability = max(
+                    circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
+                )
 
             all_circuit_results.append(circuit_results)
 
@@ -274,7 +276,7 @@ class Grover(AmplitudeAmplifier):
         result.top_measurement = top_measurement
         result.assignment = amplification_problem.post_processing(top_measurement)
         result.oracle_evaluation = oracle_evaluation
-        result.circuit_results = all_circuit_results
+        result.circuit_results = all_circuit_results  # type: ignore[assignment]
         result.max_probability = max_probability
 
         return result
@@ -311,9 +313,9 @@ class Grover(AmplitudeAmplifier):
             ValueError: If no power is passed and the iterations are not an integer.
         """
         if power is None:
-            if len(self._iterations) > 1:
+            if len(self._iterations) > 1:  # type: ignore[arg-type]
                 raise ValueError("Please pass ``power`` if the iterations are not an integer.")
-            power = self._iterations[0]
+            power = self._iterations[0]  # type: ignore[index]
 
         qc = QuantumCircuit(problem.oracle.num_qubits, name="Grover circuit")
         qc.compose(problem.state_preparation, inplace=True)

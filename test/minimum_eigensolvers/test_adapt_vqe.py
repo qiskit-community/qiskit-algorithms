@@ -23,11 +23,11 @@ from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.utils import algorithm_globals
 
 from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
 from qiskit_algorithms.optimizers import SLSQP
+from qiskit_algorithms.utils import algorithm_globals
 
 
 @ddt
@@ -150,17 +150,6 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         res = calc.compute_minimum_eigenvalue(operator)
 
         self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
-
-    def test_threshold_attribute(self):
-        """Test the (pending deprecated) threshold attribute"""
-        with self.assertWarns(PendingDeprecationWarning):
-            calc = AdaptVQE(
-                VQE(Estimator(), self.ansatz, self.optimizer),
-                threshold=1e-3,
-            )
-            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-
-            self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
     @data(
         ([1, 1], True),

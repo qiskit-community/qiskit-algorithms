@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -31,6 +31,7 @@ concurrency:
 
 jobs:
   Checks:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -44,10 +45,10 @@ jobs:
           echo -e "\033[31;1;4mConcurrency Group\033[0m"
           echo -e "$CONCURRENCY_GROUP\n"
         shell: bash
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -59,13 +60,15 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          terra-main: "false"
+          qiskit-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - name: Install Dependencies
         run: |
           sudo apt-get -y install pandoc graphviz python3-enchant hunspell-en-us
           pip install pyenchant
+          # append to reno config
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - run: pip check
         if: ${{ !cancelled() }}
@@ -73,6 +76,9 @@ jobs:
       - name: Copyright Check
         run: |
           python tools/check_copyright.py -check
+        if: ${{ !cancelled() }}
+        shell: bash
+      - run: make spell
         if: ${{ !cancelled() }}
         shell: bash
       - name: Style Check
@@ -90,7 +96,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
       - name: Run upload documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: docs/_build/html/artifacts/documentation.tar.gz
@@ -99,24 +105,25 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
   Algorithms:
+    if: github.repository_owner == 'qiskit-community'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9, '3.10', 3.11]
+        python-version: [3.8, 3.9, '3.10', 3.11, 3.12]
         include:
           - os: macos-latest
             python-version: 3.8
           - os: macos-latest
-            python-version: 3.11
-          - os: windows-2019
+            python-version: 3.12
+          - os: windows-latest
             python-version: 3.8
-          - os: windows-2019
-            python-version: 3.11
+          - os: windows-latest
+            python-version: 3.12
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -128,9 +135,12 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
+          qiskit-main: "false"
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
       - run: make lint
+        shell: bash
+      - run: make mypy
         shell: bash
       - name: Algorithms Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
@@ -140,29 +150,70 @@ jobs:
           run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
           python-version: ${{ matrix.python-version }}
         if: ${{ !cancelled() }}
+      - name: Deprecation Messages
+        run: |
+          mkdir ./ci-artifact-data
+          python tools/extract_deprecation.py -file out.txt -output ./ci-artifact-data/alg.dep
+        shell: bash
       - name: Coverage combine
         run: |
           coverage3 combine
-          mkdir ./ci-artifact-data
           mv .coverage ./ci-artifact-data/alg.dat
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
         shell: bash
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
-  Tutorials:
+  Monitor_Qiskit_Main:
+    if: github.repository_owner == 'qiskit-community' && (github.ref == 'refs/heads/main' || github.base_ref == 'main')
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest ]
-        python-version: [ 3.8, 3.11 ]
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.12]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            setup.py
+            requirements.txt
+            requirements-dev.txt
+      - uses: ./.github/actions/install-main-dependencies
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+          qiskit-main: "true"
+      - uses: ./.github/actions/install-algorithms
+      - run: make lint
+        shell: bash
+      - run: make mypy
+        shell: bash
+      - name: Algorithms Unit Tests under Python with Qiskit main ${{ matrix.python-version }}
+        uses: ./.github/actions/run-tests
+        with:
+          os: ${{ matrix.os }}
+          event-name: ${{ github.event_name }}
+          run-slow: ${{ contains(github.event.pull_request.labels.*.name, 'run_slow') }}
+          python-version: ${{ matrix.python-version }}
+        if: ${{ !cancelled() }}
+  Tutorials:
+    if: github.repository_owner == 'qiskit-community'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8, 3.12]
+    steps:
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
@@ -176,46 +227,81 @@ jobs:
           python-version: ${{ matrix.python-version }}
         if: ${{ !startsWith(github.ref, 'refs/heads/stable') && !startsWith(github.base_ref, 'stable/') }}
       - uses: ./.github/actions/install-algorithms
-        with:
-          os: ${{ matrix.os }}
       - name: Install Dependencies
         run: |
-          pip install jupyter qiskit-terra[visualization]
+          pip install jupyter qiskit[visualization]
           sudo apt-get install -y pandoc graphviz
+          echo "earliest_version: 0.1.0" >> releasenotes/config.yaml
         shell: bash
       - name: Run Qiskit Algorithms Tutorials
         env:
           QISKIT_PARALLEL: False
           QISKIT_DOCS_BUILD_TUTORIALS: 'always'
         run: |
-          tools/ignore_untagged_notes.sh
           make html
           cd docs/_build/html
           mkdir artifacts
           tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
         shell: bash
       - name: Run upload tutorials
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tutorials${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
   Deprecation_Messages_and_Coverage:
-    needs: [Checks, Algorithms]
+    if: github.repository_owner == 'qiskit-community'
+    needs: [Checks, Algorithms, Tutorials]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ubuntu-latest-3.8
           path: /tmp/u38
+      - uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-3.9
+          path: /tmp/u39
+      - uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-3.10
+          path: /tmp/u310
+      - uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-3.11
+          path: /tmp/u311
+      - uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-3.12
+          path: /tmp/u312
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos-latest-3.8
+          path: /tmp/m38
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos-latest-3.12
+          path: /tmp/m312
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-latest-3.8
+          path: /tmp/w38
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-latest-3.12
+          path: /tmp/w312
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
+        shell: bash
+      - name: Combined Deprecation Messages
+        run: |
+          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/m38/alg.dep /tmp/m312/alg.dep /tmp/w38/alg.dep /tmp/w312/alg.dep || true
         shell: bash
       - name: Coverage combine
         run: coverage3 combine /tmp/u38/alg.dat
