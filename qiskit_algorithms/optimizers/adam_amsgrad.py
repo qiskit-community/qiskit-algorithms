@@ -209,7 +209,9 @@ class ADAM(Optimizer):
             The result of the optimization, containing e.g. the result as attribute ``x``.
         """
         if jac is None:
-            jac = Optimizer.wrap_function(Optimizer.gradient_num_diff, (fun, self._eps))
+            jac = Optimizer.wrap_function(
+                Optimizer.gradient_num_diff, (fun, self._eps, self._max_evals_grouped)
+            )
 
         derivative = jac(x0)
         self._t = 0
