@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Compatibility fix for numpy 2.0 version. csr_matrix.H had been deprecated
+    and was removed in 2.0. The :class:`.NumPyEigensolver` algorithm, which
+    had been using that, has been updated to use an alternative.
