@@ -148,6 +148,7 @@ hyperparameters
 idx
 im
 imag
+init
 initializer
 inplace
 interatomic
