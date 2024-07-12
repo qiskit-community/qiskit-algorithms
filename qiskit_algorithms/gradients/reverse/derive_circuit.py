@@ -132,8 +132,18 @@ def derive_circuit(
     if parameter not in circuit.parameters:
         raise ValueError(f"The parameter {parameter} is not in this circuit.")
 
-    if len(circuit._parameter_table[parameter]) > 1:
-        raise NotImplementedError("No product rule support yet, circuit parameters must be unique.")
+    if hasattr(circuit, "_parameter_table"):
+        if len(circuit._parameter_table[parameter]) > 1:
+            raise NotImplementedError(
+                "Product rule is not supported, circuit parameters must be unique."
+            )
+    else:
+        # Qiskit is moving circuit functionality to Rust and with the updated logic the former attribute
+        # which was used no longer exists.
+        if circuit._data._get_entry_count(parameter) > 1:
+            raise NotImplementedError(
+                "Product rule is not supported, circuit parameters must be unique."
+            )
 
     summands, op_context = [], []
     for i, op in enumerate(circuit.data):
@@ -151,7 +161,11 @@ def derive_circuit(
         c = complex(1)
         for i, term in enumerate(product_rule_term):
             c *= term[0]
-            summand_circuit.data.append([term[1], *op_context[i]])
+            if hasattr(summand_circuit.data, "_resolve_legacy_value"):
+                value = summand_circuit.data._resolve_legacy_value(term[1], *op_context[i])
+                summand_circuit.data.append(value)
+            else:
+                summand_circuit.data.append([term[1], *op_context[i]])
         gradient += [(c, summand_circuit.copy())]
 
     return gradient
