@@ -303,8 +303,11 @@ class GradientDescent(SteppableOptimizer):
         """
         if np.shape(self.state.x) != np.shape(tell_data.eval_jac):  # type: ignore[arg-type]
             raise ValueError("The gradient does not have the correct dimension")
+        # pylint: disable=attribute-defined-outside-init
+        # Both x and stepsize get flagged as defined outside init since lint 3.2.5
         self.state.x = self.state.x - next(self.state.learning_rate) * tell_data.eval_jac
         self.state.stepsize = np.linalg.norm(tell_data.eval_jac)  # type: ignore[arg-type,assignment]
+        # pylint: enable=attribute-defined-outside-init
         self.state.nit += 1
 
     def evaluate(self, ask_data: AskData) -> TellData:
