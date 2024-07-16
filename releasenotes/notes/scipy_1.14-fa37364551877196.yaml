@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Scipy 1.14 removed `the ``H`` attribute <https://docs.scipy.org/doc/scipy-1.14.0/release/1.14.0-notes.html#expired-deprecations>
+    for sparse arrays, which it was used by :class:`.NumPyEigensolver`. It was replaced by ``T.conj()``.

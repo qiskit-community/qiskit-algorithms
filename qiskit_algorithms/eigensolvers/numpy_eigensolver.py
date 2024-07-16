@@ -149,7 +149,7 @@ class NumPyEigensolver(Eigensolver):
 
     @staticmethod
     def _solve_sparse(op_matrix: scisparse.csr_matrix, k: int) -> tuple[np.ndarray, np.ndarray]:
-        if (op_matrix != op_matrix.H).nnz == 0:
+        if (op_matrix != op_matrix.T.conj()).nnz == 0:
             # Operator is Hermitian
             return scisparse.linalg.eigsh(op_matrix, k=k, which="SA")
         else:
