@@ -161,6 +161,9 @@ def derive_circuit(
         c = complex(1)
         for i, term in enumerate(product_rule_term):
             c *= term[0]
+            # Qiskit changed the format of the stored value. The newer Qiskit has this internal
+            # method to go from the older (legacy) format to new. This logic may need updating
+            # at some point if this internal method goes away.
             if hasattr(summand_circuit.data, "_resolve_legacy_value"):
                 value = summand_circuit.data._resolve_legacy_value(term[1], *op_context[i])
                 summand_circuit.data.append(value)
