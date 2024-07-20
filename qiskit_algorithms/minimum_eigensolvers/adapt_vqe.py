@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -236,7 +236,11 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             # pick maximum gradient
             max_grad_index, max_grad = max(  # type: ignore[assignment]
                 enumerate(cur_grads),
-                key=lambda item: np.abs(item[1][0]),  # type: ignore[call-overload]
+                # mypy <= 1.10 needs call-overload, for 1.11 its arg-type to suppress the error
+                # below then the other is seen as unused hence the additional unused-ignore
+                key=lambda item: np.abs(
+                    item[1][0]  # type: ignore[arg-type, unused-ignore]
+                ),  # type: ignore[call-overload, unused-ignore]
             )
             logger.info(
                 "Found maximum gradient %s at index %s",
