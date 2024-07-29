@@ -16,7 +16,7 @@ from __future__ import annotations
 import itertools
 from collections.abc import Sequence
 
-from qiskit.circuit import QuantumCircuit, Parameter, Gate
+from qiskit.circuit import QuantumCircuit, Parameter, Gate, ParameterExpression
 from qiskit.circuit.library import RXGate, RYGate, RZGate, CRXGate, CRYGate, CRZGate
 
 
@@ -90,7 +90,7 @@ def gradient_lookup(gate: Gate) -> list[tuple[complex, QuantumCircuit]]:
 
 
 def derive_circuit(
-    circuit: QuantumCircuit, parameter: Parameter
+    circuit: QuantumCircuit, parameter: Parameter, check: bool = True
 ) -> Sequence[tuple[complex, QuantumCircuit]]:
     """Return the analytic gradient expression of the input circuit wrt. a single parameter.
 
@@ -114,6 +114,8 @@ def derive_circuit(
     Args:
         circuit: The quantum circuit to derive.
         parameter: The parameter with respect to which we derive.
+        check: If ``True`` (default) check that the parameter is valid and that no product
+            rule is required.
 
     Returns:
         A list of ``(coeff, gradient_circuit)`` tuples.
@@ -124,26 +126,31 @@ def derive_circuit(
         NotImplementedError: If a non-unique parameter is added, as the product rule is not yet
             supported in this function.
     """
-    # this is added as useful user-warning, since sometimes ``ParameterExpression``s are
-    # passed around instead of ``Parameter``s
-    if not isinstance(parameter, Parameter):
-        raise ValueError(f"parameter must be of type Parameter, not {type(parameter)}.")
+    if check:
+        # this is added as useful user-warning, since sometimes ``ParameterExpression``s are
+        # passed around instead of ``Parameter``s
+        if not isinstance(parameter, Parameter):
+            raise ValueError(f"parameter must be of type Parameter, not {type(parameter)}.")
 
-    if parameter not in circuit.parameters:
-        raise ValueError(f"The parameter {parameter} is not in this circuit.")
+        if parameter not in circuit.parameters:
+            raise ValueError(f"The parameter {parameter} is not in this circuit.")
 
-    if hasattr(circuit, "_parameter_table"):
-        if len(circuit._parameter_table[parameter]) > 1:
-            raise NotImplementedError(
-                "Product rule is not supported, circuit parameters must be unique."
-            )
-    else:
-        # Qiskit is moving circuit functionality to Rust and with the updated logic the former attribute
-        # which was used no longer exists.
-        if circuit._data._get_entry_count(parameter) > 1:
-            raise NotImplementedError(
-                "Product rule is not supported, circuit parameters must be unique."
-            )
+        # check uniqueness
+        seen_parameters = set()
+        for instruction in circuit.data:
+            # get parameters in the current operation
+            new_parameters = set()
+            for p in instruction.operation.params:
+                if isinstance(p, ParameterExpression):
+                    new_parameters.update(p.parameters)
+
+            if duplicates := seen_parameters.intersection(new_parameters):
+                raise NotImplementedError(
+                    "Product rule is not supported, circuit parameters must be unique, but "
+                    f"{duplicates} are duplicated."
+                )
+
+            seen_parameters.update(new_parameters)
 
     summands, op_context = [], []
     for i, op in enumerate(circuit.data):
