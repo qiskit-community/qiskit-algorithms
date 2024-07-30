@@ -137,13 +137,6 @@ def _make_lin_comb_gradient_circuit(
                 lin_comb_circuit.h(qr_aux)
                 if add_measurement:
                     lin_comb_circuit.measure(qr_aux, cr_aux)
-                # This next line which assigns data is a workaround otherwise the
-                # circuit parameters may not be properly recognized as data is now
-                # managed in Rust and changing things may break parameters - making a
-                # copy of itself by assignment sorts things out.
-                # See https://github.com/Qiskit/qiskit/blob/main/releasenotes/notes
-                #     /circuit-gates-rust-5c6ab6c58f7fd2c9.yaml#L47-L79
-                lin_comb_circuit.data = lin_comb_circuit.data
                 lin_comb_circuits[p] = lin_comb_circuit
 
     return lin_comb_circuits

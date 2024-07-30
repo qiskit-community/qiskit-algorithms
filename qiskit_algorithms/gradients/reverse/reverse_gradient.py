@@ -144,7 +144,8 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
                 parameter_j = paramlist[j][0]
 
                 # get the analytic gradient d U_j / d p_j and bind the gate
-                deriv = derive_circuit(unitary_j, parameter_j)
+                # we skip the check since we know the circuit has unique, valid parameters
+                deriv = derive_circuit(unitary_j, parameter_j, check=False)
                 for _, gate in deriv:
                     bind(gate, parameter_binds, inplace=True)
 
