@@ -136,7 +136,7 @@ def derive_circuit(
             raise ValueError(f"The parameter {parameter} is not in this circuit.")
 
         # check uniqueness
-        seen_parameters = set()
+        seen_parameters: set[Parameter] = set()
         for instruction in circuit.data:
             # get parameters in the current operation
             new_parameters = set()
