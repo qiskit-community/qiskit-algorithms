@@ -1,0 +1,42 @@
+Tristan:
+[] phase_estimators/hamiltonian_phase_estimation.py
+[] phase_estimators/ipe.py
+[] phase_estimators/phase_estimation.py
+[] eigensolvers/vqd.py
+[] amplitude_amplifiers/grover.py
+[] time_evolvers/pvqd/utils.py
+[] time_evolvers/pvqd/pvqd.py
+[] time_evolvers/trotterization/trotter_qrte.py
+[] time_evolvers/variational/variational_principles/imaginary_mc_lachlan_principle.py
+[] time_evolvers/variational/variational_principles/real_mc_lachlan_principle.py
+[] time_evolvers/variational/var_qite.py
+[] time_evolvers/variational/var_qrte.py
+[] time_evolvers/variational/var_qte.py
+[] state_fidelities/compute_uncompute.py
+[] optimizers/qnspsa.py
+[] optimizers/umda.py
+[] optimizers/spsa.py
+[] observables_evaluator.py
+
+Léna:
+[] gradients/reverse/reverse_gradient.py
+[] gradients/reverse/reverse_qgt.py
+[] gradients/finite_diff/finite_diff_estimator_gradient.py
+[] gradients/finite_diff/finite_diff_sampler_gradient.py
+[] gradients/spsa/spsa_estimator_gradient.py
+[] gradients/spsa/spsa_sampler_gradient.py
+[] gradients/lin_comb/lin_comb_sampler_gradient.py
+[] gradients/lin_comb/lin_comb_estimator_gradient.py
+[] gradients/lin_comb/lin_comb_qgt.py
+[] gradients/base/base_sampler_gradient.py
+[] gradients/base/base_qgt.py
+[] gradients/base/base_estimator_gradient.py
+[] minimum_eigensolvers/vqe.py
+[] minimum_eigensolvers/adapt_vqe.py
+[] minimum_eigensolvers/qaoa.py
+[] minimum_eigensolvers/diagonal_estimator.py
+[] minimum_eigensolvers/sampling_vqe.py
+[] amplitude_estimators/mlae.py
+[] amplitude_estimators/fae.py
+[] amplitude_estimators/iae.py
+[] amplitude_estimators/ae.py
