@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,7 +17,8 @@ from __future__ import annotations
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.primitives import BaseSampler
+from qiskit.passmanager import BasePassManager
+from qiskit.primitives import BaseSamplerV2
 from qiskit.quantum_info import SparsePauliOp, Statevector, Pauli
 from qiskit.synthesis import EvolutionSynthesis
 
@@ -83,17 +84,20 @@ class HamiltonianPhaseEstimation:
     def __init__(
         self,
         num_evaluation_qubits: int,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        pass_manager: BasePassManager | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
             sampler: The sampler primitive on which the circuit will be sampled.
+            pass_manager: A pass manager to use to transpile the circuits.
         """
         self._phase_estimation = PhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
+            pass_manager=pass_manager,
         )
 
     def _get_scale(self, hamiltonian, bound=None) -> PhaseEstimationScale:
