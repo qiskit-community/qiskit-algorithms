@@ -1,0 +1,6 @@
+---
+other:
+  - |
+    Aspects of the gradients internal implementation, which manipulate circuits more
+    directly, have been updated now that circuit data is being handled by Rust so it's
+    compatible with the former Python way as well as the new Qiskit Rust implementation.
