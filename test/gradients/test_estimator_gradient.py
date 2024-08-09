@@ -512,6 +512,18 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         with self.subTest(msg="assert result is correct"):
             self.assertAlmostEqual(result.gradients[0].item(), expect, places=5)
 
+    def test_product_rule_check(self):
+        """Test product rule check."""
+        p = Parameter("p")
+        qc = QuantumCircuit(1)
+        qc.rx(p, 0)
+        qc.ry(p, 0)
+
+        from qiskit_algorithms.gradients.reverse.derive_circuit import derive_circuit
+
+        with self.assertRaises(NotImplementedError):
+            _ = derive_circuit(qc, p)
+
 
 if __name__ == "__main__":
     unittest.main()
