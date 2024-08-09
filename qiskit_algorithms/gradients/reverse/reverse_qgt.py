@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -131,7 +131,8 @@ class ReverseQGT(BaseQGT):
             # Note: We currently only support gates with a single parameter -- which is reflected
             # in self.SUPPORTED_GATES -- but generally we could also support gates with multiple
             # parameters per gate. This is the reason for the second 0-index.
-            deriv = derive_circuit(unitaries[0], paramlist[0][0])
+            # We skip the check since we know the circuit has unique, valid parameters.
+            deriv = derive_circuit(unitaries[0], paramlist[0][0], check=False)
             for _, gate in deriv:
                 bind(gate, parameter_binds, inplace=True)
 
@@ -149,7 +150,7 @@ class ReverseQGT(BaseQGT):
                 phi = psi.copy()
 
                 # get the analytic gradient d U_j / d p_j and apply it
-                deriv = derive_circuit(unitaries[j], paramlist[j][0])
+                deriv = derive_circuit(unitaries[j], paramlist[j][0], check=False)
 
                 for _, gate in deriv:
                     bind(gate, parameter_binds, inplace=True)
@@ -170,7 +171,7 @@ class ReverseQGT(BaseQGT):
                     lam = lam.evolve(bound_unitaries[i].inverse())
 
                     # get the gradient d U_i / d p_i and apply it
-                    deriv = derive_circuit(unitaries[i], paramlist[i][0])
+                    deriv = derive_circuit(unitaries[i], paramlist[i][0], check=False)
                     for _, gate in deriv:
                         bind(gate, parameter_binds, inplace=True)
 
