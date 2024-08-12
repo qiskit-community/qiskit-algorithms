@@ -36,8 +36,6 @@ from qiskit_algorithms import (
 class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
     """Tests for obtaining eigenvalues from phase estimation"""
 
-    pm = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
-
     # sampler tests
     def hamiltonian_pe_sampler(
         self,
@@ -51,7 +49,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         """Run HamiltonianPhaseEstimation and return result with all phases."""
         sampler = Sampler(default_shots=10_000, seed=42)
         phase_est = HamiltonianPhaseEstimation(
-            num_evaluation_qubits=num_evaluation_qubits, sampler=sampler, pass_manager=pass_manager
+            num_evaluation_qubits=num_evaluation_qubits, sampler=sampler, transpiler=pass_manager
         )
         result = phase_est.estimate(
             hamiltonian=hamiltonian,
@@ -61,7 +59,12 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         )
         return result
 
-    @data(*product((MatrixExponential(), SuzukiTrotter(reps=4)), (None, pm)))
+    @data(
+        *product(
+            (MatrixExponential(), SuzukiTrotter(reps=4)),
+            (None, generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)),
+        )
+    )
     @unpack
     def test_pauli_sum_1_sampler(self, evolution, pass_manager):
         """Two eigenvalues from Pauli sum with X, Z"""
@@ -78,7 +81,12 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(phases[0], -1.125, delta=0.001)
         self.assertAlmostEqual(phases[1], 1.125, delta=0.001)
 
-    @data(*product((MatrixExponential(), SuzukiTrotter(reps=3)), (None, pm)))
+    @data(
+        *product(
+            (MatrixExponential(), SuzukiTrotter(reps=3)),
+            (None, generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)),
+        )
+    )
     @unpack
     def test_pauli_sum_2_sampler(self, evolution, pass_manager):
         """Two eigenvalues from Pauli sum with X, Y, Z"""
@@ -95,7 +103,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(phases[0], -1.484, delta=0.001)
         self.assertAlmostEqual(phases[1], 1.484, delta=0.001)
 
-    @data(None, pm)
+    @data(None, generate_preset_pass_manager(optimization_level=1, seed_transpiler=42))
     def test_single_pauli_op_sampler(self, pass_manager):
         """Two eigenvalues from Pauli sum with X, Y, Z"""
         hamiltonian = SparsePauliOp(Pauli("Z"))
@@ -121,7 +129,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
                 (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate()))),
                 (QuantumCircuit(2).compose(IGate()).compose(HGate())),
             ),
-            (None, pm),
+            (None, generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)),
         )
     )
     @unpack
@@ -153,7 +161,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(phases[1], -1.2376, delta=0.001)
             self.assertAlmostEqual(phases[2], -0.8979, delta=0.001)
 
-    @data(None, pm)
+    @data(None, generate_preset_pass_manager(optimization_level=1, seed_transpiler=42))
     def test_matrix_evolution_sampler(self, pass_manager):
         """1Q Hamiltonian with MatrixEvolution"""
         # hamiltonian = PauliSumOp(SparsePauliOp.from_list([("X", 0.5), ("Y", 0.6), ("I", 0.7)]))
@@ -197,11 +205,11 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             phase_estimator = IterativePhaseEstimation
         if phase_estimator == IterativePhaseEstimation:
             p_est = IterativePhaseEstimation(
-                num_iterations=num_iterations, sampler=sampler, pass_manager=pass_manager
+                num_iterations=num_iterations, sampler=sampler, transpiler=pass_manager
             )
         elif phase_estimator == PhaseEstimation:
             p_est = PhaseEstimation(
-                num_evaluation_qubits=6, sampler=sampler, pass_manager=pass_manager
+                num_evaluation_qubits=6, sampler=sampler, transpiler=pass_manager
             )
         else:
             raise ValueError("Unrecognized phase_estimator")
@@ -336,7 +344,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         `state_preparation`. Return all results
         """
         phase_est = PhaseEstimation(
-            num_evaluation_qubits=num_evaluation_qubits, sampler=sampler, pass_manager=pass_manager
+            num_evaluation_qubits=num_evaluation_qubits, sampler=sampler, transpiler=pass_manager
         )
         if construct_circuit:
             pe_circuit = phase_est.construct_circuit(unitary_circuit, state_preparation)

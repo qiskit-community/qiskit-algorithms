@@ -20,7 +20,6 @@ import qiskit
 from qiskit import circuit
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.classicalregister import ClassicalRegister
-from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV2
 from qiskit.result import Result
 
@@ -28,6 +27,7 @@ from qiskit_algorithms.exceptions import AlgorithmError
 
 from .phase_estimation_result import PhaseEstimationResult, _sort_phases
 from .phase_estimator import PhaseEstimator
+from ..custom_types import Transpiler
 
 
 class PhaseEstimation(PhaseEstimator):
@@ -84,14 +84,16 @@ class PhaseEstimation(PhaseEstimator):
         self,
         num_evaluation_qubits: int,
         sampler: BaseSamplerV2 | None = None,
-        pass_manager: BasePassManager | None = None,
+        transpiler: Transpiler | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
             sampler: The sampler primitive on which the circuit will be sampled.
-            pass_manager: A pass manager to use to transpile the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
 
         Raises:
             AlgorithmError: If a sampler is not provided
@@ -104,7 +106,7 @@ class PhaseEstimation(PhaseEstimator):
             self._num_evaluation_qubits = num_evaluation_qubits
 
         self._sampler = sampler
-        self._pass_manager = pass_manager
+        self._pass_manager = transpiler
 
     def construct_circuit(
         self, unitary: QuantumCircuit, state_preparation: QuantumCircuit | None = None

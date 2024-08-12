@@ -19,13 +19,13 @@ import numpy
 
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.classicalregister import ClassicalRegister
-from qiskit.passmanager import BasePassManager
 from qiskit.primitives import BaseSamplerV2
 
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .phase_estimator import PhaseEstimator
 from .phase_estimator import PhaseEstimatorResult
+from ..custom_types import Transpiler
 
 
 class IterativePhaseEstimation(PhaseEstimator):
@@ -42,13 +42,15 @@ class IterativePhaseEstimation(PhaseEstimator):
         self,
         num_iterations: int,
         sampler: BaseSamplerV2 | None = None,
-        pass_manager: BasePassManager | None = None,
+        transpiler: Transpiler | None = None,
     ) -> None:
         r"""
         Args:
             num_iterations: The number of iterations (rounds) of the phase estimation to run.
             sampler: The sampler primitive on which the circuit will be sampled.
-            pass_manager: A pass manager to use to transpile the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
 
         Raises:
             ValueError: if num_iterations is not greater than zero.
@@ -61,7 +63,7 @@ class IterativePhaseEstimation(PhaseEstimator):
             raise ValueError("`num_iterations` must be greater than zero.")
         self._num_iterations = num_iterations
         self._sampler = sampler
-        self._pass_manager = pass_manager
+        self._pass_manager = transpiler
 
     def construct_circuit(
         self,
