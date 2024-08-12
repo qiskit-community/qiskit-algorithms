@@ -12,11 +12,11 @@
 
 """Types used by the qiskit-algorithms package."""
 
-from typing import Any, Protocol, Union
+from typing import Any, List, Protocol, Union
 
 from qiskit import QuantumCircuit
 
-_Circuits = Union[list[QuantumCircuit], QuantumCircuit]
+_Circuits = Union[List[QuantumCircuit], QuantumCircuit]
 
 
 class Transpiler(Protocol):
