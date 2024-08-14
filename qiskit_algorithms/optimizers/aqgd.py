@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -325,7 +325,7 @@ class AQGD(Optimizer):
         logger.info("Initial Params: %s", params)
         epoch = 0
         converged = False
-        for (eta, mom_coeff) in zip(self._eta, self._momenta_coeff):
+        for eta, mom_coeff in zip(self._eta, self._momenta_coeff):
             logger.info("Epoch: %4d | Stepsize: %6.4f | Momentum: %6.4f", epoch, eta, mom_coeff)
 
             sum_max_iters = sum(self._maxiter[0 : epoch + 1])

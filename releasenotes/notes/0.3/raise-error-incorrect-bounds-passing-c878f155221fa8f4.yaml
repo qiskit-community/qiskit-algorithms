@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Resolved the issue with multiply-defined Scipy bounds in Optimizers. In line with Scipy, now only the ``minimize()``
+    method supports the ``bounds`` keyword. An error is raised when trying to pass ``bounds`` in the Optimizer constructor
+    via ``kwargs`` or ``options``.

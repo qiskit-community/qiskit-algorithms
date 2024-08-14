@@ -52,6 +52,7 @@ configs
 confint
 córcoles
 crs
+csr
 currentmodule
 customizable
 cvar
@@ -77,6 +78,7 @@ eigensolver
 eigensolvers
 eigenstate
 eigenstates
+elif
 entangler
 enum
 eps
@@ -146,6 +148,7 @@ hyperparameters
 idx
 im
 imag
+init
 initializer
 inplace
 interatomic
@@ -373,6 +376,7 @@ veeravalli
 vec
 vectorized
 vicentini
+vigo
 ville
 voilà
 vqd

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -177,10 +177,9 @@ class GradientDescent(SteppableOptimizer):
     def __init__(
         self,
         maxiter: int = 100,
-        learning_rate: float
-        | list[float]
-        | np.ndarray
-        | Callable[[], Generator[float, None, None]] = 0.01,
+        learning_rate: (
+            float | list[float] | np.ndarray | Callable[[], Generator[float, None, None]]
+        ) = 0.01,
         tol: float = 1e-7,
         callback: CALLBACK | None = None,
         perturbation: float | None = None,
@@ -304,8 +303,11 @@ class GradientDescent(SteppableOptimizer):
         """
         if np.shape(self.state.x) != np.shape(tell_data.eval_jac):  # type: ignore[arg-type]
             raise ValueError("The gradient does not have the correct dimension")
+        # pylint: disable=attribute-defined-outside-init
+        # Both x and stepsize get flagged as defined outside init since lint 3.2.5
         self.state.x = self.state.x - next(self.state.learning_rate) * tell_data.eval_jac
         self.state.stepsize = np.linalg.norm(tell_data.eval_jac)  # type: ignore[arg-type,assignment]
+        # pylint: enable=attribute-defined-outside-init
         self.state.nit += 1
 
     def evaluate(self, ask_data: AskData) -> TellData:

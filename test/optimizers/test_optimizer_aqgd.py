@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,13 +13,12 @@
 """Test of AQGD optimizer"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+from test import QiskitAlgorithmsTestCase, slow_test
 import numpy as np
 from ddt import ddt, data
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.test import slow_test
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import LinCombEstimatorGradient
@@ -115,6 +114,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
     def test_max_grouped_evals_non_parallelizable(self):
         """Tests max_grouped_evals for an objective function that cannot be parallelized"""
+
         # Define the objective function (toy example for functionality)
         def quadratic_objective(x: np.ndarray) -> float:
             # Check if only a single point as parameters is passed
