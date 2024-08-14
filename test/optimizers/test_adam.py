@@ -59,7 +59,7 @@ class TestADAM(QiskitAlgorithmsTestCase):
         mse = np.mean((self.y - y_pred) ** 2)
         return mse
 
-    def run_optimizer(self, optimizer: Optimizer, weights: np.array, max_nfev: int):
+    def run_optimizer(self, optimizer: Optimizer, weights: list, max_nfev: int):
         """Test the optimizer.
 
         Args:
@@ -69,7 +69,7 @@ class TestADAM(QiskitAlgorithmsTestCase):
         """
 
         # Minimize
-        res = optimizer.minimize(self.objective, weights, None)
+        res = optimizer.minimize(self.objective, np.array(weights), None)
         error = res.fun
         nfev = res.nfev
 
