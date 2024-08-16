@@ -20,7 +20,7 @@ from ddt import data, ddt
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
-from qiskit.primitives import Sampler, Estimator
+from qiskit.primitives import Sampler, StatevectorEstimator as Estimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.eigensolvers import VQD, VQDResult
@@ -57,8 +57,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         )
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
-        self.estimator = Estimator()
-        self.estimator_shots = Estimator(options={"shots": 1024, "seed": self.seed})
+        self.estimator = Estimator(seed=self.seed)
         self.fidelity = ComputeUncompute(Sampler())
         self.betas = [50, 50]
 
@@ -91,12 +90,10 @@ class TestVQD(QiskitAlgorithmsTestCase):
             self.assertIsNotNone(result.optimizer_times)
 
         with self.subTest(msg="assert return ansatz is set"):
-            job = self.estimator.run(
-                result.optimal_circuits,
-                [op] * len(result.optimal_points),
-                result.optimal_points,
-            )
-            np.testing.assert_array_almost_equal(job.result().values, result.eigenvalues, 6)
+            job = self.estimator.run([(circuits, op, optimal_points) for (circuits, optimal_points) in zip(result.optimal_circuits, result.optimal_points)])
+            job_result = job.result()
+            eigenvalues = np.array([job_result[i].data.evs for i in range(len(result.eigenvalues))])
+            np.testing.assert_array_almost_equal(eigenvalues, result.eigenvalues, 6)
 
         with self.subTest(msg="assert returned values are eigenvalues"):
             np.testing.assert_array_almost_equal(
@@ -117,7 +114,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         with self.assertLogs(level="INFO") as logs:
             vqd = VQD(
-                self.estimator_shots, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B()
+                self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B()
             )
             _ = vqd.compute_eigenvalues(op)
 
@@ -172,7 +169,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         wavefunction = self.ry_wavefunction
 
         vqd = VQD(
-            estimator=self.estimator_shots,
+            estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
             optimizer=optimizer,
