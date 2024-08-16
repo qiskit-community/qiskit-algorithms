@@ -14,6 +14,7 @@
 
 import unittest
 from itertools import product
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt, idata, unpack
@@ -25,7 +26,6 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_algorithms import AmplificationProblem, Grover
-from test import QiskitAlgorithmsTestCase
 
 
 @ddt
@@ -144,10 +144,17 @@ class TestGrover(QiskitAlgorithmsTestCase):
         )
     )
     @unpack
-    def test_iterations_with_good_state_sample_from_iterations(self, iterations, transpiler_and_options):
+    def test_iterations_with_good_state_sample_from_iterations(
+        self, iterations, transpiler_and_options
+    ):
         """Test the algorithm with different iteration types and with good state"""
         transpiler, transpiler_options = transpiler_and_options
-        grover = self._prepare_grover(iterations, sample_from_iterations=True, transpiler=transpiler, transpiler_options=transpiler_options)
+        grover = self._prepare_grover(
+            iterations,
+            sample_from_iterations=True,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options,
+        )
         problem = AmplificationProblem(Statevector.from_label("111"), is_good_state=["111"])
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
@@ -162,7 +169,9 @@ class TestGrover(QiskitAlgorithmsTestCase):
     @unpack
     def test_fixed_iterations_without_good_state(self, transpiler, transpiler_options):
         """Test the algorithm with iterations as an int and without good state"""
-        grover = self._prepare_grover(iterations=2, transpiler=transpiler, transpiler_options=transpiler_options)
+        grover = self._prepare_grover(
+            iterations=2, transpiler=transpiler, transpiler_options=transpiler_options
+        )
         problem = AmplificationProblem(Statevector.from_label("111"))
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
@@ -183,7 +192,9 @@ class TestGrover(QiskitAlgorithmsTestCase):
     def test_iterations_without_good_state(self, iterations, transpiler_and_options):
         """Test the correct error is thrown for none/list of iterations and without good state"""
         transpiler, transpiler_options = transpiler_and_options
-        grover = self._prepare_grover(iterations=iterations, transpiler=transpiler, transpiler_options=transpiler_options)
+        grover = self._prepare_grover(
+            iterations=iterations, transpiler=transpiler, transpiler_options=transpiler_options
+        )
         problem = AmplificationProblem(Statevector.from_label("111"))
 
         with self.assertRaisesRegex(

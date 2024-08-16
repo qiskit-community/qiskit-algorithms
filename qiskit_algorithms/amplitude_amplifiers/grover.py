@@ -18,14 +18,11 @@ from collections.abc import Iterator, Generator
 from typing import Any
 
 import numpy as np
-
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2
-from qiskit.quantum_info import Statevector
 
 from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.utils import algorithm_globals
-
 from .amplification_problem import AmplificationProblem
 from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
 from ..custom_types import Transpiler

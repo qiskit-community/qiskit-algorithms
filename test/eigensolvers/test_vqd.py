@@ -90,7 +90,14 @@ class TestVQD(QiskitAlgorithmsTestCase):
             self.assertIsNotNone(result.optimizer_times)
 
         with self.subTest(msg="assert return ansatz is set"):
-            job = self.estimator.run([(circuits, op, optimal_points) for (circuits, optimal_points) in zip(result.optimal_circuits, result.optimal_points)])
+            job = self.estimator.run(
+                [
+                    (circuits, op, optimal_points)
+                    for (circuits, optimal_points) in zip(
+                        result.optimal_circuits, result.optimal_points
+                    )
+                ]
+            )
             job_result = job.result()
             eigenvalues = np.array([job_result[i].data.evs for i in range(len(result.eigenvalues))])
             np.testing.assert_array_almost_equal(eigenvalues, result.eigenvalues, 6)
@@ -113,9 +120,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         """Test beta auto-evaluation for different operator types."""
 
         with self.assertLogs(level="INFO") as logs:
-            vqd = VQD(
-                self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B()
-            )
+            vqd = VQD(self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B())
             _ = vqd.compute_eigenvalues(op)
 
         # the first log message shows the value of beta[0]
