@@ -11,12 +11,13 @@
 # that they have been altered from the originals.
 
 """Types used by the qiskit-algorithms package."""
+from __future__ import annotations
 
-from typing import Any, List, Protocol, Union
+from typing import Any, Protocol, Union
 
 from qiskit import QuantumCircuit
 
-_Circuits = Union[List[QuantumCircuit], QuantumCircuit]
+_Circuits = Union[list[QuantumCircuit], QuantumCircuit]
 
 
 class Transpiler(Protocol):
