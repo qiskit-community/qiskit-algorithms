@@ -23,7 +23,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
 from qiskit.circuit import Parameter
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
 
 from qiskit_algorithms import TimeEvolutionProblem, TrotterQRTE

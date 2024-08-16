@@ -18,7 +18,7 @@ from qiskit import QuantumCircuit
 
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.circuit.parametertable import ParameterView
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.synthesis import ProductFormula, LieTrotter
 
@@ -41,7 +41,7 @@ class TrotterQRTE(RealTimeEvolver):
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
             from qiskit_algorithms import TrotterQRTE, TimeEvolutionProblem
-            from qiskit.primitives import Estimator
+            from qiskit.primitives import StatevectorEstimator as Estimator
 
             operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
             initial_state = QuantumCircuit(1)
@@ -56,7 +56,7 @@ class TrotterQRTE(RealTimeEvolver):
     def __init__(
         self,
         product_formula: ProductFormula | None = None,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         num_timesteps: int = 1,
         *,
         insert_barriers: bool = False,
@@ -96,14 +96,14 @@ class TrotterQRTE(RealTimeEvolver):
         self._product_formula = product_formula
 
     @property
-    def estimator(self) -> BaseEstimator | None:
+    def estimator(self) -> BaseEstimatorV2 | None:
         """
         Returns an estimator.
         """
         return self._estimator
 
     @estimator.setter
-    def estimator(self, estimator: BaseEstimator) -> None:
+    def estimator(self, estimator: BaseEstimatorV2) -> None:
         """
         Sets an estimator.
         """
