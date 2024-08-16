@@ -258,11 +258,12 @@ class Grover(AmplitudeAmplifier):
             except Exception as exc:
                 raise AlgorithmError("Sampler job failed.") from exc
 
-            circuit_results: dict[str, Any] = getattr(results[0].data, qc.cregs[0].name)
+            circuit_results = getattr(results[0].data, qc.cregs[0].name)
             circuit_results = {
                 label: value / circuit_results.num_shots
                 for label, value in circuit_results.get_counts().items()
             }
+
             top_measurement, max_probability = max(
                 circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
             )
