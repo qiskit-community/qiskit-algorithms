@@ -14,7 +14,7 @@
 
 from test import QiskitAlgorithmsTestCase
 
-from ddt import ddt
+from ddt import ddt, data
 import numpy as np
 
 from qiskit_algorithms.optimizers import ADAM, Optimizer
@@ -32,8 +32,6 @@ class TestADAM(QiskitAlgorithmsTestCase):
         self.x = np.array([1, 2, 3, 4])
         # Target value
         self.y = 5
-        # Length of weights
-        self.num_weights = 5
 
     def objective(self, w):
         """
@@ -48,7 +46,7 @@ class TestADAM(QiskitAlgorithmsTestCase):
             The mean squared error.
         """
         # Extract weights and bias from the parameter vector
-        new_shape = (self.num_weights, int(len(w) / self.num_weights))
+        new_shape = (5, int(len(w) / 5))
         w = np.reshape(w, new_shape)
 
         weights = w[:-1, :]
@@ -59,7 +57,7 @@ class TestADAM(QiskitAlgorithmsTestCase):
         mse = np.mean((self.y - y_pred) ** 2)
         return mse
 
-    def run_optimizer(self, optimizer: Optimizer, weights: list, max_nfev: int):
+    def run_optimizer(self, optimizer: Optimizer, weights: np.ndarray, max_nfev: int):
         """Test the optimizer.
 
         Args:
@@ -76,15 +74,13 @@ class TestADAM(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(error, 0, places=3)
         self.assertLessEqual(nfev, max_nfev)
 
-    def test_adam_max_evals(self):
+    @data(1, 5)
+    def test_adam_max_evals(self, max_evals_grouped):
         """adam test"""
         # Initialize weights (including bias)
         w = np.zeros(len(self.x) + 1)
         # Initialize optimizer
         optimizer = ADAM(maxiter=10000, tol=1e-06)
         # Test one evaluation at a time
-        optimizer.set_max_evals_grouped(1)
-        self.run_optimizer(optimizer, w, max_nfev=10000)
-        # Test self.num_weights evaluation at a time
-        optimizer.set_max_evals_grouped(self.num_weights)
+        optimizer.set_max_evals_grouped(max_evals_grouped)
         self.run_optimizer(optimizer, w, max_nfev=10000)
