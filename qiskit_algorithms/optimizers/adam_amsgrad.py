@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -209,7 +209,9 @@ class ADAM(Optimizer):
             The result of the optimization, containing e.g. the result as attribute ``x``.
         """
         if jac is None:
-            jac = Optimizer.wrap_function(Optimizer.gradient_num_diff, (fun, self._eps))
+            jac = Optimizer.wrap_function(
+                Optimizer.gradient_num_diff, (fun, self._eps, self._max_evals_grouped)
+            )
 
         derivative = jac(x0)
         self._t = 0
