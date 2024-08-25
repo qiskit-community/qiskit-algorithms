@@ -22,7 +22,8 @@ from typing import Any
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
+# from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.gradients import BaseEstimatorGradient
@@ -94,7 +95,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     the VQE object has been constructed.
 
     Attributes:
-        estimator (BaseEstimator): The estimator primitive to compute the expectation value of the
+        estimator (BaseEstimatorV2): The estimator primitive to compute the expectation value of the
             Hamiltonian operator.
         ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
@@ -114,7 +115,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
@@ -258,16 +259,19 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             nonlocal eval_count
 
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
-            parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            batch_size = len(parameters)
+            # parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
+            # batch_size = len(parameters)
 
             try:
-                job = self.estimator.run(batch_size * [ansatz], batch_size * [operator], parameters)
-                estimator_result = job.result()
+                job = self.estimator.run([(ansatz, operator, parameters)])
+                estimator_result = job.result()[0]
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
 
-            values = estimator_result.values
+            values = estimator_result.data.evs
+
+            if not values.shape:
+                values = values.reshape(1)
 
             if self.callback is not None:
                 metadata = estimator_result.metadata
