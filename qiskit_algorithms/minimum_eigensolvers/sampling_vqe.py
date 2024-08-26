@@ -22,7 +22,7 @@ from typing import Any
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 from qiskit.result import QuasiDistribution
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -92,7 +92,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
     the ``SamplingVQE`` object has been constructed.
 
     Attributes:
-        sampler (BaseSampler): The sampler primitive to sample the circuits.
+        sampler (BaseSamplerV2): The sampler primitive to sample the circuits.
         ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
             can either be an :class:`.Optimizer` or a callable implementing the
@@ -116,7 +116,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
@@ -240,7 +240,12 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             optimizer_result.x,
         )
 
-        final_state = self.sampler.run([self.ansatz], [optimizer_result.x]).result().quasi_dists[0]
+        final_res = self.sampler.run([(self.ansatz, optimizer_result.x)]).result()
+        final_state = getattr(final_res[0].data, self.ansatz.cregs[0].name)
+        final_state = {
+            label: value / final_state.num_shots
+            for label, value in final_state.get_counts().items()
+        }
 
         if aux_operators is not None:
             aux_operators_evaluated = estimate_observables(
@@ -313,13 +318,14 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         def evaluate_energy(parameters: np.ndarray) -> np.ndarray | float:
             nonlocal eval_count
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
-            parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            batch_size = len(parameters)
+            # parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
+            # batch_size = len(parameters)
 
-            estimator_result = estimator.run(
-                batch_size * [ansatz], batch_size * [operator], parameters
-            ).result()
-            values = estimator_result.values
+            job = self.estimator.run([(ansatz, operator, parameters)])
+            estimator_result = job.result()[0]
+            values = estimator_result.data.evs
+            if not values.shape:
+                values = values.reshape(1)
 
             if self.callback is not None:
                 metadata = estimator_result.metadata

@@ -22,7 +22,6 @@ from typing import Any
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-# from qiskit.primitives import BaseEstimator
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
