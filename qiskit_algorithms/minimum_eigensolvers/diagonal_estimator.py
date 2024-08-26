@@ -21,7 +21,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
+from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult
 from qiskit.primitives.utils import init_observable, _circuit_key
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -30,19 +30,19 @@ from qiskit_algorithms.algorithm_job import AlgorithmJob
 
 
 @dataclass(frozen=True)
-class _DiagonalEstimatorResult(EstimatorResult):
+class _DiagonalEstimatorResult(PubResult):
     """A result from an expectation of a diagonal observable."""
 
     # TODO make each measurement a dataclass rather than a dict
     best_measurements: Sequence[Mapping[str, Any]] | None = None
 
 
-class _DiagonalEstimator(BaseEstimator):
+class _DiagonalEstimator(BaseEstimatorV2):
     """An estimator for diagonal observables."""
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         aggregation: float | Callable[[Iterable[tuple[float, float]]], float] | None = None,
         callback: Callable[[Sequence[Mapping[str, Any]]], None] | None = None,
         **options,
@@ -114,13 +114,22 @@ class _DiagonalEstimator(BaseEstimator):
         parameter_values: Sequence[Sequence[float]],
         **run_options,
     ) -> _DiagonalEstimatorResult:
+
+        pubs = list(zip(circuits, parameter_values))
         job = self.sampler.run(
-            [self._circuits[i] for i in circuits],
-            parameter_values,
+            pubs,
             **run_options,
         )
-        sampler_result = job.result()
-        samples = sampler_result.quasi_dists
+        results = job.result()
+        samples = []
+        for i, pubres in enumerate(results):
+            qc = pubs[i][0]
+            sampler_result = getattr(results[i].data, qc.cregs[0].name)
+            sample = {
+                label: value / sampler_result.num_shots
+                for label, value in sampler_result.get_counts().items()
+            }
+            samples.append(sample)
 
         # a list of dictionaries containing: {state: (measurement probability, value)}
         evaluations: list[dict[int, tuple[float, float]]] = [
