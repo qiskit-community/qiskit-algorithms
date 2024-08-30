@@ -33,7 +33,7 @@ Léna:
 [] gradients/base/base_estimator_gradient.py
 [x] minimum_eigensolvers/vqe.py
 [x] minimum_eigensolvers/adapt_vqe.py
-[] minimum_eigensolvers/qaoa.py
+[x] minimum_eigensolvers/qaoa.py
 [x] minimum_eigensolvers/diagonal_estimator.py
 [x] minimum_eigensolvers/sampling_vqe.py
 [] amplitude_estimators/mlae.py
