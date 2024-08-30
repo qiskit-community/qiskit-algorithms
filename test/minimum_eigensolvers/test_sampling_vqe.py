@@ -23,7 +23,7 @@ from scipy.optimize import minimize as scipy_minimize
 
 from qiskit.circuit import ParameterVector, QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
-from qiskit.primitives import Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 
 from qiskit_algorithms import AlgorithmError
@@ -79,7 +79,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         initial_point = np.zeros(ansatz.num_parameters)
         initial_point[-ansatz.num_qubits :] = np.pi / 2
 
-        vqe = SamplingVQE(Sampler(), ansatz, optimizer, initial_point=initial_point)
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, optimizer, initial_point=initial_point)
         result = vqe.compute_minimum_eigenvalue(operator=op)
 
         with self.subTest(msg="test eigenvalue"):
@@ -107,7 +107,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         ansatz = RealAmplitudes(2, reps=1)
         initial_point = np.array([1])
 
-        vqe = SamplingVQE(Sampler(), ansatz, SLSQP(), initial_point=initial_point)
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, SLSQP(), initial_point=initial_point)
 
         with self.assertRaises(ValueError):
             _ = vqe.compute_minimum_eigenvalue(operator=op)
@@ -116,7 +116,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_ansatz_resize(self, op):
         """Test the ansatz is properly resized if it's a blueprint circuit."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = SamplingVQE(Sampler(), ansatz, SLSQP())
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, SLSQP())
         result = vqe.compute_minimum_eigenvalue(operator=op)
         self.assertAlmostEqual(result.eigenvalue, self.optimal_value, places=5)
 
@@ -125,7 +125,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         """Test an error is raised if the ansatz has the wrong number of qubits."""
         ansatz = QuantumCircuit(1)
         ansatz.compose(RealAmplitudes(1, reps=2))
-        vqe = SamplingVQE(Sampler(), ansatz, SLSQP())
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, SLSQP())
 
         with self.assertRaises(AlgorithmError):
             _ = vqe.compute_minimum_eigenvalue(operator=op)
@@ -134,7 +134,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_missing_varform_params(self, op):
         """Test specifying a variational form with no parameters raises an error."""
         circuit = QuantumCircuit(op.num_qubits)
-        vqe = SamplingVQE(Sampler(), circuit, SLSQP())
+        vqe = SamplingVQE(StatevectorSampler(), circuit, SLSQP())
         with self.assertRaises(AlgorithmError):
             vqe.compute_minimum_eigenvalue(operator=op)
 
@@ -142,7 +142,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_batch_evaluate_slsqp(self, op):
         """Test batching with SLSQP (as representative of SciPyOptimizer)."""
         optimizer = SLSQP(max_evals_grouped=10)
-        vqe = SamplingVQE(Sampler(), RealAmplitudes(), optimizer)
+        vqe = SamplingVQE(StatevectorSampler(), RealAmplitudes(), optimizer)
         result = vqe.compute_minimum_eigenvalue(operator=op)
         self.assertAlmostEqual(result.eigenvalue, self.optimal_value, places=5)
 
@@ -150,8 +150,8 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         """Test batch evaluating with QNSPSA works."""
         ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
-        wrapped_sampler = Sampler()
-        inner_sampler = Sampler()
+        wrapped_sampler = StatevectorSampler()
+        inner_sampler = StatevectorSampler()
 
         callcount = {"count": 0}
 
@@ -164,8 +164,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         fidelity = ComputeUncompute(wrapped_sampler)
 
         def fidelity_callable(left, right):
-            batchsize = np.asarray(left).shape[0]
-            job = fidelity.run(batchsize * [ansatz], batchsize * [ansatz], left, right)
+            job = fidelity.run(ansatz, ansatz, left, right)
             return job.result().fidelities
 
         qnspsa = QNSPSA(fidelity_callable, maxiter=5)
@@ -183,7 +182,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_optimizer_scipy_callable(self):
         """Test passing a SciPy optimizer directly as callable."""
         vqe = SamplingVQE(
-            Sampler(),
+            StatevectorSampler(),
             RealAmplitudes(),
             partial(scipy_minimize, method="COBYLA", options={"maxiter": 2}),
         )
@@ -193,7 +192,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_optimizer_callable(self):
         """Test passing a optimizer directly as callable."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = SamplingVQE(Sampler(), ansatz, _mock_optimizer)
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, _mock_optimizer)
         result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
 
@@ -201,7 +200,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_auxops(self, op):
         """Test passing auxiliary operators."""
         ansatz = RealAmplitudes(2, reps=1)
-        vqe = SamplingVQE(Sampler(), ansatz, SLSQP())
+        vqe = SamplingVQE(StatevectorSampler(), ansatz, SLSQP())
 
         as_list = [Pauli("ZZ"), Pauli("II")]
         with self.subTest(auxops=as_list):
@@ -220,7 +219,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
 
     def test_nondiag_observable_raises(self):
         """Test passing a non-diagonal observable raises an error."""
-        vqe = SamplingVQE(Sampler(), RealAmplitudes(), SLSQP())
+        vqe = SamplingVQE(StatevectorSampler(), RealAmplitudes(), SLSQP())
 
         with self.assertRaises(ValueError):
             _ = vqe.compute_minimum_eigenvalue(Pauli("X"))
@@ -242,7 +241,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
             history["metadata"].append(metadata)
 
         sampling_vqe = SamplingVQE(
-            Sampler(),
+            StatevectorSampler(),
             RealAmplitudes(2, reps=1),
             SLSQP(),
             callback=store_intermediate_result,
@@ -271,7 +270,7 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
 
         for aggregation in [alpha, best_measurement]:
             with self.subTest(aggregation=aggregation):
-                vqe = SamplingVQE(Sampler(), ansatz, _mock_optimizer, aggregation=best_measurement)
+                vqe = SamplingVQE(StatevectorSampler(), ansatz, _mock_optimizer, aggregation=best_measurement)
                 result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
 
                 # evaluation at x0=0 samples -1 and 1 with 50% probability, and our aggregation

@@ -23,7 +23,7 @@ from scipy.optimize import minimize as scipy_minimize
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
 
@@ -67,7 +67,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         super().setUp()
         self.seed = 10598
         algorithm_globals.random_seed = self.seed
-        self.sampler = Sampler()
+        self.sampler = StatevectorSampler()
 
     @idata(
         [

@@ -23,7 +23,7 @@ from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
-from qiskit.primitives import Estimator, Sampler, StatevectorEstimator, StatevectorSampler
+from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.gradients import ParamShiftEstimatorGradient
@@ -305,8 +305,8 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test batch evaluating with QNSPSA works."""
         ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
-        wrapped_sampler = Sampler()
-        inner_sampler = Sampler()
+        wrapped_sampler = StatevectorSampler()
+        inner_sampler = StatevectorSampler()
 
         wrapped_estimator = StatevectorEstimator()
         inner_estimator = StatevectorEstimator()
@@ -328,7 +328,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
         def fidelity_callable(left, right):
             batchsize = np.asarray(left).shape[0]
-            job = fidelity.run(batchsize * [ansatz], batchsize * [ansatz], left, right)
+            job = fidelity.run(ansatz, ansatz, left, right)
             return job.result().fidelities
 
         qnspsa = QNSPSA(fidelity_callable, maxiter=5)

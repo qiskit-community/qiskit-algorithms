@@ -21,7 +21,7 @@ import numpy as np
 
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import EvolvedOperatorAnsatz
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import VQE
@@ -83,7 +83,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
 
     def test_default(self):
         """Default execution"""
-        calc = AdaptVQE(VQE(Estimator(), self.ansatz, self.optimizer))
+        calc = AdaptVQE(VQE(StatevectorEstimator(), self.ansatz, self.optimizer))
 
         res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -98,7 +98,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
             self.excitation_pool,
             initial_state=self.initial_state,
         )
-        calc = AdaptVQE(VQE(Estimator(), ansatz, self.optimizer))
+        calc = AdaptVQE(VQE(StatevectorEstimator(), ansatz, self.optimizer))
 
         res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -110,7 +110,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
     def test_converged(self):
         """Test to check termination criteria"""
         calc = AdaptVQE(
-            VQE(Estimator(), self.ansatz, self.optimizer),
+            VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
             gradient_threshold=1e-3,
         )
         res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -120,7 +120,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
     def test_maximum(self):
         """Test to check termination criteria"""
         calc = AdaptVQE(
-            VQE(Estimator(), self.ansatz, self.optimizer),
+            VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
             max_iterations=1,
         )
         res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -144,7 +144,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         )
 
         calc = AdaptVQE(
-            VQE(Estimator(), ansatz, self.optimizer),
+            VQE(StatevectorEstimator(), ansatz, self.optimizer),
             eigenvalue_threshold=1,
         )
         res = calc.compute_minimum_eigenvalue(operator)
@@ -185,14 +185,14 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
 
     def test_vqe_solver(self):
         """Test to check if the VQE solver remains the same or not"""
-        solver = VQE(Estimator(), self.ansatz, self.optimizer)
+        solver = VQE(StatevectorEstimator(), self.ansatz, self.optimizer)
         calc = AdaptVQE(solver)
         _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertEqual(solver.ansatz, calc.solver.ansatz)
 
     def test_gradient_calculation(self):
         """Test to check if the gradient calculation"""
-        solver = VQE(Estimator(), QuantumCircuit(1), self.optimizer)
+        solver = VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer)
         calc = AdaptVQE(solver)
         calc._excitation_pool = [SparsePauliOp("X")]
         res = calc._compute_gradients(operator=SparsePauliOp("Y"), theta=[])
@@ -201,7 +201,7 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
 
     def test_supports_aux_operators(self):
         """Test that auxiliary operators are supported"""
-        calc = AdaptVQE(VQE(Estimator(), self.ansatz, self.optimizer))
+        calc = AdaptVQE(VQE(StatevectorEstimator(), self.ansatz, self.optimizer))
         res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
 
         expected_eigenvalue = -1.85727503
