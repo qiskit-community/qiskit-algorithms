@@ -22,10 +22,11 @@ from scipy.optimize import brute
 from scipy.stats import norm, chi2
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
+from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
 
 MINIMIZER = Callable[[Callable[[float], float], List[Tuple[float, float]]], float]
@@ -54,7 +55,9 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self,
         evaluation_schedule: list[int] | int,
         minimizer: MINIMIZER | None = None,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -68,12 +71,19 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
                 argument and a list of (float, float) tuples (as bounds) as second argument and
                 returns a single float which is the found minimum.
             sampler: A sampler primitive to evaluate the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
+
 
         Raises:
             ValueError: If the number of oracle circuits is smaller than 1.
         """
 
         super().__init__()
+        self._tranpiler = transpiler
+        self._transpiler_options = transpiler_options
 
         # get parameters
         if isinstance(evaluation_schedule, int):
@@ -101,7 +111,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -110,7 +120,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -275,8 +285,8 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler job run error
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            self._sampler = StatevectorSampler()
 
         if estimation_problem.state_preparation is None:
             raise AlgorithmError(
@@ -289,9 +299,12 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
 
         circuits = self.construct_circuits(estimation_problem, measurement=True)
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits,  **self._transpiler_options)
 
         try:
-            job = self._sampler.run(circuits)
+            pubs=[(circuit, ) for circuit in circuits]
+            job = self._sampler.run(pubs)
             ret = job.result()
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
