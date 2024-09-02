@@ -20,7 +20,7 @@ from typing import Any, Callable
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
@@ -63,7 +63,8 @@ class QNSPSA(SPSA):
             import numpy as np
             from qiskit_algorithms.optimizers import QNSPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.primitives import Estimator, Sampler
+            from qiskit.primitives import StatevectorEstimator as Estimator,\
+                StatevectorSampler as Sampler
             from qiskit.quantum_info import Pauli
 
             # problem setup
@@ -75,8 +76,8 @@ class QNSPSA(SPSA):
             estimator = Estimator()
 
             def loss(x):
-                result = estimator.run([ansatz], [observable], [x]).result()
-                return np.real(result.values[0])
+                result = estimator.run([(ansatz, observable, x)]).result()[0]
+                return np.real(result.data.evs[0])
 
             # fidelity for estimation of the geometric tensor
             sampler = Sampler()
@@ -231,7 +232,7 @@ class QNSPSA(SPSA):
     def get_fidelity(
         circuit: QuantumCircuit,
         *,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> Callable[[np.ndarray, np.ndarray], float]:
         r"""Get a function to compute the fidelity of ``circuit`` with itself.
 

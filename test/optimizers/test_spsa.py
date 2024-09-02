@@ -18,7 +18,8 @@ from ddt import ddt, data
 import numpy as np
 
 from qiskit.circuit.library import PauliTwoDesign
-from qiskit.primitives import Estimator, Sampler
+from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
+
 from qiskit.quantum_info import SparsePauliOp, Statevector
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
@@ -57,7 +58,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             settings["regularization"] = 0.01
             expected_nfev = settings["maxiter"] * 5 + 1
         elif method == "qnspsa":
-            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=Sampler())
+            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=123))
             settings["regularization"] = 0.001
             settings["learning_rate"] = 0.05
             settings["perturbation"] = 0.05
@@ -203,29 +204,27 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         initial_point = np.random.random(ansatz.num_parameters)
 
         with self.subTest(msg="pass as kwarg"):
-            fidelity = QNSPSA.get_fidelity(ansatz, sampler=Sampler())
+            fidelity = QNSPSA.get_fidelity(ansatz, sampler=Sampler(seed=123))
             result = fidelity(initial_point, initial_point)
 
             self.assertAlmostEqual(result[0], 1)
 
     def test_qnspsa_max_evals_grouped(self):
         """Test using max_evals_grouped with QNSPSA."""
-        circuit = PauliTwoDesign(3, reps=1, seed=1)
-        num_parameters = circuit.num_parameters
+        circuit = PauliTwoDesign(3, reps=1, seed=123)
 
         obs = SparsePauliOp("ZZI")  # Z^Z^I
-        estimator = Estimator(options={"seed": 12})
+        estimator = Estimator(seed=123)
 
         initial_point = np.array(
             [0.82311034, 0.02611798, 0.21077064, 0.61842177, 0.09828447, 0.62013131]
         )
 
         def objective(x):
-            x = np.reshape(x, (-1, num_parameters)).tolist()
-            n = len(x)
-            return estimator.run(n * [circuit], n * [obs], x).result().values.real
+            results = estimator.run([(circuit, obs, x)]).result()
+            return np.array([res.data.evs for res in results]).real.reshape(-1)
 
-        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler())
+        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=123))
         optimizer = QNSPSA(fidelity)
         optimizer.maxiter = 1
         optimizer.learning_rate = 0.05
@@ -235,7 +234,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         result = optimizer.minimize(objective, initial_point)
 
         with self.subTest("check final accuracy"):
-            self.assertAlmostEqual(result.fun[0], 0.473, places=3)
+            self.assertAlmostEqual(result.fun[0], 0.298, places=3)
 
         with self.subTest("check number of function calls"):
             expected_nfev = 8  # 7 * maxiter + 1
