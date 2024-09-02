@@ -149,7 +149,7 @@ class BaseEstimatorGradient(ABC):
         job = AlgorithmJob(
             self._run, circuits, observables, parameter_values, parameters, **opts.__dict__
         )
-        job.submit()
+        job._submit()
         return job
 
     @abstractmethod

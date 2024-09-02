@@ -104,7 +104,7 @@ class _DiagonalEstimator(BaseEstimatorV2):
         job = AlgorithmJob(
             self._call, circuit_indices, observable_indices, parameter_values, **run_options
         )
-        job.submit()
+        job._submit()
         return job
 
     def _call(

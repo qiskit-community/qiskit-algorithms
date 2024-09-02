@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseSamplerV2
@@ -85,6 +87,7 @@ class HamiltonianPhaseEstimation:
         num_evaluation_qubits: int,
         sampler: BaseSamplerV2 | None = None,
         transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -94,11 +97,14 @@ class HamiltonianPhaseEstimation:
             transpiler: An optional object with a `run` method allowing to transpile the circuits
                 that are produced within this algorithm. If set to `None`, these won't be
                 transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._phase_estimation = PhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
             transpiler=transpiler,
+            transpiler_options=transpiler_options
         )
 
     def _get_scale(self, hamiltonian, bound=None) -> PhaseEstimationScale:

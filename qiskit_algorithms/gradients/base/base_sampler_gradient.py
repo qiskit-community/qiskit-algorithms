@@ -107,7 +107,7 @@ class BaseSamplerGradient(ABC):
         opts = copy(self._default_options)
         opts.update_options(**options)
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, **opts.__dict__)
-        job.submit()
+        job._submit()
         return job
 
     @abstractmethod

@@ -15,6 +15,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy
 import qiskit
 from qiskit import circuit
@@ -85,6 +87,7 @@ class PhaseEstimation(PhaseEstimator):
         num_evaluation_qubits: int,
         sampler: BaseSamplerV2 | None = None,
         transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -94,6 +97,8 @@ class PhaseEstimation(PhaseEstimator):
             transpiler: An optional object with a `run` method allowing to transpile the circuits
                 that are produced within this algorithm. If set to `None`, these won't be
                 transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             AlgorithmError: If a sampler is not provided
