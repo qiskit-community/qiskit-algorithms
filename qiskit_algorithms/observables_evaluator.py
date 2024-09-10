@@ -42,7 +42,7 @@ def estimate_observables(
     Args:
         estimator: An estimator primitive used for calculations.
         quantum_state: A (parameterized) quantum circuit preparing a quantum state that expectation
-            values are computed against.
+            values are computed against. It is expected to be an ISA circuit.
         observables: A list or a dictionary of operators whose expectation values are to be
             calculated.
         parameter_values: Optional list of parameters values to evaluate the quantum circuit on.

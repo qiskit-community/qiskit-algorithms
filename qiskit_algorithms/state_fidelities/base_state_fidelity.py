@@ -43,7 +43,11 @@ class BaseStateFidelity(ABC):
 
     """
 
-    def __init__(self, transpiler: Transpiler | None = None, transpiler_options: dict[str, Any] | None = None,) -> None:
+    def __init__(
+        self,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
+    ) -> None:
         r"""
         Args:
             transpiler: An optional object with a `run` method allowing to transpile the circuits

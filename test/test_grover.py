@@ -14,10 +14,9 @@
 
 import unittest
 from itertools import product
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
-from ddt import data, ddt, idata, unpack
+from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import GroverOperator, PhaseOracle
 from qiskit.primitives import StatevectorSampler as Sampler
@@ -26,6 +25,7 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_algorithms import AmplificationProblem, Grover
+from test import QiskitAlgorithmsTestCase
 
 
 @ddt
@@ -92,109 +92,41 @@ class TestGrover(QiskitAlgorithmsTestCase):
         self._sampler = Sampler(seed=123)
 
     @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
-    @data(
-        [None, None],
-        [
-            generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
-            {"num_processes": None},
-        ],
-    )
-    @unpack
-    def test_implicit_phase_oracle_is_good_state(self, transpiler, transpiler_options):
+    def test_implicit_phase_oracle_is_good_state(self):
         """Test implicit default for is_good_state with PhaseOracle."""
-        grover = self._prepare_grover(transpiler=transpiler, transpiler_options=transpiler_options)
+        grover = self._prepare_grover()
         oracle = PhaseOracle("x & y")
         problem = AmplificationProblem(oracle)
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "11")
 
-    @idata(
-        product(
-            [[1, 2, 3], None, 2],
-            [
-                [None, None],
-                [
-                    generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
-                    {"num_processes": None},
-                ],
-            ],
-        )
-    )
-    @unpack
-    def test_iterations_with_good_state(self, iterations, transpiler_and_options):
+    @data([1, 2, 3], None, 2)
+    def test_iterations_with_good_state(self, iterations):
         """Test the algorithm with different iteration types and with good state"""
-        transpiler, transpiler_options = transpiler_and_options
-        grover = self._prepare_grover(
-            iterations, transpiler=transpiler, transpiler_options=transpiler_options
-        )
+        grover = self._prepare_grover(iterations)
         problem = AmplificationProblem(Statevector.from_label("111"), is_good_state=["111"])
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
 
-    @idata(
-        product(
-            [[1, 2, 3], None, 2],
-            [
-                [None, None],
-                [
-                    generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
-                    {"num_processes": None},
-                ],
-            ],
-        )
-    )
-    @unpack
-    def test_iterations_with_good_state_sample_from_iterations(
-        self, iterations, transpiler_and_options
-    ):
+    @data([1, 2, 3], None, 2)
+    def test_iterations_with_good_state_sample_from_iterations(self, iterations):
         """Test the algorithm with different iteration types and with good state"""
-        transpiler, transpiler_options = transpiler_and_options
-        grover = self._prepare_grover(
-            iterations,
-            sample_from_iterations=True,
-            transpiler=transpiler,
-            transpiler_options=transpiler_options,
-        )
+        grover = self._prepare_grover(iterations, sample_from_iterations=True)
         problem = AmplificationProblem(Statevector.from_label("111"), is_good_state=["111"])
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
 
-    @data(
-        [None, None],
-        [
-            generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
-            {"num_processes": None},
-        ],
-    )
-    @unpack
-    def test_fixed_iterations_without_good_state(self, transpiler, transpiler_options):
+    def test_fixed_iterations_without_good_state(self):
         """Test the algorithm with iterations as an int and without good state"""
-        grover = self._prepare_grover(
-            iterations=2, transpiler=transpiler, transpiler_options=transpiler_options
-        )
+        grover = self._prepare_grover(iterations=2)
         problem = AmplificationProblem(Statevector.from_label("111"))
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
 
-    @idata(
-        product(
-            [[1, 2, 3], None],
-            [
-                [None, None],
-                [
-                    generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
-                    {"num_processes": None},
-                ],
-            ],
-        )
-    )
-    @unpack
-    def test_iterations_without_good_state(self, iterations, transpiler_and_options):
+    @data([1, 2, 3], None)
+    def test_iterations_without_good_state(self, iterations):
         """Test the correct error is thrown for none/list of iterations and without good state"""
-        transpiler, transpiler_options = transpiler_and_options
-        grover = self._prepare_grover(
-            iterations=iterations, transpiler=transpiler, transpiler_options=transpiler_options
-        )
+        grover = self._prepare_grover(iterations=iterations)
         problem = AmplificationProblem(Statevector.from_label("111"))
 
         with self.assertRaisesRegex(
@@ -344,13 +276,33 @@ class TestGrover(QiskitAlgorithmsTestCase):
         grover.sampler = self._sampler
         self.assertEqual(grover.sampler, self._sampler)
 
+    def test_transpiler(self):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        oracle = QuantumCircuit(2)
+        oracle.cz(0, 1)
+        # is_good_state=['00'] is intentionally selected to obtain a list of results
+        problem = AmplificationProblem(oracle)
+
+        Grover(
+            iterations=1,
+            sampler=Sampler(),
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        ).amplify(problem)
+
+        self.assertEqual(counts[0], 15)
+
     def _prepare_grover(
         self,
         iterations=None,
         growth_rate=None,
         sample_from_iterations=False,
-        transpiler=None,
-        transpiler_options=None,
     ):
         """Prepare Grover instance for test"""
         return Grover(
@@ -358,8 +310,6 @@ class TestGrover(QiskitAlgorithmsTestCase):
             iterations=iterations,
             growth_rate=growth_rate,
             sample_from_iterations=sample_from_iterations,
-            transpiler=transpiler,
-            transpiler_options=transpiler_options,
         )
 
 

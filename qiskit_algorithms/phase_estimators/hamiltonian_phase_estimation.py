@@ -104,7 +104,7 @@ class HamiltonianPhaseEstimation:
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
             transpiler=transpiler,
-            transpiler_options=transpiler_options
+            transpiler_options=transpiler_options,
         )
 
     def _get_scale(self, hamiltonian, bound=None) -> PhaseEstimationScale:

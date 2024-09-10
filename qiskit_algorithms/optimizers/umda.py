@@ -74,7 +74,7 @@ class UMDA(Optimizer):
             from qiskit_algorithms.optimizers import UMDA
             from qiskit_algorithms import QAOA
             from qiskit.quantum_info import Pauli
-            from qiskit.primitives import Sampler
+            from qiskit.primitives import StatevectorSampler as Sampler
 
             X = Pauli("X")
             I = Pauli("I")

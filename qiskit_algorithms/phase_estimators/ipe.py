@@ -15,6 +15,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy
 
 from qiskit.circuit import QuantumCircuit, QuantumRegister
@@ -43,6 +45,7 @@ class IterativePhaseEstimation(PhaseEstimator):
         num_iterations: int,
         sampler: BaseSamplerV2 | None = None,
         transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -51,6 +54,8 @@ class IterativePhaseEstimation(PhaseEstimator):
             transpiler: An optional object with a `run` method allowing to transpile the circuits
                 that are produced within this algorithm. If set to `None`, these won't be
                 transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: if num_iterations is not greater than zero.
@@ -63,7 +68,8 @@ class IterativePhaseEstimation(PhaseEstimator):
             raise ValueError("`num_iterations` must be greater than zero.")
         self._num_iterations = num_iterations
         self._sampler = sampler
-        self._pass_manager = transpiler
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     def construct_circuit(
         self,
@@ -132,8 +138,8 @@ class IterativePhaseEstimation(PhaseEstimator):
                 unitary, state_preparation, k, -2 * numpy.pi * omega_coef, True
             )
 
-            if self._pass_manager is not None:
-                qc = self._pass_manager.run(qc)
+            if self._transpiler is not None:
+                qc = self._transpiler.run(qc, **self._transpiler_options)
 
             try:
                 sampler_job = self._sampler.run([qc])

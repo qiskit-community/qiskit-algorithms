@@ -23,7 +23,7 @@ class PhaseEstimationResult(PhaseEstimatorResult):
 
     This class is instantiated by the ``PhaseEstimation`` class, not via user code.
     The ``PhaseEstimation`` class generates a list of phases and corresponding weights. Upon
-    completion it returns the results as an instance of this class. The main method for
+    completion, it returns the results as an instance of this class. The main method for
     accessing the results is `filter_phases`.
 
     The canonical phase satisfying the ``PhaseEstimator`` interface, returned by the

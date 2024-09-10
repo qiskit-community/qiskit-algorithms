@@ -111,7 +111,8 @@ class PhaseEstimation(PhaseEstimator):
             self._num_evaluation_qubits = num_evaluation_qubits
 
         self._sampler = sampler
-        self._pass_manager = transpiler
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     def construct_circuit(
         self, unitary: QuantumCircuit, state_preparation: QuantumCircuit | None = None
@@ -200,8 +201,8 @@ class PhaseEstimation(PhaseEstimator):
             AlgorithmError: Primitive job failed.
         """
 
-        if self._pass_manager is not None:
-            pe_circuit = self._pass_manager.run(pe_circuit)
+        if self._transpiler is not None:
+            pe_circuit = self._transpiler.run(pe_circuit, **self._transpiler_options)
 
         self._add_measurement_if_required(pe_circuit)
 

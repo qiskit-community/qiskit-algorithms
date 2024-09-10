@@ -24,6 +24,7 @@ from qiskit.primitives import BaseSamplerV2
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
+from ..custom_types import Transpiler
 
 # the function to compute the fidelity
 FIDELITY = Callable[[np.ndarray, np.ndarray], float]
@@ -233,6 +234,8 @@ class QNSPSA(SPSA):
         circuit: QuantumCircuit,
         *,
         sampler: BaseSamplerV2 | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> Callable[[np.ndarray, np.ndarray], float]:
         r"""Get a function to compute the fidelity of ``circuit`` with itself.
 
@@ -250,12 +253,19 @@ class QNSPSA(SPSA):
         Args:
             circuit: The circuit preparing the parameterized ansatz.
             sampler: A sampler primitive to sample from a quantum state.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced by the fidelity object. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Returns:
             A handle to the function :math:`F`.
 
         """
-        fid = ComputeUncompute(sampler)
+        fid = ComputeUncompute(
+            sampler, transpiler=transpiler, transpiler_options=transpiler_options
+        )
 
         num_parameters = circuit.num_parameters
 

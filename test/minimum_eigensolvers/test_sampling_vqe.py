@@ -270,7 +270,9 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
 
         for aggregation in [alpha, best_measurement]:
             with self.subTest(aggregation=aggregation):
-                vqe = SamplingVQE(StatevectorSampler(), ansatz, _mock_optimizer, aggregation=best_measurement)
+                vqe = SamplingVQE(
+                    StatevectorSampler(), ansatz, _mock_optimizer, aggregation=best_measurement
+                )
                 result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
 
                 # evaluation at x0=0 samples -1 and 1 with 50% probability, and our aggregation

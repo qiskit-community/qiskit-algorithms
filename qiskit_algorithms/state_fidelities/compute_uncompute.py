@@ -166,9 +166,15 @@ class ComputeUncompute(BaseStateFidelity):
         if not isinstance(shots, Sequence):
             if shots is None:
                 shots = self.shots
-            coerced_pubs = [SamplerPub.coerce((circuit, value), shots) for circuit, value in zip(circuits, values)]
+            coerced_pubs = [
+                SamplerPub.coerce((circuit, value), shots)
+                for circuit, value in zip(circuits, values)
+            ]
         else:
-            coerced_pubs = [SamplerPub.coerce((circuit, value), shots_number) for circuit, value, shots_number in zip(circuits, values, shots)]
+            coerced_pubs = [
+                SamplerPub.coerce((circuit, value), shots_number)
+                for circuit, value, shots_number in zip(circuits, values, shots)
+            ]
 
         job = self._sampler.run(coerced_pubs)
 
@@ -183,7 +189,10 @@ class ComputeUncompute(BaseStateFidelity):
         except Exception as exc:
             raise AlgorithmError("Sampler job failed!") from exc
 
-        pub_results_data = [getattr(pub_result.data, circuit.cregs[0].name) for pub_result, circuit in zip(result, circuits)]
+        pub_results_data = [
+            getattr(pub_result.data, circuit.cregs[0].name)
+            for pub_result, circuit in zip(result, circuits)
+        ]
         quasi_dists = [
             {
                 label: value / prob_dist.num_shots
