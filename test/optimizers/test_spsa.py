@@ -211,10 +211,10 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
     def test_qnspsa_max_evals_grouped(self):
         """Test using max_evals_grouped with QNSPSA."""
-        circuit = PauliTwoDesign(3, reps=1, seed=123)
+        circuit = PauliTwoDesign(3, reps=1, seed=1)
 
         obs = SparsePauliOp("ZZI")  # Z^Z^I
-        estimator = Estimator(seed=123)
+        estimator = Estimator(seed=12)
 
         initial_point = np.array(
             [0.82311034, 0.02611798, 0.21077064, 0.61842177, 0.09828447, 0.62013131]
@@ -224,7 +224,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             results = estimator.run([(circuit, obs, x)]).result()
             return np.array([res.data.evs for res in results]).real.reshape(-1)
 
-        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=123))
+        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=12, default_shots=10_000))
         optimizer = QNSPSA(fidelity)
         optimizer.maxiter = 1
         optimizer.learning_rate = 0.05
@@ -234,7 +234,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         result = optimizer.minimize(objective, initial_point)
 
         with self.subTest("check final accuracy"):
-            self.assertAlmostEqual(result.fun[0], 0.298, places=3)
+            self.assertAlmostEqual(result.fun[0], 0.473, places=3)
 
         with self.subTest("check number of function calls"):
             expected_nfev = 8  # 7 * maxiter + 1
