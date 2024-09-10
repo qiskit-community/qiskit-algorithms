@@ -2,10 +2,10 @@ Tristan:
 - [x] phase_estimators/hamiltonian_phase_estimation.py
 - [x] phase_estimators/ipe.py
 - [x] phase_estimators/phase_estimation.py
-- [] eigensolvers/vqd.py
-- [x] amplitude_amplifiers/grover.py
-- [] time_evolvers/pvqd/utils.py
-- [] time_evolvers/pvqd/pvqd.py
+- [] eigensolvers/vqd.py (test doesn't work)
+- [x] amplitude_amplifiers/grover.py (test doesn't work but should probably be refactored or removed)
+- [x] time_evolvers/pvqd/utils.py
+- [x] time_evolvers/pvqd/pvqd.py
 - [] time_evolvers/trotterization/trotter_qrte.py
 - [] time_evolvers/variational/variational_principles/imaginary_mc_lachlan_principle.py
 - [] time_evolvers/variational/variational_principles/real_mc_lachlan_principle.py

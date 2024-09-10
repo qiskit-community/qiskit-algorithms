@@ -20,7 +20,7 @@ import numpy as np
 
 from qiskit.circuit import Parameter, ParameterVector, QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
 from qiskit_algorithms.utils import algorithm_globals
@@ -74,7 +74,7 @@ class PVQD(RealTimeEvolver):
 
             from qiskit_algorithms.state_fidelities import ComputeUncompute
             from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD
-            from qiskit.primitives import Estimator, Sampler
+            from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
             from qiskit.circuit.library import EfficientSU2
             from qiskit.quantum_info import SparsePauliOp, Pauli
             from qiskit_algorithms.optimizers import L_BFGS_B
@@ -120,7 +120,7 @@ class PVQD(RealTimeEvolver):
         fidelity: BaseStateFidelity,
         ansatz: QuantumCircuit,
         initial_parameters: np.ndarray,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         optimizer: Optimizer | Minimizer | None = None,
         num_timesteps: int | None = None,
         evolution: EvolutionSynthesis | None = None,
