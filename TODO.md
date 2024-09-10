@@ -1,9 +1,9 @@
 Tristan:
-- [] phase_estimators/hamiltonian_phase_estimation.py
-- [] phase_estimators/ipe.py
-- [] phase_estimators/phase_estimation.py
+- [x] phase_estimators/hamiltonian_phase_estimation.py
+- [x] phase_estimators/ipe.py
+- [x] phase_estimators/phase_estimation.py
 - [] eigensolvers/vqd.py
-- [] amplitude_amplifiers/grover.py
+- [x] amplitude_amplifiers/grover.py
 - [] time_evolvers/pvqd/utils.py
 - [] time_evolvers/pvqd/pvqd.py
 - [] time_evolvers/trotterization/trotter_qrte.py
@@ -12,11 +12,11 @@ Tristan:
 - [] time_evolvers/variational/var_qite.py
 - [] time_evolvers/variational/var_qrte.py
 - [] time_evolvers/variational/var_qte.py
-- [] state_fidelities/compute_uncompute.py
-- [] optimizers/qnspsa.py
-- [] optimizers/umda.py
-- [] optimizers/spsa.py
-- [] observables_evaluator.py
+- [x] state_fidelities/compute_uncompute.py
+- [x] optimizers/qnspsa.py
+- [x] optimizers/umda.py
+- [x] optimizers/spsa.py
+- [x] observables_evaluator.py
 
 Léna:
 - [] gradients/reverse/reverse_gradient.py
