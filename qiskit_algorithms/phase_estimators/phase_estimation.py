@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,13 +20,14 @@ import qiskit
 from qiskit import circuit
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.classicalregister import ClassicalRegister
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 from qiskit.result import Result
 
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .phase_estimation_result import PhaseEstimationResult, _sort_phases
 from .phase_estimator import PhaseEstimator
+from ..custom_types import Transpiler
 
 
 class PhaseEstimation(PhaseEstimator):
@@ -82,13 +83,17 @@ class PhaseEstimation(PhaseEstimator):
     def __init__(
         self,
         num_evaluation_qubits: int,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        transpiler: Transpiler | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
             sampler: The sampler primitive on which the circuit will be sampled.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
 
         Raises:
             AlgorithmError: If a sampler is not provided
@@ -101,6 +106,7 @@ class PhaseEstimation(PhaseEstimator):
             self._num_evaluation_qubits = num_evaluation_qubits
 
         self._sampler = sampler
+        self._pass_manager = transpiler
 
     def construct_circuit(
         self, unitary: QuantumCircuit, state_preparation: QuantumCircuit | None = None
@@ -189,6 +195,9 @@ class PhaseEstimation(PhaseEstimator):
             AlgorithmError: Primitive job failed.
         """
 
+        if self._pass_manager is not None:
+            pe_circuit = self._pass_manager.run(pe_circuit)
+
         self._add_measurement_if_required(pe_circuit)
 
         try:
@@ -196,11 +205,13 @@ class PhaseEstimation(PhaseEstimator):
             circuit_result = circuit_job.result()
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
-        phases = circuit_result.quasi_dists[0]
+        phases = circuit_result[0].data.meas.get_counts()
+        # Ensure we still return the measurement strings in sorted order, which SamplerV2 doesn't
+        # guarantee
+        measurement_labels = sorted(phases.keys())
         phases_bitstrings = {}
-        for key, phase in phases.items():
-            bitstring_key = self._get_reversed_bitstring(self._num_evaluation_qubits, key)
-            phases_bitstrings[bitstring_key] = phase
+        for key in measurement_labels:
+            phases_bitstrings[key[::-1]] = phases[key] / circuit_result[0].data.meas.num_shots
         phases = phases_bitstrings
 
         return PhaseEstimationResult(

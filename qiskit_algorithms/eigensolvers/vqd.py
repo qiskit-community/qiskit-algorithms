@@ -25,7 +25,7 @@ from time import time
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import SparsePauliOp
 
@@ -88,7 +88,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     updated once the VQD object has been constructed.
 
     Attributes:
-            estimator (BaseEstimator): The primitive instance used to perform the expectation
+            estimator (BaseEstimatorV2): The primitive instance used to perform the expectation
                 estimation as indicated in the VQD paper.
             fidelity (BaseStateFidelity): The fidelity class instance used to compute the
                 overlap estimation as indicated in the VQD paper.
@@ -112,7 +112,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         fidelity: BaseStateFidelity,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer | Sequence[Optimizer | Minimizer],
@@ -389,9 +389,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 parameters = np.reshape(parameters, (-1, num_parameters))
             batch_size = len(parameters)
 
-            estimator_job = self.estimator.run(
-                batch_size * [self.ansatz], batch_size * [operator], parameters
-            )
+            estimator_job = self.estimator.run([(self.ansatz, operator, parameters)])
 
             total_cost = np.zeros(batch_size)
 
@@ -410,18 +408,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
                     total_cost += np.real(betas[state] * cost)
 
             try:
-                estimator_result = estimator_job.result()
+                estimator_result = estimator_job.result()[0]
 
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
 
-            values = estimator_result.values + total_cost
+            values = estimator_result.data.evs + total_cost
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
-                for params, value, meta in zip(parameters, values, metadata):
+                for params, value in zip(parameters, values):
                     self._eval_count += 1
-                    self.callback(self._eval_count, params, value, meta, step)
+                    self.callback(self._eval_count, params, value, estimator_result.metadata, step)
             else:
                 self._eval_count += len(values)
 
