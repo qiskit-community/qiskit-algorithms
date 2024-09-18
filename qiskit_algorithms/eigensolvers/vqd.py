@@ -50,7 +50,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     `VQD <https://arxiv.org/abs/1805.08138>`__ is a quantum algorithm that uses a
     variational technique to find
-    the k eigenvalues of the Hamiltonian :math:`H` of a given system.
+    the k lowest eigenvalues of the Hamiltonian :math:`H` of a given system.
 
     The algorithm computes excited state energies of generalised hamiltonians
     by optimizing over a modified cost function where each successive eigenvalue
