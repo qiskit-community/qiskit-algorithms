@@ -13,6 +13,9 @@
 """Test TrotterQRTE."""
 
 import unittest
+
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
 from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data, unpack
 import numpy as np
@@ -238,6 +241,28 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         self.assertEqual(
             expected_circuit.decompose(reps=3), evolution_result.evolved_state.decompose(reps=5)
         )
+
+    def test_transpiler(self):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
+        initial_state = QuantumCircuit(1)
+        time = 1
+        evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
+
+        trotter_qrte = TrotterQRTE(
+            estimator=Estimator(),
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        trotter_qrte.evolve(evolution_problem)
+
+        self.assertEqual(counts[0], 15)
 
     @staticmethod
     def _run_error_test(initial_state, operator, aux_ops, estimator, t_param, param_value_dict):

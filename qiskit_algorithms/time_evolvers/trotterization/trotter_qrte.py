@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from qiskit import QuantumCircuit
 
 from qiskit.circuit.library import PauliEvolutionGate
@@ -22,6 +24,7 @@ from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.synthesis import ProductFormula, LieTrotter
 
+from qiskit_algorithms.custom_types import Transpiler
 from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
 from qiskit_algorithms.time_evolvers.time_evolution_result import TimeEvolutionResult
 from qiskit_algorithms.time_evolvers.real_time_evolver import RealTimeEvolver
@@ -58,6 +61,8 @@ class TrotterQRTE(RealTimeEvolver):
         product_formula: ProductFormula | None = None,
         estimator: BaseEstimatorV2 | None = None,
         num_timesteps: int = 1,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
         *,
         insert_barriers: bool = False,
     ) -> None:
@@ -73,6 +78,11 @@ class TrotterQRTE(RealTimeEvolver):
                 ``TimeEvolutionProblem.aux_operators``.
             num_timesteps: The number of time-steps the full evolution time is divided into
                 (repetitions of ``product_formula``).
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
             insert_barriers: If True, insert a barrier after the initial state and after each Trotter
                 step.
         """
@@ -81,6 +91,8 @@ class TrotterQRTE(RealTimeEvolver):
         self.num_timesteps = num_timesteps
         self.estimator = estimator
         self._insert_barriers = insert_barriers
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @property
     def product_formula(self) -> ProductFormula:
@@ -197,6 +209,10 @@ class TrotterQRTE(RealTimeEvolver):
 
         evolved_state = QuantumCircuit(initial_state.num_qubits)
         evolved_state.append(initial_state, evolved_state.qubits)
+
+        if self._transpiler is not None:
+            evolved_state =  self._transpiler.run(evolved_state, **self._transpiler_options)
+
         if self._insert_barriers:
             evolved_state.barrier()
 
@@ -235,6 +251,10 @@ class TrotterQRTE(RealTimeEvolver):
                     synthesis=self.product_formula,
                 )
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
+
+            if self._transpiler is not None:
+                evolved_state = self._transpiler.run(evolved_state, **self._transpiler_options)
+
             if self._insert_barriers:
                 evolved_state.barrier()
 
