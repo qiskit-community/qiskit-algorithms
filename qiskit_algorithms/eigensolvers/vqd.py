@@ -50,7 +50,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     `VQD <https://arxiv.org/abs/1805.08138>`__ is a quantum algorithm that uses a
     variational technique to find
-    the k eigenvalues of the Hamiltonian :math:`H` of a given system.
+    the k lowest eigenvalues of the Hamiltonian :math:`H` of a given system.
 
     The algorithm computes excited state energies of generalised hamiltonians
     by optimizing over a modified cost function where each successive eigenvalue
@@ -108,6 +108,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 follows during each evaluation by the optimizer: the evaluation count,
                 the optimizer parameters for the ansatz, the estimated value, the estimation
                 metadata, and the current step.
+            convergence_threshold: A threshold under which the algorithm is considered to have
+                converged. It corresponds to the maximal average fidelity an eigenstate is allowed
+                to have with the previous eigenstates. If set to None, no check is performed.
     """
 
     def __init__(
@@ -121,6 +124,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         betas: np.ndarray | None = None,
         initial_point: np.ndarray | list[np.ndarray] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any], int], None] | None = None,
+        convergence_threshold: float | None = None,
     ) -> None:
         """
 
@@ -147,6 +151,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 follows during each evaluation by the optimizer: the evaluation count,
                 the optimizer parameters for the ansatz, the estimated value,
                 the estimation metadata, and the current step.
+            convergence_threshold: A threshold under which the algorithm is considered to have
+                converged. It corresponds to the maximal average fidelity an eigenstate is allowed
+                to have with the previous eigenstates. If set to None, no check is performed.
         """
         super().__init__()
 
@@ -159,6 +166,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
         self.callback = callback
+        self.convergence_threshold = convergence_threshold
 
         self._eval_count = 0
 
@@ -272,11 +280,16 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 initial_point = validate_initial_point(initial_points[step - 1], self.ansatz)
 
             if step > 1:
-                prev_states.append(self.ansatz.assign_parameters(result.optimal_points[-1]))
+                prev_states.append(self.ansatz.assign_parameters(current_optimal_point["x"]))
 
             self._eval_count = 0
+            current_optimal_point = {"optimal_value": float('inf')}
             energy_evaluation = self._get_evaluate_energy(
-                step, operator, betas, prev_states=prev_states
+                step,
+                operator,
+                betas,
+                prev_states=prev_states,
+                current_optimal_point=current_optimal_point,
             )
 
             start_time = time()
@@ -309,11 +322,11 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             eval_time = time() - start_time
 
-            self._update_vqd_result(result, opt_result, eval_time, self.ansatz.copy())
+            self._update_vqd_result(result, opt_result, eval_time, self.ansatz.copy(), current_optimal_point)
 
             if aux_operators is not None:
                 aux_value = estimate_observables(
-                    self.estimator, self.ansatz, aux_operators, result.optimal_points[-1]
+                    self.estimator, self.ansatz, aux_operators, current_optimal_point["x"]
                 )
                 aux_values.append(aux_value)
 
@@ -326,6 +339,25 @@ class VQD(VariationalAlgorithm, Eigensolver):
                     self._eval_count,
                 )
             else:
+                average_fidelity = current_optimal_point["total_fidelity"][0] / (step - 1)
+
+                if self.convergence_threshold is not None and average_fidelity > self.convergence_threshold:
+                    last_digit = step % 10
+
+                    if last_digit == 1:
+                        suffix = "st"
+                    elif last_digit == 2:
+                        suffix = "nd"
+                    elif last_digit == 3:
+                        suffix = "rd"
+                    else:
+                        suffix = "th"
+
+                    raise AlgorithmError(
+                        f"Convergence threshold is set to {self.convergence_threshold} but an "
+                        f"average fidelity {average_fidelity:.5f} with the previous eigenstates have been"
+                        f" observed during the evaluation of the {step}{suffix} lowest eigenvalue."
+                    )
                 logger.info(
                     (
                         "%s excited state optimization complete in %s s.\n"
@@ -350,16 +382,19 @@ class VQD(VariationalAlgorithm, Eigensolver):
         step: int,
         operator: BaseOperator,
         betas: np.ndarray,
+        current_optimal_point: dict["str", Any],
         prev_states: list[QuantumCircuit] | None = None,
     ) -> Callable[[np.ndarray], float | np.ndarray]:
         """Returns a function handle to evaluate the ansatz's energy for any given parameters.
             This is the objective function to be passed to the optimizer that is used for evaluation.
 
         Args:
-            step: level of energy being calculated. 0 for ground, 1 for first excited state...
+            step: level of energy being calculated. 1 for ground, 2 for first excited state...
             operator: The operator whose energy to evaluate.
             betas: Beta parameters in the VQD paper.
             prev_states: List of optimal circuits from previous rounds of optimization.
+            current_optimal_point: A dict to keep track of the current optimal point, which is used
+                to check the algorithm's convergence.
 
         Returns:
             A callable that computes and returns the energy of the hamiltonian
@@ -425,6 +460,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
             else:
                 self._eval_count += len(values)
 
+            for param, value in zip(parameters, values):
+                if value < current_optimal_point["optimal_value"]:
+                    current_optimal_point["optimal_value"] = value
+                    current_optimal_point["x"] = param
+
+                    if step > 1:
+                        current_optimal_point["total_fidelity"] = total_cost
+                        current_optimal_point["eigenvalue"] = (value - total_cost)[0]
+                    else:
+                        current_optimal_point["eigenvalue"] = value
+
             return values if len(values) > 1 else values[0]
 
         return evaluate_energy
@@ -444,20 +490,20 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     @staticmethod
     def _update_vqd_result(
-        result: VQDResult, opt_result: OptimizerResult, eval_time, ansatz
+        result: VQDResult, opt_result: OptimizerResult, eval_time, ansatz, optimal_point
     ) -> VQDResult:
         result.optimal_points = (
-            np.concatenate([result.optimal_points, [opt_result.x]])
+            np.concatenate([result.optimal_points, [optimal_point["x"]]])
             if len(result.optimal_points) > 0
-            else np.array([opt_result.x])
+            else np.array([optimal_point["x"]])
         )
         result.optimal_parameters.append(
-            dict(zip(ansatz.parameters, cast(np.ndarray, opt_result.x)))
+            dict(zip(ansatz.parameters, cast(np.ndarray, optimal_point["x"])))
         )
-        result.optimal_values = np.concatenate([result.optimal_values, [opt_result.fun]])
+        result.optimal_values = np.concatenate([result.optimal_values, [optimal_point["optimal_value"]]])
         result.cost_function_evals = np.concatenate([result.cost_function_evals, [opt_result.nfev]])
         result.optimizer_times = np.concatenate([result.optimizer_times, [eval_time]])
-        result.eigenvalues.append(opt_result.fun + 0j)  # type: ignore[attr-defined]
+        result.eigenvalues.append(optimal_point["eigenvalue"] + 0j)  # type: ignore[attr-defined]
         result.optimizer_results.append(opt_result)
         result.optimal_circuits.append(ansatz)
         return result
