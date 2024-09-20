@@ -283,7 +283,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 prev_states.append(self.ansatz.assign_parameters(current_optimal_point["x"]))
 
             self._eval_count = 0
-            current_optimal_point = {"optimal_value": float('inf')}
+            current_optimal_point = {"optimal_value": float("inf")}
             energy_evaluation = self._get_evaluate_energy(
                 step,
                 operator,
@@ -322,7 +322,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
             eval_time = time() - start_time
 
-            self._update_vqd_result(result, opt_result, eval_time, self.ansatz.copy(), current_optimal_point)
+            self._update_vqd_result(
+                result, opt_result, eval_time, self.ansatz.copy(), current_optimal_point
+            )
 
             if aux_operators is not None:
                 aux_value = estimate_observables(
@@ -341,7 +343,10 @@ class VQD(VariationalAlgorithm, Eigensolver):
             else:
                 average_fidelity = current_optimal_point["total_fidelity"][0] / (step - 1)
 
-                if self.convergence_threshold is not None and average_fidelity > self.convergence_threshold:
+                if (
+                    self.convergence_threshold is not None
+                    and average_fidelity > self.convergence_threshold
+                ):
                     last_digit = step % 10
 
                     if last_digit == 1:
@@ -355,8 +360,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
                     raise AlgorithmError(
                         f"Convergence threshold is set to {self.convergence_threshold} but an "
-                        f"average fidelity {average_fidelity:.5f} with the previous eigenstates have been"
-                        f" observed during the evaluation of the {step}{suffix} lowest eigenvalue."
+                        f"average fidelity {average_fidelity:.5f} with the previous eigenstates"
+                        f"have been observed during the evaluation of the {step}{suffix} lowest"
+                        f"eigenvalue."
                     )
                 logger.info(
                     (
@@ -500,7 +506,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
         result.optimal_parameters.append(
             dict(zip(ansatz.parameters, cast(np.ndarray, optimal_point["x"])))
         )
-        result.optimal_values = np.concatenate([result.optimal_values, [optimal_point["optimal_value"]]])
+        result.optimal_values = np.concatenate(
+            [result.optimal_values, [optimal_point["optimal_value"]]]
+        )
         result.cost_function_evals = np.concatenate([result.cost_function_evals, [opt_result.nfev]])
         result.optimizer_times = np.concatenate([result.optimizer_times, [eval_time]])
         result.eigenvalues.append(optimal_point["eigenvalue"] + 0j)  # type: ignore[attr-defined]
