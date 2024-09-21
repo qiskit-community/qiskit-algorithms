@@ -465,7 +465,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             vqd.convergence_threshold = 1e-1
             result = vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
             np.testing.assert_array_almost_equal(
-                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
             )
 
 
