@@ -276,6 +276,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
             )
 
         for step in range(1, self.k + 1):
+            current_optimal_point: dict[str, Any] = {"optimal_value": float("inf")}
+
             if num_initial_points > 1:
                 initial_point = validate_initial_point(initial_points[step - 1], self.ansatz)
 
@@ -283,7 +285,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 prev_states.append(self.ansatz.assign_parameters(current_optimal_point["x"]))
 
             self._eval_count = 0
-            current_optimal_point = {"optimal_value": float("inf")}
             energy_evaluation = self._get_evaluate_energy(
                 step,
                 operator,
@@ -383,7 +384,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
         return result
 
-    def _get_evaluate_energy(
+    def _get_evaluate_energy( # pylint: disable=too-many-positional-arguments
         self,
         step: int,
         operator: BaseOperator,
