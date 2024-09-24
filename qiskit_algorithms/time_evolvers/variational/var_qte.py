@@ -71,6 +71,7 @@ class VarQTE(ABC):
         Theory of variational quantum simulation. `<https://doi.org/10.22331/q-2019-10-07-191>`_
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         ansatz: QuantumCircuit,

@@ -23,6 +23,7 @@ from ..time_evolution_result import TimeEvolutionResult
 class PVQDResult(TimeEvolutionResult):
     """The result object for the p-VQD algorithm."""
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         evolved_state: QuantumCircuit,

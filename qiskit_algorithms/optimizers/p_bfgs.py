@@ -52,7 +52,7 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
 
     _OPTIONS = ["maxfun", "ftol", "iprint"]
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-positional-arguments
     def __init__(
         self,
         maxfun: int = 1000,

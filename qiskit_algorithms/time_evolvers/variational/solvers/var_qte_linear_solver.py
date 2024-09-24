@@ -28,6 +28,7 @@ from ..variational_principles import VariationalPrinciple
 class VarQTELinearSolver:
     """Class for solving linear equations for Quantum Time Evolution."""
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         var_principle: VariationalPrinciple,

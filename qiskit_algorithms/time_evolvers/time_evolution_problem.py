@@ -46,6 +46,7 @@ class TimeEvolutionProblem:
             state.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         hamiltonian: BaseOperator,

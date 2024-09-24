@@ -59,6 +59,7 @@ class IterativePhaseEstimation(PhaseEstimator):
         self._num_iterations = num_iterations
         self._sampler = sampler
 
+    # pylint: disable=too-many-positional-arguments
     def construct_circuit(
         self,
         unitary: QuantumCircuit,

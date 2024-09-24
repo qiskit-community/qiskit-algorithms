@@ -51,7 +51,7 @@ class GSLS(Optimizer):
         "max_failed_rejection_sampling",
     ]
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-positional-arguments
     def __init__(
         self,
         maxiter: int = 10000,
@@ -131,6 +131,7 @@ class GSLS(Optimizer):
 
         return result
 
+    # pylint: disable=too-many-positional-arguments
     def ls_optimize(
         self,
         n: int,
@@ -270,6 +271,7 @@ class GSLS(Optimizer):
 
         return points, directions
 
+    # pylint: disable=too-many-positional-arguments
     def sample_set(
         self, n: int, x: np.ndarray, var_lb: np.ndarray, var_ub: np.ndarray, num_points: int
     ) -> tuple[np.ndarray, np.ndarray]:
@@ -342,6 +344,7 @@ class GSLS(Optimizer):
                 x + self._options["sampling_radius"] * accepted[:num_points],
             )
 
+    # pylint: disable=too-many-positional-arguments
     def gradient_approximation(
         self,
         n: int,

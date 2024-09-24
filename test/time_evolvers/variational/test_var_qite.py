@@ -309,6 +309,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
                     float(parameter_value), thetas_expected_shots[i], decimal=2
                 )
 
+    # pylint: disable=too-many-positional-arguments
     def _test_helper(self, observable, thetas_expected, time, var_qite, decimal):
         evolution_problem = TimeEvolutionProblem(observable, time)
         evolution_result = var_qite.evolve(evolution_problem)

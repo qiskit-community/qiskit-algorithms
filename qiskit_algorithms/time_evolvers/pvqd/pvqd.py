@@ -115,6 +115,7 @@ class PVQD(RealTimeEvolver):
             `Quantum 5, 512 <https://quantum-journal.org/papers/q-2021-07-28-512/>`_.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         fidelity: BaseStateFidelity,
@@ -167,6 +168,7 @@ class PVQD(RealTimeEvolver):
         self.evolution = evolution
         self.use_parameter_shift = use_parameter_shift
 
+    # pylint: disable=too-many-positional-arguments
     def step(
         self,
         hamiltonian: BaseOperator,

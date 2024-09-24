@@ -20,6 +20,7 @@ from scipy.integrate._ivp.base import ConstantDenseOutput
 class ForwardEulerSolver(OdeSolver):
     """Forward Euler ODE solver."""
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         function: Callable,

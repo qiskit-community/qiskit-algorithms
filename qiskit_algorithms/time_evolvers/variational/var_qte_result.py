@@ -30,6 +30,7 @@ class VarQTEResult(TimeEvolutionResult):
             each evolution step.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         evolved_state: QuantumCircuit,

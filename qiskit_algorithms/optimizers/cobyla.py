@@ -31,7 +31,7 @@ class COBYLA(SciPyOptimizer):
 
     _OPTIONS = ["maxiter", "disp", "rhobeg"]
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-positional-arguments
     def __init__(
         self,
         maxiter: int = 1000,

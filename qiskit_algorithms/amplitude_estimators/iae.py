@@ -47,6 +47,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
              `arXiv:quant-ph/0005055 <http://arxiv.org/abs/quant-ph/0005055>`_.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         epsilon_target: float,

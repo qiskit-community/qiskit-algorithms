@@ -29,6 +29,7 @@ class AmplificationProblem:
     on the optimal bitstring.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         oracle: QuantumCircuit | Statevector,
