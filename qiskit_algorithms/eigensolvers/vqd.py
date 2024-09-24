@@ -352,7 +352,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 ):
                     last_digit = step % 10
 
-                    if last_digit == 1:
+                    if last_digit == 1 and step % 100 != 11:
                         suffix = "st"
                     elif last_digit == 2:
                         suffix = "nd"
@@ -363,8 +363,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
                     raise AlgorithmError(
                         f"Convergence threshold is set to {self.convergence_threshold} but an "
-                        f"average fidelity {average_fidelity:.5f} with the previous eigenstates"
-                        f"have been observed during the evaluation of the {step}{suffix} lowest"
+                        f"average fidelity of {average_fidelity:.5f} with the previous eigenstates"
+                        f"has been observed during the evaluation of the {step}{suffix} lowest"
                         f"eigenvalue."
                     )
                 logger.info(
