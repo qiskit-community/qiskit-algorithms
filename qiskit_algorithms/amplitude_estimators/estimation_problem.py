@@ -31,6 +31,7 @@ class EstimationProblem:
     or a custom Grover operator.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         state_preparation: QuantumCircuit,

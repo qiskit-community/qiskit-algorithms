@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -40,7 +40,7 @@ class NELDER_MEAD(SciPyOptimizer):  # pylint: disable=invalid-name
 
     _OPTIONS = ["maxiter", "maxfev", "disp", "xatol", "adaptive"]
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument, too-many-positional-arguments
     def __init__(
         self,
         maxiter: int | None = None,

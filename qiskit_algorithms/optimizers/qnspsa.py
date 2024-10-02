@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -93,6 +93,7 @@ class QNSPSA(SPSA):
 
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         fidelity: FIDELITY,
@@ -184,6 +185,7 @@ class QNSPSA(SPSA):
 
         self.fidelity = fidelity
 
+    # pylint: disable=too-many-positional-arguments
     def _point_sample(self, loss, x, eps, delta1, delta2):
         loss_points = [x + eps * delta1, x - eps * delta1]
         fidelity_points = [
