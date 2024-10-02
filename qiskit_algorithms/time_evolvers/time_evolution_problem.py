@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -46,6 +46,7 @@ class TimeEvolutionProblem:
             state.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         hamiltonian: BaseOperator,
