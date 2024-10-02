@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 # pylint: disable=invalid-name
 
 
+# pylint: disable=too-many-positional-arguments
 def bisect_max(f, a, b, steps=50, minwidth=1e-12, retval=False):
     """Find the maximum of the real-valued function f in the interval [a, b] using bisection.
 
