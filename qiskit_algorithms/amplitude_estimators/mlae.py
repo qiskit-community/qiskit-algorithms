@@ -180,7 +180,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
-        exact: bool = False,
     ) -> tuple[float, float]:
         """Compute the `alpha` confidence interval using the method `kind`.
 
@@ -194,7 +193,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             kind: The method to compute the confidence interval. Defaults to 'fisher', which
                 computes the theoretical Fisher information.
             apply_post_processing: If True, apply post-processing to the confidence interval.
-            exact: Whether the result comes from a statevector simulation or not
 
         Returns:
             The specified confidence interval.
@@ -205,11 +203,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         """
         interval: tuple[float, float] | None = None
 
-        # if statevector simulator the estimate is exact
-        if exact:
-            interval = (result.estimation, result.estimation)
-
-        elif kind in ["likelihood_ratio", "lr"]:
+        if kind in ["likelihood_ratio", "lr"]:
             interval = _likelihood_ratio_confint(result, alpha)
 
         elif kind in ["fisher", "fi"]:
@@ -311,18 +305,19 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         circuit_results = []
         shots = ret.metadata[0].get("shots")
-        exact = True
-        if shots is None:
-            for quasi_dist in ret.quasi_dists:
-                circuit_result = quasi_dist.binary_probabilities()
-                circuit_results.append(circuit_result)
-            shots = 1
-        else:
-            # get counts and construct MLE input
-            for quasi_dist in ret.quasi_dists:
-                counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
-                circuit_results.append(counts)
-            exact = False
+        # get counts and construct MLE input
+        for quasi_dist in ret.quasi_dists:
+            counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
+            circuit_results.append(counts)
+
+        for i, pubres in enumerate(ret):
+            qc = pubs[i][0]
+            sampler_result = getattr(res[i].data, qc.cregs[0].name)
+            sample = {
+                label: value
+                for label, value in sampler_result.get_counts().items()
+            }
+            circuit_results.append(sample)
 
         result.shots = shots
         result.circuit_results = circuit_results
@@ -348,7 +343,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         # compute and store confidence interval
         confidence_interval = self.compute_confidence_interval(
-            result, alpha=0.05, kind="fisher", exact=exact
+            result, alpha=0.05, kind="fisher"
         )
         result.confidence_interval = confidence_interval
         result.confidence_interval_processed = tuple(  # type: ignore[assignment]
