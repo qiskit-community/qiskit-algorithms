@@ -18,7 +18,7 @@ import warnings
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
@@ -51,7 +51,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         delta: float,
         maxiter: int,
         rescale: bool = True,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> None:
         r"""
         Args:
@@ -70,7 +70,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -79,7 +79,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -91,12 +91,13 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         if self._sampler is None:
             warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            self._sampler = StatevectorSampler()
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
         try:
-            job = self._sampler.run([circuit], shots=shots)
+            pub=(circuit, )
+            job = self._sampler.run([pub], default_shots=shots)
             result = job.result()
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
