@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="BaseSamplerGradient" href="qiskit_algorithms.gradients.BaseSamplerGradient.html" /><link rel="prev" title="BaseEstimatorGradient" href="qiskit_algorithms.gradients.BaseEstimatorGradient.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>BaseQGT - Qiskit Algorithms 0.3.0</title>
+        <title>BaseQGT - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -370,7 +370,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.gradients.BaseQGT">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseQGT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase_fix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivative_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DerivativeType.COMPLEX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/gradients/base/base_qgt.html#BaseQGT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.gradients.BaseQGT" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Base class to computes the Quantum Geometric Tensor (QGT) given a pure,
 parameterized quantum state. QGT is defined as:</p>
 <div class="math-wrapper docutils container">
@@ -382,7 +382,7 @@ parameterized quantum state. QGT is defined as:</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>estimator</strong> (<em>BaseEstimator</em>) – The estimator used to compute the QGT.</p></li>
-<li><p><strong>phase_fix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Whether to calculate the second term (phase fix) of the QGT, which is
+<li><p><strong>phase_fix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to calculate the second term (phase fix) of the QGT, which is
 <span class="math notranslate nohighlight">\(\langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle\)</span>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><strong>derivative_type</strong> (<em>DerivativeType</em>) – <p>The type of derivative. Can be either <code class="docutils literal notranslate"><span class="pre">DerivativeType.REAL</span></code>
@@ -448,7 +448,7 @@ the primitive’s default setting.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>circuits</strong> (<em>Sequence</em><em>[</em><em>QuantumCircuit</em><em>]</em>) – The list of quantum circuits to compute the QGTs.</p></li>
-<li><p><strong>parameter_values</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em><em>]</em>) – The list of parameter values to be bound to the circuit.</p></li>
+<li><p><strong>parameter_values</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>]</em>) – The list of parameter values to be bound to the circuit.</p></li>
 <li><p><strong>parameters</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>Parameter</em><em>] </em><em>| </em><em>None</em><em>] </em><em>| </em><em>None</em>) – The sequence of parameters to calculate only the QGTs of
 the specified parameters. Each sequence of parameters corresponds to a circuit in
 <code class="docutils literal notranslate"><span class="pre">circuits</span></code>. Defaults to None, which means that the QGTs of all parameters in
@@ -464,7 +464,7 @@ Higher priority setting overrides lower priority setting.</p></li>
 <code class="docutils literal notranslate"><span class="pre">circuits[i]</span></code> evaluated with parameters bound as <code class="docutils literal notranslate"><span class="pre">parameter_values[i]</span></code>.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – Invalid arguments are given.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Invalid arguments are given.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.AlgorithmJob.html#qiskit_algorithms.AlgorithmJob" title="qiskit_algorithms.AlgorithmJob">AlgorithmJob</a></p>
@@ -521,7 +521,7 @@ Higher priority setting overrides lower priority setting.</p></li>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -563,7 +563,7 @@ Higher priority setting overrides lower priority setting.</p></li>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Release Notes" href="../release_notes.html" /><link rel="prev" title="Gradient Framework" href="12_gradients_framework.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Quantum Real Time Evolution using Trotterization - Qiskit Algorithms 0.3.0</title>
+        <title>Quantum Real Time Evolution using Trotterization - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -602,7 +602,7 @@ Statevector([ 0.02895926+0.08738739j, -0.9411211 +0.31187756j,
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f2d9771da30&gt;
+&lt;matplotlib.legend.Legend at 0x7fb19f136c40&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -629,7 +629,7 @@ measure the system as it was initially prepared, <span class="math notranslate n
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">TrotterQRTE</span></code> instance now will be created with a <code class="docutils literal notranslate"><span class="pre">num_timesteps</span></code> argument, and an <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> primitive. The Qiskit’s <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> primitive estimates expectation values of observables, <span class="math notranslate nohighlight">\(\langle\psi\vert\hat{O}\vert\psi\rangle\)</span>.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
@@ -640,6 +640,15 @@ measure the system as it was initially prepared, <span class="math notranslate n
 <span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span><span class="n">num_timesteps</span><span class="o">=</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">Estimator</span><span class="p">())</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_28304/2834281491.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  trotter = TrotterQRTE(num_timesteps=num_timesteps, estimator=Estimator())
+</pre></div></div>
 </div>
 <p>Let us define a <em>magnetization operator</em> <span class="math notranslate nohighlight">\(\sum_i Z_i\)</span>, and a <em>mean spin correlation operator</em> <span class="math notranslate nohighlight">\(\sum_i Z_i Z_{i+1} / (L - 1)\)</span>.</p>
 <div class="nbinput nblast docutils container">
@@ -858,10 +867,10 @@ Text(0.5, 0.98, &#39;Observable evolution&#39;)
 Trotter step with Lie-Trotter
 -----------------------------
 
-                  Depth: 7
-             Gate count: 17
-    Nonlocal gate count: 5
-         Gate breakdown: RZ: 6, RX: 6, RZZ: 5
+                  Depth: 17
+             Gate count: 27
+    Nonlocal gate count: 10
+         Gate breakdown: CX: 10, U1: 6, R: 6, RZ: 5
 
 </pre></div></div>
 </div>
@@ -919,10 +928,10 @@ Trotter step with Lie-Trotter
 Trotter step with Suzuki Trotter (2nd order)
 --------------------------------------------
 
-                  Depth: 14
-             Gate count: 33
-    Nonlocal gate count: 10
-         Gate breakdown: RZ: 12, RX: 11, RZZ: 10
+                  Depth: 34
+             Gate count: 53
+    Nonlocal gate count: 20
+         Gate breakdown: CX: 20, U1: 12, R: 11, RZ: 10
 
 
 </pre></div></div>
@@ -970,16 +979,16 @@ Trotter step with Suzuki Trotter (2nd order)
 Trotter step with Suzuki Trotter (4th order)
 --------------------------------------------
 
-                  Depth: 70
-             Gate count: 165
-    Nonlocal gate count: 50
-         Gate breakdown: RZ: 60, RX: 55, RZZ: 50
+                  Depth: 170
+             Gate count: 265
+    Nonlocal gate count: 100
+         Gate breakdown: CX: 100, U1: 60, R: 55, RZ: 50
 
 
 </pre></div></div>
 </div>
 <p>Finally, let us perform a simulation at fourth order.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
@@ -996,6 +1005,15 @@ Trotter step with Suzuki Trotter (4th order)
 <span class="n">observables_order4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_28304/940414233.py:3: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  trotter = TrotterQRTE(SuzukiTrotter(order=4), num_timesteps=num_timesteps, estimator=Estimator())
+</pre></div></div>
 </div>
 <p>and plot the results.</p>
 <div class="nbinput docutils container">
@@ -1068,7 +1086,7 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.colorbar.Colorbar at 0x7f2d8d27d640&gt;
+&lt;matplotlib.colorbar.Colorbar at 0x7fb19f00bfd0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -1098,7 +1116,7 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Apr 10 17:25:43 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:17:21 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -1144,7 +1162,7 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -1185,7 +1203,7 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Quantum Real Time Evolution using Trotterization" href="tutorials/13_trotterQRTE.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Release Notes - Qiskit Algorithms 0.3.0</title>
+        <title>Release Notes - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -367,8 +367,27 @@
         <article role="main">
           <br><br><br><section id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">#</a></h1>
+<section id="release-notes-0-3-1">
+<span id="id1"></span><h2>0.3.1<a class="headerlink" href="#release-notes-0-3-1" title="Permalink to this heading">#</a></h2>
+<section id="bug-fixes">
+<span id="release-notes-0-3-1-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Compatibility fix for scipy 1.14 version. csr_matrix.H had been deprecated
+and was removed. The <a class="reference internal" href="stubs/qiskit_algorithms.NumPyEigensolver.html#qiskit_algorithms.NumPyEigensolver" title="qiskit_algorithms.NumPyEigensolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumPyEigensolver</span></code></a> algorithm, which
+had been using that, has been updated to use an alternative.</p></li>
+</ul>
+</section>
+<section id="other-notes">
+<span id="release-notes-0-3-1-other-notes"></span><h3>Other Notes<a class="headerlink" href="#other-notes" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Aspects of the gradients internal implementation, which manipulate circuits more
+directly, have been updated now that circuit data is being handled by Rust so it’s
+compatible with the former Python way as well as the new Qiskit Rust implementation.</p></li>
+</ul>
+</section>
+</section>
 <section id="release-notes-0-3-0">
-<span id="id1"></span><h2>0.3.0<a class="headerlink" href="#release-notes-0-3-0" title="Permalink to this heading">#</a></h2>
+<span id="id2"></span><h2>0.3.0<a class="headerlink" href="#release-notes-0-3-0" title="Permalink to this heading">#</a></h2>
 <section id="prelude">
 <span id="release-notes-0-3-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Permalink to this heading">#</a></h3>
 <p>This release now supports <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/release-notes/1.0">Qiskit 1.0</a> while continuing to work with the Qiskit 0.46 release for those still navigating the changes brought about in the Qiskit 1.0 release.</p>
@@ -382,20 +401,13 @@
 <li><p>Added support for using Qiskit Algorithms with Python 3.12.</p></li>
 </ul>
 </section>
-<section id="bug-fixes">
-<span id="release-notes-0-3-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-3-0-bug-fixes">
+<span id="id3"></span><h3>Bug Fixes<a class="headerlink" href="#release-notes-0-3-0-bug-fixes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixes state fidelity <a class="reference internal" href="stubs/qiskit_algorithms.state_fidelities.ComputeUncompute.html#qiskit_algorithms.state_fidelities.ComputeUncompute" title="qiskit_algorithms.state_fidelities.ComputeUncompute"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputeUncompute</span></code></a> to correct an issue arising from
 the threading used for the job result. This issue could be seen sometimes if more
 than one job was created and their results fetched back-to-back, such that more than
 one internal thread was active processing these results.</p></li>
-</ul>
-<ul class="simple">
-<li><p>Fixed the AQGD optimizer grouping objective function calls by default so that a single point is now passed to the
-objective function. For algorithms that can handle more than one gradient evaluations in their objective function,
-such as a VQE in the algorithms here, the number of grouped evaluations can be controlled via the max_grouped_evals
-parameter. Grouped evaluations allows a list of points to be handed over so that they can potentially be assessed
-more efficiently in a single job.</p></li>
 </ul>
 <ul class="simple">
 <li><p>Fixes internal cache used by state fidelities so that circuits are cached
@@ -408,10 +420,17 @@ key as it was before when id() was used.</p></li>
 is passed with tuples that have entries of <code class="docutils literal notranslate"><span class="pre">None</span></code> then the entry is treated
 as equivalent to infinity.</p></li>
 </ul>
+<ul class="simple">
+<li><p>Fixed the AQGD optimizer grouping objective function calls by default so that a single point is now passed to the
+objective function. For algorithms that can handle more than one gradient evaluations in their objective function,
+such as a VQE in the algorithms here, the number of grouped evaluations can be controlled via the max_grouped_evals
+parameter. Grouped evaluations allows a list of points to be handed over so that they can potentially be assessed
+more efficiently in a single job.</p></li>
+</ul>
 </section>
 </section>
 <section id="release-notes-0-2-0">
-<span id="id2"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Permalink to this heading">#</a></h2>
+<span id="id4"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Permalink to this heading">#</a></h2>
 <section id="upgrade-notes">
 <span id="release-notes-0-2-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Permalink to this heading">#</a></h3>
 <ul>
@@ -451,7 +470,7 @@ required if you already transitioned to seeding the <code class="docutils litera
 </ul>
 <ul class="simple">
 <li><p>A couple of algorithms here, <a class="reference internal" href="stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD" title="qiskit_algorithms.PVQD"><code class="xref py py-class docutils literal notranslate"><span class="pre">PVQD</span></code></a>, <a class="reference internal" href="stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE" title="qiskit_algorithms.AdaptVQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptVQE</span></code></a> and optimizer
-<a class="reference internal" href="stubs/qiskit_algorithms.optimizers.SNOBFIT.html#qiskit_algorithms.optimizers.SNOBFIT" title="qiskit_algorithms.optimizers.SNOBFIT"><code class="xref py py-class docutils literal notranslate"><span class="pre">SNOBFIT</span></code></a>, directly raised a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/exceptions#qiskit.exceptions.QiskitError" title="(in Qiskit v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QiskitError</span></code></a>.
+<a class="reference internal" href="stubs/qiskit_algorithms.optimizers.SNOBFIT.html#qiskit_algorithms.optimizers.SNOBFIT" title="qiskit_algorithms.optimizers.SNOBFIT"><code class="xref py py-class docutils literal notranslate"><span class="pre">SNOBFIT</span></code></a>, directly raised a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/exceptions#qiskit.exceptions.QiskitError" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QiskitError</span></code></a>.
 These have been changed to raise an <a class="reference internal" href="apidocs/qiskit_algorithms.AlgorithmError.html#qiskit_algorithms.AlgorithmError" title="qiskit_algorithms.AlgorithmError"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmError</span></code></a> instead. Algorithms
 have now been moved out of <code class="docutils literal notranslate"><span class="pre">Qiskit</span></code> and this better distinguishes the exception to the
 algorithms when raised. Now <code class="docutils literal notranslate"><span class="pre">AlgorithmError</span></code> was already raised elsewhere by the algorithms
@@ -477,8 +496,8 @@ would look like this:</p>
 </li>
 </ul>
 </section>
-<section id="other-notes">
-<span id="release-notes-0-2-0-other-notes"></span><h3>Other Notes<a class="headerlink" href="#other-notes" title="Permalink to this heading">#</a></h3>
+<section id="release-notes-0-2-0-other-notes">
+<span id="id5"></span><h3>Other Notes<a class="headerlink" href="#release-notes-0-2-0-other-notes" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Removed the custom <code class="docutils literal notranslate"><span class="pre">__str__</span></code> method from <a class="reference internal" href="stubs/qiskit_algorithms.SamplingMinimumEigensolverResult.html#qiskit_algorithms.SamplingMinimumEigensolverResult" title="qiskit_algorithms.SamplingMinimumEigensolverResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingMinimumEigensolverResult</span></code></a>
 so that string conversion is based on the method of its parent <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmResult</span></code>
@@ -490,9 +509,9 @@ results derived from that, such as returned by <a class="reference internal" hre
 </section>
 </section>
 <section id="release-notes-0-1-0">
-<span id="id3"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">#</a></h2>
+<span id="id6"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Permalink to this heading">#</a></h2>
 <section id="release-notes-0-1-0-prelude">
-<span id="id4"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-1-0-prelude" title="Permalink to this heading">#</a></h3>
+<span id="id7"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-1-0-prelude" title="Permalink to this heading">#</a></h3>
 <p>Qiskit’s <cite>qiskit.algorithms</cite> module has been superseded by this
 new standalone library, <code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code>.</p>
 <p>As of Qiskit’s 0.25 release, active development of new
@@ -513,7 +532,7 @@ separate package was made to clarify the purpose of <a class="reference external
 make a distinction between the tools and libraries built on top of it.</p>
 </section>
 <section id="release-notes-0-1-0-new-features">
-<span id="id5"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Permalink to this heading">#</a></h3>
+<span id="id8"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The primitive-based algorithms in <code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.eigensolvers</span></code> and
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.minimum_eigensolvers</span></code> are now directly
@@ -555,7 +574,7 @@ you should follow the migration guidelines in <a class="reference external" href
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -577,15 +596,20 @@ you should follow the migration guidelines in <a class="reference external" href
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Release Notes</a><ul>
+<li><a class="reference internal" href="#release-notes-0-3-1">0.3.1</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+<li><a class="reference internal" href="#other-notes">Other Notes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#release-notes-0-3-0">0.3.0</a><ul>
 <li><a class="reference internal" href="#prelude">Prelude</a></li>
 <li><a class="reference internal" href="#new-features">New Features</a></li>
-<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+<li><a class="reference internal" href="#release-notes-0-3-0-bug-fixes">Bug Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-notes-0-2-0">0.2.0</a><ul>
 <li><a class="reference internal" href="#upgrade-notes">Upgrade Notes</a></li>
-<li><a class="reference internal" href="#other-notes">Other Notes</a></li>
+<li><a class="reference internal" href="#release-notes-0-2-0-other-notes">Other Notes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-notes-0-1-0">0.1.0</a><ul>
@@ -606,7 +630,7 @@ you should follow the migration guidelines in <a class="reference external" href
   </div>
 </div><script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=645b84c4"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

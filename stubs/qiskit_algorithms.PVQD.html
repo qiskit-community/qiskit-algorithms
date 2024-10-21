@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="PVQDResult" href="qiskit_algorithms.PVQDResult.html" /><link rel="prev" title="TimeEvolutionProblem" href="qiskit_algorithms.TimeEvolutionProblem.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>PVQD - Qiskit Algorithms 0.3.0</title>
+        <title>PVQD - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -419,7 +419,7 @@ used to maximize the fidelity of the Trotter step and ansatz.</p>
 selected to achieve a timestep of approximately 0.01.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a>]</p>
+<dd class="field-odd"><p>Optional[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -443,7 +443,7 @@ Defaults to first-order Lie-Trotter evolution.</p>
 gradients (if the ansatz supports).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -523,12 +523,12 @@ Trotterization and ansatz. Can be either a <a class="reference internal" href="q
 using the <a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Minimizer</span></code></a> protocol. This argument is optional since it is
 not required for <a class="reference internal" href="#qiskit_algorithms.PVQD.get_loss" title="qiskit_algorithms.PVQD.get_loss"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_loss()</span></code></a>, but it has to be set before <a class="reference internal" href="#qiskit_algorithms.PVQD.evolve" title="qiskit_algorithms.PVQD.evolve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evolve()</span></code></a>
 is called.</p></li>
-<li><p><strong>num_timesteps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – The number of time steps. If <code class="docutils literal notranslate"><span class="pre">None</span></code> it will be set such that the
+<li><p><strong>num_timesteps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em>) – The number of time steps. If <code class="docutils literal notranslate"><span class="pre">None</span></code> it will be set such that the
 timestep is close to 0.01.</p></li>
 <li><p><strong>evolution</strong> (<em>EvolutionSynthesis</em><em> | </em><em>None</em>) – The evolution synthesis to use for the construction of the Trotter step.
 Defaults to first-order Lie-Trotter decomposition, see also
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">evolution</span></code> for different options.</p></li>
-<li><p><strong>use_parameter_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If True, use the parameter shift rule to compute gradients.
+<li><p><strong>use_parameter_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, use the parameter shift rule to compute gradients.
 If False, the optimizer will not be passed a gradient callable. In that case,
 Qiskit optimizers will use a finite difference rule to approximate the gradients.</p></li>
 <li><p><strong>initial_guess</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – The initial guess for the first VQE optimization. Afterwards the
@@ -554,9 +554,9 @@ time and observables to evaluate.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> provided in the time evolution problem but no estimator
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> provided in the time evolution problem but no estimator
     provided to the algorithm.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><strong>NotImplementedError</strong></a> – If the evolution problem contains an initial state.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – If the evolution problem contains an initial state.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -575,7 +575,7 @@ time and observables to evaluate.</p>
 <li><p><strong>hamiltonian</strong> (<em>BaseOperator</em>) – The Hamiltonian under which to evolve.</p></li>
 <li><p><strong>ansatz</strong> (<em>QuantumCircuit</em>) – The parameterized quantum circuit which attempts to approximate the
 time-evolved state.</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The time step.</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The time step.</p></li>
 <li><p><strong>current_parameters</strong> (<em>np.ndarray</em>) – The current parameters.</p></li>
 </ul>
 </dd>
@@ -587,7 +587,7 @@ time-evolved state.</p></li>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a>[Callable[[np.ndarray], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>], Callable[[np.ndarray], np.ndarray]] | None</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[Callable[[np.ndarray], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>], Callable[[np.ndarray], np.ndarray]] | None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -603,7 +603,7 @@ time-evolved state.</p></li>
 <li><p><strong>ansatz</strong> (<em>QuantumCircuit</em>) – The parameterized quantum circuit which attempts to approximate the
 time-evolved state.</p></li>
 <li><p><strong>theta</strong> (<em>np.ndarray</em>) – The current parameters.</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The time step.</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The time step.</p></li>
 <li><p><strong>initial_guess</strong> (<em>np.ndarray</em>) – The initial guess for the classical optimization of the
 fidelity between the next variational state and the Trotter-evolved last state.
 If None, this is set to a random vector with elements in the interval
@@ -614,7 +614,7 @@ If None, this is set to a random vector with elements in the interval
 <dd class="field-even"><p>A tuple consisting of the next parameters and the fidelity of the optimization.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a>[np.ndarray, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[np.ndarray, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -657,7 +657,7 @@ If None, this is set to a random vector with elements in the interval
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -705,7 +705,7 @@ If None, this is set to a random vector with elements in the interval
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

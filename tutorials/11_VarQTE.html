@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Gradient Framework" href="12_gradients_framework.html" /><link rel="prev" title="Projected Variational Quantum Dynamics" href="10_pvqd.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Variational Quantum Time Evolution - Qiskit Algorithms 0.3.0</title>
+        <title>Variational Quantum Time Evolution - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -489,7 +489,7 @@ consider the following Hamiltonian:</p>
 </div>
 </div>
 <p>We now use the <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> class to calculate the imaginary time evolving state. We can use <code class="docutils literal notranslate"><span class="pre">VarQITE.evolve</span></code> to get the results. Note this cell may take around <span class="math notranslate nohighlight">\(1.5\)</span> minutes to finish.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
@@ -501,6 +501,15 @@ consider the following Hamiltonian:</p>
 <span class="n">evolution_result</span> <span class="o">=</span> <span class="n">var_qite</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_10530/1414327418.py:4: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  var_qite = VarQITE(ansatz, init_param_values, var_principle, Estimator())
+</pre></div></div>
 </div>
 <section id="Exact-Classical-Solution">
 <h3>Exact Classical Solution<a class="headerlink" href="#Exact-Classical-Solution" title="Permalink to this heading">#</a></h3>
@@ -582,7 +591,7 @@ Ground state energy -2.0097479079521188
 <section id="Efficient-classical-calculation-of-gradients-with-VarQITE">
 <h3>Efficient classical calculation of gradients with VarQITE<a class="headerlink" href="#Efficient-classical-calculation-of-gradients-with-VarQITE" title="Permalink to this heading">#</a></h3>
 <p>You can use classically efficient gradient calculations to speed up the time evolution simulation by setting <code class="docutils literal notranslate"><span class="pre">qgt</span></code> to <code class="docutils literal notranslate"><span class="pre">ReverseQGT()</span></code> and <code class="docutils literal notranslate"><span class="pre">gradient</span></code> to <code class="docutils literal notranslate"><span class="pre">ReverseEstimatorGradient()</span></code>.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
@@ -594,6 +603,15 @@ Ground state energy -2.0097479079521188
 <span class="n">evolution_result_eff</span> <span class="o">=</span> <span class="n">var_qite</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_10530/740124999.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  var_qite = VarQITE(ansatz, init_param_values, var_principle, Estimator())
+</pre></div></div>
 </div>
 <p>In this example, it takes only <span class="math notranslate nohighlight">\(1\)</span> minute to calculate imaginary time evolution. The execution time is reduced by about 33% (this may vary for each execution, but generally results in a speedup).</p>
 <div class="nbinput docutils container">
@@ -740,7 +758,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
@@ -752,6 +770,15 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <span class="n">evolution_result_re</span> <span class="o">=</span> <span class="n">var_qrte</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_10530/3604634128.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  var_qrte = VarQRTE(ansatz, init_param_values, var_principle, Estimator())
+</pre></div></div>
 </div>
 <p>We can also obtain the exact solution with <code class="docutils literal notranslate"><span class="pre">SciPyRealEvolver</span></code>. We first create the corresponding initial state for the exact classical method.</p>
 <div class="nbinput nblast docutils container">
@@ -804,7 +831,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <section id="Efficient-Way-to-run-VarQRTE">
 <h3>Efficient Way to run VarQRTE<a class="headerlink" href="#Efficient-Way-to-run-VarQRTE" title="Permalink to this heading">#</a></h3>
 <p>Similarly, we can set <code class="docutils literal notranslate"><span class="pre">qpt</span></code> as <code class="docutils literal notranslate"><span class="pre">ReverseQGT()</span></code> and <code class="docutils literal notranslate"><span class="pre">gradient</span></code> as <code class="docutils literal notranslate"><span class="pre">ReverseEstimatorGradient()</span></code> to speed up the calculation.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
@@ -819,6 +846,15 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <span class="n">evolution_result_re_eff</span> <span class="o">=</span> <span class="n">var_qrte</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_10530/2453938998.py:8: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
+  var_qrte = VarQRTE(ansatz, init_param_values, var_principle, Estimator())
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
@@ -877,7 +913,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.0.2</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Apr 10 17:24:24 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:16:14 2024 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -923,7 +959,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -971,7 +1007,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>

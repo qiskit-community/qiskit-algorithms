@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="AdaptVQEResult" href="qiskit_algorithms.AdaptVQEResult.html" /><link rel="prev" title="VQEResult" href="qiskit_algorithms.VQEResult.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>AdaptVQE - Qiskit Algorithms 0.3.0</title>
+        <title>AdaptVQE - Qiskit Algorithms 0.3.1</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
     
 
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.0</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.0</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -406,7 +406,7 @@ the AdaptVQE object has been constructed.</p>
 <span class="sig-name descname"><span class="pre">solver</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.solver" title="Permalink to this definition">#</a></dt>
 <dd><p>a <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> instance used internally to compute the minimum eigenvalues.
 It is a requirement that the <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.ansatz" title="qiskit_algorithms.VQE.ansatz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ansatz</span></code></a> of this solver is of type
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p>
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -438,15 +438,15 @@ algorithm is not bound in its number of iterations.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>solver</strong> (<a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><em>VQE</em></a>) – a <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> instance used internally to compute the minimum eigenvalues.
 It is a requirement that the <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.ansatz" title="qiskit_algorithms.VQE.ansatz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ansatz</span></code></a> of this solver is of type
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p></li>
-<li><p><strong>gradient_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – once all gradients have an absolute value smaller than this
+<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p></li>
+<li><p><strong>gradient_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – once all gradients have an absolute value smaller than this
 threshold, the algorithm has converged and terminates. Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
-<li><p><strong>eigenvalue_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – once the eigenvalue has changed by less than this threshold from
+<li><p><strong>eigenvalue_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – once the eigenvalue has changed by less than this threshold from
 one iteration to the next, the algorithm has converged and terminates. When this
 case occurs, the excitation included in the final iteration did not result in a
 significant improvement of the eigenvalue and, thus, the results from this iteration
 are not considered.</p></li>
-<li><p><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> | </em><em>None</em>) – the maximum number of iterations for the adaptive loop. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
+<li><p><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em>) – the maximum number of iterations for the adaptive loop. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
 algorithm is not bound in its number of iterations.</p></li>
 </ul>
 </dd>
@@ -472,7 +472,7 @@ algorithm is not bound in its number of iterations.</p></li>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – If an ansatz other than <code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code> is provided.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If an ansatz other than <code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code> is provided.</p></li>
 <li><p><a class="reference internal" href="../apidocs/qiskit_algorithms.AlgorithmError.html#qiskit_algorithms.AlgorithmError" title="qiskit_algorithms.AlgorithmError"><strong>AlgorithmError</strong></a> – If all evaluated gradients lie below the convergence threshold in
     the first iteration of the algorithm.</p></li>
 </ul>
@@ -500,7 +500,7 @@ be ignored.</p>
 <dd class="field-odd"><p>True if aux_operator expectations can be evaluated, False otherwise</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,7 +543,7 @@ be ignored.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/04/10</div>
+              Last updated on 2024/10/21</div>
           </div>
           <div class="right-details">
             
@@ -588,7 +588,7 @@ be ignored.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
