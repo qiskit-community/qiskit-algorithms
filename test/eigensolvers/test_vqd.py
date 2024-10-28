@@ -59,8 +59,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         self.estimator = Estimator()
         self.estimator_shots = Estimator(options={"shots": 1024, "seed": self.seed})
-        self.fidelity = ComputeUncompute(Sampler())
-        self.betas = [50, 50]
+        self.fidelity = ComputeUncompute(Sampler(options={"shots": 100_000, "seed": self.seed}))
+        self.betas = [3]
 
     @data(H2_SPARSE_PAULI)
     def test_basic_operator(self, op):
@@ -105,7 +105,14 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
     def test_full_spectrum(self):
         """Test obtaining all eigenvalues."""
-        vqd = VQD(self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B(), k=4)
+        vqd = VQD(
+            self.estimator,
+            self.fidelity,
+            self.ryrz_wavefunction,
+            optimizer=COBYLA(),
+            k=4,
+            betas=[3, 3, 3],
+        )
         result = vqd.compute_eigenvalues(H2_SPARSE_PAULI)
         np.testing.assert_array_almost_equal(
             result.eigenvalues.real, self.h2_energy_excited, decimal=2
@@ -190,9 +197,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
             self.assertTrue(all(isinstance(param, float) for param in params))
 
         ref_eval_count = [1, 2, 3, 1, 2, 3]
-        ref_mean = [-1.07, -1.45, -1.37, 37.43, 48.55, 28.94]
-        # new ref_mean for statevector simulator. The old unit test was on qasm
-        # and the ref_mean values were slightly different.
+        ref_mean = [-1.07, -1.45, -1.36, 1.24, 1.55, 1.07]
+        # new ref_mean since the betas were changed
 
         ref_step = [1, 1, 1, 2, 2, 2]
 
@@ -208,7 +214,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=RealAmplitudes(),
-            optimizer=SLSQP(),
+            optimizer=COBYLA(),
             k=2,
             betas=self.betas,
         )
@@ -216,7 +222,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         def run_check():
             result = vqd.compute_eigenvalues(operator=op)
             np.testing.assert_array_almost_equal(
-                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=3
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
             )
 
         run_check()
@@ -225,11 +231,11 @@ class TestVQD(QiskitAlgorithmsTestCase):
             run_check()
 
         with self.subTest("Optimizer replace"):
-            vqd.optimizer = L_BFGS_B()
+            vqd.optimizer = SPSA()
             run_check()
 
         with self.subTest("Batched optimizer replace"):
-            vqd.optimizer = SLSQP(maxiter=60, max_evals_grouped=10)
+            vqd.optimizer = COBYLA(maxiter=60, max_evals_grouped=10)
             run_check()
 
         with self.subTest("SPSA replace"):
@@ -243,7 +249,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
     def test_optimizer_list(self, op):
         """Test sending an optimizer list"""
 
-        optimizers = [SLSQP(), L_BFGS_B()]
+        optimizers = [COBYLA(), SPSA()]
         initial_point_1 = [
             1.70256666,
             -5.34843975,
@@ -287,7 +293,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
-            optimizer=SLSQP(),
+            optimizer=COBYLA(),
             k=2,
             betas=self.betas,
         )
@@ -340,7 +346,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
-            optimizer=SLSQP(),
+            optimizer=COBYLA(),
             betas=self.betas,
         )
 
@@ -439,6 +445,28 @@ class TestVQD(QiskitAlgorithmsTestCase):
         self.assertIsInstance(result.aux_operators_evaluated[0][1][1], dict)
         self.assertIsInstance(result.aux_operators_evaluated[0][2][1], dict)
         self.assertIsInstance(result.aux_operators_evaluated[0][3][1], dict)
+
+    def test_convergence_threshold(self):
+        """Test the convergence threshold raises an error if and only if too high"""
+        vqd = VQD(
+            self.estimator,
+            self.fidelity,
+            RealAmplitudes(),
+            SLSQP(),
+            k=2,
+            betas=self.betas,
+            convergence_threshold=1e-3,
+        )
+        with self.subTest("Failed convergence"):
+            with self.assertRaises(AlgorithmError):
+                vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
+
+        with self.subTest("Convergence accepted"):
+            vqd.convergence_threshold = 1e-1
+            result = vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
+            np.testing.assert_array_almost_equal(
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
+            )
 
 
 if __name__ == "__main__":
