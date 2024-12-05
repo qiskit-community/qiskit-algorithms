@@ -11,23 +11,24 @@
 # that they have been altered from the originals.
 
 """Test phase estimation"""
-
 import unittest
-from test import QiskitAlgorithmsTestCase
-from ddt import ddt, data, unpack
-import numpy as np
-from qiskit.circuit.library import ZGate, XGate, HGate, IGate
-from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector, Operator
-from qiskit.synthesis import MatrixExponential, SuzukiTrotter
-from qiskit.primitives import Sampler
-from qiskit import QuantumCircuit
 
-from qiskit_algorithms import PhaseEstimationScale
-from qiskit_algorithms.phase_estimators import (
-    PhaseEstimation,
+import numpy as np
+from ddt import ddt, data, unpack
+from qiskit import QuantumCircuit
+from qiskit.circuit.library import HGate, XGate, IGate, ZGate
+from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector, Operator
+from qiskit.synthesis import MatrixExponential, SuzukiTrotter
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
+from qiskit_algorithms import (
     HamiltonianPhaseEstimation,
     IterativePhaseEstimation,
+    PhaseEstimation,
+    PhaseEstimationScale,
 )
+from test import QiskitAlgorithmsTestCase
 
 
 @ddt
@@ -45,9 +46,10 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         bound=None,
     ):
         """Run HamiltonianPhaseEstimation and return result with all phases."""
-        sampler = Sampler()
+        sampler = Sampler(default_shots=10_000, seed=42)
         phase_est = HamiltonianPhaseEstimation(
-            num_evaluation_qubits=num_evaluation_qubits, sampler=sampler
+            num_evaluation_qubits=num_evaluation_qubits,
+            sampler=sampler,
         )
         result = phase_est.estimate(
             hamiltonian=hamiltonian,
@@ -101,6 +103,21 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         eigv = result.most_likely_eigenvalue
         with self.subTest("Second eigenvalue"):
             self.assertAlmostEqual(eigv, -0.98, delta=0.01)
+
+    def test_single_pauli_op_sampler_with_transpiler(self):
+        """Check that the transpilation does happen"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        phase_est = HamiltonianPhaseEstimation(
+            1, Sampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
+        )
+        phase_est.estimate(hamiltonian=SparsePauliOp(Pauli("Z")))
+
+        self.assertEqual(counts[0], 15)
 
     @data(
         (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate()))),
@@ -164,11 +181,11 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         """Run phase estimation with operator, eigenvalue pair `unitary_circuit`,
         `state_preparation`. Return the estimated phase as a value in :math:`[0,1)`.
         """
+
         if shots is not None:
-            options = {"shots": shots}
+            sampler = Sampler(default_shots=shots, seed=42)
         else:
-            options = {}
-        sampler = Sampler(options=options)
+            sampler = Sampler(seed=42)
         if phase_estimator is None:
             phase_estimator = IterativePhaseEstimation
         if phase_estimator == IterativePhaseEstimation:
@@ -211,11 +228,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
     def test_qpe_X_plus_minus_sampler(self, state_preparation, expected_phase, phase_estimator):
         """eigenproblem X, (|+>, |->)"""
         unitary_circuit = QuantumCircuit(1).compose(XGate())
-        phase = self.one_phase_sampler(
-            unitary_circuit,
-            state_preparation,
-            phase_estimator,
-        )
+        phase = self.one_phase_sampler(unitary_circuit, state_preparation, phase_estimator)
         self.assertEqual(phase, expected_phase)
 
     @data(
@@ -230,11 +243,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         alpha = np.pi / 2
         unitary_circuit = QuantumCircuit(1)
         unitary_circuit.rz(alpha, 0)
-        phase = self.one_phase_sampler(
-            unitary_circuit,
-            state_preparation,
-            phase_estimator,
-        )
+        phase = self.one_phase_sampler(unitary_circuit, state_preparation, phase_estimator)
         self.assertEqual(phase, expected_phase)
 
     @data(
@@ -265,11 +274,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         unitary_circuit = QuantumCircuit(2)
         unitary_circuit.t(0)
         unitary_circuit.t(1)
-        phase = self.one_phase_sampler(
-            unitary_circuit,
-            state_preparation,
-            phase_estimator,
-        )
+        phase = self.one_phase_sampler(unitary_circuit, state_preparation, phase_estimator)
         self.assertEqual(phase, expected_phase)
 
     def test_check_num_iterations_sampler(self):
@@ -285,6 +290,36 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         op = Operator(circ)
         scale = PhaseEstimationScale.from_pauli_sum(op)
         self.assertEqual(scale._bound, 4.0)
+
+    @data((PhaseEstimation, 15), (IterativePhaseEstimation, 22))
+    @unpack
+    def test_transpiler(self, phase_estimator, expected_counts):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        if phase_estimator == IterativePhaseEstimation:
+            p_est = IterativePhaseEstimation(
+                num_iterations=6,
+                sampler=Sampler(),
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback},
+            )
+        elif phase_estimator == PhaseEstimation:
+            p_est = PhaseEstimation(
+                num_evaluation_qubits=6,
+                sampler=Sampler(),
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback},
+            )
+        else:
+            raise ValueError("Unrecognized phase_estimator")
+
+        p_est.estimate(unitary=QuantumCircuit(1), state_preparation=None)
+        self.assertEqual(counts[0], expected_counts)
 
     # pylint: disable=too-many-positional-arguments
     def phase_estimation_sampler(
@@ -313,7 +348,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         """superposition eigenproblem Z, |+>"""
         unitary_circuit = QuantumCircuit(1).compose(ZGate())
         state_preparation = QuantumCircuit(1).compose(HGate())  # prepare |+>
-        sampler = Sampler()
+        sampler = Sampler(default_shots=10_000, seed=42)
         result = self.phase_estimation_sampler(
             unitary_circuit,
             sampler,
@@ -326,7 +361,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             self.assertEqual(list(phases.keys()), [0.0, 0.5])
 
         with self.subTest("test phases has correct probabilities"):
-            np.testing.assert_allclose(list(phases.values()), [0.5, 0.5])
+            np.testing.assert_allclose(list(phases.values()), [0.5, 0.5], atol=1e-2, rtol=1e-2)
 
         with self.subTest("test bitstring representation"):
             phases = result.filter_phases(1e-15, as_float=False)

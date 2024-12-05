@@ -20,7 +20,7 @@ from ddt import data, ddt, unpack
 
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
-from qiskit.primitives import Estimator, Sampler
+from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 
 from qiskit_algorithms import AlgorithmError

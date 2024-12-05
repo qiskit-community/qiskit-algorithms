@@ -22,7 +22,7 @@ from numpy import real
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -103,8 +103,8 @@ class RealMcLachlanPrinciple(RealVariationalPrinciple):
         """
 
         try:
-            estimator_job = self.gradient._estimator.run([ansatz], [hamiltonian], [param_values])
-            energy = estimator_job.result().values[0]
+            estimator_job = self.gradient._estimator.run([(ansatz, hamiltonian, param_values)])
+            energy = estimator_job.result()[0].data.evs
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
 

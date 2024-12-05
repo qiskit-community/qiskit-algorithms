@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -37,10 +37,6 @@ class PhaseEstimator(ABC):
     ) -> "PhaseEstimatorResult":
         """Estimate the phase."""
         raise NotImplementedError
-
-    @staticmethod
-    def _get_reversed_bitstring(length: int, number: int) -> str:
-        return f"{number:b}".zfill(length)[::-1]
 
 
 class PhaseEstimatorResult(AlgorithmResult):

@@ -62,7 +62,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
       from qiskit_algorithms.minimum_eigensolvers import AdaptVQE, VQE
       from qiskit_algorithms.optimizers import SLSQP
-      from qiskit.primitives import Estimator
+      from qiskit.primitives import StatevectorEstimator
       from qiskit.circuit.library import EvolvedOperatorAnsatz
 
       # get your Hamiltonian
@@ -71,7 +71,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
       # construct your ansatz
       ansatz = EvolvedOperatorAnsatz(...)
 
-      vqe = VQE(Estimator(), ansatz, SLSQP())
+      vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())
 
       adapt_vqe = AdaptVQE(vqe)
 
