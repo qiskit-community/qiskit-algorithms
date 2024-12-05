@@ -75,7 +75,7 @@ class GradientDescent(SteppableOptimizer):
 
             from qiskit_algorithms.optimizers import GradientDescent
 
-            def f(x):
+            def fun(x):
                 return (np.linalg.norm(x) - 1) ** 2
 
             initial_point = np.array([1, 0.5, -0.2])
@@ -106,7 +106,7 @@ class GradientDescent(SteppableOptimizer):
 
                 return power_law()
 
-            def f(x):
+            def fun(x):
                 return (np.linalg.norm(x) - 1) ** 2
 
             def grad_f(x):
@@ -174,6 +174,7 @@ class GradientDescent(SteppableOptimizer):
 
     """
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         maxiter: int = 100,

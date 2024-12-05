@@ -71,6 +71,7 @@ class IterativePhaseEstimation(PhaseEstimator):
         self._transpiler = transpiler
         self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
+    # pylint: disable=too-many-positional-arguments
     def construct_circuit(
         self,
         unitary: QuantumCircuit,

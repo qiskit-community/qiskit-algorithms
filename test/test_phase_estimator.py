@@ -35,6 +35,7 @@ from test import QiskitAlgorithmsTestCase
 class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
     """Tests for obtaining eigenvalues from phase estimation"""
 
+    # pylint: disable=too-many-positional-arguments
     # sampler tests
     def hamiltonian_pe_sampler(
         self,
@@ -167,6 +168,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
 class TestPhaseEstimation(QiskitAlgorithmsTestCase):
     """Evolution tests."""
 
+    # pylint: disable=too-many-positional-arguments
     # sampler tests
     def one_phase_sampler(
         self,
@@ -319,6 +321,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         p_est.estimate(unitary=QuantumCircuit(1), state_preparation=None)
         self.assertEqual(counts[0], expected_counts)
 
+    # pylint: disable=too-many-positional-arguments
     def phase_estimation_sampler(
         self,
         unitary_circuit,

@@ -264,6 +264,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
 
         self.assertEqual(counts[0], 15)
 
+    # pylint: disable=too-many-positional-arguments
     @staticmethod
     def _run_error_test(initial_state, operator, aux_ops, estimator, t_param, param_value_dict):
         time = 1
@@ -280,6 +281,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
             )
             _ = trotter_qrte.evolve(evolution_problem)
 
+    # pylint: disable=too-many-positional-arguments
     @staticmethod
     def _get_expected_trotter_qrte(operator, time, num_timesteps, init_state, observables, t_param):
         """Compute reference values for Trotter evolution via exact matrix exponentiation."""
