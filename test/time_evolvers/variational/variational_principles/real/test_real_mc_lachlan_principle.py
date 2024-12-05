@@ -24,7 +24,7 @@ import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit.library import EfficientSU2
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 
 from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
 from qiskit_algorithms.time_evolvers.variational import (
@@ -108,7 +108,7 @@ class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):
 
     def test_gradient_setting(self):
         """Test reactions to wrong gradient settings.."""
-        estimator = Estimator()
+        estimator = Estimator(seed=123)
         gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.REAL)
 
         with self.assertWarns(Warning):

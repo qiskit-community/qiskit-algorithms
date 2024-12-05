@@ -21,7 +21,7 @@ from scipy.integrate import OdeSolver
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
 
@@ -43,7 +43,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
         from qiskit.quantum_info import SparsePauliOp
         from qiskit.quantum_info import SparsePauliOp, Pauli
-        from qiskit.primitives import Estimator
+        from qiskit.primitives import StatevectorEstimator as Estimator
 
         observable = SparsePauliOp.from_list(
             [
@@ -78,7 +78,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         ansatz: QuantumCircuit,
         initial_parameters: Mapping[Parameter, float] | Sequence[float],
         variational_principle: RealVariationalPrinciple | None = None,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         ode_solver: Type[OdeSolver] | str = ForwardEulerSolver,
         lse_solver: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None,
         num_timesteps: int | None = None,

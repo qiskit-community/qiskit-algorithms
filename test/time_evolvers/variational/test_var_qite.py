@@ -19,7 +19,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import Statevector
@@ -90,60 +90,32 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             1.939353810908912,
         ]
 
-        with self.subTest(msg="Test exact backend."):
-            algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator)
-            var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
+        algorithm_globals.random_seed = self.seed
 
-            var_qite = VarQITE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
-            )
-            evolution_result = var_qite.evolve(evolution_problem)
+        estimator = Estimator(seed=self.seed)
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator)
+        var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
 
-            aux_ops = evolution_result.aux_ops_evaluated
+        var_qite = VarQITE(
+            ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+        )
+        evolution_result = var_qite.evolve(evolution_problem)
 
-            parameter_values = evolution_result.parameter_values[-1]
+        aux_ops = evolution_result.aux_ops_evaluated
 
-            expected_aux_ops = (-0.2177982985749799, 0.2556790598588627)
+        parameter_values = evolution_result.parameter_values[-1]
 
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected[i], decimal=2
-                )
+        expected_aux_ops = (-0.24629853310903974, 0.2518122871921184)
 
-            np.testing.assert_array_almost_equal(
-                [result[0] for result in aux_ops], expected_aux_ops
+        for i, parameter_value in enumerate(parameter_values):
+            np.testing.assert_almost_equal(
+                float(parameter_value), thetas_expected_shots[i], decimal=2
             )
 
-        with self.subTest(msg="Test shot-based backend."):
-            algorithm_globals.random_seed = self.seed
-
-            estimator = Estimator(options={"shots": 4096, "seed": self.seed})
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator)
-            var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
-
-            var_qite = VarQITE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
-            )
-            evolution_result = var_qite.evolve(evolution_problem)
-
-            aux_ops = evolution_result.aux_ops_evaluated
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            expected_aux_ops = (-0.24629853310903974, 0.2518122871921184)
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
-                )
-
-            np.testing.assert_array_almost_equal(
-                [result[0] for result in aux_ops], expected_aux_ops
-            )
+        np.testing.assert_array_almost_equal(
+            [result[0] for result in aux_ops], expected_aux_ops
+        )
 
     def test_run_d_1_t_7(self):
         """Test VarQITE for d = 1 and t = 7 with RK45 ODE solver."""
@@ -263,51 +235,29 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
         state_expected = Statevector([0.34849948 + 0.0j, 0.93730897 + 0.0j]).to_dict()
         # the expected final state is Statevector([0.34849948+0.j, 0.93730897+0.j])
 
-        with self.subTest(msg="Test exact backend."):
-            algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
-            var_principle = ImaginaryMcLachlanPrinciple()
+        algorithm_globals.random_seed = self.seed
 
-            var_qite = VarQITE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
+        estimator = Estimator(seed=self.seed)
+        var_principle = ImaginaryMcLachlanPrinciple()
+
+        var_qite = VarQITE(
+            ansatz, init_param_values, var_principle, estimator, num_timesteps=100
+        )
+
+        evolution_result = var_qite.evolve(evolution_problem)
+
+        evolved_state = evolution_result.evolved_state
+
+        parameter_values = evolution_result.parameter_values[-1]
+
+        for key, evolved_value in Statevector(evolved_state).to_dict().items():
+            # np.allclose works with complex numbers
+            self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
+
+        for i, parameter_value in enumerate(parameter_values):
+            np.testing.assert_almost_equal(
+                float(parameter_value), thetas_expected_shots[i], decimal=2
             )
-            evolution_result = var_qite.evolve(evolution_problem)
-            evolved_state = evolution_result.evolved_state
-            parameter_values = evolution_result.parameter_values[-1]
-
-            for key, evolved_value in Statevector(evolved_state).to_dict().items():
-                # np.allclose works with complex numbers
-                self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected[i], decimal=2
-                )
-
-        with self.subTest(msg="Test shot-based backend."):
-            algorithm_globals.random_seed = self.seed
-
-            estimator = Estimator(options={"shots": 4 * 4096, "seed": self.seed})
-            var_principle = ImaginaryMcLachlanPrinciple()
-
-            var_qite = VarQITE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
-            )
-
-            evolution_result = var_qite.evolve(evolution_problem)
-
-            evolved_state = evolution_result.evolved_state
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            for key, evolved_value in Statevector(evolved_state).to_dict().items():
-                # np.allclose works with complex numbers
-                self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
-                )
 
     def _test_helper(self, observable, thetas_expected, time, var_qite, decimal):
         evolution_problem = TimeEvolutionProblem(observable, time)

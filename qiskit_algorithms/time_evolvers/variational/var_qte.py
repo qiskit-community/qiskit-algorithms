@@ -22,7 +22,7 @@ from scipy.integrate import OdeSolver
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
@@ -76,7 +76,7 @@ class VarQTE(ABC):
         ansatz: QuantumCircuit,
         initial_parameters: Mapping[Parameter, float] | Sequence[float],
         variational_principle: VariationalPrinciple,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         ode_solver: Type[OdeSolver] | str = ForwardEulerSolver,
         lse_solver: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None,
         num_timesteps: int | None = None,
