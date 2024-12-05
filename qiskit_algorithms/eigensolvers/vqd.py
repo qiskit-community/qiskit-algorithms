@@ -363,9 +363,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
                     raise AlgorithmError(
                         f"Convergence threshold is set to {self.convergence_threshold} but an "
-                        f"average fidelity of {average_fidelity:.5f} with the previous eigenstates"
-                        f"has been observed during the evaluation of the {step}{suffix} lowest"
-                        f"eigenvalue."
+                        f"average (weighted by the betas) fidelity of {average_fidelity:.5f} with "
+                        f"the previous eigenstates has been observed during the evaluation of the "
+                        f"{step}{suffix} lowest eigenvalue."
                     )
                 logger.info(
                     (

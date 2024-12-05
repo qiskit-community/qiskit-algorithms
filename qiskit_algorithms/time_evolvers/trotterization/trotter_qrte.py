@@ -211,7 +211,7 @@ class TrotterQRTE(RealTimeEvolver):
         evolved_state.append(initial_state, evolved_state.qubits)
 
         if self._transpiler is not None:
-            evolved_state =  self._transpiler.run(evolved_state, **self._transpiler_options)
+            evolved_state = self._transpiler.run(evolved_state, **self._transpiler_options)
 
         if self._insert_barriers:
             evolved_state.barrier()

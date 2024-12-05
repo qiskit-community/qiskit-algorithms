@@ -97,9 +97,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
         gradient = LinCombEstimatorGradient(estimator)
         var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
 
-        var_qite = VarQITE(
-            ansatz, init_param_values, var_principle, estimator, num_timesteps=25
-        )
+        var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=25)
         evolution_result = var_qite.evolve(evolution_problem)
 
         aux_ops = evolution_result.aux_ops_evaluated
@@ -113,9 +111,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
                 float(parameter_value), thetas_expected_shots[i], decimal=2
             )
 
-        np.testing.assert_array_almost_equal(
-            [result[0] for result in aux_ops], expected_aux_ops
-        )
+        np.testing.assert_array_almost_equal([result[0] for result in aux_ops], expected_aux_ops)
 
     def test_run_d_1_t_7(self):
         """Test VarQITE for d = 1 and t = 7 with RK45 ODE solver."""
@@ -240,9 +236,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
         estimator = Estimator(seed=self.seed)
         var_principle = ImaginaryMcLachlanPrinciple()
 
-        var_qite = VarQITE(
-            ansatz, init_param_values, var_principle, estimator, num_timesteps=100
-        )
+        var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)
 
         evolution_result = var_qite.evolve(evolution_problem)
 

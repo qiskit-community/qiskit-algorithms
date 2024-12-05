@@ -152,7 +152,6 @@ class ComputeUncompute(BaseStateFidelity):
             ValueError: At least one pair of circuits must be defined.
             AlgorithmError: If the sampler job is not completed successfully.
         """
-
         circuits = self._construct_circuits(circuits_1, circuits_2)
         if len(circuits) == 0:
             raise ValueError(

@@ -258,7 +258,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         trotter_qrte = TrotterQRTE(
             estimator=Estimator(),
             transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            transpiler_options={"callback": callback},
         )
         trotter_qrte.evolve(evolution_problem)
 

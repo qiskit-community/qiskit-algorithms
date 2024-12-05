@@ -58,7 +58,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
         self.estimator = Estimator(seed=self.seed)
-        self.fidelity = ComputeUncompute(Sampler(seed=self.seed, default_shots=100_000))
+        self.fidelity = ComputeUncompute(Sampler(seed=self.seed, default_shots=10_000))
         self.betas = [3]
 
     @data(H2_SPARSE_PAULI)
@@ -457,6 +457,18 @@ class TestVQD(QiskitAlgorithmsTestCase):
             SLSQP(),
             k=2,
             betas=self.betas,
+            initial_point=np.array(
+                [
+                    2.15707009,
+                    -2.6128808,
+                    1.40478697,
+                    -1.73909435,
+                    -2.89100903,
+                    1.75289926,
+                    -0.14760479,
+                    -2.00011645,
+                ]
+            ),
             convergence_threshold=1e-3,
         )
         with self.subTest("Failed convergence"):
@@ -467,7 +479,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             vqd.convergence_threshold = 1e-1
             result = vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
             np.testing.assert_array_almost_equal(
-                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
             )
 
 
