@@ -1,8 +1,7 @@
-Tristan:
 - [x] phase_estimators/hamiltonian_phase_estimation.py
 - [x] phase_estimators/ipe.py
 - [x] phase_estimators/phase_estimation.py
-- [] eigensolvers/vqd.py (test doesn't work)
+- [x] eigensolvers/vqd.py
 - [x] amplitude_amplifiers/grover.py (test doesn't work but should probably be refactored or removed)
 - [x] time_evolvers/pvqd/utils.py
 - [x] time_evolvers/pvqd/pvqd.py
@@ -17,8 +16,6 @@ Tristan:
 - [x] optimizers/umda.py
 - [x] optimizers/spsa.py
 - [x] observables_evaluator.py
-
-Léna:
 - [] gradients/reverse/reverse_gradient.py
 - [] gradients/reverse/reverse_qgt.py
 - [] gradients/finite_diff/finite_diff_estimator_gradient.py
