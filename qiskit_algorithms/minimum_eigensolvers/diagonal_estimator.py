@@ -115,8 +115,7 @@ class _DiagonalEstimator(BaseEstimator):
         **run_options,
     ) -> _DiagonalEstimatorResult:
         job = self.sampler.run(
-            [self._circuits[i] for i in circuits],
-            parameter_values,
+            ([([self._circuits[i] for i in circuits], parameter_values)]),
             **run_options,
         )
         sampler_result = job.result()
