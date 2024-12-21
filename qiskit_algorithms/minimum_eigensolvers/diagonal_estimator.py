@@ -21,7 +21,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
+from qiskit.primitives import BaseSampler, BaseEstimator, BaseSamplerV2, EstimatorResult
 from qiskit.primitives.utils import init_observable, _circuit_key
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -114,10 +114,17 @@ class _DiagonalEstimator(BaseEstimator):
         parameter_values: Sequence[Sequence[float]],
         **run_options,
     ) -> _DiagonalEstimatorResult:
-        job = self.sampler.run(
-            ([([self._circuits[i] for i in circuits], parameter_values)]),
-            **run_options,
-        )
+        if isinstance(self.sampler, BaseSamplerV2):
+            job = self.sampler.run(
+                ([([self._circuits[i] for i in circuits], parameter_values)]),
+                **run_options,
+            )
+        else:
+            job = self.sampler.run(
+                [self._circuits[i] for i in circuits],
+                parameter_values,
+                **run_options,
+            )
         sampler_result = job.result()
         samples = sampler_result.quasi_dists
 
