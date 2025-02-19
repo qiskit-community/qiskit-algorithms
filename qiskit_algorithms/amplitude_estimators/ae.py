@@ -20,7 +20,7 @@ from scipy.stats import chi2, norm
 from scipy.optimize import bisect
 
 from qiskit import QuantumCircuit, ClassicalRegister
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .ae_utils import pdf_a, derivative_log_pdf_a, bisect_max
 from .estimation_problem import EstimationProblem
@@ -66,7 +66,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         num_eval_qubits: int,
         phase_estimation_circuit: QuantumCircuit | None = None,
         iqft: QuantumCircuit | None = None,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> None:
         r"""
         Args:
@@ -95,7 +95,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -104,7 +104,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -145,7 +145,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
         # add measurements if necessary
         if measurement:
-            cr = ClassicalRegister(self._m)
+            cr = ClassicalRegister(self._m, name="meas")
             circuit.add_register(cr)
             circuit.measure(list(range(self._m)), list(range(self._m)))
 
@@ -288,8 +288,10 @@ class AmplitudeEstimation(AmplitudeEstimator):
                 "The state_preparation property of the estimation problem must be set."
             )
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
+            self._sampler = StatevectorSampler()
 
         if estimation_problem.objective_qubits is None:
             raise ValueError("The objective_qubits property of the estimation problem must be set.")
@@ -307,29 +309,32 @@ class AmplitudeEstimation(AmplitudeEstimator):
         result.post_processing = estimation_problem.post_processing  # type: ignore[assignment]
 
         circuit = self.construct_circuit(estimation_problem, measurement=True)
+
         try:
-            job = self._sampler.run([circuit])
-            ret = job.result()
+            # V2 requires PUB format with shots handling
+            job = self._sampler.run([(circuit,)])
+            pub_result = job.result()[0]
+
+            if pub_result.metadata["shots"]:  # Shot-based results
+                counts = pub_result.data.meas.get_counts()
+                total_shots = sum(counts.values())
+                result.circuit_results = {
+                    bitstr: count / total_shots for bitstr, count in counts.items()
+                }
+            else:  # Statevector results
+                result.circuit_results = {
+                    bitstr: prob for bitstr, prob in pub_result.data.meas.items()
+                }
+
+            exact = True
+            # Store shots from metadata
+            result.shots = pub_result.metadata["shots"] or 1  # Handle statevector case
+
         except Exception as exc:
-            raise AlgorithmError("The job was not completed successfully. ") from exc
+            raise AlgorithmError("Job failed") from exc
 
-        shots = ret.metadata[0].get("shots")
-        exact = True
-
-        if shots is None:
-            result.circuit_results = ret.quasi_dists[0].binary_probabilities()
-            shots = 1
-        else:
-            result.circuit_results = {
-                k: round(v * shots) for k, v in ret.quasi_dists[0].binary_probabilities().items()
-            }
-            exact = False
-
-        # store shots
-        result.shots = shots
-        samples, measurements = self.evaluate_measurements(
-            result.circuit_results  # type: ignore[arg-type]
-        )
+        # Update measurement processing for V2 bitstring format
+        samples, measurements = self.evaluate_measurements(result.circuit_results)
 
         result.samples = samples
         result.samples_processed = {

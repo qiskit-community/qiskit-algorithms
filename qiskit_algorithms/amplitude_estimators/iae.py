@@ -19,7 +19,7 @@ import numpy as np
 from scipy.stats import beta
 
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -54,7 +54,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         confint_method: str = "beta",
         min_ratio: float = 2,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> None:
         r"""
         The output of the algorithm is an estimate for the amplitude `a`, that with at least
@@ -98,7 +98,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -107,7 +107,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -214,7 +214,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
 
         # add classical register if needed
         if measurement:
-            c = ClassicalRegister(len(estimation_problem.objective_qubits))
+            c = ClassicalRegister(len(estimation_problem.objective_qubits), name="meas")
             circuit.add_register(c)
 
         # add A operator
@@ -272,7 +272,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         """
         if self._sampler is None:
             warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            self._sampler = StatevectorSampler()
 
         # initialize memory variables
         powers = [0]  # list of powers k: Q^k, (called 'k' in paper)
@@ -310,23 +310,23 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             counts = {}
 
             try:
-                job = self._sampler.run([circuit])
-                ret = job.result()
+                job = self._sampler.run([(circuit,)])  # PUB format
+                pub_result = job.result()[0]
             except Exception as exc:
                 raise AlgorithmError("The job was not completed successfully. ") from exc
 
-            shots = ret.metadata[0].get("shots")
+            shots = pub_result.metadata["shots"]
             if shots is None:
                 circuit = self.construct_circuit(estimation_problem, k=0, measurement=True)
                 try:
-                    job = self._sampler.run([circuit])
-                    ret = job.result()
+                    job = self._sampler.run([(circuit,)])  # PUB format
+                    pub_result = job.result()[0]
                 except Exception as exc:
                     raise AlgorithmError("The job was not completed successfully. ") from exc
 
                 # calculate the probability of measuring '1'
                 prob = 0.0
-                for bit, probabilities in ret.quasi_dists[0].binary_probabilities().items():
+                for bit, probabilities in pub_result.data.meas.items():
                     # check if it is a good state
                     if estimation_problem.is_good_state(bit):
                         prob += probabilities
@@ -341,13 +341,11 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 num_oracle_queries = 0  # no Q-oracle call, only a single one to A
                 break
 
-            counts = {
-                k: round(v * shots) for k, v in ret.quasi_dists[0].binary_probabilities().items()
-            }
+            # Handle shot-based case with StateVector
+            counts = pub_result.data.meas.get_counts()
 
             # calculate the probability of measuring '1', 'prob' is a_i in the paper
             one_counts, prob = self._good_state_probability(estimation_problem, counts)
-
             num_one_shots.append(one_counts)
 
             # track number of Q-oracle calls
