@@ -80,7 +80,7 @@ class QNSPSA(SPSA):
 
             # fidelity for estimation of the geometric tensor
             sampler = Sampler()
-            fidelity = QNSPSA.get_fidelity(ansatz, sampler)
+            fidelity = QNSPSA.get_fidelity(ansatz, "sampler"=sampler)
 
             # run QN-SPSA
             qnspsa = QNSPSA(fidelity, maxiter=300)
