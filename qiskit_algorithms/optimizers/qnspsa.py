@@ -80,7 +80,7 @@ class QNSPSA(SPSA):
 
             # fidelity for estimation of the geometric tensor
             sampler = Sampler()
-            fidelity = QNSPSA.get_fidelity(ansatz, "sampler"=sampler)
+            fidelity = QNSPSA.get_fidelity(ansatz, sampler)
 
             # run QN-SPSA
             qnspsa = QNSPSA(fidelity, maxiter=300)
@@ -232,8 +232,7 @@ class QNSPSA(SPSA):
     @staticmethod
     def get_fidelity(
         circuit: QuantumCircuit,
-        *,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSampler,
     ) -> Callable[[np.ndarray, np.ndarray], float]:
         r"""Get a function to compute the fidelity of ``circuit`` with itself.
 
