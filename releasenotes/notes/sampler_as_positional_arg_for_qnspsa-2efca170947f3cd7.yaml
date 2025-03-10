@@ -1,0 +1,26 @@
+---
+prelude: >
+    The QNSPSA.get_fidelity function had some deprecated arguments, which 
+    just got cleaned up.
+features:
+  - |
+    Allowing to call the QNSPSA.get_fidelity function as
+    `QNSPSA(ansatz, sampler)` with the `sampler` option as a positional
+    argument (instead of keyword argument).
+  - |
+    Do not allow the `sampler` option to be `None`.
+issues:
+  - |
+    The original module for QNSPSA allowed the use the `get_fidelity()`
+    function without a `sampler` (`sampler=None`), which is deprecated in the
+    current version of the code.
+upgrade:
+  - |
+    The list of arguments for `QNSPSA.get_fidelity()` has been updated to
+    include only the `ansatz` and the `sampler`, removing previous deprecated
+    options, and enforcing a non `None` value for the `sampler`.
+deprecations:
+  - |
+    The `None` value for the `sampler` on the `QNSPSA.get_fidelity()` function
+    is no longer valid. A proper sampler must be provided.
+
