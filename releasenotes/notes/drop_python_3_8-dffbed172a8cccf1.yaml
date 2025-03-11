@@ -1,0 +1,9 @@
+---
+prelude: >
+    Support for Python 3.8 has been dropped.
+upgrade:
+  - |
+    Python 3.8 support was dropped as Python 3.8 reached End Of Life
+    in October 2024 and is no longer being maintained. If you were
+    using Python 3.8 you should upgrade to a newer version that Qiskit
+    Algorithms now supports.
