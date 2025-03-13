@@ -183,12 +183,13 @@ jobs:
             setup.py
             requirements.txt
             requirements-dev.txt
+      - uses: ./.github/actions/install-algorithms
+      - run: pip uninstall -y qiskit
       - uses: ./.github/actions/install-main-dependencies
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           qiskit-main: "true"
-      - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
 #     - run: make mypy
