@@ -25,9 +25,9 @@
 - [] gradients/lin_comb/lin_comb_sampler_gradient.py
 - [] gradients/lin_comb/lin_comb_estimator_gradient.py
 - [] gradients/lin_comb/lin_comb_qgt.py
-- [] gradients/base/base_sampler_gradient.py
-- [] gradients/base/base_qgt.py
-- [] gradients/base/base_estimator_gradient.py
+- [x] gradients/base/base_sampler_gradient.py
+- [x] gradients/base/base_qgt.py
+- [x] gradients/base/base_estimator_gradient.py
 - [x] minimum_eigensolvers/vqe.py
 - [x] minimum_eigensolvers/adapt_vqe.py
 - [x] minimum_eigensolvers/qaoa.py

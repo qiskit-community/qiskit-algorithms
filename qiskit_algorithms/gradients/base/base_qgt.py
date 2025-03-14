@@ -23,7 +23,7 @@ from copy import copy
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
 from qiskit.providers import Options
 from qiskit.transpiler.passes import TranslateParameterizedGates
@@ -52,7 +52,7 @@ class BaseQGT(ABC):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
         options: Options | None = None,
@@ -92,7 +92,7 @@ class BaseQGT(ABC):
                 options in ``run`` method > QGT's default options > primitive's default
                 setting. Higher priority setting overrides lower priority setting.
         """
-        self._estimator: BaseEstimator = estimator
+        self._estimator: BaseEstimatorV2 = estimator
         self._phase_fix: bool = phase_fix
         self._derivative_type: DerivativeType = derivative_type
         self._default_options = Options()

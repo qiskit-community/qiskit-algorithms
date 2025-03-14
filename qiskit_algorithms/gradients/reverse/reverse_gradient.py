@@ -22,7 +22,7 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import Statevector
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 
 from .bind import bind
 from .derive_circuit import derive_circuit

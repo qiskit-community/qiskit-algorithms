@@ -80,7 +80,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        shots,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
         job_circuits, job_param_values, metadata = [], [], []
@@ -112,7 +112,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                 all_n.append(n)
 
         # Run the single job with all circuits.
-        job = self._sampler.run(job_circuits, job_param_values, **options)
+        job = self._sampler.run(job_circuits, job_param_values, shots)
         try:
             results = job.result()
         except Exception as exc:

@@ -186,9 +186,9 @@ class LinCombQGT(BaseQGT):
 
         # Run the single job with all circuits.
         job = self._estimator.run(
-            job_circuits,
+            (job_circuits,
             job_observables,
-            job_param_values,
+            job_param_values),
             **options,
         )
 

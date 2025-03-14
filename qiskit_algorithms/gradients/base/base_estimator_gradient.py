@@ -23,7 +23,7 @@ from copy import copy
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
 from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -46,7 +46,7 @@ class BaseEstimatorGradient(ABC):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         options: Options | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
     ):
@@ -68,7 +68,7 @@ class BaseEstimatorGradient(ABC):
                 gradient and this type is the only supported type for function-level schemes like
                 finite difference.
         """
-        self._estimator: BaseEstimator = estimator
+        self._estimator: BaseEstimatorV2 = estimator
         self._default_options = Options()
         if options is not None:
             self._default_options.update_options(**options)

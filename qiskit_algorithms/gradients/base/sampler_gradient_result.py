@@ -18,8 +18,6 @@ from __future__ import annotations
 from typing import Any
 from dataclasses import dataclass
 
-from qiskit.providers import Options
-
 
 @dataclass(frozen=True)
 class SamplerGradientResult:
@@ -29,5 +27,5 @@ class SamplerGradientResult:
     """The gradients of the sample probabilities."""
     metadata: list[dict[str, Any]] | list[list[dict[str, Any]]]
     """Additional information about the job."""
-    options: Options
-    """Primitive runtime options for the execution of the job."""
+    shots: int | Sequence[int]
+    """Primitive number of shots for the execution of the job."""
