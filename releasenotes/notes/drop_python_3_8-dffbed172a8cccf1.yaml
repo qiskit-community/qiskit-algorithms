@@ -1,0 +1,16 @@
+---
+prelude: >
+    Support for Python 3.8 has been dropped.
+issues:
+  - |
+    Qiskit Algorithms does not work with Qiskit version 2.0 (or above).
+    Qiskit Algorithms is using Version 1 of the primitives and as they
+    were deprecated and then removed in Qiskit 2.0 it needs an earlier
+    version that still has them to work. As such Qiskit Algorithms pins
+    the qiskit dependency so that a version less than 2.0 will be installed.
+upgrade:
+  - |
+    Python 3.8 support was dropped as Python 3.8 reached End Of Life
+    in October 2024 and is no longer being maintained. If you were
+    using Python 3.8 you should upgrade to a newer version that Qiskit
+    Algorithms now supports.
