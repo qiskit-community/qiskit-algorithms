@@ -22,7 +22,7 @@ from scipy.optimize import brute
 from scipy.stats import norm, chi2
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
@@ -54,7 +54,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self,
         evaluation_schedule: list[int] | int,
         minimizer: MINIMIZER | None = None,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> None:
         r"""
         Args:
@@ -101,7 +101,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -110,7 +110,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -142,7 +142,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         # add classical register if needed
         if measurement:
-            c = ClassicalRegister(len(estimation_problem.objective_qubits))
+            c = ClassicalRegister(len(estimation_problem.objective_qubits), name="meas")
             qc_0.add_register(c)
 
         qc_0.compose(estimation_problem.state_preparation, inplace=True)
@@ -276,7 +276,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         """
         if self._sampler is None:
             warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            self._sampler = StatevectorSampler()
 
         if estimation_problem.state_preparation is None:
             raise AlgorithmError(
@@ -291,23 +291,23 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         circuits = self.construct_circuits(estimation_problem, measurement=True)
 
         try:
-            job = self._sampler.run(circuits)
-            ret = job.result()
+            pubs = [(circuit,) for circuit in circuits]
+            job = self._sampler.run(pubs)
+            pub_results = job.result()
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
         circuit_results = []
-        shots = ret.metadata[0].get("shots")
+        shots = pub_results[0].metadata["shots"]
         exact = True
-        if shots is None:
-            for quasi_dist in ret.quasi_dists:
-                circuit_result = quasi_dist.binary_probabilities()
+        if shots is None:  # Statevector simulation
+            for pub_result in pub_results:
+                circuit_result = {bitstr: prob for bitstr, prob in pub_result.data.meas.items()}
                 circuit_results.append(circuit_result)
             shots = 1
-        else:
-            # get counts and construct MLE input
-            for quasi_dist in ret.quasi_dists:
-                counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
+        else:  # Shot-based results
+            for pub_result in pub_results:
+                counts = pub_result.data.meas.get_counts()
                 circuit_results.append(counts)
             exact = False
 
