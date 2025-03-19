@@ -4,4 +4,4 @@ upgrade:
     The list of arguments for `QNSPSA.get_fidelity()` has been updated to
     include only the `ansatz` and the `sampler`, and removing previous
     wildcard option. From now on, the sampler option must be explicitly
-    especified, as a positional or keyword argument, and it cannot be `None`.
+    specified, as a positional or keyword argument, and it cannot be `None`.
