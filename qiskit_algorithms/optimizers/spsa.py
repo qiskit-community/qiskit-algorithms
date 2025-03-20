@@ -90,7 +90,7 @@ class SPSA(Optimizer):
             import numpy as np
             from qiskit_algorithms.optimizers import SPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.primitives import Estimator
+            from qiskit.primitives import StatevectorEstimator as Estimator
             from qiskit.quantum_info import SparsePauliOp
 
             ansatz = PauliTwoDesign(2, reps=1, seed=2)
@@ -99,8 +99,8 @@ class SPSA(Optimizer):
             estimator = Estimator()
 
             def loss(x):
-                job = estimator.run([ansatz], [observable], [x])
-                return job.result().values[0]
+                job = estimator.run([(ansatz, observable, x)])
+                return job.result()[0].data.evs
 
             spsa = SPSA(maxiter=300)
             result = spsa.minimize(loss, x0=initial_point)

@@ -16,10 +16,8 @@ Fidelity result class
 from __future__ import annotations
 
 from collections.abc import Sequence, Mapping
-from typing import Any
 from dataclasses import dataclass
-
-from qiskit.providers import Options
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -33,5 +31,5 @@ class StateFidelityResult:
     depending on the error mitigation method used."""
     metadata: Sequence[Mapping[str, Any]]
     """Additional information about the fidelity calculation."""
-    options: Options
-    """Primitive runtime options for the execution of the fidelity job."""
+    shots: int | Sequence[int]
+    """Primitive number of shots options for the execution of the fidelity job."""
