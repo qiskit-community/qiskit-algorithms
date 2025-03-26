@@ -76,12 +76,18 @@ class OptimizerState:
     # Under Python 3.13 the auto-generated equal fails with a error around
     # using numpy all or any. See https://github.com/qiskit-community/qiskit-algorithms/pull/225
     # for further information. Hence this custom function was added.
-    def __eq__(self, other: OptimizerState):
+    def __eq__(self, other: object):
+        if not isinstance(other, OptimizerState):
+            return NotImplemented
         return (
             (
                 self.x == other.x
-                if isinstance(self.x, float)
-                else (self.x.shape == other.x.shape and (self.x == other.x).all())
+                if isinstance(self.x, float) and isinstance(other.x, float)
+                else (
+                    False
+                    if isinstance(self.x, float) or isinstance(other.x, float)
+                    else self.x.shape == other.x.shape and (self.x == other.x).all()
+                )
             )
             and self.fun == other.fun
             and self.jac == other.jac
