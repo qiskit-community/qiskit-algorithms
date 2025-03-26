@@ -46,7 +46,9 @@ class GradientDescentState(OptimizerState):
     # too as it does not appear to use super by default and without this failed
     # the exact same way. Note it does not include learning rate as that field
     # is not included in the compare as pre the field decorator.
-    def __eq__(self, other: GradientDescentState):
+    def __eq__(self, other: object):
+        if not isinstance(other, GradientDescentState):
+            return NotImplemented
         return super().__eq__(other) and self.stepsize == other.stepsize
 
 
