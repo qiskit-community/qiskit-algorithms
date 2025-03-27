@@ -13,6 +13,9 @@
 """Test TrotterQRTE."""
 
 import unittest
+
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+
 from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data, unpack
 import numpy as np
@@ -23,7 +26,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
 from qiskit.circuit import Parameter
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
 
 from qiskit_algorithms import TimeEvolutionProblem, TrotterQRTE
@@ -238,6 +241,28 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         self.assertEqual(
             expected_circuit.decompose(reps=3), evolution_result.evolved_state.decompose(reps=5)
         )
+
+    def test_transpiler(self):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
+        initial_state = QuantumCircuit(1)
+        time = 1
+        evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
+
+        trotter_qrte = TrotterQRTE(
+            estimator=Estimator(),
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        )
+        trotter_qrte.evolve(evolution_problem)
+
+        self.assertEqual(counts[0], 15)
 
     # pylint: disable=too-many-positional-arguments
     @staticmethod
