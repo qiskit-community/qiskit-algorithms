@@ -19,8 +19,7 @@ from collections.abc import Sequence
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseEstimator
-from qiskit.providers import Options
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
@@ -43,11 +42,11 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
     # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         epsilon: float,
         batch_size: int = 1,
         seed: int | None = None,
-        options: Options | None = None,
+        precision: float | None = None,
     ):
         """
         Args:
@@ -55,11 +54,10 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             epsilon: The offset size for the SPSA gradients.
             batch_size: The number of gradients to average.
             seed: The seed for a random perturbation vector.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
-
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
         Raises:
             ValueError: If ``epsilon`` is not positive.
         """
@@ -69,7 +67,7 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         self._batch_size = batch_size
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(estimator, options)
+        super().__init__(estimator, precision)
 
     def _run(
         self,
@@ -77,13 +75,18 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | Sequence[float] | None = None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         job_circuits, job_observables, job_param_values, metadata, offsets = [], [], [], [], []
         all_n = []
-        for circuit, observable, parameter_values_, parameters_ in zip(
-            circuits, observables, parameter_values, parameters
+        has_transformed_precision = False
+        if isinstance(precision, float):
+            precision=[precision]*len(circuits)
+            has_transformed_precision = True
+        pubs=[]
+        for circuit, observable, parameter_values_, parameters_, precision_ in zip(
+            circuits, observables, parameter_values, parameters, precision
         ):
             # Indices of parameters to be differentiated.
             indices = [circuit.parameters.data.index(p) for p in parameters_]
@@ -102,14 +105,10 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             job_observables.extend([observable] * 2 * self._batch_size)
             job_param_values.extend(plus + minus)
             all_n.append(2 * self._batch_size)
+            pubs.append((circuit, observable, plus + minus, precision_))
 
         # Run the single job with all circuits.
-        job = self._estimator.run(
-            job_circuits,
-            job_observables,
-            job_param_values,
-            **options,
-        )
+        job = self._estimator.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -118,8 +117,8 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         # Compute the gradients.
         gradients = []
         partial_sum_n = 0
-        for i, n in enumerate(all_n):
-            result = results.values[partial_sum_n : partial_sum_n + n]
+        for i, (n, result_n) in enumerate(zip(all_n, results)):
+            result = results.data.evs
             partial_sum_n += n
             n = len(result) // 2
             diffs = (result[:n] - result[n:]) / (2 * self._epsilon)
@@ -131,5 +130,6 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             indices = [circuits[i].parameters.data.index(p) for p in metadata[i]["parameters"]]
             gradients.append(gradient[indices])
 
-        opt = self._get_local_options(options)
-        return EstimatorGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_precision:
+            precision = precision[0]
+        return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)
