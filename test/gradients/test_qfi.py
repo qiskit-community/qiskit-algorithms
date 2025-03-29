@@ -22,7 +22,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.parametervector import ParameterVector
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator as Estimator
 
 from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 
@@ -116,36 +116,36 @@ class TestQFI(QiskitAlgorithmsTestCase):
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
-        qgt = LinCombQGT(estimator=self.estimator, options={"shots": 100})
+        qgt = LinCombQGT(estimator=self.estimator, precision=0.1)
 
         with self.subTest("QGT"):
             qfi = QFI(qgt=qgt)
-            options = qfi.options
+            precision = qfi.precision
             result = qfi.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.1)
+            self.assertEqual(precision, 0.1)
 
         with self.subTest("QFI init"):
-            qfi = QFI(qgt=qgt, options={"shots": 200})
+            qfi = QFI(qgt=qgt, precision=0.2)
             result = qfi.run([qc], [[1]]).result()
-            options = qfi.options
-            self.assertEqual(result.options.get("shots"), 200)
-            self.assertEqual(options.get("shots"), 200)
+            precision = qfi.precision
+            self.assertEqual(result.precision, 0.2)
+            self.assertEqual(precision, 0.2)
 
         with self.subTest("QFI update"):
-            qfi = QFI(qgt, options={"shots": 200})
-            qfi.update_default_options(shots=100)
-            options = qfi.options
+            qfi = QFI(qgt, precision=0.2)
+            qfi.precision = 0.1
+            precision = qfi.precision
             result = qfi.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.1)
+            self.assertEqual(precision, 0.1)
 
         with self.subTest("QFI run"):
-            qfi = QFI(qgt=qgt, options={"shots": 200})
-            result = qfi.run([qc], [[0]], shots=300).result()
-            options = qfi.options
-            self.assertEqual(result.options.get("shots"), 300)
-            self.assertEqual(options.get("shots"), 200)
+            qfi = QFI(qgt=qgt, precision=0.2)
+            result = qfi.run([qc], [[0]], precision=0.3).result()
+            precision = qfi.precision
+            self.assertEqual(result.precision, 0.3)
+            self.assertEqual(precision, 0.2)
 
 
 if __name__ == "__main__":

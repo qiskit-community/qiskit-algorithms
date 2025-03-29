@@ -14,18 +14,14 @@
 """Test Sampler Gradients"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
-from typing import List
 
 import numpy as np
 from ddt import ddt, data
-
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
-from qiskit.primitives import Sampler
-from qiskit.result import QuasiDistribution
+from qiskit.primitives import StatevectorSampler as Sampler
 
 from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
@@ -33,7 +29,7 @@ from qiskit_algorithms.gradients import (
     ParamShiftSamplerGradient,
     SPSASamplerGradient,
 )
-
+from test import QiskitAlgorithmsTestCase
 from .logging_primitives import LoggingSampler
 
 gradient_factories = [
@@ -596,48 +592,48 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         qc.measure_all()
-        sampler = Sampler(options={"shots": 100})
+        sampler = Sampler(shots=100)
         with self.subTest("sampler"):
             if grad is FiniteDiffSamplerGradient or grad is SPSASamplerGradient:
                 gradient = grad(sampler, epsilon=1e-6)
             else:
                 gradient = grad(sampler)
-            options = gradient.options
+            shots = gradient.shots
             result = gradient.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.shots, 100)
+            self.assertEqual(shots, 100)
 
         with self.subTest("gradient init"):
             if grad is FiniteDiffSamplerGradient or grad is SPSASamplerGradient:
-                gradient = grad(sampler, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(sampler, epsilon=1e-6, shots=200)
             else:
-                gradient = grad(sampler, options={"shots": 200})
-            options = gradient.options
+                gradient = grad(sampler, shots=200)
+            shots = gradient.shots
             result = gradient.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 200)
-            self.assertEqual(options.get("shots"), 200)
+            self.assertEqual(result.shots, 200)
+            self.assertEqual(shots, 200)
 
         with self.subTest("gradient update"):
             if grad is FiniteDiffSamplerGradient or grad is SPSASamplerGradient:
-                gradient = grad(sampler, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(sampler, epsilon=1e-6, shots=200)
             else:
-                gradient = grad(sampler, options={"shots": 200})
-            gradient.update_default_options(shots=100)
+                gradient = grad(sampler, shots=200)
+            gradient.shots = 100
             options = gradient.options
             result = gradient.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.shots, 100)
+            self.assertEqual(shots, 100)
 
         with self.subTest("gradient run"):
             if grad is FiniteDiffSamplerGradient or grad is SPSASamplerGradient:
-                gradient = grad(sampler, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(sampler, epsilon=1e-6, shots=200)
             else:
-                gradient = grad(sampler, options={"shots": 200})
-            options = gradient.options
+                gradient = grad(sampler, shots=200)
+            shots = gradient.shots
             result = gradient.run([qc], [[1]], shots=300).result()
-            self.assertEqual(result.options.get("shots"), 300)
+            self.assertEqual(result.shots, 300)
             # Only default + sampler options. Not run.
-            self.assertEqual(options.get("shots"), 200)
+            self.assertEqual(shots, 200)
 
     @data(
         FiniteDiffSamplerGradient,
@@ -680,7 +676,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
             np.testing.assert_allclose(array1, array2, atol=1e-5)
 
 
-def _quasi2array(quasis: List[QuasiDistribution], num_qubits: int) -> np.ndarray:
+def _quasi2array(quasis: list[dict], num_qubits: int) -> np.ndarray:
     ret = np.zeros((len(quasis), 2**num_qubits))
     for i, quasi in enumerate(quasis):
         ret[i, list(quasi.keys())] = list(quasi.values())

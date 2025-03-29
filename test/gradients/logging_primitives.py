@@ -11,22 +11,25 @@
 # that they have been altered from the originals.
 
 """Test primitives that check what kind of operations are in the circuits they execute."""
+from typing import Iterable
 
-from qiskit.primitives import Estimator, Sampler
+from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
+from qiskit.primitives.containers.estimator_pub import EstimatorPub
+from qiskit.primitives.containers.sampler_pub import SamplerPub
 
 
 class LoggingEstimator(Estimator):
     """An estimator checking what operations were in the circuits it executed."""
 
-    def __init__(self, options=None, operations_callback=None):
-        super().__init__(options=options)
+    def __init__(self, default_precision: float = 0.0, seed: int | None = None, operations_callback=None):
+        super().__init__(default_precision=default_precision, seed=seed)
         self.operations_callback = operations_callback
 
-    def _run(self, circuits, observables, parameter_values, **run_options):
+    def _run(self, pubs: list[EstimatorPub]):
         if self.operations_callback is not None:
-            ops = [circuit.count_ops() for circuit in circuits]
+            ops = [pub.circuit.count_ops() for pub in pubs]
             self.operations_callback(ops)
-        return super()._run(circuits, observables, parameter_values, **run_options)
+        return super()._run(pubs)
 
 
 class LoggingSampler(Sampler):
@@ -36,7 +39,7 @@ class LoggingSampler(Sampler):
         super().__init__()
         self.operations_callback = operations_callback
 
-    def _run(self, circuits, parameter_values, **run_options):
-        ops = [circuit.count_ops() for circuit in circuits]
+    def _run(self, pubs: Iterable[SamplerPub]):
+        ops = [pub.circuit.count_ops() for pub in pubs]
         self.operations_callback(ops)
-        return super()._run(circuits, parameter_values, **run_options)
+        return super()._run(pubs)
