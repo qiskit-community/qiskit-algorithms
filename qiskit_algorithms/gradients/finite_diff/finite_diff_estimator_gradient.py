@@ -21,7 +21,6 @@ import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
-from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
@@ -130,14 +129,13 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         # Compute the gradients
         gradients = []
         partial_sum_n = 0
-        for n in all_n:
+        for n, result_n in zip(all_n, results):
             # Ensure gradient is always defined for the append below after the if block
             # otherwise lint errors out. I left the if block as it has been coded though
             # as the values are checked in the constructor I could have made the last elif
             # a simple else instead of defining this here.
             gradient = None
-            result_n = results[partial_sum_n : partial_sum_n + n]
-            result = [res.data.evs for res in result_n]
+            result = result_n.data.evs
             if self._method == "central":
                 gradient = (result[: n // 2] - result[n // 2 :]) / (2 * self._epsilon)
             elif self._method == "forward":

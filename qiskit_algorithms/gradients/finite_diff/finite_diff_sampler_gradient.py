@@ -123,16 +123,14 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         # Compute the gradients.
         gradients = []
         partial_sum_n = 0
-        for n, circuit, res in zip(all_n, circuits, results):
+        for n, result_n in zip(all_n, results):
             gradient = []
-            result_n = results[partial_sum_n : partial_sum_n + n]
-            # result_n = [getattr(res.data, circuit.cregs[0].name)[partial_sum_n, partial_sum_n + n]]
             result = [
                 {
                     label: value / res.num_shots
                     for label, value in res.get_counts().items()
                 }
-                for res in result_n
+                for res in getattr(result_n.data, next(iter(result_n.data)))
             ]
             if self._method == "central":
                 for dist_plus, dist_minus in zip(result[: n // 2], result[n // 2 :]):

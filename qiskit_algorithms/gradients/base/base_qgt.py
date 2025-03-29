@@ -352,37 +352,21 @@ class BaseQGT(ABC):
                 )
 
     @property
-    def options(self) -> Options:
-        """Return the union of estimator options setting and QGT default options,
-        where, if the same field is set in both, the QGT's default options override
-        the primitive's default setting.
+    def precision(self) -> int | None:
+        """Return the precision used by the `run` method of the Estimator primitive. If None,
+        the default precision of the primitive is used.
 
         Returns:
-            The QGT default + estimator options.
+            The default precision.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._precision
 
-    def update_default_options(self, **options):
-        """Update the gradient's default options setting.
+    @precision.setter
+    def precision(self, precision: float | None):
+        """Update the fidelity's default precision setting.
 
         Args:
-            **options: The fields to update the default options.
+            precision: The new default precision.
         """
 
-        self._default_options.update_options(**options)
-
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the QGT default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > QGT's default options > primitive's
-        default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The QGT default + estimator + run options.
-        """
-        opts = copy(self._estimator.options)
-        opts.update_options(**options)
-        return opts
+        self._precision = precision

@@ -18,14 +18,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from copy import copy
 
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
