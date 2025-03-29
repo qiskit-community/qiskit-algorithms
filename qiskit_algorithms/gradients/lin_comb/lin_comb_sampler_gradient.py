@@ -19,7 +19,7 @@ from collections import defaultdict
 from collections.abc import Sequence
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 from qiskit.primitives.utils import _circuit_key
 from qiskit.providers import Options
 
@@ -62,7 +62,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         "z",
     ]
 
-    def __init__(self, sampler: BaseSampler, options: Options | None = None):
+    def __init__(self, sampler: BaseSamplerV2, options: Options | None = None):
         """
         Args:
             sampler: The sampler used to compute the gradients.
@@ -79,13 +79,13 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the estimator gradients on the given circuits."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, **options)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, shots)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -93,12 +93,19 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
         job_circuits, job_param_values, metadata = [], [], []
         all_n = []
-        for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
+        has_transformed_shots = False
+
+        if isinstance(shots, float):
+            shots=[shots]*len(circuits)
+            has_transformed_shots = True
+        pubs=[]
+
+        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
             # Prepare circuits for the gradient of the specified parameters.
             # TODO: why is this not wrapped into another list level like it is done elsewhere?
             metadata.append({"parameters": parameters_})
@@ -120,7 +127,8 @@ class LinCombSamplerGradient(BaseSamplerGradient):
             all_n.append(n)
 
         # Run the single job with all circuits.
-        job = self._sampler.run(job_circuits, job_param_values, **options)
+        pubs = list(zip(job_circuits, job_param_values, shots))
+        job = self._sampler.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -131,7 +139,15 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         partial_sum_n = 0
         for i, n in enumerate(all_n):
             gradient = []
-            result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
+            result_n = results[partial_sum_n : partial_sum_n + n]
+            result = [
+                {
+                    label: value / res.num_shots
+                    for label, value in res.get_counts().items()
+                }
+                for res in getattr(result_n.data, next(iter(result_n.data)))
+            ]
+
             m = 2 ** circuits[i].num_qubits
             for dist in result:
                 grad_dist: dict[int, float] = defaultdict(float)
@@ -144,5 +160,6 @@ class LinCombSamplerGradient(BaseSamplerGradient):
             gradients.append(gradient)
             partial_sum_n += n
 
-        opt = self._get_local_options(options)
-        return SamplerGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_shots:
+            shots = shots[0]
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)

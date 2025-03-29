@@ -20,9 +20,8 @@ from collections.abc import Sequence
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import init_observable, _circuit_key
-from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
@@ -66,9 +65,9 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
+        precision: float | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
-        options: Options | None = None,
     ):
         r"""
         Args:
@@ -81,13 +80,13 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                     - ``DerivativeType.IMAG`` computes :math:`2 \mathrm{Im}[⟨ψ(ω)|O(θ)|dω ψ(ω)〉]`.
                     - ``DerivativeType.COMPLEX`` computes :math:`2 ⟨ψ(ω)|O(θ)|dω ψ(ω)〉`.
 
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
                 Higher priority setting overrides lower priority setting.
         """
         self._lin_comb_cache: dict[tuple, dict[Parameter, QuantumCircuit]] = {}
-        super().__init__(estimator, options, derivative_type=derivative_type)
+        super().__init__(estimator, precision, derivative_type=derivative_type)
 
     @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]
     def derivative_type(self, derivative_type: DerivativeType) -> None:
@@ -100,14 +99,14 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, **options
+            g_circuits, observables, g_parameter_values, g_parameters, precision
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -117,13 +116,21 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata = [], [], [], []
+        has_transformed_precision = False
+
+        if isinstance(precision, float):
+            precision=[precision]*len(circuits)
+            has_transformed_precision = True
+
+        #(job_circuits, job_observables, job_param_values,
+        metadata = []
         all_n = []
-        for circuit, observable, parameter_values_, parameters_ in zip(
-            circuits, observables, parameter_values, parameters
+        pubs = []
+        for circuit, observable, parameter_values_, parameters_, precision_ in zip(
+            circuits, observables, parameter_values, parameters, precision
         ):
             # Prepare circuits for the gradient of the specified parameters.
             meta = {"parameters": parameters_}
@@ -151,22 +158,16 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             metadata.append(meta)
             # Combine inputs into a single job to reduce overhead.
             if self._derivative_type == DerivativeType.COMPLEX:
-                job_circuits.extend(gradient_circuits * 2)
-                job_observables.extend([observable_1] * n + [observable_2] * n)
-                job_param_values.extend([parameter_values_] * 2 * n)
                 all_n.append(2 * n)
+                pubs.extend( [(gradient_circuit, observable_1, parameter_values_, precision_) for gradient_circuit in gradient_circuits] )
+                pubs.extend( [(gradient_circuit, observable_2, parameter_values_, precision_) for gradient_circuit in gradient_circuits] )
             else:
-                job_circuits.extend(gradient_circuits)
-                job_observables.extend([observable_1] * n)
-                job_param_values.extend([parameter_values_] * n)
                 all_n.append(n)
+                pubs.extend( [(gradient_circuit, observable_1, parameter_values_, precision_) for gradient_circuit in gradient_circuits] )
 
         # Run the single job with all circuits.
         job = self._estimator.run(
-            job_circuits,
-            job_observables,
-            job_param_values,
-            **options,
+            pubs
         )
         try:
             results = job.result()
@@ -176,19 +177,21 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         # Compute the gradients.
         gradients = []
         partial_sum_n = 0
-        for n in all_n:
+        for n, result_n in zip(all_n, results):
             # this disable is needed as Pylint does not understand derivative_type is a property if
             # it is only defined in the base class and the getter is in the child
             # pylint: disable=comparison-with-callable
+            result = result_n.data.evs
             if self.derivative_type == DerivativeType.COMPLEX:
                 gradient = np.zeros(n // 2, dtype="complex")
-                gradient.real = results.values[partial_sum_n : partial_sum_n + n // 2]
-                gradient.imag = results.values[partial_sum_n + n // 2 : partial_sum_n + n]
+                gradient.real = result[:n // 2]
+                gradient.imag = result[n // 2 : n]
 
             else:
-                gradient = np.real(results.values[partial_sum_n : partial_sum_n + n])
+                gradient = np.real(result[:n])
             partial_sum_n += n
             gradients.append(gradient)
 
-        opt = self._get_local_options(options)
-        return EstimatorGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_precision:
+            precision = precision[0]
+        return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)
