@@ -20,7 +20,7 @@ from typing import Literal
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.providers import Options
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -40,9 +40,9 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         epsilon: float,
-        options: Options | None = None,
+        precision: float | None = None,
         *,
         method: Literal["central", "forward", "backward"] = "central",
     ):
@@ -50,10 +50,10 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         Args:
             estimator: The estimator used to compute the gradients.
             epsilon: The offset size for the finite difference gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
             method: The computation method of the gradients.
 
                     - ``central`` computes :math:`\frac{f(x+e)-f(x-e)}{2e}`,
@@ -74,7 +74,7 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
                 f"The argument method should be central, forward, or backward: {method} is given."
             )
         self._method = method
-        super().__init__(estimator, options)
+        super().__init__(estimator, precision)
 
     def _run(
         self,
@@ -82,14 +82,20 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | Sequence[float] | None = None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata = [], [], [], []
+        metadata = []
         all_n = []
+        has_transformed_precision = False
 
-        for circuit, observable, parameter_values_, parameters_ in zip(
-            circuits, observables, parameter_values, parameters
+        if isinstance(precision, float):
+            precision=[precision]*len(circuits)
+            has_transformed_precision = True
+
+        pubs=[]
+        for circuit, observable, parameter_values_, parameters_, precision_ in zip(
+            circuits, observables, parameter_values, parameters, precision
         ):
             # Indices of parameters to be differentiated
             indices = [circuit.parameters.data.index(p) for p in parameters_]
@@ -101,27 +107,21 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
                 plus = parameter_values_ + self._epsilon * offset
                 minus = parameter_values_ - self._epsilon * offset
                 n = 2 * len(indices)
-                job_circuits.extend([circuit] * n)
-                job_observables.extend([observable] * n)
-                job_param_values.extend(plus.tolist() + minus.tolist())
                 all_n.append(n)
+                pubs.append((circuit, observable, plus.tolist() + minus.tolist(), precision_))
             elif self._method == "forward":
                 plus = parameter_values_ + self._epsilon * offset
                 n = len(indices) + 1
-                job_circuits.extend([circuit] * n)
-                job_observables.extend([observable] * n)
-                job_param_values.extend([parameter_values_] + plus.tolist())
                 all_n.append(n)
+                pubs.append((circuit, observable, [parameter_values_] + plus.tolist(), precision_))
             elif self._method == "backward":
                 minus = parameter_values_ - self._epsilon * offset
                 n = len(indices) + 1
-                job_circuits.extend([circuit] * n)
-                job_observables.extend([observable] * n)
-                job_param_values.extend([parameter_values_] + minus.tolist())
                 all_n.append(n)
+                pubs.append((circuit, observable, [parameter_values_] + minus.tolist(), precision_))
 
         # Run the single job with all circuits.
-        job = self._estimator.run(job_circuits, job_observables, job_param_values, **options)
+        job = self._estimator.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -136,17 +136,17 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
             # as the values are checked in the constructor I could have made the last elif
             # a simple else instead of defining this here.
             gradient = None
+            result_n = results[partial_sum_n : partial_sum_n + n]
+            result = [res.data.evs for res in result_n]
             if self._method == "central":
-                result = results.values[partial_sum_n : partial_sum_n + n]
                 gradient = (result[: n // 2] - result[n // 2 :]) / (2 * self._epsilon)
             elif self._method == "forward":
-                result = results.values[partial_sum_n : partial_sum_n + n]
                 gradient = (result[1:] - result[0]) / self._epsilon
             elif self._method == "backward":
-                result = results.values[partial_sum_n : partial_sum_n + n]
                 gradient = (result[0] - result[1:]) / self._epsilon
             partial_sum_n += n
             gradients.append(gradient)
 
-        opt = self._get_local_options(options)
-        return EstimatorGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_precision:
+            precision = precision[0]
+        return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)

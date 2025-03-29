@@ -47,16 +47,16 @@ class BaseEstimatorGradient(ABC):
     def __init__(
         self,
         estimator: BaseEstimatorV2,
-        options: Options | None = None,
+        precision: float | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
     ):
         r"""
         Args:
             estimator: The estimator used to compute the gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
             derivative_type: The type of derivative. Can be either ``DerivativeType.REAL``
                 ``DerivativeType.IMAG``, or ``DerivativeType.COMPLEX``.
 
@@ -69,9 +69,7 @@ class BaseEstimatorGradient(ABC):
                 finite difference.
         """
         self._estimator: BaseEstimatorV2 = estimator
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
+        self._precision = precision
         self._derivative_type = derivative_type
 
         self._gradient_circuit_cache: dict[
@@ -94,7 +92,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        **options,
+        precision: float | None = None,
     ) -> AlgorithmJob:
         """Run the job of the estimator gradient on the given circuits.
 
@@ -107,10 +105,10 @@ class BaseEstimatorGradient(ABC):
                 ``circuits``. Defaults to None, which means that the gradients of all parameters in
                 each circuit are calculated. None in the sequence means that the gradients of all
                 parameters in the corresponding circuit are calculated.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
 
         Returns:
             The job object of the gradients of the expectation values. The i-th result corresponds to
@@ -141,13 +139,9 @@ class BaseEstimatorGradient(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, observables, parameter_values, parameters)
-        # The priority of run option is as follows:
-        # options in ``run`` method > gradient's default options > primitive's default setting.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
         # Run the job.
         job = AlgorithmJob(
-            self._run, circuits, observables, parameter_values, parameters, **opts.__dict__
+            self._run, circuits, observables, parameter_values, parameters, precision
         )
         job._submit()
         return job
@@ -159,7 +153,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | Sequence[float] | None = None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         raise NotImplementedError()
@@ -262,7 +256,7 @@ class BaseEstimatorGradient(ABC):
             gradients.append(gradient)
             metadata.append({"parameters": parameters_})
         return EstimatorGradientResult(
-            gradients=gradients, metadata=metadata, options=results.options
+            gradients=gradients, metadata=metadata, precision=results.precision
         )
 
     @staticmethod
@@ -327,37 +321,22 @@ class BaseEstimatorGradient(ABC):
                 )
 
     @property
-    def options(self) -> Options:
-        """Return the union of estimator options setting and gradient default options,
-        where, if the same field is set in both, the gradient's default options override
-        the primitive's default setting.
+    def precision(self) -> int | None:
+        """Return the precision used by the `run` method of the Estimator primitive. If None,
+        the default precision of the primitive is used.
 
         Returns:
-            The gradient default + estimator options.
+            The default precision.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._precision
 
-    def update_default_options(self, **options):
-        """Update the gradient's default options setting.
+    @precision.setter
+    def precision(self, precision: float | None):
+        """Update the fidelity's default precision setting.
 
         Args:
-            **options: The fields to update the default options.
+            precision: The new default precision.
         """
 
-        self._default_options.update_options(**options)
+        self._precision = precision
 
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the gradient default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The gradient default + estimator + run options.
-        """
-        opts = copy(self._estimator.options)
-        opts.update_options(**options)
-        return opts

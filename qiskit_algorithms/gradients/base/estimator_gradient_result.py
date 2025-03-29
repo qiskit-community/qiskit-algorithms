@@ -16,12 +16,9 @@ Estimator result class
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
-
-from qiskit.providers import Options
-
 
 @dataclass(frozen=True)
 class EstimatorGradientResult:
@@ -31,5 +28,5 @@ class EstimatorGradientResult:
     """The gradients of the expectation values."""
     metadata: list[dict[str, Any]]
     """Additional information about the job."""
-    options: Options
-    """Primitive runtime options for the execution of the job."""
+    precision: float | Sequence[float]
+    """Precision for the execution of the job."""

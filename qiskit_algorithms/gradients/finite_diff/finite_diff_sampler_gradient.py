@@ -20,8 +20,7 @@ from typing import Literal, Sequence
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.providers import Options
+from qiskit.primitives import BaseSamplerV2
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
@@ -39,9 +38,9 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         epsilon: float,
-        options: Options | None = None,
+        shots: int | None = None,
         *,
         method: Literal["central", "forward", "backward"] = "central",
     ):
@@ -49,10 +48,10 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         Args:
             sampler: The sampler used to compute the gradients.
             epsilon: The offset size for the finite difference gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            shots: Number of shots to be used by the underlying sampler.
+                The order of priority is: number of shots in ``run`` method > fidelity's
+                number of shots > primitive's default number of shots.
+                Higher priority setting overrides lower priority setting.
             method: The computation method of the gradients.
 
                     - ``central`` computes :math:`\frac{f(x+e)-f(x-e)}{2e}`,
@@ -73,19 +72,25 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                 f"The argument method should be central, forward, or backward: {method} is given."
             )
         self._method = method
-        super().__init__(sampler, options)
+        super().__init__(sampler, shots)
 
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
-        parameters: Sequence[Sequence[Parameter]],
-        shots,
+        parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        shots: int | Sequence[int] | None = None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
-        job_circuits, job_param_values, metadata = [], [], []
+        metadata = []
         all_n = []
-        for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
+        has_transformed_shots = False
+
+        if isinstance(shots, float):
+            shots=[shots]*len(circuits)
+            has_transformed_shots = True
+        pubs=[]
+        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
             # Indices of parameters to be differentiated
             indices = [circuit.parameters.data.index(p) for p in parameters_]
             metadata.append({"parameters": parameters_})
@@ -95,24 +100,21 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                 plus = parameter_values_ + self._epsilon * offset
                 minus = parameter_values_ - self._epsilon * offset
                 n = 2 * len(indices)
-                job_circuits.extend([circuit] * n)
-                job_param_values.extend(plus.tolist() + minus.tolist())
                 all_n.append(n)
+                pubs.append((circuit, plus.tolist() + minus.tolist(), shots_))
             elif self._method == "forward":
                 plus = parameter_values_ + self._epsilon * offset
                 n = len(indices) + 1
-                job_circuits.extend([circuit] * n)
-                job_param_values.extend([parameter_values_] + plus.tolist())
+                pubs.append((circuit, [parameter_values_] + plus.tolist(), shots_))
                 all_n.append(n)
             elif self._method == "backward":
                 minus = parameter_values_ - self._epsilon * offset
                 n = len(indices) + 1
-                job_circuits.extend([circuit] * n)
-                job_param_values.extend([parameter_values_] + minus.tolist())
+                pubs.append((circuit, [parameter_values_] + minus.tolist(), shots_))
                 all_n.append(n)
 
         # Run the single job with all circuits.
-        job = self._sampler.run(job_circuits, job_param_values, shots)
+        job = self._sampler.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -121,10 +123,18 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         # Compute the gradients.
         gradients = []
         partial_sum_n = 0
-        for n in all_n:
+        for n, circuit, res in zip(all_n, circuits, results):
             gradient = []
+            result_n = results[partial_sum_n : partial_sum_n + n]
+            # result_n = [getattr(res.data, circuit.cregs[0].name)[partial_sum_n, partial_sum_n + n]]
+            result = [
+                {
+                    label: value / res.num_shots
+                    for label, value in res.get_counts().items()
+                }
+                for res in result_n
+            ]
             if self._method == "central":
-                result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
                 for dist_plus, dist_minus in zip(result[: n // 2], result[n // 2 :]):
                     grad_dist: dict[int, float] = defaultdict(float)
                     for key, value in dist_plus.items():
@@ -133,7 +143,6 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                         grad_dist[key] -= value / (2 * self._epsilon)
                     gradient.append(dict(grad_dist))
             elif self._method == "forward":
-                result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
                 dist_zero = result[0]
                 for dist_plus in result[1:]:
                     grad_dist = defaultdict(float)
@@ -142,9 +151,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                     for key, value in dist_zero.items():
                         grad_dist[key] -= value / self._epsilon
                     gradient.append(dict(grad_dist))
-
             elif self._method == "backward":
-                result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
                 dist_zero = result[0]
                 for dist_minus in result[1:]:
                     grad_dist = defaultdict(float)
@@ -157,5 +164,6 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
             partial_sum_n += n
             gradients.append(gradient)
 
-        opt = self._get_local_options(options)
-        return SamplerGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_shots:
+            shots = shots[0]
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)
