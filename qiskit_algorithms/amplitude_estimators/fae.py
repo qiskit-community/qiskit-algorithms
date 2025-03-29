@@ -13,7 +13,7 @@
 """Faster Amplitude Estimation."""
 
 from __future__ import annotations
-from typing import cast, Tuple
+from typing import cast, Tuple, Any
 import warnings
 import numpy as np
 
@@ -23,6 +23,7 @@ from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
+from ..custom_types import Transpiler
 
 
 class FasterAmplitudeEstimation(AmplitudeEstimator):
@@ -52,6 +53,8 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         maxiter: int,
         rescale: bool = True,
         sampler: BaseSamplerV2 | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -59,6 +62,10 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             maxiter: The number of iterations, the maximal power of Q is `2 ** (maxiter - 1)`.
             rescale: Whether to rescale the problem passed to `estimate`.
             sampler: A sampler primitive to evaluate the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         """
         super().__init__()
@@ -68,6 +75,8 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         self._maxiter = maxiter
         self._num_oracle_calls = 0
         self._sampler = sampler
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options
 
     @property
     def sampler(self) -> BaseSamplerV2 | None:
@@ -90,28 +99,32 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
     def _cos_estimate(self, estimation_problem, k, shots):
 
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
+            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
             self._sampler = StatevectorSampler()
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
+        if self._transpiler is not None:
+            circuit = self._transpiler(circuit, **self._transpiler_options)
+
         try:
-            pub=(circuit, )
-            job = self._sampler.run([pub], default_shots=shots)
-            result = job.result()
+            pub=(circuit, None, shots)
+            job = self._sampler.run([pub])
+            result = job.result()[0]
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
-        if shots is None:
-            shots = 1
+        circuit_results = getattr(result.data, next(iter(result.data.keys())))
+        shots = result.metadata["shots"]
+
         self._num_oracle_calls += (2 * k + 1) * shots
 
         # sum over all probabilities where the objective qubits are 1
         prob = 0
-        for bit, probabilities in result.quasi_dists[0].binary_probabilities().items():
+        for bit, value in circuit_results.get_counts().items():
             # check if it is a good state
             if estimation_problem.is_good_state(bit):
-                prob += probabilities
+                prob += value / shots
 
         cos_estimate = 1 - 2 * prob
 
@@ -179,8 +192,8 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler run error.
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            self._sampler = StatevectorSampler()
 
         self._num_oracle_calls = 0
 

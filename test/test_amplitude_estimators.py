@@ -19,7 +19,7 @@ from ddt import ddt, idata, data, unpack
 from qiskit import QuantumRegister, QuantumCircuit
 from qiskit.circuit.library import QFT, GroverOperator
 from qiskit.quantum_info import Operator, Statevector
-from qiskit.primitives import Sampler
+from qiskit.primitives import StatevectorSampler
 
 from qiskit_algorithms import (
     AmplitudeEstimation,
@@ -92,10 +92,10 @@ class TestBernoulli(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
 
-        self._sampler = Sampler(options={"seed": 2})
+        self._sampler = StatevectorSampler(seed=2)
 
         def sampler_shots(shots=100):
-            return Sampler(options={"shots": shots, "seed": 2})
+            return StatevectorSampler(default_shots=shots, seed=2)
 
         self._sampler_shots = sampler_shots
 
@@ -302,10 +302,10 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
 
-        self._sampler = Sampler(options={"seed": 123})
+        self._sampler = StatevectorSampler(seed=123)
 
         def sampler_shots(shots=100):
-            return Sampler(options={"shots": shots, "seed": 7192})
+            return StatevectorSampler(default_shots=shots, seed=42)
 
         self._sampler_shots = sampler_shots
 
@@ -386,7 +386,7 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
         methods = ["lr", "fi", "oi"]  # short for likelihood_ratio, fisher, observed_fisher
         alphas = [0.1, 0.00001, 0.9]  # alpha shouldn't matter in statevector
         for alpha, method in zip(alphas, methods):
-            confint = qae.compute_confidence_interval(result, alpha, method, exact=True)
+            confint = qae.compute_confidence_interval(result, alpha, method)
             # confidence interval based on statevector should be empty, as we are sure of the result
             self.assertAlmostEqual(confint[1] - confint[0], 0.0)
             self.assertAlmostEqual(confint[0], getattr(result, key))
@@ -442,7 +442,7 @@ class TestAmplitudeEstimation(QiskitAlgorithmsTestCase):
         circuit = QuantumCircuit(1)
         problem = EstimationProblem(circuit, objective_qubits=[0], is_good_state=lambda x: True)
 
-        qae = AmplitudeEstimation(num_eval_qubits=1, sampler=Sampler())
+        qae = AmplitudeEstimation(num_eval_qubits=1, sampler=StatevectorSampler())
 
         with self.assertWarns(Warning):
             _ = qae.estimate(problem)
@@ -453,7 +453,7 @@ class TestFasterAmplitudeEstimation(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self._sampler = Sampler(options={"seed": 2})
+        self._sampler = StatevectorSampler(seed=2)
 
     def test_rescaling(self):
         """Test the rescaling."""

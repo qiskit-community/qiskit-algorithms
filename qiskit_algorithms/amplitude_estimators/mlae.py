@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
-from typing import Callable, List, Tuple, cast
+from typing import Callable, List, Tuple, cast, Any
 import warnings
 
 import numpy as np
@@ -82,7 +82,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         """
 
         super().__init__()
-        self._tranpiler = transpiler
+        self._transpiler = transpiler
         self._transpiler_options = transpiler_options
 
         # get parameters
@@ -289,6 +289,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         result = MaximumLikelihoodAmplitudeEstimationResult()
         result.evaluation_schedule = self._evaluation_schedule
+
         result.minimizer = self._minimizer
         result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
 
@@ -303,24 +304,14 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
-        circuit_results = []
-        shots = ret.metadata[0].get("shots")
+        pub_results_data = [
+            getattr(pub_result.data, circuit.cregs[0].name)
+            for pub_result, circuit in zip(ret, circuits)
+        ]
+
+        result.shots = self._sampler.default_shots
         # get counts and construct MLE input
-        for quasi_dist in ret.quasi_dists:
-            counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
-            circuit_results.append(counts)
-
-        for i, pubres in enumerate(ret):
-            qc = pubs[i][0]
-            sampler_result = getattr(res[i].data, qc.cregs[0].name)
-            sample = {
-                label: value
-                for label, value in sampler_result.get_counts().items()
-            }
-            circuit_results.append(sample)
-
-        result.shots = shots
-        result.circuit_results = circuit_results
+        result.circuit_results = [prob_dist.get_counts() for prob_dist in pub_results_data]
         # run maximum likelihood estimation
         num_state_qubits = circuits[0].num_qubits - circuits[0].num_ancillas
 
@@ -468,7 +459,6 @@ def _compute_fisher_information(
         # one_hits = one_hits[:num_sum_terms]
 
     # Compute the Fisher information
-    fisher_information = None
     if observed:
         # Note, that the observed Fisher information is very unreliable in this algorithm!
         d_loglik = 0
@@ -478,7 +468,6 @@ def _compute_fisher_information(
 
         d_loglik /= np.sqrt(a * (1 - a))
         fisher_information = d_loglik**2 / len(all_hits)
-
     else:
         fisher_information = sum(
             shots_k * (2 * m_k + 1) ** 2 for shots_k, m_k in zip(all_hits, evaluation_schedule)
@@ -486,6 +475,7 @@ def _compute_fisher_information(
         fisher_information /= a * (1 - a)
 
     return fisher_information
+
 
 
 def _fisher_confint(
