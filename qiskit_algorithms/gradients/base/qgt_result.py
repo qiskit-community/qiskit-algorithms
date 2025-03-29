@@ -16,7 +16,7 @@ QGT result class
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
 
@@ -35,5 +35,5 @@ class QGTResult:
     """The type of derivative."""
     metadata: list[dict[str, Any]] | list[list[dict[str, Any]]]
     """Additional information about the job."""
-    options: Options
+    precision: float | Sequence[float]
     """Primitive runtime options for the execution of the job."""

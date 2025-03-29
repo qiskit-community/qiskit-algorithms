@@ -64,7 +64,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
             derivative_type: Defines whether the real, imaginary or real plus imaginary part
                 of the gradient is returned.
         """
-        dummy_estimator = Estimator()  # this is required by the base class, but not used
+        dummy_estimator = StatevectorEstimator()  # this is required by the base class, but not used
         super().__init__(dummy_estimator, derivative_type=derivative_type)
 
     @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]
@@ -78,14 +78,14 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> EstimatorGradientResult:
         """Compute the gradients of the expectation values by the parameter shift rule."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, **options
+            g_circuits, observables, g_parameter_values, g_parameters, precision
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -95,7 +95,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,  # pylint: disable=unused-argument
+        precision: float | None = None
     ) -> EstimatorGradientResult:
         num_gradients = len(circuits)
         gradients = []
@@ -168,7 +168,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
             gradient = np.array(list(grads.values()))
             gradients.append(self._to_derivtype(gradient))
 
-        result = EstimatorGradientResult(gradients, metadata=metadata, options={})
+        result = EstimatorGradientResult(gradients, metadata=metadata, precision=0.0)
         return result
 
     def _to_derivtype(self, gradient):

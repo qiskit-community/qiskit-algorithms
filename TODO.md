@@ -16,8 +16,8 @@
 - [x] optimizers/umda.py
 - [x] optimizers/spsa.py
 - [x] observables_evaluator.py
-- [] gradients/reverse/reverse_gradient.py
-- [] gradients/reverse/reverse_qgt.py
+- [x] gradients/reverse/reverse_gradient.py
+- [x] gradients/reverse/reverse_qgt.py
 - [x] gradients/finite_diff/finite_diff_estimator_gradient.py
 - [x] gradients/finite_diff/finite_diff_sampler_gradient.py
 - [] gradients/spsa/spsa_estimator_gradient.py

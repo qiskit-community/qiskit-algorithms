@@ -18,14 +18,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from copy import copy
 
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
 from .qgt_result import QGTResult
@@ -55,7 +53,7 @@ class BaseQGT(ABC):
         estimator: BaseEstimatorV2,
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
-        options: Options | None = None,
+        precision: float | None = None,
     ):
         r"""
         Args:
@@ -88,16 +86,15 @@ class BaseQGT(ABC):
                     \mathrm{QGT}_{ij}= [\langle \partial_i \psi | \partial_j \psi \rangle
                         - \langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle].
 
-            options: Backend runtime options used for circuit execution. The order of priority is:
-                options in ``run`` method > QGT's default options > primitive's default
-                setting. Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
         """
         self._estimator: BaseEstimatorV2 = estimator
         self._phase_fix: bool = phase_fix
         self._derivative_type: DerivativeType = derivative_type
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
+        self._precision = precision
         self._qgt_circuit_cache: dict[tuple, GradientCircuit] = {}
         self._gradient_circuit_cache: dict[tuple, GradientCircuit] = {}
 
@@ -116,7 +113,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        **options,
+        precision: float | None = None,
     ) -> AlgorithmJob:
         """Run the job of the QGTs on the given circuits.
 
@@ -127,9 +124,9 @@ class BaseQGT(ABC):
                 the specified parameters. Each sequence of parameters corresponds to a circuit in
                 ``circuits``. Defaults to None, which means that the QGTs of all parameters in
                 each circuit are calculated.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > QGT's
-                default options > primitive's default setting.
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
                 Higher priority setting overrides lower priority setting.
 
         Returns:
@@ -156,11 +153,7 @@ class BaseQGT(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, parameter_values, parameters)
-        # The priority of run option is as follows:
-        # options in ``run`` method > QGT's default options > primitive's default setting.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, **opts.__dict__)
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision)
         job._submit()
         return job
 
@@ -170,7 +163,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
         raise NotImplementedError()
@@ -297,7 +290,7 @@ class BaseQGT(ABC):
             qgts=qgts,
             derivative_type=self.derivative_type,
             metadata=metadata,
-            options=results.options,
+            precision=results.precision,
         )
 
     @staticmethod
