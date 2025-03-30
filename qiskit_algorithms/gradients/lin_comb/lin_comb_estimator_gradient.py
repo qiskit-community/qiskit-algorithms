@@ -121,7 +121,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         """Compute the estimator gradients on the given circuits."""
         has_transformed_precision = False
 
-        if isinstance(precision, float):
+        if isinstance(precision, float) or precision is None:
             precision=[precision]*len(circuits)
             has_transformed_precision = True
 
@@ -186,7 +186,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                 gradient.imag = result[n // 2 : n]
 
             else:
-                gradient = np.real(result[:n])
+                gradient = np.real(result)
             partial_sum_n += n
             gradients.append(gradient)
 

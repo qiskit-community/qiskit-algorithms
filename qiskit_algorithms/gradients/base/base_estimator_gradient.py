@@ -247,6 +247,7 @@ class BaseEstimatorGradient(ABC):
                         bound_coeff = coeff
                     # The original gradient is a sum of the gradients of the parameters in the
                     # gradient circuit multiplied by the coefficients.
+                    print("results.gradients" , results.gradients)
                     gradient[i] += (
                         float(bound_coeff)
                         * results.gradients[idx][g_parameter_indices[g_parameter]]

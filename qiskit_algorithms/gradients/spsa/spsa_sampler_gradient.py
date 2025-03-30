@@ -82,7 +82,7 @@ class SPSASamplerGradient(BaseSamplerGradient):
         all_n = []
         has_transformed_shots = False
 
-        if isinstance(shots, float):
+        if isinstance(shots, float) or shots is None:
             shots=[shots]*len(circuits)
             has_transformed_shots = True
         pubs = []
