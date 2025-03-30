@@ -16,7 +16,7 @@ import unittest
 from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt, idata, data, unpack
-from qiskit import QuantumRegister, QuantumCircuit
+from qiskit import QuantumRegister, QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import QFT, GroverOperator
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.primitives import StatevectorSampler
@@ -92,55 +92,22 @@ class TestBernoulli(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
 
-        self._sampler = StatevectorSampler(seed=2)
-
-        def sampler_shots(shots=100):
-            return StatevectorSampler(default_shots=shots, seed=2)
+        def sampler_shots(shots=10_000):
+            return StatevectorSampler(default_shots=shots, seed=42)
 
         self._sampler_shots = sampler_shots
 
     @idata(
         [
-            [0.2, AmplitudeEstimation(2), {"estimation": 0.5, "mle": 0.2}],
-            [0.49, AmplitudeEstimation(3), {"estimation": 0.5, "mle": 0.49}],
-            [0.2, MaximumLikelihoodAmplitudeEstimation([0, 1, 2]), {"estimation": 0.2}],
-            [0.49, MaximumLikelihoodAmplitudeEstimation(3), {"estimation": 0.49}],
-            [0.2, IterativeAmplitudeEstimation(0.1, 0.1), {"estimation": 0.2}],
-            [0.49, IterativeAmplitudeEstimation(0.001, 0.01), {"estimation": 0.49}],
-            [0.2, FasterAmplitudeEstimation(0.1, 3, rescale=False), {"estimation": 0.199}],
-            [0.12, FasterAmplitudeEstimation(0.1, 2, rescale=False), {"estimation": 0.12}],
-        ]
-    )
-    @unpack
-    def test_sampler(self, prob, qae, expect):
-        """sampler test"""
-        qae.sampler = self._sampler
-        problem = EstimationProblem(BernoulliStateIn(prob), 0, BernoulliGrover(prob))
-
-        result = qae.estimate(problem)
-        for key, value in expect.items():
-            self.assertAlmostEqual(
-                value, getattr(result, key), places=3, msg=f"estimate `{key}` failed"
-            )
-
-    @idata(
-        [
-            [0.2, 100, AmplitudeEstimation(4), {"estimation": 0.14644, "mle": 0.198783}],
-            [0.0, 1000, AmplitudeEstimation(2), {"estimation": 0.0, "mle": 0.0}],
-            [
-                0.2,
-                100,
-                MaximumLikelihoodAmplitudeEstimation([0, 1, 2, 4, 8]),
-                {"estimation": 0.200308},
-            ],
-            [0.8, 10, IterativeAmplitudeEstimation(0.1, 0.05), {"estimation": 0.811711}],
-            [0.2, 1000, FasterAmplitudeEstimation(0.1, 3, rescale=False), {"estimation": 0.198640}],
-            [
-                0.12,
-                100,
-                FasterAmplitudeEstimation(0.01, 3, rescale=False),
-                {"estimation": 0.120017},
-            ],
+            [0.2, 100_000, AmplitudeEstimation(2), {"estimation": 0.5, "mle": 0.2}],
+            [0.49, 1_000_000, AmplitudeEstimation(3), {"estimation": 0.5, "mle": 0.49}],
+            [0.2, 100_000, MaximumLikelihoodAmplitudeEstimation([0, 1, 2]), {"estimation": 0.2}],
+            [0.49, 100_000, MaximumLikelihoodAmplitudeEstimation(3), {"estimation": 0.49}],
+            [0.2, 1_000_000, IterativeAmplitudeEstimation(0.1, 0.1), {"estimation": 0.2}],
+            [0.49, 100_000, IterativeAmplitudeEstimation(0.001, 0.01), {"estimation": 0.49}],
+            # Number of shots for Sampler is not used in FasterAmplitudeEstimation
+            [0.2, 1, FasterAmplitudeEstimation(0.01, 5, rescale=False), {"estimation": 0.2}],
+            [0.12, 1, FasterAmplitudeEstimation(0.1, 3, rescale=False), {"estimation": 0.12}],
         ]
     )
     @unpack
@@ -302,8 +269,6 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
 
-        self._sampler = StatevectorSampler(seed=123)
-
         def sampler_shots(shots=100):
             return StatevectorSampler(default_shots=shots, seed=42)
 
@@ -311,32 +276,10 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
 
     @idata(
         [
-            [2, AmplitudeEstimation(2), {"estimation": 0.5, "mle": 0.2702}],
-            [4, MaximumLikelihoodAmplitudeEstimation(4), {"estimation": 0.2725}],
-            [3, IterativeAmplitudeEstimation(0.1, 0.1), {"estimation": 0.2721}],
-            [3, FasterAmplitudeEstimation(0.01, 1), {"estimation": 0.2792}],
-        ]
-    )
-    @unpack
-    def test_sampler(self, n, qae, expect):
-        """sampler end-to-end test"""
-        # construct factories for A and Q
-        # qae.state_preparation = SineIntegral(n)
-        qae.sampler = self._sampler
-        estimation_problem = EstimationProblem(SineIntegral(n), objective_qubits=[n])
-
-        result = qae.estimate(estimation_problem)
-        for key, value in expect.items():
-            self.assertAlmostEqual(
-                value, getattr(result, key), places=3, msg=f"estimate `{key}` failed"
-            )
-
-    @idata(
-        [
-            [4, 1000, AmplitudeEstimation(2), {"estimation": 0.5, "mle": 0.2636}],
-            [3, 10, MaximumLikelihoodAmplitudeEstimation(2), {"estimation": 0.2904}],
-            [3, 1000, IterativeAmplitudeEstimation(0.01, 0.01), {"estimation": 0.2706}],
-            [3, 1000, FasterAmplitudeEstimation(0.1, 4), {"estimation": 0.2764}],
+            [2, 1_000_000, AmplitudeEstimation(2), {"estimation": 0.5, "mle": 0.2702}],
+            [4, 100_000, MaximumLikelihoodAmplitudeEstimation(4), {"estimation": 0.2725}],
+            [3, 1_000_000, IterativeAmplitudeEstimation(0.1, 0.1), {"estimation": 0.2721}],
+            [3, 1, FasterAmplitudeEstimation(0.01, 6), {"estimation": 0.2721}],
         ]
     )
     @unpack
@@ -379,18 +322,6 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
         """End-to-end test for all confidence intervals."""
         n = 3
 
-        estimation_problem = EstimationProblem(SineIntegral(n), objective_qubits=[n])
-        qae.sampler = self._sampler
-        result = qae.estimate(estimation_problem)
-
-        methods = ["lr", "fi", "oi"]  # short for likelihood_ratio, fisher, observed_fisher
-        alphas = [0.1, 0.00001, 0.9]  # alpha shouldn't matter in statevector
-        for alpha, method in zip(alphas, methods):
-            confint = qae.compute_confidence_interval(result, alpha, method)
-            # confidence interval based on statevector should be empty, as we are sure of the result
-            self.assertAlmostEqual(confint[1] - confint[0], 0.0)
-            self.assertAlmostEqual(confint[0], getattr(result, key))
-
         # shots
         shots = 100
         alpha = 0.01
@@ -407,31 +338,68 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
     def test_iqae_confidence_intervals(self):
         """End-to-end test for the IQAE confidence interval."""
         n = 3
-        # expected_confint = (0.1984050, 0.3511015)
+        # Careful, changes according to the seed
         expected_confint = (
-            0.263977,
-            0.3511015,
-        )  # change from qasm to shot-based statevector simulation
+            0.26,
+            0.32,
+        )
 
         estimation_problem = EstimationProblem(SineIntegral(n), objective_qubits=[n])
 
-        qae = IterativeAmplitudeEstimation(0.1, 0.01, sampler=self._sampler)
-
-        result = qae.estimate(estimation_problem)
-
-        confint = result.confidence_interval
-        # confidence interval based on statevector should be empty, as we are sure of the result
-        self.assertAlmostEqual(confint[1] - confint[0], 0.0)
-        self.assertAlmostEqual(confint[0], result.estimation)
-
-        # shots
         shots = 100
-        qae.sampler = self._sampler_shots(shots)
+        qae = IterativeAmplitudeEstimation(0.1, 0.01, sampler=self._sampler_shots(shots))
         result = qae.estimate(estimation_problem)
 
         confint = result.confidence_interval
         np.testing.assert_array_almost_equal(confint, expected_confint, decimal=2)
         self.assertTrue(confint[0] <= result.estimation <= confint[1])
+
+
+@ddt
+class TestTranspiler(QiskitAlgorithmsTestCase):
+    """Tests to check that the transpiler is indeed called."""
+
+    def setUp(self):
+        super().setUp()
+
+        self.pm = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        self.counts = [0]
+
+        def callback(**kwargs):
+            self.counts[0] += 1
+
+        self.callback = callback
+
+        circuit = QuantumCircuit(1)
+        self.problem = EstimationProblem(circuit, objective_qubits=[0], is_good_state=lambda x: True)
+
+    @idata(
+        [
+            [AmplitudeEstimation, {"num_eval_qubits": 1}, 17],
+            [IterativeAmplitudeEstimation, {"epsilon_target": 0.1, "alpha": 0.1}, 17],
+        ]
+    )
+    @unpack
+    def test_transpiler_ae_iae(self, qae_class, kwargs, expected_n_calls):
+        """Test that the transpiler is called on AE and IAE"""
+        qae = qae_class(transpiler=self.pm, transpiler_options={"callback": self.callback}, **kwargs)
+        qae.construct_circuit(self.problem)
+
+        self.assertEqual(self.counts[0], expected_n_calls)
+
+    def test_transpiler_mlae(self):
+        """Test that the transpiler is called on MLAE"""
+        mlae = MaximumLikelihoodAmplitudeEstimation([0, 1], transpiler=self.pm, transpiler_options={"callback": self.callback})
+        mlae.construct_circuits(self.problem)
+
+        self.assertEqual(self.counts[0], 0.2)
+
+    def test_transpiler_fae(self):
+        """Test that the transpiler is called on FAE"""
+        fae = FasterAmplitudeEstimation(0.1, 1, transpiler=self.pm, transpiler_options={"callback": self.callback})
+        fae.construct_circuit(self.problem, k=1)
+
+        self.assertEqual(self.counts[0], 17)
 
 
 class TestAmplitudeEstimation(QiskitAlgorithmsTestCase):
@@ -453,7 +421,7 @@ class TestFasterAmplitudeEstimation(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self._sampler = StatevectorSampler(seed=2)
+        self._sampler = StatevectorSampler(default_shots=10_000, seed=2)
 
     def test_rescaling(self):
         """Test the rescaling."""

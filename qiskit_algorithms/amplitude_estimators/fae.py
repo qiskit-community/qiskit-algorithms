@@ -104,9 +104,6 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
-        if self._transpiler is not None:
-            circuit = self._transpiler(circuit, **self._transpiler_options)
-
         try:
             pub=(circuit, None, shots)
             job = self._sampler.run([pub])
@@ -176,6 +173,9 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             # happen if the circuit gets transpiled, hence we're adding a safeguard-barrier
             circuit.barrier()
             circuit.measure(estimation_problem.objective_qubits, c[:])
+
+        if self._transpiler is not None:
+            circuit = self._transpiler.run(circuit, **self._transpiler_options)
 
         return circuit
 

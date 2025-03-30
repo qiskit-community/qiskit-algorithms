@@ -240,6 +240,9 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             circuit.barrier()
             circuit.measure(estimation_problem.objective_qubits, c[:])
 
+        if self._transpiler is not None:
+            circuit = self._transpiler.run(circuit, **self._transpiler_options)
+
         return circuit
 
     def _good_state_probability(
@@ -316,9 +319,6 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
 
             # run measurements for Q^k A|0> circuit
             circuit = self.construct_circuit(estimation_problem, k, measurement=True)
-
-            if self._transpiler is not None:
-                circuit = self._transpiler(circuit, **self._transpiler_options)
 
             try:
                 job = self._sampler.run([(circuit,)])

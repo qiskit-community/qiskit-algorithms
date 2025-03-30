@@ -162,6 +162,9 @@ class AmplitudeEstimation(AmplitudeEstimator):
             circuit.add_register(cr)
             circuit.measure(list(range(self._m)), list(range(self._m)))
 
+        if self._transpiler is not None:
+            circuit = self._transpiler.run(circuit, **self._transpiler_options)
+
         return circuit
 
     def evaluate_measurements(
@@ -320,8 +323,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         result.post_processing = estimation_problem.post_processing  # type: ignore[assignment]
 
         circuit = self.construct_circuit(estimation_problem, measurement=True)
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits, **self.transpiler_options)
+
         try:
             job = self._sampler.run([(circuit,)])
             ret = job.result()[0]

@@ -172,6 +172,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
             circuits += [qc_k]
 
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits,  **self._transpiler_options)
+            raise ValueError("After transpiling", self._transpiler, self._transpiler_options)
+
         return circuits
 
     @staticmethod
@@ -294,8 +298,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
 
         circuits = self.construct_circuits(estimation_problem, measurement=True)
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits,  **self._transpiler_options)
 
         try:
             pubs=[(circuit, ) for circuit in circuits]
