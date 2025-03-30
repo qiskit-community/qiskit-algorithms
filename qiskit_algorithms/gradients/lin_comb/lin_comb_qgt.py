@@ -20,9 +20,8 @@ from collections.abc import Sequence
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
 from qiskit.quantum_info import SparsePauliOp
 
 from ..base.base_qgt import BaseQGT
@@ -69,10 +68,10 @@ class LinCombQGT(BaseQGT):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
-        options: Options | None = None,
+        precision: float | None = None,
     ):
         r"""
         Args:
@@ -105,13 +104,14 @@ class LinCombQGT(BaseQGT):
                     \mathrm{QGT}_{ij}= [\langle \partial_i \psi | \partial_j \psi \rangle
                         - \langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle].
 
-            options: Backend runtime options used for circuit execution. The order of priority is:
-                options in ``run`` method > QGT's default options > primitive's default
-                setting. Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying estimator.
+                The order of priority is: precision in ``run`` method > fidelity's
+                precision > primitive's default precision.
+                Higher priority setting overrides lower priority setting.
         """
-        super().__init__(estimator, phase_fix, derivative_type, options=options)
+        super().__init__(estimator, phase_fix, derivative_type, precision=precision)
         self._gradient = LinCombEstimatorGradient(
-            estimator, derivative_type=DerivativeType.COMPLEX, options=options
+            estimator, derivative_type=DerivativeType.COMPLEX, precision=precision
         )
         self._lin_comb_qgt_circuit_cache: dict[
             tuple, dict[tuple[Parameter, Parameter], QuantumCircuit]
@@ -122,13 +122,13 @@ class LinCombQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGT on the given circuits."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, **options)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, precision)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -136,14 +136,20 @@ class LinCombQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata = [], [], [], []
+        metadata = []
         all_n, all_m = [], []
         phase_fixes: list[int | np.ndarray] = []
 
-        for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
+        has_transformed_precision = False
+
+        if isinstance(precision, float):
+            precision=[precision]*len(circuits)
+            has_transformed_precision = True
+        pubs = []
+        for circuit, parameter_values_, parameters_, precision_ in zip(circuits, parameter_values, parameters, precision):
             # Prepare circuits for the gradient of the specified parameters.
             parameters_ = [p for p in circuit.parameters if p in parameters_]
             meta = {"parameters": parameters_}
@@ -172,25 +178,19 @@ class LinCombQGT(BaseQGT):
 
             n = len(qgt_circuits)
             if self._derivative_type == DerivativeType.COMPLEX:
-                job_circuits.extend(qgt_circuits * 2)
-                job_observables.extend([observable_1] * n + [observable_2] * n)
-                job_param_values.extend([parameter_values_] * 2 * n)
                 all_m.append(len(parameters_))
                 all_n.append(2 * n)
+                pubs.extend( [(qgt_circuit, observable_1, parameter_values_, precision_) for qgt_circuit in qgt_circuits] )
+                pubs.extend( [(qgt_circuit, observable_2, parameter_values_, precision_) for qgt_circuit in qgt_circuits] )
+
             else:
-                job_circuits.extend(qgt_circuits)
-                job_observables.extend([observable_1] * n)
-                job_param_values.extend([parameter_values_] * n)
                 all_m.append(len(parameters_))
                 all_n.append(n)
+                pubs.extend( [(qgt_circuit, observable_1, parameter_values_, precision_) for qgt_circuit in qgt_circuits] )
+
 
         # Run the single job with all circuits.
-        job = self._estimator.run(
-            (job_circuits,
-            job_observables,
-            job_param_values),
-            **options,
-        )
+        job = self._estimator.run(pubs)
 
         if self._phase_fix:
             # Compute the second term in the QGT if phase fix is enabled.
@@ -202,7 +202,7 @@ class LinCombQGT(BaseQGT):
                 observables=phase_fix_obs,
                 parameter_values=parameter_values,
                 parameters=parameters,
-                **options,
+                precision=precision,
             )
 
         try:
@@ -227,18 +227,19 @@ class LinCombQGT(BaseQGT):
         # Compute the QGT
         qgts = []
         partial_sum_n = 0
-        for i, (n, m) in enumerate(zip(all_n, all_m)):
+        for i, (n, m, result_n) in enumerate(zip(all_n, all_m, results)):
             qgt = np.zeros((m, m), dtype="complex")
             # Compute the first term in the QGT
+            result = result_n.data.evs
             if self.derivative_type == DerivativeType.COMPLEX:
-                qgt[np.triu_indices(m)] = results.values[partial_sum_n : partial_sum_n + n // 2]
+                qgt[np.triu_indices(m)] = result[ :  n // 2]
                 qgt[np.triu_indices(m)] += (
-                    1j * results.values[partial_sum_n + n // 2 : partial_sum_n + n]
+                    1j * result[ n // 2 :  n]
                 )
             elif self.derivative_type == DerivativeType.REAL:
-                qgt[np.triu_indices(m)] = results.values[partial_sum_n : partial_sum_n + n]
+                qgt[np.triu_indices(m)] = result[ :  n]
             elif self.derivative_type == DerivativeType.IMAG:
-                qgt[np.triu_indices(m)] = 1j * results.values[partial_sum_n : partial_sum_n + n]
+                qgt[np.triu_indices(m)] = 1j * result[ :  n]
 
             # Add the conjugate of the upper triangle to the lower triangle
             qgt += np.triu(qgt, k=1).conjugate().T
@@ -252,7 +253,8 @@ class LinCombQGT(BaseQGT):
             partial_sum_n += n
             qgts.append(qgt / 4)
 
-        opt = self._get_local_options(options)
+        if has_transformed_precision:
+            precision = precision[0]
         return QGTResult(
-            qgts=qgts, derivative_type=self.derivative_type, metadata=metadata, options=opt
+            qgts=qgts, derivative_type=self.derivative_type, metadata=metadata, precision=precision
         )

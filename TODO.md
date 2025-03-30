@@ -21,12 +21,12 @@
 - [x] gradients/finite_diff/finite_diff_estimator_gradient.py
 - [x] gradients/finite_diff/finite_diff_sampler_gradient.py
 - [x] gradients/spsa/spsa_estimator_gradient.py
-- [] gradients/spsa/spsa_sampler_gradient.py
+- [x] gradients/spsa/spsa_sampler_gradient.py
 - [x] gradients/lin_comb/lin_comb_sampler_gradient.py
 - [x] gradients/lin_comb/lin_comb_estimator_gradient.py
 - [] transpiler into gradients/lin_comb/lin_comb_sampler_gradient.py
 - [] transpiler into gradients/lin_comb/lin_comb_estimator_gradient.py
-- [] gradients/lin_comb/lin_comb_qgt.py
+- [x] gradients/lin_comb/lin_comb_qgt.py
 - [x] gradients/base/base_sampler_gradient.py
 - [x] gradients/base/base_qgt.py
 - [x] gradients/base/base_estimator_gradient.py

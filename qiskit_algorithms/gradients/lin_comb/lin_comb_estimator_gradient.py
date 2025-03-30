@@ -166,9 +166,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                 pubs.extend( [(gradient_circuit, observable_1, parameter_values_, precision_) for gradient_circuit in gradient_circuits] )
 
         # Run the single job with all circuits.
-        job = self._estimator.run(
-            pubs
-        )
+        job = self._estimator.run(pubs)
         try:
             results = job.result()
         except AlgorithmError as exc:
