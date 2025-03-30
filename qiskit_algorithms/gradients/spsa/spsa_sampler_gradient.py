@@ -20,8 +20,7 @@ from collections.abc import Sequence
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.providers import Options
+from qiskit.primitives import BaseSamplerV2
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
@@ -43,11 +42,11 @@ class SPSASamplerGradient(BaseSamplerGradient):
     # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         epsilon: float,
         batch_size: int = 1,
         seed: int | None = None,
-        options: Options | None = None,
+        shots: int | None = None,
     ):
         """
         Args:
@@ -55,10 +54,10 @@ class SPSASamplerGradient(BaseSamplerGradient):
             epsilon: The offset size for the SPSA gradients.
             batch_size: number of gradients to average.
             seed: The seed for a random perturbation vector.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            shots: Number of shots to be used by the underlying sampler.
+                The order of priority is: number of shots in ``run`` method > fidelity's
+                number of shots > primitive's default number of shots.
+                Higher priority setting overrides lower priority setting.
 
         Raises:
             ValueError: If ``epsilon`` is not positive.
@@ -69,19 +68,26 @@ class SPSASamplerGradient(BaseSamplerGradient):
         self._epsilon = epsilon
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(sampler, options)
+        super().__init__(sampler, shots)
 
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        shots: int | Sequence[int] | None = None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
-        job_circuits, job_param_values, metadata, offsets = [], [], [], []
+        metadata, offsets = [], []
         all_n = []
-        for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
+        has_transformed_shots = False
+
+        if isinstance(shots, float):
+            shots=[shots]*len(circuits)
+            has_transformed_shots = True
+        pubs = []
+
+        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
             # Indices of parameters to be differentiated.
             indices = [circuit.parameters.data.index(p) for p in parameters_]
             metadata.append({"parameters": parameters_})
@@ -97,12 +103,11 @@ class SPSASamplerGradient(BaseSamplerGradient):
 
             # Combine inputs into a single job to reduce overhead.
             n = 2 * self._batch_size
-            job_circuits.extend([circuit] * n)
-            job_param_values.extend(plus + minus)
             all_n.append(n)
+            pubs.append( (circuit, plus + minus, shots_) )
 
         # Run the single job with all circuits.
-        job = self._sampler.run(job_circuits, job_param_values, **options)
+        job = self._sampler.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -111,9 +116,15 @@ class SPSASamplerGradient(BaseSamplerGradient):
         # Compute the gradients.
         gradients = []
         partial_sum_n = 0
-        for i, n in enumerate(all_n):
+        for i,(n, result_n) in enumerate(zip(all_n, results)):
             dist_diffs = {}
-            result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
+            result = [
+                {
+                    label: value / res.num_shots
+                    for label, value in res.get_counts().items()
+                }
+                for res in getattr(result_n.data, next(iter(result_n.data)))
+            ]
             for j, (dist_plus, dist_minus) in enumerate(zip(result[: n // 2], result[n // 2 :])):
                 dist_diff: dict[int, float] = defaultdict(float)
                 for key, value in dist_plus.items():
@@ -133,5 +144,6 @@ class SPSASamplerGradient(BaseSamplerGradient):
             gradients.append(gradient)
             partial_sum_n += n
 
-        opt = self._get_local_options(options)
-        return SamplerGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_shots:
+            shots = shots[0]
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)
