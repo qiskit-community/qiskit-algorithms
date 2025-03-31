@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2024.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,6 +21,7 @@ from qiskit import QuantumCircuit
 from qiskit.primitives import BaseSampler
 from qiskit.primitives.primitive_job import PrimitiveJob
 from qiskit.providers import Options
+from qiskit.transpiler import PassManager
 
 from ..exceptions import AlgorithmError
 from .base_state_fidelity import BaseStateFidelity
@@ -54,12 +55,14 @@ class ComputeUncompute(BaseStateFidelity):
     def __init__(
         self,
         sampler: BaseSampler,
+        pass_manager: PassManager = None,
         options: Options | None = None,
         local: bool = False,
     ) -> None:
         r"""
         Args:
             sampler: Sampler primitive instance.
+            pass_manager: Pass manager for the transpilation of the fidelity circuit.
             options: Primitive backend runtime options used for circuit execution.
                 The order of priority is: options in ``run`` method > fidelity's
                 default options > primitive's default setting.
@@ -84,6 +87,7 @@ class ComputeUncompute(BaseStateFidelity):
                 f"The sampler should be an instance of BaseSampler, " f"but got {type(sampler)}"
             )
         self._sampler: BaseSampler = sampler
+        self._pass_manager: PassManager = pass_manager
         self._local = local
         self._default_options = Options()
         if options is not None:
@@ -96,6 +100,7 @@ class ComputeUncompute(BaseStateFidelity):
         """
         Combines ``circuit_1`` and ``circuit_2`` to create the
         fidelity circuit following the compute-uncompute method.
+        Optionally, the circuit is transpiled using pass_manager parameter.
 
         Args:
             circuit_1: (Parametrized) quantum circuit.
@@ -111,6 +116,8 @@ class ComputeUncompute(BaseStateFidelity):
 
         circuit = circuit_1.compose(circuit_2.inverse())
         circuit.measure_all()
+        if self._pass_manager:
+            return self._pass_manager.run(circuit)
         return circuit
 
     def _run(
