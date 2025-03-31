@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    The list of arguments for `QNSPSA.get_fidelity()` has been updated to
+    remove the keyword enforcement for `sampler` so also allowing it now
+    as positional. Additionally the `sampler` must be explicitly specified, as a
+    valid object, as it no longer supports `None` nor defaults to that.
