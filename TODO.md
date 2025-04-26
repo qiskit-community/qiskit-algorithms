@@ -36,6 +36,6 @@
 - [x] minimum_eigensolvers/diagonal_estimator.py
 - [x] minimum_eigensolvers/sampling_vqe.py
 - [x] amplitude_estimators/mlae.py
-- [] amplitude_estimators/fae.py
-- [] amplitude_estimators/iae.py
-- [] amplitude_estimators/ae.py
+- [x] amplitude_estimators/fae.py
+- [x] amplitude_estimators/iae.py
+- [x] amplitude_estimators/ae.py

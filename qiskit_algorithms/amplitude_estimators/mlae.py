@@ -173,8 +173,8 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             circuits += [qc_k]
 
         if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits,  **self._transpiler_options)
-            raise ValueError("After transpiling", self._transpiler, self._transpiler_options)
+            # circuits = self._transpiler.run(circuits,  **self._transpiler_options)
+            circuits = self._transpiler.run(circuits[0],  **self._transpiler_options)
 
         return circuits
 
