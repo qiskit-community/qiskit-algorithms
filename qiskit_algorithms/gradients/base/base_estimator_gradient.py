@@ -17,7 +17,7 @@ Abstract base class of gradient for ``Estimator``.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
+from collections.abc import Sequence, Iterable
 
 import numpy as np
 
@@ -51,10 +51,9 @@ class BaseEstimatorGradient(ABC):
         r"""
         Args:
             estimator: The estimator used to compute the gradients.
-            precision: Precision to be used by the underlying estimator.
-                The order of priority is: precision in ``run`` method > fidelity's
-                precision > primitive's default precision.
-                Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
             derivative_type: The type of derivative. Can be either ``DerivativeType.REAL``
                 ``DerivativeType.IMAG``, or ``DerivativeType.COMPLEX``.
 
@@ -90,7 +89,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        precision: float | None = None,
+        precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the estimator gradient on the given circuits.
 
@@ -103,10 +102,12 @@ class BaseEstimatorGradient(ABC):
                 ``circuits``. Defaults to None, which means that the gradients of all parameters in
                 each circuit are calculated. None in the sequence means that the gradients of all
                 parameters in the corresponding circuit are calculated.
-            precision: Precision to be used by the underlying estimator.
-                The order of priority is: precision in ``run`` method > fidelity's
-                precision > primitive's default precision.
-                Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If a single float is
+                provided, this number will be used for all circuits. If a sequence of floats is
+                provided, they will be used on a per-circuit basis. If none is provided, the
+                gradients's default precision will be used for all circuits. If this number is
+                also set to None, the underlying primitive's default precision will be used
+                for all circuits.
 
         Returns:
             The job object of the gradients of the expectation values. The i-th result corresponds to
@@ -137,6 +138,10 @@ class BaseEstimatorGradient(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, observables, parameter_values, parameters)
+
+        if precision is None:
+            precision = self.precision # May still be None
+
         # Run the job.
         job = AlgorithmJob(
             self._run, circuits, observables, parameter_values, parameters, precision
@@ -151,7 +156,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        precision: float | Sequence[float] | None = None,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         raise NotImplementedError()
@@ -247,7 +252,6 @@ class BaseEstimatorGradient(ABC):
                         bound_coeff = coeff
                     # The original gradient is a sum of the gradients of the parameters in the
                     # gradient circuit multiplied by the coefficients.
-                    print("results.gradients" , results.gradients)
                     gradient[i] += (
                         float(bound_coeff)
                         * results.gradients[idx][g_parameter_indices[g_parameter]]
@@ -320,7 +324,7 @@ class BaseEstimatorGradient(ABC):
                 )
 
     @property
-    def precision(self) -> int | None:
+    def precision(self) -> float | None:
         """Return the precision used by the `run` method of the Estimator primitive. If None,
         the default precision of the primitive is used.
 
@@ -331,7 +335,7 @@ class BaseEstimatorGradient(ABC):
 
     @precision.setter
     def precision(self, precision: float | None):
-        """Update the fidelity's default precision setting.
+        """Update the gradient's default precision setting.
 
         Args:
             precision: The new default precision.

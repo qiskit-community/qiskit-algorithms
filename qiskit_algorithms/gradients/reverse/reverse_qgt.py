@@ -74,13 +74,12 @@ class ReverseQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGT on the given circuits."""
         g_circuits, g_parameter_values, g_parameter_sets = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets, precision)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -88,7 +87,6 @@ class ReverseQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameter_sets: Sequence[Sequence[Parameter]],
-        precision: float | None = None
     ) -> QGTResult:
         num_qgts = len(circuits)
         qgts = []
@@ -207,7 +205,7 @@ class ReverseQGT(BaseQGT):
             # append and cast to real/imag if required
             qgts.append(self._to_derivtype(qgt))
 
-        result = QGTResult(qgts, self.derivative_type, metadata, precision=0.0)
+        result = QGTResult(qgts, self.derivative_type, metadata)
         return result
 
     def _to_derivtype(self, qgt):

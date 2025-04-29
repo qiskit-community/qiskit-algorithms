@@ -22,7 +22,7 @@ from dataclasses import dataclass
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult
-from qiskit.primitives.utils import init_observable, _circuit_key
+from qiskit.primitives.utils import _circuit_key
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -98,7 +98,7 @@ class _DiagonalEstimator(BaseEstimatorV2):
             else:
                 observable_indices.append(len(self._observables))
                 self._observable_ids[id(observable)] = len(self._observables)
-                converted_observable = init_observable(observable)
+                converted_observable = SparsePauliOp.from_operator(observable)
                 _check_observable_is_diagonal(converted_observable)  # check it's diagonal
                 self._observables.append(converted_observable)
         job = AlgorithmJob(

@@ -48,7 +48,7 @@ class BaseSamplerGradient(ABC):
         Args:
             sampler: The sampler used to compute the gradients.
             shots: Number of shots to be used by the underlying sampler.
-                The order of priority is: number of shots in ``run`` method > fidelity's
+                The order of priority is: number of shots in ``run`` method > gradients's
                 number of shots > primitive's default number of shots.
                 Higher priority setting overrides lower priority setting.
         """
@@ -274,7 +274,7 @@ class BaseSamplerGradient(ABC):
 
     @shots.setter
     def shots(self, shots: int | None):
-        """Update the fidelity's default number of shots setting.
+        """Update the gradient's default number of shots setting.
 
         Args:
             shots: The new default number of shots.

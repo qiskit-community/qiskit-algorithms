@@ -60,14 +60,14 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the gradients of the expectation values by the parameter shift rule."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, **options
+            g_circuits, observables, g_parameter_values, g_parameters, precision
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -77,13 +77,20 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata = [], [], [], []
-        all_n = []
-        for circuit, observable, parameter_values_, parameters_ in zip(
-            circuits, observables, parameter_values, parameters
+        has_transformed_precision = False
+
+        if isinstance(precision, float) or precision is None:
+            precision = [precision] * len(circuits)
+            has_transformed_precision = True
+
+        metadata = []
+        pubs = []
+
+        for circuit, observable, parameter_values_, parameters_, precision_ in zip(
+            circuits, observables, parameter_values, parameters, precision, strict=True
         ):
             metadata.append({"parameters": parameters_})
             # Make parameter values for the parameter shift rule.
@@ -91,19 +98,10 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
                 circuit, parameter_values_, parameters_
             )
             # Combine inputs into a single job to reduce overhead.
-            n = len(param_shift_parameter_values)
-            job_circuits.extend([circuit] * n)
-            job_observables.extend([observable] * n)
-            job_param_values.extend(param_shift_parameter_values)
-            all_n.append(n)
+            pubs.append((circuit, observable, param_shift_parameter_values, precision_))
 
         # Run the single job with all circuits.
-        job = self._estimator.run(
-            job_circuits,
-            job_observables,
-            job_param_values,
-            **options,
-        )
+        job = self._estimator.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -111,12 +109,21 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
 
         # Compute the gradients.
         gradients = []
-        partial_sum_n = 0
-        for n in all_n:
-            result = results.values[partial_sum_n : partial_sum_n + n]
-            gradient_ = (result[: n // 2] - result[n // 2 :]) / 2
-            gradients.append(gradient_)
-            partial_sum_n += n
 
-        opt = self._get_local_options(options)
-        return EstimatorGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        for result in results:
+            evs = result.data.evs
+            n = evs.shape[0]
+            gradient_ = (evs[: n // 2] - evs[n // 2 :]) / 2
+            gradients.append(gradient_)
+
+        if has_transformed_precision:
+            precision = precision[0]
+
+            if precision is None:
+                precision = results[0].metadata["target_precision"]
+        else:
+            for i, (precision_, result) in enumerate(zip(precision, results)):
+                if precision_ is None:
+                    precision[i] = results[i].metadata["target_precision"]
+
+        return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)

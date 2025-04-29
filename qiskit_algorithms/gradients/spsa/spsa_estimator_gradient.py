@@ -54,10 +54,9 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             epsilon: The offset size for the SPSA gradients.
             batch_size: The number of gradients to average.
             seed: The seed for a random perturbation vector.
-            precision: Precision to be used by the underlying estimator.
-                The order of priority is: precision in ``run`` method > fidelity's
-                precision > primitive's default precision.
-                Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
         Raises:
             ValueError: If ``epsilon`` is not positive.
         """
@@ -75,21 +74,22 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        precision: float | Sequence[float] | None = None,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata, offsets = [], [], [], [], []
-        all_n = []
+        metadata = []
+        offsets = []
         has_transformed_precision = False
-        if isinstance(precision, float):
+
+        if isinstance(precision, float) or precision is None:
             precision=[precision]*len(circuits)
             has_transformed_precision = True
+
         pubs=[]
+
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
-            circuits, observables, parameter_values, parameters, precision
+            circuits, observables, parameter_values, parameters, precision, strict=True
         ):
-            # Indices of parameters to be differentiated.
-            indices = [circuit.parameters.data.index(p) for p in parameters_]
             metadata.append({"parameters": parameters_})
             # Make random perturbation vectors.
             offset = [
@@ -101,10 +101,6 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             offsets.append(offset)
 
             # Combine inputs into a single job to reduce overhead.
-            job_circuits.extend([circuit] * 2 * self._batch_size)
-            job_observables.extend([observable] * 2 * self._batch_size)
-            job_param_values.extend(plus + minus)
-            all_n.append(2 * self._batch_size)
             pubs.append((circuit, observable, plus + minus, precision_))
 
         # Run the single job with all circuits.
@@ -116,12 +112,10 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
 
         # Compute the gradients.
         gradients = []
-        partial_sum_n = 0
-        for i, (n, result_n) in enumerate(zip(all_n, results)):
-            result = results.data.evs
-            partial_sum_n += n
-            n = len(result) // 2
-            diffs = (result[:n] - result[n:]) / (2 * self._epsilon)
+        for i, result in enumerate(results):
+            evs = result.data.evs
+            n = evs.shape[0] // 2
+            diffs = (evs[:n] - evs[n:]) / (2 * self._epsilon)
             # Calculate the gradient for each batch. Note that (``diff`` / ``offset``) is the gradient
             # since ``offset`` is a perturbation vector of 1s and -1s.
             batch_gradients = np.array([diff / offset for diff, offset in zip(diffs, offsets[i])])
@@ -132,4 +126,12 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
 
         if has_transformed_precision:
             precision = precision[0]
+
+            if precision is None:
+                precision = results[0].metadata["target_precision"]
+        else:
+            for i, (precision_, result) in enumerate(zip(precision, results)):
+                if precision_ is None:
+                    precision[i] = results[i].metadata["target_precision"]
+
         return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)

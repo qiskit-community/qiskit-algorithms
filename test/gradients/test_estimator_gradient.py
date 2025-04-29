@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -26,6 +26,7 @@ from qiskit.circuit.library.standard_gates import RXXGate, RYYGate, RZXGate, RZZ
 from qiskit.primitives import StatevectorEstimator as Estimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.quantum_info.random import random_pauli_list
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms.gradients import (
     FiniteDiffEstimatorGradient,
@@ -424,8 +425,8 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         LinCombEstimatorGradient,
         SPSAEstimatorGradient,
     )
-    def test_options(self, grad):
-        """Test estimator gradient's run options"""
+    def test_precision(self, grad):
+        """Test estimator gradient's precision"""
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
@@ -439,7 +440,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
             precision = gradient.precision
             result = gradient.run([qc], [op], [[1]]).result()
             self.assertEqual(result.precision, 0.2)
-            self.assertEqual(precision, 0.2)
+            self.assertEqual(precision, None)
 
         with self.subTest("gradient init"):
             if grad is FiniteDiffEstimatorGradient or grad is SPSAEstimatorGradient:
@@ -523,6 +524,29 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
 
         with self.assertRaises(NotImplementedError):
             _ = derive_circuit(qc, p)
+
+    def test_transpiler(self):
+        """Test that the transpiler is called for the LinCombEstimatorGradient"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            print("CALLBACK CALLED")
+            counts[0] = kwargs["count"]
+
+        a = Parameter("a")
+        qc = QuantumCircuit(1)
+        qc.rx(a, 0)
+        op = SparsePauliOp.from_list([("Z", 1)])
+        estimator = Estimator(default_precision=0.2)
+        gradient = LinCombEstimatorGradient(
+            estimator,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        gradient.run([qc], [op], [[1]]).result()
+
+        self.assertEqual(counts[0], 23)
 
 
 if __name__ == "__main__":

@@ -49,10 +49,9 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         Args:
             estimator: The estimator used to compute the gradients.
             epsilon: The offset size for the finite difference gradients.
-            precision: Precision to be used by the underlying estimator.
-                The order of priority is: precision in ``run`` method > fidelity's
-                precision > primitive's default precision.
-                Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
             method: The computation method of the gradients.
 
                     - ``central`` computes :math:`\frac{f(x+e)-f(x-e)}{2e}`,
@@ -81,18 +80,19 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        precision: float | Sequence[float] | None = None,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         metadata = []
         all_n = []
         has_transformed_precision = False
 
-        if isinstance(precision, float):
+        if isinstance(precision, float) or precision is None:
             precision=[precision]*len(circuits)
             has_transformed_precision = True
 
         pubs=[]
+
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
             circuits, observables, parameter_values, parameters, precision
         ):
@@ -147,4 +147,12 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
 
         if has_transformed_precision:
             precision = precision[0]
+
+            if precision is None:
+                precision = results[0].metadata["target_precision"]
+        else:
+            for i, (precision_, result) in enumerate(zip(precision, results)):
+                if precision_ is None:
+                    precision[i] = results[i].metadata["target_precision"]
+
         return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)
