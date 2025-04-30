@@ -53,6 +53,7 @@ class BaseQGT(ABC):
         estimator: BaseEstimatorV2,
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
+        precision: float | None = None,
     ):
         r"""
         Args:
@@ -84,8 +85,12 @@ class BaseQGT(ABC):
 
                     \mathrm{QGT}_{ij}= [\langle \partial_i \psi | \partial_j \psi \rangle
                         - \langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle].
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
         """
         self._estimator: BaseEstimatorV2 = estimator
+        self._precision = precision
         self._phase_fix: bool = phase_fix
         self._derivative_type: DerivativeType = derivative_type
         self._qgt_circuit_cache: dict[tuple, GradientCircuit] = {}
@@ -106,6 +111,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the QGTs on the given circuits.
 
@@ -116,6 +122,12 @@ class BaseQGT(ABC):
                 the specified parameters. Each sequence of parameters corresponds to a circuit in
                 ``circuits``. Defaults to None, which means that the QGTs of all parameters in
                 each circuit are calculated.
+            precision: Precision to be used by the underlying Estimator. If a single float is
+                provided, this number will be used for all circuits. If a sequence of floats is
+                provided, they will be used on a per-circuit basis. If none is provided, the
+                gradients's default precision will be used for all circuits. If this number is
+                also set to None, the underlying primitive's default precision will be used
+                for all circuits.
 
         Returns:
             The job object of the QGTs of the expectation values. The i-th result corresponds to
@@ -141,7 +153,11 @@ class BaseQGT(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, parameter_values, parameters)
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters)
+
+        if precision is None:
+            precision = self.precision # May still be None
+
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision)
         job._submit()
         return job
 
@@ -151,6 +167,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        precision: float | Sequence[float] | None,
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
         raise NotImplementedError()
@@ -277,6 +294,7 @@ class BaseQGT(ABC):
             qgts=qgts,
             derivative_type=self.derivative_type,
             metadata=metadata,
+            precision=results.precision
         )
 
     @staticmethod
@@ -329,3 +347,23 @@ class BaseQGT(ABC):
                     f"The {i}-th parameters contains parameters not present in the "
                     f"{i}-th circuit."
                 )
+
+    @property
+    def precision(self) -> float | None:
+        """Return the precision used by the `run` method of the Estimator primitive. If None,
+        the default precision of the primitive is used.
+
+        Returns:
+            The default precision.
+        """
+        return self._precision
+
+    @precision.setter
+    def precision(self, precision: float | None):
+        """Update the gradient's default precision setting.
+
+        Args:
+            precision: The new default precision.
+        """
+
+        self._precision = precision

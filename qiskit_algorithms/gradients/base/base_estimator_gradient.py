@@ -342,4 +342,3 @@ class BaseEstimatorGradient(ABC):
         """
 
         self._precision = precision
-

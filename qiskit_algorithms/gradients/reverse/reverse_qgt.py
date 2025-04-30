@@ -21,7 +21,6 @@ import numpy as np
 
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.quantum_info import Statevector
-from qiskit.providers import Options
 from qiskit.primitives import StatevectorEstimator
 
 from ..base.base_qgt import BaseQGT
@@ -58,7 +57,9 @@ class ReverseQGT(BaseQGT):
     SUPPORTED_GATES = ["rx", "ry", "rz", "cp", "crx", "cry", "crz"]
 
     def __init__(
-        self, phase_fix: bool = True, derivative_type: DerivativeType = DerivativeType.COMPLEX
+        self,
+        phase_fix: bool = True,
+        derivative_type: DerivativeType = DerivativeType.COMPLEX
     ):
         """
         Args:
@@ -74,12 +75,13 @@ class ReverseQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGT on the given circuits."""
         g_circuits, g_parameter_values, g_parameter_sets = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets, precision)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -87,6 +89,7 @@ class ReverseQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameter_sets: Sequence[Sequence[Parameter]],
+        precision: float | None = None
     ) -> QGTResult:
         num_qgts = len(circuits)
         qgts = []
@@ -97,7 +100,6 @@ class ReverseQGT(BaseQGT):
             circuit = circuits[k]
             parameters = list(parameter_sets[k])
 
-            num_parameters = len(parameters)
             original_parameter_order = [p for p in circuit.parameters if p in parameters]
             metadata.append({"parameters": original_parameter_order})
 
@@ -205,7 +207,8 @@ class ReverseQGT(BaseQGT):
             # append and cast to real/imag if required
             qgts.append(self._to_derivtype(qgt))
 
-        result = QGTResult(qgts, self.derivative_type, metadata)
+        # Doesn't really make sense to pass the precision since it's not used
+        result = QGTResult(qgts, self.derivative_type, metadata, precision=precision)
         return result
 
     def _to_derivtype(self, qgt):

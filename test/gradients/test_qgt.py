@@ -19,7 +19,7 @@ from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data
 import numpy as np
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import StatevectorEstimator as Estimator
@@ -241,8 +241,8 @@ class TestQGT(QiskitAlgorithmsTestCase):
             with self.assertRaises(ValueError):
                 qgt.run([qc], parameter_values, parameters=[[a], [a]])
 
-    def test_options(self):
-        """Test QGT's options"""
+    def test_precision(self):
+        """Test QGT's precision option"""
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
@@ -253,7 +253,7 @@ class TestQGT(QiskitAlgorithmsTestCase):
             precision = qgt.precision
             result = qgt.run([qc], [[1]]).result()
             self.assertEqual(result.precision, 0.1)
-            self.assertEqual(precision, 0.1)
+            self.assertEqual(precision, None)
 
         with self.subTest("QGT init"):
             qgt = LinCombQGT(estimator, precision=0.2)
@@ -304,6 +304,23 @@ class TestQGT(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="assert result is correct"):
             np.testing.assert_allclose(result.qgts[0], expect, atol=1e-5)
+
+    def test_transpiler(self):
+        """Test that the transpiler is called for the LinCombQGT"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        a = Parameter("a")
+        qc = QuantumCircuit(1)
+        qc.rx(a, 0)
+        estimator = Estimator(default_precision=0.1)
+        qgt = LinCombQGT(estimator, transpiler=pass_manager, transpiler_options={"callback": callback})
+        qgt.run([qc], [[1]]).result()
+
+        self.assertEqual(counts[0], 23)
 
 
 if __name__ == "__main__":

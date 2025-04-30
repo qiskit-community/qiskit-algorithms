@@ -531,7 +531,6 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         counts = [0]
 
         def callback(**kwargs):
-            print("CALLBACK CALLED")
             counts[0] = kwargs["count"]
 
         a = Parameter("a")
