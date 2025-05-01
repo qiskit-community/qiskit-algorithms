@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,11 +16,9 @@ QFI result class
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 import numpy as np
-
-from qiskit.providers import Options
 
 
 @dataclass(frozen=True)
@@ -31,5 +29,5 @@ class QFIResult:
     """The QFI."""
     metadata: list[dict[str, Any]]
     """Additional information about the job."""
-    options: Options
-    """Primitive runtime options for the execution of the job."""
+    precision: float | Sequence[float]
+    """Precision for the execution of the job."""

@@ -111,8 +111,8 @@ class TestQFI(QiskitAlgorithmsTestCase):
         qfi_result = qfi.run([ansatz], [param]).result().qfis
         np.testing.assert_array_almost_equal(qfi_result[0], reference, decimal=3)
 
-    def test_options(self):
-        """Test QFI's options"""
+    def test_precision(self):
+        """Test QFI's precision option"""
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
@@ -123,7 +123,7 @@ class TestQFI(QiskitAlgorithmsTestCase):
             precision = qfi.precision
             result = qfi.run([qc], [[1]]).result()
             self.assertEqual(result.precision, 0.1)
-            self.assertEqual(precision, 0.1)
+            self.assertEqual(precision, None)
 
         with self.subTest("QFI init"):
             qfi = QFI(qgt=qgt, precision=0.2)

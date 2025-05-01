@@ -17,7 +17,7 @@
 - [x] optimizers/spsa.py
 - [x] observables_evaluator.py
 - [ ] gradients/reverse/reverse_gradient.py
-- [ ] gradients/reverse/reverse_qgt.py
+- [x] gradients/reverse/reverse_qgt.py
 - [x] gradients/finite_diff/finite_diff_estimator_gradient.py
 - [ ] gradients/finite_diff/finite_diff_sampler_gradient.py
 - [x] gradients/spsa/spsa_estimator_gradient.py
@@ -26,9 +26,9 @@
 - [x] gradients/lin_comb/lin_comb_estimator_gradient.py
 - [ ] transpiler into gradients/lin_comb/lin_comb_sampler_gradient.py
 - [x] transpiler into gradients/lin_comb/lin_comb_estimator_gradient.py
-- [ ] gradients/lin_comb/lin_comb_qgt.py
+- [x] gradients/lin_comb/lin_comb_qgt.py
 - [ ] gradients/base/base_sampler_gradient.py
-- [ ] gradients/base/base_qgt.py
+- [x] gradients/base/base_qgt.py
 - [x] gradients/base/base_estimator_gradient.py
 - [x] minimum_eigensolvers/vqe.py
 - [x] minimum_eigensolvers/adapt_vqe.py
