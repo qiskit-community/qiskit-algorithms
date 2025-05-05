@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -142,7 +142,11 @@ def _make_lin_comb_gradient_circuit(
                 lin_comb_circuit.data.insert(i, lin_comb_circuit.data.pop())
                 lin_comb_circuit.h(qr_aux)
                 if add_measurement:
+                    # Measure so that cr_aux is removed by the following line
                     lin_comb_circuit.measure(qr_aux, cr_aux)
+                    # Merge classical registers
+                    lin_comb_circuit.remove_final_measurements()
+                    lin_comb_circuit.measure_all()
 
                 if transpiler is not None:
                     lin_comb_circuit = transpiler.run(lin_comb_circuit, **transpiler_options)

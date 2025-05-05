@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,12 +13,12 @@
 """Test primitives that check what kind of operations are in the circuits they execute."""
 from typing import Iterable
 
-from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.primitives.containers.estimator_pub import EstimatorPub
 from qiskit.primitives.containers.sampler_pub import SamplerPub
 
 
-class LoggingEstimator(Estimator):
+class LoggingEstimator(StatevectorEstimator):
     """An estimator checking what operations were in the circuits it executed."""
 
     def __init__(self, default_precision: float = 0.0, seed: int | None = None, operations_callback=None):
@@ -32,11 +32,11 @@ class LoggingEstimator(Estimator):
         return super()._run(pubs)
 
 
-class LoggingSampler(Sampler):
+class LoggingSampler(StatevectorSampler):
     """A sampler checking what operations were in the circuits it executed."""
 
-    def __init__(self, operations_callback):
-        super().__init__()
+    def __init__(self, shots: int = 1024, seed: int | None = None, operations_callback=None):
+        super().__init__(default_shots=shots, seed=seed)
         self.operations_callback = operations_callback
 
     def _run(self, pubs: Iterable[SamplerPub]):

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023
+# (C) Copyright IBM 2022, 2025
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -47,10 +47,9 @@ class BaseSamplerGradient(ABC):
         """
         Args:
             sampler: The sampler used to compute the gradients.
-            shots: Number of shots to be used by the underlying sampler.
-                The order of priority is: number of shots in ``run`` method > gradients's
-                number of shots > primitive's default number of shots.
-                Higher priority setting overrides lower priority setting.
+            shots: Number of shots to be used by the underlying Sampler. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                number of shots of the primitive is used.
         """
         self._sampler: BaseSamplerV2 = sampler
         self._shots = shots
@@ -105,6 +104,9 @@ class BaseSamplerGradient(ABC):
         # Validate the arguments.
         self._validate_arguments(circuits, parameter_values, parameters)
 
+        if shots is None:
+            shots = self.shots
+
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots)
         job._submit()
         return job
@@ -115,7 +117,7 @@ class BaseSamplerGradient(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        shots: int | Sequence[int] | None = None,
+        shots: int | Sequence[int] | None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
         raise NotImplementedError()

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -82,9 +82,10 @@ class SPSASamplerGradient(BaseSamplerGradient):
         all_n = []
         has_transformed_shots = False
 
-        if isinstance(shots, float) or shots is None:
+        if isinstance(shots, int) or shots is None:
             shots=[shots]*len(circuits)
             has_transformed_shots = True
+
         pubs = []
 
         for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
@@ -121,7 +122,7 @@ class SPSASamplerGradient(BaseSamplerGradient):
             result = [
                 {
                     label: value / res.num_shots
-                    for label, value in res.get_counts().items()
+                    for label, value in res.get_int_counts().items()
                 }
                 for res in getattr(result_n.data, next(iter(result_n.data)))
             ]
@@ -146,4 +147,12 @@ class SPSASamplerGradient(BaseSamplerGradient):
 
         if has_transformed_shots:
             shots = shots[0]
+
+            if shots is None:
+                shots = results[0].metadata["shots"]
+        else:
+            for i, (shots_, result) in enumerate(zip(shots, results)):
+                if shots_ is None:
+                    shots[i] = result.metadata["shots"]
+
         return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)

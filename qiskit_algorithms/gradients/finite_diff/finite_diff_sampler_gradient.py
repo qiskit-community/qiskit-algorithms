@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -48,10 +48,9 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         Args:
             sampler: The sampler used to compute the gradients.
             epsilon: The offset size for the finite difference gradients.
-            shots: Number of shots to be used by the underlying sampler.
-                The order of priority is: number of shots in ``run`` method > fidelity's
-                number of shots > primitive's default number of shots.
-                Higher priority setting overrides lower priority setting.
+            shots: Number of shots to be used by the underlying Sampler. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                number of shots of the primitive is used.
             method: The computation method of the gradients.
 
                     - ``central`` computes :math:`\frac{f(x+e)-f(x-e)}{2e}`,
@@ -78,17 +77,18 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
-        parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        shots: int | Sequence[int] | None = None,
+        parameters: Sequence[Sequence[Parameter] | None] | None,
+        shots: int | Sequence[int] | None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
         metadata = []
         all_n = []
         has_transformed_shots = False
 
-        if isinstance(shots, float):
+        if isinstance(shots, int) or shots is None:
             shots=[shots]*len(circuits)
             has_transformed_shots = True
+
         pubs=[]
         for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
             # Indices of parameters to be differentiated
@@ -122,13 +122,13 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
 
         # Compute the gradients.
         gradients = []
-        partial_sum_n = 0
+
         for n, result_n in zip(all_n, results):
             gradient = []
             result = [
                 {
                     label: value / res.num_shots
-                    for label, value in res.get_counts().items()
+                    for label, value in res.get_int_counts().items()
                 }
                 for res in getattr(result_n.data, next(iter(result_n.data)))
             ]
@@ -159,9 +159,16 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                         grad_dist[key] -= value / self._epsilon
                     gradient.append(dict(grad_dist))
 
-            partial_sum_n += n
             gradients.append(gradient)
 
         if has_transformed_shots:
             shots = shots[0]
+
+            if shots is None:
+                shots = results[0].metadata["shots"]
+        else:
+            for i, (shots_, result) in enumerate(zip(shots, results)):
+                if shots_ is None:
+                    shots[i] = result.metadata["shots"]
+
         return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)
