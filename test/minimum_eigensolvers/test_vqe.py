@@ -314,20 +314,19 @@ class TestVQE(QiskitAlgorithmsTestCase):
         callcount = {"sampler": 0, "estimator": 0}
 
         def wrapped_estimator_run(*args, **kwargs):
-            kwargs["callcount"]["estimator"] += 1
+            callcount["estimator"] += 1
             return inner_estimator.run(*args, **kwargs)
 
         def wrapped_sampler_run(*args, **kwargs):
-            kwargs["callcount"]["sampler"] += 1
+            callcount["sampler"] += 1
             return inner_sampler.run(*args, **kwargs)
 
-        wrapped_estimator.run = partial(wrapped_estimator_run, callcount=callcount)
-        wrapped_sampler.run = partial(wrapped_sampler_run, callcount=callcount)
+        wrapped_estimator.run = wrapped_estimator_run
+        wrapped_sampler.run = wrapped_sampler_run
 
         fidelity = ComputeUncompute(wrapped_sampler)
 
         def fidelity_callable(left, right):
-            batchsize = np.asarray(left).shape[0]
             job = fidelity.run(ansatz, ansatz, left, right)
             return job.result().fidelities
 

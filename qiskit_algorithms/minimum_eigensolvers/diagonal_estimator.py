@@ -21,7 +21,8 @@ from dataclasses import dataclass
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult
+from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult, EstimatorPubLike
+from qiskit.primitives.containers.estimator_pub import EstimatorPub
 from qiskit.primitives.utils import _circuit_key
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
@@ -45,7 +46,7 @@ class _DiagonalEstimator(BaseEstimatorV2):
         sampler: BaseSamplerV2,
         aggregation: float | Callable[[Iterable[tuple[float, float]]], float] | None = None,
         callback: Callable[[Sequence[Mapping[str, Any]]], None] | None = None,
-        **options,
+        precision: float = 1e-3,
     ) -> None:
         r"""Evaluate the expectation of quantum state with respect to a diagonal operator.
 
@@ -55,71 +56,64 @@ class _DiagonalEstimator(BaseEstimatorV2):
                 this specified the CVaR :math:`\alpha` parameter.
             callback: A callback which is given the best measurements of all circuits in each
                 evaluation.
-            run_options: Options for the sampler.
-
+            precision: Precision for the Estimator, determines the number of shots used for each
+                Pauli term in the observable. The number of shots to evaluate the expectation value
+                of an observable :math:`H` is set to :math:`\frac{\mathrm{S}^2}{\varepsilon^2}`,
+                with :math:`\varepsilon` being the precision and :math:`S` being the sum of Pauli
+                coefficients. This ensures that the final standard deviation of the estimator is
+                less than ``precision``. This is however quite pessimistic as it assumes that the
+                covariance between Pauli terms is maximal, which may lead to a large number of shots
+                for a precision set too low. If the ``precision`` parameter of the ``run`` method is
+                 set, it will override this value.
         """
-        super().__init__(options=options)
-        self._circuits: list[QuantumCircuit] = []  # See Qiskit pull request 11051
-        self._parameters: list[MappingView] = []
-        self._observables: list[SparsePauliOp] = []
-
+        self._precision: float = precision
         self.sampler = sampler
+
         if not callable(aggregation):
             aggregation = _get_cvar_aggregation(aggregation)
 
         self.aggregation = aggregation
         self.callback = callback
-        self._circuit_ids: dict[int, QuantumCircuit] = {}
-        self._observable_ids: dict[int, BaseOperator] = {}
 
-    def _run(
-        self,
-        circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator],
-        parameter_values: Sequence[Sequence[float]],
-        **run_options,
+    def run(
+        self, pubs: Iterable[EstimatorPubLike], *, precision: float | None = None
     ) -> AlgorithmJob:
-        circuit_indices = []
-        for circuit in circuits:
-            key = _circuit_key(circuit)
-            index = self._circuit_ids.get(key)
-            if index is not None:
-                circuit_indices.append(index)
-            else:
-                circuit_indices.append(len(self._circuits))
-                self._circuit_ids[key] = len(self._circuits)
-                self._circuits.append(circuit)
-                self._parameters.append(circuit.parameters)
-        observable_indices = []
-        for observable in observables:
-            index = self._observable_ids.get(id(observable))
-            if index is not None:
-                observable_indices.append(index)
-            else:
-                observable_indices.append(len(self._observables))
-                self._observable_ids[id(observable)] = len(self._observables)
-                converted_observable = SparsePauliOp.from_operator(observable)
-                _check_observable_is_diagonal(converted_observable)  # check it's diagonal
-                self._observables.append(converted_observable)
-        job = AlgorithmJob(
-            self._call, circuit_indices, observable_indices, parameter_values, **run_options
-        )
+        if precision is None:
+            precision = self._precision
+
+        observables = []
+        sampler_pubs = []
+
+        for pub in pubs:
+            pub = EstimatorPub.coerce(pub, precision)
+            # Convert to SparsePauliOp in order to access the Pauli coefficients
+            # If for some reason the observable wasn't a SparsePauliOp already, this might incur
+            # significative computation time
+            converted_observables = [SparsePauliOp(op) for op in pub.observables]
+
+            for op in converted_observables:
+                _check_observable_is_diagonal(op)
+
+            sampler_pubs.append(
+                (
+                    pub.circuit,
+                    pub.parameter_values,
+                    [round(.5 + (sum(op.coeffs) / pub.precision) ** 2) for op in converted_observables]
+                )
+            )
+            observables.append(converted_observables)
+
+        job = AlgorithmJob(self._call, sampler_pubs, observables)
         job._submit()
         return job
 
     def _call(
         self,
-        circuits: Sequence[int],
-        observables: Sequence[int],
-        parameter_values: Sequence[Sequence[float]],
-        **run_options,
+        sampler_pubs: list[tuple[QuantumCircuit, Sequence[Sequence[float]], list[int]]],
+        observables: list[list[SparsePauliOp]],
     ) -> _DiagonalEstimatorResult:
 
-        pubs = list(zip(circuits, parameter_values))
-        job = self.sampler.run(
-            pubs,
-            **run_options,
-        )
+        job = self.sampler.run(sampler_pubs)
         results = job.result()
         samples = []
         for i, pubres in enumerate(results):

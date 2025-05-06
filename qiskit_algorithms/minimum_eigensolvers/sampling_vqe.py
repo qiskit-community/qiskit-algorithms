@@ -321,7 +321,7 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             # parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
             # batch_size = len(parameters)
 
-            job = self.estimator.run([(ansatz, operator, parameters)])
+            job = estimator.run([(ansatz, operator, parameters)])
             estimator_result = job.result()[0]
             values = estimator_result.data.evs
             if not values.shape:
