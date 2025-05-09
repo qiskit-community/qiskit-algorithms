@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Support for SBPLX optimizer from NLopt library has been added.
+    SBPLX is a local gradient-free optimizer based on Nelder-Mead and
+    is expected to show better convergence behaviour.
+    Further information about this and all other optimizers can be found
+    :ref:`here<https://qiskit-community.github.io/qiskit-algorithms/apidocs/qiskit_algorithms.optimizers.html>`.
