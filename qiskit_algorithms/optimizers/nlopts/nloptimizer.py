@@ -39,7 +39,7 @@ class NLoptOptimizerType(Enum):
 @_optionals.HAS_NLOPT.require_in_instance
 class NLoptOptimizer(Optimizer):
     """
-    NLopt global optimizer base class
+    NLopt global and local optimizer base class
     """
 
     _OPTIONS = ["max_evals"]
@@ -65,6 +65,7 @@ class NLoptOptimizer(Optimizer):
             NLoptOptimizerType.GN_DIRECT_L: nlopt.GN_DIRECT_L,
             NLoptOptimizerType.GN_ESCH: nlopt.GN_ESCH,
             NLoptOptimizerType.GN_ISRES: nlopt.GN_ISRES,
+            NLoptOptimizerType.LN_SBPLX: nlopt.LN_SBPLX,
         }
 
     @abstractmethod
