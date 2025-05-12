@@ -29,16 +29,6 @@ from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.algorithm_job import AlgorithmJob
 
-# TODO: can't assume this, may be given as Pauli instead of SparsePauliOp... Use BaseOperator instead
-# Enforce the fact that the observables are given in a SparsePauliOp way
-_SparsePauliOpArrayLike = SparsePauliOp | Sequence[SparsePauliOp]
-_EstimatorPubLikeSparsePauli = Union[
-    EstimatorPub,
-    tuple[QuantumCircuit, _SparsePauliOpArrayLike],
-    tuple[QuantumCircuit, _SparsePauliOpArrayLike, BindingsArrayLike],
-    tuple[QuantumCircuit, _SparsePauliOpArrayLike, BindingsArrayLike, Real],
-]
-
 
 @dataclass(frozen=True)
 class _DiagonalEstimatorResult(PubResult):
@@ -68,13 +58,13 @@ class _DiagonalEstimator(BaseEstimatorV2):
                 evaluation.
             precision: Precision for the Estimator, determines the number of shots used by the
                 Sampler. The number of shots to evaluate the expectation value of an observable
-                :math:`H` is set to :math:`\frac{\mathrm{S}^2}{\varepsilon^2}`, with
-                :math:`\varepsilon` being the precision and :math:`S` being the sum of Pauli
-                coefficients. This ensures that the final standard deviation of the estimator is
-                less than ``precision``. This is however quite pessimistic as it assumes that the
-                covariance between Pauli terms is maximal, which may lead to a large number of shots
-                for a precision set too low. If the ``precision`` parameter of the ``run`` method is
-                 set, it will override this value.
+                :math:`H` is set to :math:`\frac{S^2}{\varepsilon^2}`, with :math:`\varepsilon`
+                being the precision and :math:`S` being the sum of Pauli coefficients. This ensures
+                that the final standard deviation of the estimator is less than ``precision``. This
+                is however quite pessimistic as it assumes that the covariance between Pauli terms
+                is maximal, which may lead to a large number of shots for a precision set too low.
+                If the ``precision`` parameter of the ``run`` method is set, it will override this
+                value.
         """
         self._precision: float = precision
         self.sampler = sampler
@@ -86,41 +76,46 @@ class _DiagonalEstimator(BaseEstimatorV2):
         self.callback = callback
 
     def run(
-        self, pubs: Iterable[_EstimatorPubLikeSparsePauli], *, precision: float | None = None
+        self, pubs: Iterable[EstimatorPubLike], *, precision: float | None = None
     ) -> AlgorithmJob:
         if precision is None:
             precision = self._precision
 
-        observables = []
-        sampler_pubs = []
-        print("PUBS", pubs)
+        # Since we will convert the standaloe observables to a list, this `observables` list will
+        # remember the shape of the original observables, either standalone or in a list.
+        observables: list[SparsePauliOp | list[SparsePauliOp]] = []
+        sampler_pubs: list[SamplerPubLike] = []
 
         for pub in pubs:
-            if isinstance(pub[1], SparsePauliOp):
-                _check_observable_is_diagonal(pub[1])
-                n_shots = round(.5 + (sum(pubs[1].coeffs) / pub.precision) ** 2)
+            coerced_pub = EstimatorPub.coerce(pub, precision)
+            pauli_lists: list[dict["str", float]] | dict["str", float] = coerced_pub.observables.tolist()
+
+            # PUB contained a single observable
+            if isinstance(pauli_lists, dict):
+                observables.append(SparsePauliOp.from_list(pauli_lists.items()))
+                pauli_lists = [pauli_lists]
             else:
-                for op in pub[1]:
-                    _check_observable_is_diagonal(op)
-                n_shots = [round(.5 + (sum(op.coeffs) / pub.precision) ** 2) for op in pub[1]]
+                observables.append([SparsePauliOp.from_list(obs.items()) for obs in pauli_lists])
 
-            observables.append(pub[1])
+            # The observables are now a list in all cases. We could run a single job using the
+            # maximal amount of shots needed for all these observables, but that would mean that the
+            # results are then correlated between the observables, which is potentially undesirable.
+            # We are thus forced to run a job for each observable separately.
 
-            pub = EstimatorPub.coerce(pub, precision)
-
-            sampler_pubs.append(
-                (
-                    pub.circuit.measure_all(inplace=False),
-                    pub.parameter_values,
-                    n_shots
+            for pauli_list in pauli_lists:
+                sampler_pubs.append(
+                    (
+                        coerced_pub.circuit.measure_all(inplace=False),
+                        coerced_pub.parameter_values,
+                        int(np.round(.5 + (sum(pauli_list.coeffs) / coerced_pub.precision) ** 2))
+                    )
                 )
-            )
 
         job = AlgorithmJob(self._call, sampler_pubs, observables)
         job._submit()
         return job
 
-    def _call(self, sampler_pubs: Iterable[SamplerPubLike], observables: list[list[SparsePauliOp]]) -> _DiagonalEstimatorResult:
+    def _call(self, sampler_pubs: Iterable[SamplerPubLike], observables: list[SparsePauliOp | list[SparsePauliOp]]) -> _DiagonalEstimatorResult:
         job = self.sampler.run(sampler_pubs)
         results = job.result()
         samples: list[dict[int, float]] = []
