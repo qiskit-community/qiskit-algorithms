@@ -5,4 +5,4 @@ features:
     SBPLX is a local gradient-free optimizer based on Nelder-Mead and
     is expected to show better convergence behavior.
     Further information about this and all other optimizers can be found
-    `in the API ref. here <https://qiskit-community.github.io/qiskit-algorithms/apidocs/qiskit_algorithms.optimizers.html>__`.
+    `in the API ref. here <https://qiskit-community.github.io/qiskit-algorithms/apidocs/qiskit_algorithms.optimizers.html>`__.
