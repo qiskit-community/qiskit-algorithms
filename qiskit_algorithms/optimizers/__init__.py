@@ -100,7 +100,7 @@ To install the ``scikit-quant`` dependent package you can use ``pip install scik
 
 Qiskit also provides local optimizers based on
 `NLOpt <https://nlopt.readthedocs.io/en/latest/>`_.
-See below section about global optimizers for installation instructions.
+See Global Optimizers section below for the optional NLOpt installation instructions.
 
 .. autosummary::
    :toctree: ../stubs/
