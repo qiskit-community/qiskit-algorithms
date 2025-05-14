@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -98,6 +98,16 @@ To install the ``scikit-quant`` dependent package you can use ``pip install scik
    IMFIL
    SNOBFIT
 
+Qiskit also provides local optimizers based on
+`NLOpt <https://nlopt.readthedocs.io/en/latest/>`_.
+See Global Optimizers section below for the optional NLOpt installation instructions.
+
+.. autosummary::
+   :toctree: ../stubs/
+   :nosignatures:
+
+   SBPLX
+
 Global Optimizers
 -----------------
 The global optimizers here all use `NLOpt <https://nlopt.readthedocs.io/en/latest/>`_ for their
@@ -132,6 +142,7 @@ from .nlopts.direct_l import DIRECT_L
 from .nlopts.direct_l_rand import DIRECT_L_RAND
 from .nlopts.esch import ESCH
 from .nlopts.isres import ISRES
+from .nlopts.sbplx import SBPLX
 from .steppable_optimizer import SteppableOptimizer, AskData, TellData, OptimizerState
 from .optimizer import Minimizer, Optimizer, OptimizerResult, OptimizerSupportLevel
 from .p_bfgs import P_BFGS
@@ -175,6 +186,7 @@ __all__ = [
     "DIRECT_L_RAND",
     "ESCH",
     "ISRES",
+    "SBPLX",
     "SNOBFIT",
     "BOBYQA",
     "IMFIL",
