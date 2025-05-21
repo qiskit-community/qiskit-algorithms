@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -31,7 +31,7 @@ These elements are frequently used in a variety of applications, such as variati
 time evolution and quantum machine learning.
 
 The quantum algorithms here all use
-`Primitives <https://docs.quantum.ibm.com/run/primitives>`__
+`Primitives <https://quantum.cloud.ibm.com/docs/guides/primitives>`__
 to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
 probability distributions. Refer to the specific algorithm for more information in this regard.
