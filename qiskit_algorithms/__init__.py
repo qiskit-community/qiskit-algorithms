@@ -31,7 +31,7 @@ These elements are frequently used in a variety of applications, such as variati
 time evolution and quantum machine learning.
 
 The quantum algorithms here all use
-`Primitives <https://docs.quantum.ibm.com/run/primitives>`__
+`Primitives <https://quantum.cloud.ibm.com/docs/guides/primitives>`__
 to execute quantum circuits. This can be an
 ``Estimator``, which computes expectation values, or a ``Sampler`` which computes
 probability distributions. Refer to the specific algorithm for more information in this regard.
