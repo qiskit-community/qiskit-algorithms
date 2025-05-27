@@ -14,12 +14,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping, Iterable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 import numpy as np
 from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult, EstimatorPubLike, DataBin, \
-    SamplerPubLike, PrimitiveResult, SamplerPubResult
+    SamplerPubLike, PrimitiveResult
 from qiskit.primitives.containers.estimator_pub import EstimatorPub
 from qiskit.quantum_info import SparsePauliOp
 
@@ -29,12 +29,10 @@ from qiskit_algorithms.algorithm_job import AlgorithmJob
 class _DiagonalEstimatorResult(PubResult):
     """A result from an expectation of a diagonal observable."""
 
-    def __init__(self, data: DataBin, metadata: dict[str, Any] | None = None, best_measurements: Sequence[Mapping[str, Any]] | None = None):
+    def __init__(self, data: DataBin, metadata: dict[str, Any] | None = None, best_measurements: list[dict[str, Any]] | None = None):
         super().__init__(data, metadata)
         # TODO make each measurement a dataclass rather than a dict
-        # dict when a single observable is passed along with 0d or 1d array of parameters, list
-        # otherwise to match the shape of the evs array
-        self.best_measurements: list[dict[str, Any]] | dict[str, Any] | None = best_measurements
+        self.best_measurements: list[dict[str, Any]] | None = best_measurements
 
 
 class _DiagonalEstimator(BaseEstimatorV2):

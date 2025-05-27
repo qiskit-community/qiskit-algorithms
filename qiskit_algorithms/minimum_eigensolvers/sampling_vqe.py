@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -318,9 +318,8 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
         def evaluate_energy(parameters: np.ndarray) -> np.ndarray | float:
             nonlocal eval_count
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
-            # parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
+            parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
             # batch_size = len(parameters)
-
             job = estimator.run([(ansatz, operator, parameters)])
             estimator_result = job.result()[0]
             values = estimator_result.data.evs
@@ -328,10 +327,9 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
                 values = values.reshape(1)
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
-                for params, value, meta in zip(parameters, values, metadata):
+                for params, value in zip(parameters, values):
                     eval_count += 1
-                    self.callback(eval_count, params, value, meta)
+                    self.callback(eval_count, params, value, estimator_result.metadata)
 
             result = values if len(values) > 1 else values[0]
             return np.real(result)
