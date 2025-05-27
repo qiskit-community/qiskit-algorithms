@@ -152,7 +152,7 @@ class QAOA(SamplingVQE):
         # Recreates a circuit based on operator parameter.
         ansatz = QAOAAnsatz(
             operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        ).decompose()  # TODO remove decompose once #6674 is fixed
+        )
         if self._transpiler is not None:
             ansatz = self._transpiler.run(ansatz, **self._transpiler_options)
         self.ansatz = ansatz

@@ -190,7 +190,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
                 first_pt = list(parameters)
 
         qaoa = QAOA(
-            StatevectorSampler(), # Can't seed here, maybe because of Qiskit/qiskit#13730?
+            StatevectorSampler(default_shots=100_000), # Can't seed here, maybe because of Qiskit/qiskit#13730? This however may cause the test to fail...
             COBYLA(),
             initial_point=init_pt,
             callback=cb_callback,
