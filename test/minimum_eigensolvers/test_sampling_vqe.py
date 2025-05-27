@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -165,7 +165,8 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         fidelity = ComputeUncompute(wrapped_sampler)
 
         def fidelity_callable(left, right):
-            job = fidelity.run(ansatz, ansatz, left, right)
+            batchsize = np.asarray(left).shape[0]
+            job = fidelity.run(batchsize * [ansatz], batchsize * [ansatz], left, right)
             return job.result().fidelities
 
         qnspsa = QNSPSA(fidelity_callable, maxiter=5)
@@ -225,35 +226,35 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         with self.assertRaises(ValueError):
             _ = vqe.compute_minimum_eigenvalue(Pauli("X"))
 
-    # @data(PAULI_OP)
-    # def test_callback(self, op):
-    #     """Test the callback on VQE."""
-    #     history = {
-    #         "eval_count": [],
-    #         "parameters": [],
-    #         "mean": [],
-    #         "metadata": [],
-    #     }
-    #
-    #     def store_intermediate_result(eval_count, parameters, mean, metadata):
-    #         history["eval_count"].append(eval_count)
-    #         history["parameters"].append(parameters)
-    #         history["mean"].append(mean)
-    #         history["metadata"].append(metadata)
-    #
-    #     sampling_vqe = SamplingVQE(
-    #         StatevectorSampler(),
-    #         RealAmplitudes(2, reps=1),
-    #         SLSQP(),
-    #         callback=store_intermediate_result,
-    #     )
-    #     sampling_vqe.compute_minimum_eigenvalue(operator=op)
-    #
-    #     self.assertTrue(all(isinstance(count, int) for count in history["eval_count"]))
-    #     self.assertTrue(all(isinstance(mean, complex) for mean in history["mean"]))
-    #     self.assertTrue(all(isinstance(metadata, dict) for metadata in history["metadata"]))
-    #     for params in history["parameters"]:
-    #         self.assertTrue(all(isinstance(param, float) for param in params))
+    @data(PAULI_OP)
+    def test_callback(self, op):
+        """Test the callback on VQE."""
+        history = {
+            "eval_count": [],
+            "parameters": [],
+            "mean": [],
+            "metadata": [],
+        }
+
+        def store_intermediate_result(eval_count, parameters, mean, metadata):
+            history["eval_count"].append(eval_count)
+            history["parameters"].append(parameters)
+            history["mean"].append(mean)
+            history["metadata"].append(metadata)
+
+        sampling_vqe = SamplingVQE(
+            StatevectorSampler(),
+            RealAmplitudes(2, reps=1),
+            SLSQP(),
+            callback=store_intermediate_result,
+        )
+        sampling_vqe.compute_minimum_eigenvalue(operator=op)
+
+        self.assertTrue(all(isinstance(count, int) for count in history["eval_count"]))
+        self.assertTrue(all(isinstance(mean, float) for mean in history["mean"]))
+        self.assertTrue(all(isinstance(metadata, dict) for metadata in history["metadata"]))
+        for params in history["parameters"]:
+            self.assertTrue(all(isinstance(param, float) for param in params))
 
     def test_aggregation(self):
         """Test the aggregation works."""
