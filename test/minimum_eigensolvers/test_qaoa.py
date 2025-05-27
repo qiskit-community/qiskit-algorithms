@@ -65,9 +65,9 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self.seed = 42
+        self.seed = 123
         algorithm_globals.random_seed = self.seed
-        self.sampler = StatevectorSampler(seed=43)
+        self.sampler = StatevectorSampler(seed=42)
 
     @idata(
         [
@@ -176,7 +176,9 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.0]], [W2, S2, [1.0, 0.8]]])
+    # Can't start from [0.0, 0.0] with a seed, otherwise all initially tested points return the same
+    # value and the optimizer gets stuck
+    @idata([[W2, S2, None], [W2, S2, [0.1, 0.1]], [W2, S2, [1.0, 0.8]]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt):
         """Check first parameter value used is initial point as expected"""
@@ -190,7 +192,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
                 first_pt = list(parameters)
 
         qaoa = QAOA(
-            StatevectorSampler(default_shots=100_000), # Can't seed here, maybe because of Qiskit/qiskit#13730? This however may cause the test to fail...
+            self.sampler,
             COBYLA(),
             initial_point=init_pt,
             callback=cb_callback,
