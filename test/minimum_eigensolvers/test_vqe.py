@@ -83,7 +83,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     @data(L_BFGS_B(), COBYLA())
     def test_using_ref_estimator(self, optimizer):
         """Test VQE using reference Estimator."""
-        vqe = VQE(StatevectorEstimator(), self.ryrz_wavefunction, optimizer)
+        vqe = VQE(StatevectorEstimator(seed=42), self.ryrz_wavefunction, optimizer)
 
         result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
@@ -109,7 +109,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(result.optimizer_result.fun, self.h2_energy, places=5)
 
         with self.subTest(msg="assert return ansatz is set"):
-            estimator = StatevectorEstimator()
+            estimator = StatevectorEstimator(seed=42)
             job = estimator.run([(result.optimal_circuit, self.h2_op, result.optimal_point)])
             np.testing.assert_array_almost_equal(job.result()[0].data.evs, result.eigenvalue, 6)
 
@@ -119,7 +119,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         initial_point = np.array([1])
 
         vqe = VQE(
-            StatevectorEstimator(),
+            StatevectorEstimator(seed=42),
             ansatz,
             SLSQP(),
             initial_point=initial_point,
@@ -131,7 +131,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_ansatz_resize(self):
         """Test the ansatz is properly resized if it's a blueprint circuit."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())
+        vqe = VQE(StatevectorEstimator(seed=42), ansatz, SLSQP())
         result = vqe.compute_minimum_eigenvalue(self.h2_op)
         self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
 
@@ -155,7 +155,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test with SLSQP with max_evals_grouped."""
         optimizer = SLSQP(maxiter=50, max_evals_grouped=5)
         vqe = VQE(
-            StatevectorEstimator(),
+            StatevectorEstimator(seed=42),
             self.ryrz_wavefunction,
             optimizer,
         )
@@ -171,7 +171,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     )
     def test_with_gradient(self, optimizer):
         """Test VQE using gradient primitive."""
-        estimator = StatevectorEstimator()
+        estimator = StatevectorEstimator(seed=42)
         vqe = VQE(
             estimator,
             self.ry_wavefunction,
@@ -184,7 +184,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_gradient_passed(self):
         """Test the gradient is properly passed into the optimizer."""
         inputs = {}
-        estimator = StatevectorEstimator()
+        estimator = StatevectorEstimator(seed=42)
         vqe = VQE(
             estimator,
             RealAmplitudes(),
@@ -197,7 +197,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_gradient_run(self):
         """Test using the gradient to calculate the minimum."""
-        estimator = StatevectorEstimator()
+        estimator = StatevectorEstimator(seed=42)
         vqe = VQE(
             estimator,
             RealAmplitudes(),
@@ -220,7 +220,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         optimizer = COBYLA(maxiter=3)
         wavefunction = self.ry_wavefunction
 
-        estimator = StatevectorEstimator()
+        estimator = StatevectorEstimator(seed=42)
 
         vqe = VQE(
             estimator,
@@ -239,7 +239,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_reuse(self):
         """Test re-using a VQE algorithm instance."""
         ansatz = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
-        vqe = VQE(StatevectorEstimator(), ansatz, SLSQP(maxiter=300))
+        vqe = VQE(StatevectorEstimator(seed=42), ansatz, SLSQP(maxiter=300))
         with self.subTest(msg="assert VQE works once all info is available"):
             result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
             self.assertAlmostEqual(result.eigenvalue.real, self.h2_energy, places=5)
@@ -254,7 +254,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_vqe_optimizer_reuse(self):
         """Test running same VQE twice to re-use optimizer, then switch optimizer"""
         vqe = VQE(
-            StatevectorEstimator(),
+            StatevectorEstimator(seed=42),
             self.ryrz_wavefunction,
             SLSQP(),
         )
@@ -276,14 +276,14 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test the default batching works."""
         ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
-        wrapped_estimator = StatevectorEstimator()
-        inner_estimator = StatevectorEstimator()
+        wrapped_estimator = StatevectorEstimator(seed=42)
+        inner_estimator = StatevectorEstimator(seed=43)
 
         callcount = {"estimator": 0}
 
         def wrapped_estimator_run(*args, **kwargs):
             kwargs["callcount"]["estimator"] += 1
-            return inner_estimator.run(*args, **kwargs)
+            return inner_estimator.run(*args)
 
         wrapped_estimator.run = partial(wrapped_estimator_run, callcount=callcount)
 
@@ -305,21 +305,21 @@ class TestVQE(QiskitAlgorithmsTestCase):
         """Test batch evaluating with QNSPSA works."""
         ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
-        wrapped_sampler = StatevectorSampler()
-        inner_sampler = StatevectorSampler()
+        wrapped_sampler = StatevectorSampler(seed=42)
+        inner_sampler = StatevectorSampler(seed=43)
 
-        wrapped_estimator = StatevectorEstimator()
-        inner_estimator = StatevectorEstimator()
+        wrapped_estimator = StatevectorEstimator(seed=44)
+        inner_estimator = StatevectorEstimator(seed=45)
 
         callcount = {"sampler": 0, "estimator": 0}
 
         def wrapped_estimator_run(*args, **kwargs):
             callcount["estimator"] += 1
-            return inner_estimator.run(*args, **kwargs)
+            return inner_estimator.run(*args)
 
         def wrapped_sampler_run(*args, **kwargs):
             callcount["sampler"] += 1
-            return inner_sampler.run(*args, **kwargs)
+            return inner_sampler.run(*args)
 
         wrapped_estimator.run = wrapped_estimator_run
         wrapped_sampler.run = wrapped_sampler_run
@@ -327,7 +327,8 @@ class TestVQE(QiskitAlgorithmsTestCase):
         fidelity = ComputeUncompute(wrapped_sampler)
 
         def fidelity_callable(left, right):
-            job = fidelity.run(ansatz, ansatz, left, right)
+            batchsize = np.asarray(left).shape[0]
+            job = fidelity.run(batchsize * [ansatz], batchsize * [ansatz], left, right)
             return job.result().fidelities
 
         qnspsa = QNSPSA(fidelity_callable, maxiter=5)
@@ -352,7 +353,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_optimizer_scipy_callable(self):
         """Test passing a SciPy optimizer directly as callable."""
         vqe = VQE(
-            StatevectorEstimator(),
+            StatevectorEstimator(seed=42),
             self.ryrz_wavefunction,
             partial(scipy_minimize, method="L-BFGS-B", options={"maxiter": 10}),
         )
@@ -362,13 +363,13 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_optimizer_callable(self):
         """Test passing a optimizer directly as callable."""
         ansatz = RealAmplitudes(1, reps=1)
-        vqe = VQE(StatevectorEstimator(), ansatz, _mock_optimizer)
+        vqe = VQE(StatevectorEstimator(seed=42), ansatz, _mock_optimizer)
         result = vqe.compute_minimum_eigenvalue(SparsePauliOp("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
 
     def test_aux_operators_list(self):
         """Test list-based aux_operators."""
-        vqe = VQE(StatevectorEstimator(), self.ry_wavefunction, SLSQP(maxiter=300))
+        vqe = VQE(StatevectorEstimator(seed=42), self.ry_wavefunction, SLSQP(maxiter=300))
 
         with self.subTest("Test with an empty list."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=[])
@@ -407,7 +408,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_aux_operators_dict(self):
         """Test dictionary compatibility of aux_operators"""
-        vqe = VQE(StatevectorEstimator(), self.ry_wavefunction, SLSQP(maxiter=300))
+        vqe = VQE(StatevectorEstimator(seed=42), self.ry_wavefunction, SLSQP(maxiter=300))
 
         with self.subTest("Test with an empty dictionary."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators={})

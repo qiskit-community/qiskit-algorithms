@@ -258,8 +258,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             nonlocal eval_count
 
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
-            # parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            # batch_size = len(parameters)
+            parameters = np.reshape(parameters, (-1, num_parameters))
 
             try:
                 job = self.estimator.run([(ansatz, operator, parameters)])
@@ -273,10 +272,9 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
                 values = values.reshape(1)
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
-                for params, value, meta in zip(parameters, values, metadata):
+                for params, value in zip(parameters.reshape(-1, 1), values):
                     eval_count += 1
-                    self.callback(eval_count, params, value, meta)
+                    self.callback(eval_count, params, value, estimator_result.metadata)
 
             energy = values[0] if len(values) == 1 else values
 
