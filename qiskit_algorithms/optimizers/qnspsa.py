@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -234,8 +234,8 @@ class QNSPSA(SPSA):
     @staticmethod
     def get_fidelity(
         circuit: QuantumCircuit,
+        sampler: BaseSamplerV2,
         *,
-        sampler: BaseSamplerV2 | None = None,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> Callable[[np.ndarray, np.ndarray], float]:

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -61,18 +61,18 @@ setuptools.setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering",
     ],
     keywords="qiskit sdk quantum algorithms",
     packages=setuptools.find_packages(include=["qiskit_algorithms", "qiskit_algorithms.*"]),
     install_requires=REQUIREMENTS,
     include_package_data=True,
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     project_urls={
         "Bug Tracker": "https://github.com/qiskit-community/qiskit-algorithms/issues",
         "Documentation": "https://qiskit-community.github.io/qiskit-algorithms/",

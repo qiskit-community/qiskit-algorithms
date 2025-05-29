@@ -162,6 +162,7 @@ izaac
 izz
 jac
 jacobian
+johnson
 jones
 july
 kandala
@@ -237,6 +238,7 @@ numpy
 objval
 observables
 oct
+october
 onodera
 optimizer's
 optimizers
@@ -310,6 +312,7 @@ sanjiv
 sashank
 satisfiability
 satyen
+sbplx
 schrödinger
 schroediger
 schroedinger
@@ -336,11 +339,13 @@ stdout
 stefano
 steppable
 stepsize
+steven
 str
 subcircuits
 subclassed
 subclasses
 subcomponents
+subplex
 subspaces
 suzuki
 swappable

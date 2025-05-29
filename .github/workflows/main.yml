@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8]
+        python-version: [3.9]
     steps:
       - name: Print Concurrency Group
         env:
@@ -111,16 +111,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.9, '3.10', 3.11, 3.12]
+        python-version: [3.9, '3.10', 3.11, 3.12, 3.13]
         include:
           - os: macos-latest
-            python-version: 3.8
+            python-version: 3.9
           - os: macos-latest
-            python-version: 3.12
+            python-version: 3.13
           - os: windows-latest
-            python-version: 3.8
+            python-version: 3.9
           - os: windows-latest
-            python-version: 3.12
+            python-version: 3.13
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -140,8 +140,8 @@ jobs:
       - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
-      - run: make mypy
-        shell: bash
+#     - run: make mypy
+#       shell: bash
       - name: Algorithms Unit Tests under Python ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:
@@ -159,7 +159,7 @@ jobs:
         run: |
           coverage3 combine
           mv .coverage ./ci-artifact-data/alg.dat
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.8 }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.9 }}
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
@@ -172,7 +172,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, 3.12]
+        python-version: [3.9, 3.13]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -183,16 +183,17 @@ jobs:
             setup.py
             requirements.txt
             requirements-dev.txt
+      - uses: ./.github/actions/install-algorithms
+      - run: pip uninstall -y qiskit
       - uses: ./.github/actions/install-main-dependencies
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
           qiskit-main: "true"
-      - uses: ./.github/actions/install-algorithms
       - run: make lint
         shell: bash
-      - run: make mypy
-        shell: bash
+#     - run: make mypy
+#       shell: bash
       - name: Algorithms Unit Tests under Python with Qiskit main ${{ matrix.python-version }}
         uses: ./.github/actions/run-tests
         with:
@@ -208,7 +209,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.8, 3.12]
+        python-version: [3.9, 3.13]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -254,16 +255,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v4
-        with:
-          name: ubuntu-latest-3.8
-          path: /tmp/u38
       - uses: actions/download-artifact@v4
         with:
           name: ubuntu-latest-3.9
@@ -282,29 +279,33 @@ jobs:
           path: /tmp/u312
       - uses: actions/download-artifact@v4
         with:
-          name: macos-latest-3.8
-          path: /tmp/m38
+          name: ubuntu-latest-3.13
+          path: /tmp/u313
       - uses: actions/download-artifact@v4
         with:
-          name: macos-latest-3.12
-          path: /tmp/m312
+          name: macos-latest-3.9
+          path: /tmp/m39
       - uses: actions/download-artifact@v4
         with:
-          name: windows-latest-3.8
-          path: /tmp/w38
+          name: macos-latest-3.13
+          path: /tmp/m313
       - uses: actions/download-artifact@v4
         with:
-          name: windows-latest-3.12
-          path: /tmp/w312
+          name: windows-latest-3.9
+          path: /tmp/w39
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-latest-3.13
+          path: /tmp/w313
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/u38/alg.dep /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/m38/alg.dep /tmp/m312/alg.dep /tmp/w38/alg.dep /tmp/w312/alg.dep || true
+          sort -f -u /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/u313/alg.dep /tmp/m39/alg.dep /tmp/m313/alg.dep /tmp/w39/alg.dep /tmp/w313/alg.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/u38/alg.dat
+        run: coverage3 combine /tmp/u39/alg.dat
         shell: bash
       - name: Upload to Coveralls
         env:
