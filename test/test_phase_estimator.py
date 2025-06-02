@@ -17,7 +17,7 @@ import numpy as np
 from ddt import ddt, data, unpack
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import HGate, XGate, IGate, ZGate
-from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorSampler, BaseSamplerV2
 from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector, Operator
 from qiskit.synthesis import MatrixExponential, SuzukiTrotter
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -46,7 +46,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         bound=None,
     ):
         """Run HamiltonianPhaseEstimation and return result with all phases."""
-        sampler = Sampler(default_shots=10_000, seed=42)
+        sampler = StatevectorSampler(default_shots=10_000, seed=42)
         phase_est = HamiltonianPhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
@@ -113,7 +113,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
             counts[0] = kwargs["count"]
 
         phase_est = HamiltonianPhaseEstimation(
-            1, Sampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
+            1, StatevectorSampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
         )
         phase_est.estimate(hamiltonian=SparsePauliOp(Pauli("Z")))
 
@@ -183,9 +183,9 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         """
 
         if shots is not None:
-            sampler = Sampler(default_shots=shots, seed=42)
+            sampler = StatevectorSampler(default_shots=shots, seed=42)
         else:
-            sampler = Sampler(seed=42)
+            sampler = StatevectorSampler(seed=42)
         if phase_estimator is None:
             phase_estimator = IterativePhaseEstimation
         if phase_estimator == IterativePhaseEstimation:
@@ -303,14 +303,14 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         if phase_estimator == IterativePhaseEstimation:
             p_est = IterativePhaseEstimation(
                 num_iterations=6,
-                sampler=Sampler(),
+                sampler=StatevectorSampler(),
                 transpiler=pass_manager,
                 transpiler_options={"callback": callback},
             )
         elif phase_estimator == PhaseEstimation:
             p_est = PhaseEstimation(
                 num_evaluation_qubits=6,
-                sampler=Sampler(),
+                sampler=StatevectorSampler(),
                 transpiler=pass_manager,
                 transpiler_options={"callback": callback},
             )
@@ -324,7 +324,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
     def phase_estimation_sampler(
         self,
         unitary_circuit,
-        sampler: Sampler,
+        sampler: BaseSamplerV2,
         state_preparation=None,
         num_evaluation_qubits=6,
         construct_circuit=False,
@@ -347,7 +347,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         """superposition eigenproblem Z, |+>"""
         unitary_circuit = QuantumCircuit(1).compose(ZGate())
         state_preparation = QuantumCircuit(1).compose(HGate())  # prepare |+>
-        sampler = Sampler(default_shots=10_000, seed=42)
+        sampler = StatevectorSampler(default_shots=10_000, seed=42)
         result = self.phase_estimation_sampler(
             unitary_circuit,
             sampler,

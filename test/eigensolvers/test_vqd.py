@@ -20,7 +20,7 @@ from ddt import data, ddt
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
-from qiskit.primitives import StatevectorSampler as Sampler, StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorSampler, StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.eigensolvers import VQD, VQDResult
@@ -57,8 +57,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
         )
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
-        self.estimator = Estimator(seed=self.seed)
-        self.fidelity = ComputeUncompute(Sampler(seed=self.seed, default_shots=10_000))
+        self.estimator = StatevectorEstimator(seed=self.seed)
+        self.fidelity = ComputeUncompute(StatevectorSampler(seed=self.seed, default_shots=10_000))
         self.betas = [3]
 
     @data(H2_SPARSE_PAULI)

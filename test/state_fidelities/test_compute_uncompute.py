@@ -18,7 +18,7 @@ import numpy as np
 from ddt import ddt
 from qiskit.circuit import QuantumCircuit, ParameterVector
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms.state_fidelities import ComputeUncompute
@@ -51,7 +51,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
         rx_rotation.h(1)
 
         self._circuit = [rx_rotations, ry_rotations, plus, zero, rx_rotation]
-        self._sampler = Sampler(seed=123, default_shots=10_000)
+        self._sampler = StatevectorSampler(seed=123, default_shots=10_000)
         self._left_params = np.array([[0, 0], [np.pi / 2, 0], [0, np.pi / 2], [np.pi, np.pi]])
         self._right_params = np.array([[0, 0], [0, 0], [np.pi / 2, 0], [0, 0]])
 
@@ -229,7 +229,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
 
     def test_shots(self):
         """Test fidelity's run shots setting"""
-        sampler_shots = Sampler(default_shots=1024)
+        sampler_shots = StatevectorSampler(default_shots=1024)
 
         with self.subTest("sampler"):
             # Only options in sampler
@@ -279,7 +279,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
             counts[0] = kwargs["count"]
 
         fidelity = ComputeUncompute(
-            Sampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
+            StatevectorSampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
         )
         fidelity._construct_circuits(QuantumCircuit(1), QuantumCircuit(1))
 

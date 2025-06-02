@@ -42,7 +42,7 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
         from qiskit_algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
         from qiskit.circuit.library import EfficientSU2
         from qiskit.quantum_info import SparsePauliOp, Pauli
-        from qiskit.primitives import StatevectorEstimator as Estimator
+        from qiskit.primitives import StatevectorEstimator
 
         observable = SparsePauliOp.from_list(
             [
@@ -68,7 +68,7 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
         # evaluating auxiliary operators
         aux_ops = [Pauli("XX"), Pauli("YZ")]
         evolution_problem = TimeEvolutionProblem(observable, time, aux_operators=aux_ops)
-        var_qite = VarQITE(ansatz, init_param_values, var_principle, Estimator())
+        var_qite = VarQITE(ansatz, init_param_values, var_principle, StatevectorEstimator())
         evolution_result = var_qite.evolve(evolution_problem)
     """
 

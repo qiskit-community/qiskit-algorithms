@@ -22,7 +22,7 @@ from numpy import real
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -70,7 +70,7 @@ class RealMcLachlanPrinciple(RealVariationalPrinciple):
                     "The provided gradient instance does not contain an estimator primitive."
                 ) from exc
         else:
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
 
         if qgt is None:

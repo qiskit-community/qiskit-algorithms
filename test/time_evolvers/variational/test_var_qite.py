@@ -19,7 +19,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import Statevector
@@ -92,7 +92,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
 
         algorithm_globals.random_seed = self.seed
 
-        estimator = Estimator(seed=self.seed)
+        estimator = StatevectorEstimator(seed=self.seed)
         qgt = LinCombQGT(estimator)
         gradient = LinCombEstimatorGradient(estimator)
         var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
@@ -233,7 +233,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
 
         algorithm_globals.random_seed = self.seed
 
-        estimator = Estimator(seed=self.seed)
+        estimator = StatevectorEstimator(seed=self.seed)
         var_principle = ImaginaryMcLachlanPrinciple()
 
         var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)

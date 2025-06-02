@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,7 @@ from ddt import ddt, data
 import numpy as np
 
 from qiskit.circuit.library import PauliTwoDesign
-from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 
 from qiskit.quantum_info import SparsePauliOp, Statevector
 
@@ -58,7 +58,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             settings["regularization"] = 0.01
             expected_nfev = settings["maxiter"] * 5 + 1
         elif method == "qnspsa":
-            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=123))
+            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=StatevectorSampler(seed=123))
             settings["regularization"] = 0.001
             settings["learning_rate"] = 0.05
             settings["perturbation"] = 0.05
@@ -205,7 +205,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         initial_point = np.random.random(ansatz.num_parameters)
 
         with self.subTest(msg="pass as kwarg"):
-            fidelity = QNSPSA.get_fidelity(ansatz, sampler=Sampler(seed=123))
+            fidelity = QNSPSA.get_fidelity(ansatz, sampler=StatevectorSampler(seed=123))
             result = fidelity(initial_point, initial_point)
 
             self.assertAlmostEqual(result[0], 1)
@@ -215,7 +215,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         circuit = PauliTwoDesign(3, reps=1, seed=1)
 
         obs = SparsePauliOp("ZZI")  # Z^Z^I
-        estimator = Estimator(seed=12)
+        estimator = StatevectorEstimator(seed=12)
 
         initial_point = np.array(
             [0.82311034, 0.02611798, 0.21077064, 0.61842177, 0.09828447, 0.62013131]
@@ -225,7 +225,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             results = estimator.run([(circuit, obs, x)]).result()
             return np.array([res.data.evs for res in results]).real.reshape(-1)
 
-        fidelity = QNSPSA.get_fidelity(circuit, sampler=Sampler(seed=12, default_shots=10_000))
+        fidelity = QNSPSA.get_fidelity(circuit, sampler=StatevectorSampler(seed=12, default_shots=10_000))
         optimizer = QNSPSA(fidelity)
         optimizer.maxiter = 1
         optimizer.learning_rate = 0.05

@@ -44,14 +44,14 @@ class TrotterQRTE(RealTimeEvolver):
             from qiskit.quantum_info import Pauli, SparsePauliOp
             from qiskit import QuantumCircuit
             from qiskit_algorithms import TrotterQRTE, TimeEvolutionProblem
-            from qiskit.primitives import StatevectorEstimator as Estimator
+            from qiskit.primitives import StatevectorEstimator
 
             operator = SparsePauliOp([Pauli("X"), Pauli("Z")])
             initial_state = QuantumCircuit(1)
             time = 1
             evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
             # LieTrotter with 1 rep
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             trotter_qrte = TrotterQRTE(estimator=estimator)
             evolved_state = trotter_qrte.evolve(evolution_problem).evolved_state
     """

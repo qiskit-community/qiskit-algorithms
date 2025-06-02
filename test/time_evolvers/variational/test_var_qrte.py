@@ -21,7 +21,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter, ParameterVector
 from qiskit.circuit.library import EfficientSU2
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector
 
 from qiskit_algorithms.gradients import LinCombQGT, DerivativeType, LinCombEstimatorGradient
@@ -60,7 +60,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         final_time = 0.75
         evolution_problem = TimeEvolutionProblem(hamiltonian, t_param=t_param, time=final_time)
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         varqrte = VarQRTE(circuit, initial_parameters, estimator=estimator)
 
         result = varqrte.evolve(evolution_problem)
@@ -123,7 +123,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="Test exact backend."):
             algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
@@ -151,7 +151,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         with self.subTest(msg="Test shot-based backend."):
             algorithm_globals.random_seed = self.seed
 
-            estimator = Estimator(options={"shots": 4 * 4096, "seed": self.seed})
+            estimator = StatevectorEstimator(options={"shots": 4 * 4096, "seed": self.seed})
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
@@ -199,7 +199,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         init_param_values = np.zeros(len(parameters))
         for i in range(len(parameters)):
             init_param_values[i] = np.pi / 4
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         qgt = LinCombQGT(estimator)
         gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
 
@@ -259,7 +259,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="Test exact backend."):
             algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
@@ -279,7 +279,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         with self.subTest(msg="Test shot-based backend."):
             algorithm_globals.random_seed = self.seed
 
-            estimator = Estimator(options={"shots": 4 * 4096, "seed": self.seed})
+            estimator = StatevectorEstimator(options={"shots": 4 * 4096, "seed": self.seed})
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)

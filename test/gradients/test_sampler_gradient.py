@@ -21,7 +21,7 @@ from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import efficient_su2, real_amplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
-from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.gradients import (
@@ -49,7 +49,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_single_circuit(self, grad, shots, atol, rtol):
         """Test the sampler gradient for a single circuit"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -73,7 +73,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_p(self, grad, shots, atol, rtol):
         """Test the sampler gradient for p"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -97,7 +97,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_u(self, grad, shots, atol, rtol):
         """Test the sampler gradient for u"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         a = Parameter("a")
         b = Parameter("b")
         c = Parameter("c")
@@ -122,7 +122,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_efficient_su2(self, grad, shots, atol, rtol):
         """Test the sampler gradient for EfficientSU2"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         qc = efficient_su2(2, reps=1)
         qc.measure_all()
         gradient = grad(sampler)
@@ -218,7 +218,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     def test_gradient_2qubit_gate(self, grad, shots, atol, rtol):
         """Test the sampler gradient for 2 qubit gates"""
         # Unfortunately, can't seed... Maybe because of Qiskit/qiskit#13730?
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         for gate in [RXXGate]:
             param_list = [[np.pi / 4], [np.pi / 2]]
             correct_results = [
@@ -240,7 +240,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_parameter_coefficient(self, grad, shots, atol, rtol):
         """Test the sampler gradient for parameter variables with coefficients"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         qc = real_amplitudes(num_qubits=2, reps=1)
         qc.rz(qc.parameters[0].exp() + 2 * qc.parameters[1], 0)
         qc.rx(3.0 * qc.parameters[0] + qc.parameters[1].sin(), 1)
@@ -315,7 +315,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_parameters(self, grad, shots, atol, rtol):
         """Test the sampler gradient for parameters"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -373,7 +373,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_multi_arguments(self, grad, shots, atol, rtol):
         """Test the sampler gradient for multiple arguments"""
-        sampler = Sampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots)
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -421,7 +421,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_validation(self, grad, shots, atol, rtol):
         """Test sampler gradient's validation"""
-        sampler = Sampler()
+        sampler = StatevectorSampler()
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
@@ -437,7 +437,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
 
     def test_spsa_gradient(self):
         """Test the SPSA sampler gradient"""
-        sampler = Sampler(default_shots=3_000_000)
+        sampler = StatevectorSampler(default_shots=3_000_000)
         with self.assertRaises(ValueError):
             _ = SPSASamplerGradient(sampler, epsilon=-0.1)
 
@@ -576,7 +576,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc.global_phase = params[0] * params[1] + params[2].cos().exp()
         qc.measure_all()
 
-        sampler = Sampler(default_shots=100_000)
+        sampler = StatevectorSampler(default_shots=100_000)
         findiff = FiniteDiffSamplerGradient(sampler, 1e-2)
         gradient = grad(sampler)
 
@@ -603,7 +603,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         qc.measure_all()
-        sampler = Sampler(default_shots=100)
+        sampler = StatevectorSampler(default_shots=100)
         with self.subTest("sampler"):
             if grad is FiniteDiffSamplerGradient or grad is SPSASamplerGradient:
                 gradient = grad(sampler, epsilon=1e-6)
@@ -698,7 +698,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         op = SparsePauliOp.from_list([("Z", 1)])
-        sampler = Sampler()
+        sampler = StatevectorSampler()
         gradient = LinCombSamplerGradient(
             sampler,
             transpiler=pass_manager,

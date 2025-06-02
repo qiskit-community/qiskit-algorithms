@@ -26,7 +26,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZGate
 from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
 from qiskit.circuit import Parameter
-from qiskit.primitives import StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
 
 from qiskit_algorithms import TimeEvolutionProblem, TrotterQRTE
@@ -83,7 +83,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         evolution_problem = TimeEvolutionProblem(
             operator, time, initial_state, aux_ops, t_param=t_param
         )
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
 
         expected_psi, expected_observables_result = self._get_expected_trotter_qrte(
             operator,
@@ -256,7 +256,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
 
         trotter_qrte = TrotterQRTE(
-            estimator=Estimator(),
+            estimator=StatevectorEstimator(),
             transpiler=pass_manager,
             transpiler_options={"callback": callback},
         )

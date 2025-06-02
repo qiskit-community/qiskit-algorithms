@@ -19,7 +19,7 @@ import numpy as np
 from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import GroverOperator, PhaseOracle
-from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_TWEEDLEDUM
@@ -89,7 +89,7 @@ class TestGrover(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self._sampler = Sampler(seed=123)
+        self._sampler = StatevectorSampler(seed=123)
 
     @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
     def test_implicit_phase_oracle_is_good_state(self):
@@ -108,6 +108,7 @@ class TestGrover(QiskitAlgorithmsTestCase):
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
 
+    @unittest.skip("Skipped until https://github.com/qiskit-community/qiskit-algorithms/issues/136#issuecomment-2291169158 is resolved")
     @data([1, 2, 3], None, 2)
     def test_iterations_with_good_state_sample_from_iterations(self, iterations):
         """Test the algorithm with different iteration types and with good state"""
@@ -215,7 +216,7 @@ class TestGrover(QiskitAlgorithmsTestCase):
             amplitude = np.sqrt(num_solutions / 2**num_qubits)
             expected = round(np.arccos(amplitude) / (2 * np.arcsin(amplitude)))
             actual = Grover.optimal_num_iterations(num_solutions, num_qubits)
-        self.assertEqual(actual, expected)
+            self.assertEqual(actual, expected)
 
     def test_construct_circuit(self):
         """Test construct_circuit"""
@@ -291,7 +292,7 @@ class TestGrover(QiskitAlgorithmsTestCase):
 
         Grover(
             iterations=1,
-            sampler=Sampler(),
+            sampler=StatevectorSampler(seed=42),
             transpiler=pass_manager,
             transpiler_options={"callback": callback},
         ).amplify(problem)

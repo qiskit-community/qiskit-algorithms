@@ -22,7 +22,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.parametervector import ParameterVector
-from qiskit.primitives import StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorEstimator
 
 from qiskit_algorithms.gradients import LinCombQGT, ReverseQGT, QFI, DerivativeType
 
@@ -33,7 +33,7 @@ class TestQFI(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self.estimator = Estimator()
+        self.estimator = StatevectorEstimator()
         self.lcu_qgt = LinCombQGT(self.estimator, derivative_type=DerivativeType.REAL)
         self.reverse_qgt = ReverseQGT(derivative_type=DerivativeType.REAL)
 

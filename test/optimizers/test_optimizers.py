@@ -26,7 +26,7 @@ from scipy.optimize import rosen, rosen_der
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.utils import optionals
-from qiskit.primitives import StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorSampler
 
 from qiskit_algorithms.optimizers import (
     ADAM,
@@ -414,7 +414,7 @@ class TestOptimizerSerialization(QiskitAlgorithmsTestCase):
         ansatz = RealAmplitudes(1)
         fidelity = QNSPSA.get_fidelity(
             ansatz,
-            sampler=Sampler(seed=123),
+            sampler=StatevectorSampler(seed=123),
             transpiler=generate_preset_pass_manager(optimization_level=1, seed_transpiler=42),
             transpiler_options={"callable": lambda x: x},
         )

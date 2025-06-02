@@ -21,7 +21,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import StatevectorEstimator as Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from .imaginary_variational_principle import ImaginaryVariationalPrinciple
@@ -69,7 +69,7 @@ class ImaginaryMcLachlanPrinciple(ImaginaryVariationalPrinciple):
                     "The provided gradient instance does not contain an estimator primitive."
                 ) from exc
         else:
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             gradient = LinCombEstimatorGradient(estimator)
 
         if qgt is None:

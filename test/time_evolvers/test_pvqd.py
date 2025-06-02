@@ -20,7 +20,7 @@ from ddt import data, ddt, unpack
 
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
-from qiskit.primitives import StatevectorEstimator as Estimator, StatevectorSampler as Sampler
+from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 
 from qiskit_algorithms import AlgorithmError
@@ -81,8 +81,8 @@ class TestPVQD(QiskitAlgorithmsTestCase):
         else:
             optimizer = L_BFGS_B(maxiter=1)
 
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
 
         # run pVQD keeping track of the energy and the magnetization
@@ -110,8 +110,8 @@ class TestPVQD(QiskitAlgorithmsTestCase):
 
     def test_step(self):
         """Test calling the step method directly."""
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
         pvqd = PVQD(
             fidelity_primitive,
@@ -137,8 +137,8 @@ class TestPVQD(QiskitAlgorithmsTestCase):
     def test_get_loss(self):
         """Test getting the loss function directly."""
 
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(
@@ -165,8 +165,8 @@ class TestPVQD(QiskitAlgorithmsTestCase):
 
     def test_invalid_num_timestep(self):
         """Test raises if the num_timestep is not positive."""
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
         pvqd = PVQD(
             fidelity_primitive,
@@ -186,8 +186,8 @@ class TestPVQD(QiskitAlgorithmsTestCase):
     def test_initial_guess_and_observables(self):
         """Test doing no optimizations stays at initial guess."""
         initial_guess = np.zeros(self.ansatz.num_parameters)
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(
@@ -212,7 +212,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
     def test_zero_parameters(self):
         """Test passing an ansatz with zero parameters raises an error."""
         problem = TimeEvolutionProblem(self.hamiltonian, time=0.02)
-        sampler = Sampler()
+        sampler = StatevectorSampler()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(
@@ -236,7 +236,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             initial_state=initial_state,
         )
 
-        sampler = Sampler()
+        sampler = StatevectorSampler()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(
@@ -256,7 +256,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             self.hamiltonian, time=0.02, aux_operators=[self.hamiltonian, self.observable]
         )
 
-        sampler = Sampler()
+        sampler = StatevectorSampler()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(
@@ -310,8 +310,8 @@ class TestPVQDUtils(QiskitAlgorithmsTestCase):
         info = {"has_gradient": None}
         optimizer = partial(gradient_supplied, info=info)
 
-        sampler = Sampler()
-        estimator = Estimator()
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
         fidelity_primitive = ComputeUncompute(sampler)
 
         pvqd = PVQD(

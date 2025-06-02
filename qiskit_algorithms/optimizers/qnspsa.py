@@ -64,8 +64,7 @@ class QNSPSA(SPSA):
             import numpy as np
             from qiskit_algorithms.optimizers import QNSPSA
             from qiskit.circuit.library import PauliTwoDesign
-            from qiskit.primitives import StatevectorEstimator as Estimator,\
-                StatevectorSampler as Sampler
+            from qiskit.primitives import StatevectorEstimator, StatevectorSampler
             from qiskit.quantum_info import Pauli
 
             # problem setup
@@ -74,14 +73,14 @@ class QNSPSA(SPSA):
             initial_point = np.random.random(ansatz.num_parameters)
 
             # loss function
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
 
             def loss(x):
                 result = estimator.run([(ansatz, observable, x)]).result()[0]
                 return np.real(result.data.evs[0])
 
             # fidelity for estimation of the geometric tensor
-            sampler = Sampler()
+            sampler = StatevectorSampler()
             fidelity = QNSPSA.get_fidelity(ansatz, sampler)
 
             # run QN-SPSA
