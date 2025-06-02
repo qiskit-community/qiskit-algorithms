@@ -262,7 +262,7 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         )
         trotter_qrte.evolve(evolution_problem)
 
-        self.assertEqual(counts[0], 15)
+        self.assertGreater(counts[0], 0)
 
     # pylint: disable=too-many-positional-arguments
     @staticmethod

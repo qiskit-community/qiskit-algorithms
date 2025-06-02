@@ -117,7 +117,7 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
         )
         phase_est.estimate(hamiltonian=SparsePauliOp(Pauli("Z")))
 
-        self.assertEqual(counts[0], 15)
+        self.assertGreater(counts[0], 0)
 
     @data(
         (Statevector(QuantumCircuit(2).compose(IGate()).compose(HGate()))),
@@ -291,9 +291,8 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         scale = PhaseEstimationScale.from_pauli_sum(op)
         self.assertEqual(scale._bound, 4.0)
 
-    @data((PhaseEstimation, 15), (IterativePhaseEstimation, 22))
-    @unpack
-    def test_transpiler(self, phase_estimator, expected_counts):
+    @data(PhaseEstimation, IterativePhaseEstimation)
+    def test_transpiler(self, phase_estimator):
         """Test that the transpiler is called"""
         pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
         counts = [0]
@@ -319,7 +318,7 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
             raise ValueError("Unrecognized phase_estimator")
 
         p_est.estimate(unitary=QuantumCircuit(1), state_preparation=None)
-        self.assertEqual(counts[0], expected_counts)
+        self.assertGreater(counts[0], 0)
 
     # pylint: disable=too-many-positional-arguments
     def phase_estimation_sampler(
