@@ -17,7 +17,7 @@ from test import QiskitAlgorithmsTestCase, slow_test
 import numpy as np
 from ddt import ddt, data
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms import AlgorithmError
@@ -43,7 +43,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
                 ("XX", 0.18093119978423156),
             ]
         )
-        self.estimator = Estimator()
+        self.estimator = StatevectorEstimator()
         self.gradient = LinCombEstimatorGradient(self.estimator)
 
     @slow_test

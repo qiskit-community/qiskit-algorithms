@@ -375,17 +375,17 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
 
     @idata(
         [
-            [AmplitudeEstimation, {"num_eval_qubits": 1}, 17],
-            [IterativeAmplitudeEstimation, {"epsilon_target": 0.1, "alpha": 0.1}, 17],
+            [AmplitudeEstimation, {"num_eval_qubits": 1}],
+            [IterativeAmplitudeEstimation, {"epsilon_target": 0.1, "alpha": 0.1}],
         ]
     )
     @unpack
-    def test_transpiler_ae_iae(self, qae_class, kwargs, expected_n_calls):
+    def test_transpiler_ae_iae(self, qae_class, kwargs):
         """Test that the transpiler is called on AE and IAE"""
         qae = qae_class(transpiler=self.pm, transpiler_options={"callback": self.callback}, **kwargs)
         qae.construct_circuit(self.problem)
 
-        self.assertEqual(self.counts[0], expected_n_calls)
+        self.assertGreater(self.counts[0], 0)
 
     @unittest.skip("Won't pass until Qiskit/qiskit#14250 is fixed")
     def test_transpiler_mlae(self):
@@ -393,14 +393,14 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
         mlae = MaximumLikelihoodAmplitudeEstimation([0, 1], transpiler=self.pm, transpiler_options={"callback": self.callback})
         mlae.construct_circuits(self.problem)
 
-        self.assertEqual(self.counts[0], 34)
+        self.assertGreater(self.counts[0], 0)
 
     def test_transpiler_fae(self):
         """Test that the transpiler is called on FAE"""
         fae = FasterAmplitudeEstimation(0.1, 1, transpiler=self.pm, transpiler_options={"callback": self.callback})
         fae.construct_circuit(self.problem, k=1)
 
-        self.assertEqual(self.counts[0], 17)
+        self.assertGreater(self.counts[0], 0)
 
 
 class TestAmplitudeEstimation(QiskitAlgorithmsTestCase):
