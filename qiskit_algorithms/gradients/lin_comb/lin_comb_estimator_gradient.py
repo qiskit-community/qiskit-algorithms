@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -158,7 +158,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             n = len(gradient_circuits)
             # Make the observable as :class:`~qiskit.quantum_info.SparsePauliOp` and
             # add an ancillary operator to compute the gradient.
-            observable = SparsePauliOp.from_operator(observable)
+            observable = SparsePauliOp(observable)
             observable_1, observable_2 = _make_lin_comb_observables(
                 observable, self._derivative_type
             )

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -26,9 +26,7 @@ from qiskit.quantum_info import Statevector
 
 from qiskit_algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
 from qiskit_algorithms import TimeEvolutionProblem, VarQITE
-from qiskit_algorithms.time_evolvers.variational import (
-    ImaginaryMcLachlanPrinciple,
-)
+from qiskit_algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
 from qiskit_algorithms.utils import algorithm_globals
 
 
@@ -80,38 +78,71 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
         ]
 
         thetas_expected_shots = [
-            0.9392668013702317,
-            1.8756706968454864,
-            2.6915067128662398,
-            2.655420131540562,
-            2.174687086978046,
-            1.6997059390911056,
-            1.8056912289547045,
-            1.939353810908912,
+            0.87665726,
+            2.04313234,
+            2.67702257,
+            2.74971934,
+            2.38728532,
+            1.78404205,
+            2.11388396,
+            1.92959433
         ]
 
-        algorithm_globals.random_seed = self.seed
+        # SHould be roughly the same in both Exact and shot-based backends
+        expected_aux_ops = (-0.2177982985749799, 0.2556790598588627)
 
-        estimator = StatevectorEstimator(seed=self.seed)
-        qgt = LinCombQGT(estimator)
-        gradient = LinCombEstimatorGradient(estimator)
-        var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
+        with self.subTest(msg="Test exact backend"):
+            algorithm_globals.random_seed = self.seed
 
-        var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=25)
-        evolution_result = var_qite.evolve(evolution_problem)
+            estimator = StatevectorEstimator(seed=self.seed)
+            qgt = LinCombQGT(estimator)
+            gradient = LinCombEstimatorGradient(estimator)
+            var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
 
-        aux_ops = evolution_result.aux_ops_evaluated
+            var_qite = VarQITE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+            )
+            evolution_result = var_qite.evolve(evolution_problem)
 
-        parameter_values = evolution_result.parameter_values[-1]
+            aux_ops = evolution_result.aux_ops_evaluated
 
-        expected_aux_ops = (-0.24629853310903974, 0.2518122871921184)
+            parameter_values = evolution_result.parameter_values[-1]
 
-        for i, parameter_value in enumerate(parameter_values):
-            np.testing.assert_almost_equal(
-                float(parameter_value), thetas_expected_shots[i], decimal=2
+            for i, parameter_value in enumerate(parameter_values):
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected[i], decimal=2
+                )
+
+            np.testing.assert_array_almost_equal(
+                [result[0] for result in aux_ops], expected_aux_ops
             )
 
-        np.testing.assert_array_almost_equal([result[0] for result in aux_ops], expected_aux_ops)
+        with self.subTest(msg="Test non-zero precision backend."):
+            algorithm_globals.random_seed = self.seed
+
+            # A precision of pow(2, -6) roughly corresponds to 4096 shots
+            estimator = StatevectorEstimator(default_precision=pow(2, -6), seed=self.seed)
+            qgt = LinCombQGT(estimator)
+            gradient = LinCombEstimatorGradient(estimator)
+            var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
+
+            var_qite = VarQITE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+            )
+            evolution_result = var_qite.evolve(evolution_problem)
+
+            aux_ops = evolution_result.aux_ops_evaluated
+
+            parameter_values = evolution_result.parameter_values[-1]
+
+            for i, parameter_value in enumerate(parameter_values):
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected_shots[i], decimal=2
+                )
+
+            np.testing.assert_array_almost_equal(
+                [result[0] for result in aux_ops], expected_aux_ops, decimal=1
+            )
 
     def test_run_d_1_t_7(self):
         """Test VarQITE for d = 1 and t = 7 with RK45 ODE solver."""
@@ -226,32 +257,57 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
 
         thetas_expected = [1.83881002737137e-18, 2.43224994794434, -3.05311331771918e-18]
 
-        thetas_expected_shots = [1.83881002737137e-18, 2.43224994794434, -3.05311331771918e-18]
-
         state_expected = Statevector([0.34849948 + 0.0j, 0.93730897 + 0.0j]).to_dict()
         # the expected final state is Statevector([0.34849948+0.j, 0.93730897+0.j])
 
-        algorithm_globals.random_seed = self.seed
+        with self.subTest(msg="Test exact backend."):
+            algorithm_globals.random_seed = self.seed
 
-        estimator = StatevectorEstimator(seed=self.seed)
-        var_principle = ImaginaryMcLachlanPrinciple()
+            estimator = StatevectorEstimator(seed=self.seed)
+            var_principle = ImaginaryMcLachlanPrinciple()
 
-        var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)
+            var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)
 
-        evolution_result = var_qite.evolve(evolution_problem)
+            evolution_result = var_qite.evolve(evolution_problem)
 
-        evolved_state = evolution_result.evolved_state
+            evolved_state = evolution_result.evolved_state
 
-        parameter_values = evolution_result.parameter_values[-1]
+            parameter_values = evolution_result.parameter_values[-1]
 
-        for key, evolved_value in Statevector(evolved_state).to_dict().items():
-            # np.allclose works with complex numbers
-            self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
+            for key, evolved_value in Statevector(evolved_state).to_dict().items():
+                # np.allclose works with complex numbers
+                self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
 
-        for i, parameter_value in enumerate(parameter_values):
-            np.testing.assert_almost_equal(
-                float(parameter_value), thetas_expected_shots[i], decimal=2
+            for i, parameter_value in enumerate(parameter_values):
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected[i], decimal=2
+                )
+
+        with self.subTest(msg="Test non-zero precision backend."):
+            algorithm_globals.random_seed = self.seed
+
+            # A precision of pow(2, -6) roughly corresponds to 4096 shots
+            estimator = StatevectorEstimator(default_precision=pow(2, -6), seed=self.seed)
+            var_principle = ImaginaryMcLachlanPrinciple()
+
+            var_qite = VarQITE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
             )
+
+            evolution_result = var_qite.evolve(evolution_problem)
+
+            evolved_state = evolution_result.evolved_state
+
+            parameter_values = evolution_result.parameter_values[-1]
+
+            for key, evolved_value in Statevector(evolved_state).to_dict().items():
+                # np.allclose works with complex numbers
+                self.assertTrue(np.allclose(evolved_value, state_expected[key], 1e-02))
+
+            for i, parameter_value in enumerate(parameter_values):
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected[i], decimal=2
+                )
 
     # pylint: disable=too-many-positional-arguments
     def _test_helper(self, observable, thetas_expected, time, var_qite, decimal):

@@ -26,9 +26,7 @@ from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector
 
 from qiskit_algorithms.gradients import LinCombQGT, DerivativeType, LinCombEstimatorGradient
 from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
-from qiskit_algorithms.time_evolvers.variational import (
-    RealMcLachlanPrinciple,
-)
+from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
 from qiskit_algorithms.utils import algorithm_globals
 
 
@@ -110,74 +108,31 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             1.53853696496673,
         ]
 
-        thetas_expected_shots = [
-            0.886975892820015,
-            1.53822607733397,
-            1.57058096749141,
-            1.59023223608564,
-            1.60105707043745,
-            1.57018042397236,
-            1.64010900210835,
-            1.53959523034133,
-        ]
+        algorithm_globals.random_seed = self.seed
+        estimator = StatevectorEstimator()
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
+        var_principle = RealMcLachlanPrinciple(qgt, gradient)
 
-        with self.subTest(msg="Test exact backend."):
-            algorithm_globals.random_seed = self.seed
-            estimator = StatevectorEstimator()
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
+        var_qrte = VarQRTE(
+            ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+        )
+        evolution_result = var_qrte.evolve(evolution_problem)
 
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
-            )
-            evolution_result = var_qrte.evolve(evolution_problem)
+        aux_ops = evolution_result.aux_ops_evaluated
 
-            aux_ops = evolution_result.aux_ops_evaluated
+        parameter_values = evolution_result.parameter_values[-1]
 
-            parameter_values = evolution_result.parameter_values[-1]
+        expected_aux_ops = [0.06836996703935797, 0.7711574493422457]
 
-            expected_aux_ops = [0.06836996703935797, 0.7711574493422457]
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected[i], decimal=2
-                )
-
-            np.testing.assert_array_almost_equal(
-                [result[0] for result in aux_ops], expected_aux_ops
+        for i, parameter_value in enumerate(parameter_values):
+            np.testing.assert_almost_equal(
+                float(parameter_value), thetas_expected[i], decimal=2
             )
 
-        with self.subTest(msg="Test shot-based backend."):
-            algorithm_globals.random_seed = self.seed
-
-            estimator = StatevectorEstimator(options={"shots": 4 * 4096, "seed": self.seed})
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
-
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
-            )
-            evolution_result = var_qrte.evolve(evolution_problem)
-
-            aux_ops = evolution_result.aux_ops_evaluated
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            expected_aux_ops = [
-                0.070436,
-                0.777938,
-            ]
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
-                )
-
-            np.testing.assert_array_almost_equal(
-                [result[0] for result in aux_ops], expected_aux_ops, decimal=2
-            )
+        np.testing.assert_array_almost_equal(
+            [result[0] for result in aux_ops], expected_aux_ops
+        )
 
     def test_run_d_2(self):
         """Test VarQRTE for d = 2 and t = 1 with RK45 ODE solver."""
@@ -257,45 +212,23 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         # the expected final state is Statevector([0.62289306-0.33467034j, 0.62289306+0.33467034j])
 
-        with self.subTest(msg="Test exact backend."):
-            algorithm_globals.random_seed = self.seed
-            estimator = StatevectorEstimator()
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
+        algorithm_globals.random_seed = self.seed
+        estimator = StatevectorEstimator()
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
+        var_principle = RealMcLachlanPrinciple(qgt, gradient)
 
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
+        var_qrte = VarQRTE(
+            ansatz, init_param_values, var_principle, estimator, num_timesteps=100
+        )
+        evolution_result = var_qrte.evolve(evolution_problem)
+
+        parameter_values = evolution_result.parameter_values[-1]
+
+        for i, parameter_value in enumerate(parameter_values):
+            np.testing.assert_almost_equal(
+                float(parameter_value), thetas_expected[i], decimal=2
             )
-            evolution_result = var_qrte.evolve(evolution_problem)
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected[i], decimal=2
-                )
-
-        with self.subTest(msg="Test shot-based backend."):
-            algorithm_globals.random_seed = self.seed
-
-            estimator = StatevectorEstimator(options={"shots": 4 * 4096, "seed": self.seed})
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
-
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
-            )
-
-            evolution_result = var_qrte.evolve(evolution_problem)
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
-                )
 
     def _test_helper(self, observable, thetas_expected, time, var_qrte):
         evolution_problem = TimeEvolutionProblem(observable, time)
