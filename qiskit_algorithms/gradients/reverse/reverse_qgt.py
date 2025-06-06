@@ -80,7 +80,9 @@ class ReverseQGT(BaseQGT):
         g_circuits, g_parameter_values, g_parameter_sets = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets, precision=precision)
+        results = self._run_unique(
+            g_circuits, g_parameter_values, g_parameter_sets, precision=precision
+        )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(

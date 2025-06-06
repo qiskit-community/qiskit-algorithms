@@ -117,7 +117,9 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
 
-            var_qrte = VarQRTE(ansatz, init_param_values, var_principle, estimator, num_timesteps=25)
+            var_qrte = VarQRTE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+            )
             evolution_result = var_qrte.evolve(evolution_problem)
 
             aux_ops = evolution_result.aux_ops_evaluated
@@ -125,9 +127,13 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             parameter_values = evolution_result.parameter_values[-1]
 
             for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(float(parameter_value), thetas_expected[i], decimal=2)
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected[i], decimal=2
+                )
 
-            np.testing.assert_array_almost_equal([result[0] for result in aux_ops], expected_aux_ops)
+            np.testing.assert_array_almost_equal(
+                [result[0] for result in aux_ops], expected_aux_ops
+            )
 
         with self.subTest(msg="Test non-zero precision backend."):
             algorithm_globals.random_seed = self.seed
@@ -137,7 +143,9 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
 
-            var_qrte = VarQRTE(ansatz, init_param_values, var_principle, estimator, num_timesteps=25)
+            var_qrte = VarQRTE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=25
+            )
             evolution_result = var_qrte.evolve(evolution_problem)
 
             aux_ops = evolution_result.aux_ops_evaluated
@@ -145,12 +153,12 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             parameter_values = evolution_result.parameter_values[-1]
 
             for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(float(parameter_value), thetas_expected[i], decimal=2)
+                np.testing.assert_almost_equal(
+                    float(parameter_value), thetas_expected[i], decimal=2
+                )
 
             np.testing.assert_array_almost_equal(
-                [result[0] for result in aux_ops],
-                expected_aux_ops,
-                decimal=2
+                [result[0] for result in aux_ops], expected_aux_ops, decimal=2
             )
 
     def test_run_d_2(self):

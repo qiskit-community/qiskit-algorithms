@@ -85,9 +85,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters
-        )
+        results = self._run_unique(g_circuits, observables, g_parameter_values, g_parameters)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
