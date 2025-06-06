@@ -17,8 +17,6 @@ Additional optional constants.
 from qiskit.utils import LazyImportTester
 from qiskit.version import get_version_info
 
-from qiskit_algorithms.version import get_version_info
-
 HAS_NLOPT = LazyImportTester("nlopt", name="NLopt Optimizer", install="pip install nlopt")
 HAS_SKQUANT = LazyImportTester(
     "skquant.opt",
