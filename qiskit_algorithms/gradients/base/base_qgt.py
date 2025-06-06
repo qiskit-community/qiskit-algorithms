@@ -126,7 +126,7 @@ class BaseQGT(ABC):
             precision: Precision to be used by the underlying Estimator. If a single float is
                 provided, this number will be used for all circuits. If a sequence of floats is
                 provided, they will be used on a per-circuit basis. If none is provided, the
-                gradients's default precision will be used for all circuits. If this number is
+                gradient's default precision will be used for all circuits. If this number is
                 also set to None, the underlying primitive's default precision will be used
                 for all circuits.
 

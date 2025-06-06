@@ -89,7 +89,7 @@ class _DiagonalEstimator(BaseEstimatorV2):
     def _run(self, pubs: list[EstimatorPub]) -> PrimitiveResult[_DiagonalEstimatorResult]:
         return PrimitiveResult([self._run_pub(pub) for pub in pubs])
 
-    # Adapted from StatevectorEstimator, ok with the license?
+    # Adapted from StatevectorEstimator, OK with the license?
     def _run_pub(self, pub: EstimatorPub) -> _DiagonalEstimatorResult:
         circuit = pub.circuit
         observables = pub.observables
