@@ -56,6 +56,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         evaluation_schedule: list[int] | int,
         minimizer: MINIMIZER | None = None,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -174,7 +175,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         if self._transpiler is not None:
             # circuits = self._transpiler.run(circuits,  **self._transpiler_options)
-            circuits = self._transpiler.run(circuits[0],  **self._transpiler_options)
+            circuits = self._transpiler.run(circuits[0], **self._transpiler_options)
 
         return circuits
 
@@ -283,7 +284,9 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler job run error
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
             self._sampler = StatevectorSampler()
 
         if estimation_problem.state_preparation is None:
@@ -300,7 +303,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         circuits = self.construct_circuits(estimation_problem, measurement=True)
 
         try:
-            pubs=[(circuit, ) for circuit in circuits]
+            pubs = [(circuit,) for circuit in circuits]
             job = self._sampler.run(pubs)
             ret = job.result()
         except Exception as exc:
@@ -335,9 +338,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.num_oracle_queries = result.shots * sum(k for k in result.evaluation_schedule)
 
         # compute and store confidence interval
-        confidence_interval = self.compute_confidence_interval(
-            result, alpha=0.05, kind="fisher"
-        )
+        confidence_interval = self.compute_confidence_interval(result, alpha=0.05, kind="fisher")
         result.confidence_interval = confidence_interval
         result.confidence_interval_processed = tuple(  # type: ignore[assignment]
             estimation_problem.post_processing(value)  # type: ignore[arg-type]
@@ -477,7 +478,6 @@ def _compute_fisher_information(
         fisher_information /= a * (1 - a)
 
     return fisher_information
-
 
 
 def _fisher_confint(

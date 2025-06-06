@@ -22,7 +22,9 @@ from qiskit.primitives.containers.sampler_pub import SamplerPub
 class LoggingEstimator(StatevectorEstimator):
     """An estimator checking what operations were in the circuits it executed."""
 
-    def __init__(self, default_precision: float = 0.0, seed: int | None = None, operations_callback=None):
+    def __init__(
+        self, default_precision: float = 0.0, seed: int | None = None, operations_callback=None
+    ):
         super().__init__(default_precision=default_precision, seed=seed)
         self.operations_callback = operations_callback
 

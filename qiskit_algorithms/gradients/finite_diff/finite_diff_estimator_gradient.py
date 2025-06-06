@@ -80,6 +80,7 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
@@ -88,10 +89,10 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         has_transformed_precision = False
 
         if isinstance(precision, float) or precision is None:
-            precision=[precision]*len(circuits)
+            precision = [precision] * len(circuits)
             has_transformed_precision = True
 
-        pubs=[]
+        pubs = []
 
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
             circuits, observables, parameter_values, parameters, precision

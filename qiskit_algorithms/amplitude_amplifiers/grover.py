@@ -115,6 +115,7 @@ class Grover(AmplitudeAmplifier):
         growth_rate: float | None = None,
         sample_from_iterations: bool = False,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:

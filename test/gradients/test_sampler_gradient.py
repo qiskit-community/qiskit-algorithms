@@ -14,6 +14,7 @@
 """Test Sampler Gradients"""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -22,7 +23,6 @@ from qiskit.circuit import Parameter
 from qiskit.circuit.library import efficient_su2, real_amplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import StatevectorSampler
-from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
@@ -30,16 +30,31 @@ from qiskit_algorithms.gradients import (
     ParamShiftSamplerGradient,
     SPSASamplerGradient,
 )
-from test import QiskitAlgorithmsTestCase
 from .logging_primitives import LoggingSampler
 
 gradient_factories = [
-    (lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="central"), 3_000_000, 1e-1, 1e-1),
-    (lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="forward"), 3_000_000, 1e-1, 1e-1),
-    (lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="backward"), 3_000_000, 1e-1, 1e-1),
+    (
+        lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="central"),
+        3_000_000,
+        1e-1,
+        1e-1,
+    ),
+    (
+        lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="forward"),
+        3_000_000,
+        1e-1,
+        1e-1,
+    ),
+    (
+        lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="backward"),
+        3_000_000,
+        1e-1,
+        1e-1,
+    ),
     (ParamShiftSamplerGradient, 1_000_000, 1e-2, 1e-2),
     (LinCombSamplerGradient, 1_000_000, 1e-2, 1e-2),
 ]
+
 
 @ddt
 class TestSamplerGradient(QiskitAlgorithmsTestCase):
@@ -419,6 +434,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
 
     @data(*gradient_factories)
     @unpack
+    # pylint: disable=unused-argument
     def test_gradient_validation(self, grad, shots, atol, rtol):
         """Test sampler gradient's validation"""
         sampler = StatevectorSampler()
@@ -549,7 +565,10 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
                 array2 = _quasi2array(correct_results[i], num_qubits=1)
                 np.testing.assert_allclose(array1, array2, atol=1e-1, rtol=1e-1)
 
-    @unittest.skip("Should pass in approximately 3 hours and 20 minutes, and I'm not sure to see the point of this test?")
+    @unittest.skip(
+        "Should pass in approximately 3 hours and 20 minutes, and we're not sure to see the point "
+        "of this test?"
+    )
     @data(ParamShiftSamplerGradient, LinCombSamplerGradient)
     def test_gradient_random_parameters(self, grad):
         """Test param shift and lin comb w/ random parameters"""
@@ -697,12 +716,9 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
-        op = SparsePauliOp.from_list([("Z", 1)])
         sampler = StatevectorSampler()
         gradient = LinCombSamplerGradient(
-            sampler,
-            transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            sampler, transpiler=pass_manager, transpiler_options={"callback": callback}
         )
         gradient.run([qc], [[1]]).result()
 

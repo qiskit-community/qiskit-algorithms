@@ -20,6 +20,7 @@ from typing import Any, Sequence
 
 import numpy as np
 
+
 @dataclass(frozen=True)
 class EstimatorGradientResult:
     """Result of EstimatorGradient."""

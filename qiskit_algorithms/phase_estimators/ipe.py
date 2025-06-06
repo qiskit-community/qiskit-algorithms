@@ -43,6 +43,7 @@ class IterativePhaseEstimation(PhaseEstimator):
         self,
         num_iterations: int,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:

@@ -78,6 +78,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None,
+        *,
         shots: int | Sequence[int] | None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
@@ -86,11 +87,13 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         has_transformed_shots = False
 
         if isinstance(shots, int) or shots is None:
-            shots=[shots]*len(circuits)
+            shots = [shots] * len(circuits)
             has_transformed_shots = True
 
-        pubs=[]
-        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
+        pubs = []
+        for circuit, parameter_values_, parameters_, shots_ in zip(
+            circuits, parameter_values, parameters, shots
+        ):
             # Indices of parameters to be differentiated
             indices = [circuit.parameters.data.index(p) for p in parameters_]
             metadata.append({"parameters": parameters_})
@@ -126,10 +129,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         for n, result_n in zip(all_n, results):
             gradient = []
             result = [
-                {
-                    label: value / res.num_shots
-                    for label, value in res.get_int_counts().items()
-                }
+                {label: value / res.num_shots for label, value in res.get_int_counts().items()}
                 for res in getattr(result_n.data, next(iter(result_n.data)))
             ]
             if self._method == "central":

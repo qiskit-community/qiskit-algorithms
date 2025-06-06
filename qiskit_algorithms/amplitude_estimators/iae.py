@@ -283,7 +283,9 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler job run error.
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
             self._sampler = StatevectorSampler()
 
         # initialize memory variables

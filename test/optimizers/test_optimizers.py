@@ -14,8 +14,6 @@
 
 import unittest
 
-from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-
 from test import QiskitAlgorithmsTestCase
 
 from typing import Optional, List, Tuple
@@ -25,8 +23,9 @@ from scipy.optimize import rosen, rosen_der
 
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.utils import optionals
 from qiskit.primitives import StatevectorSampler
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.utils import optionals
 
 from qiskit_algorithms.optimizers import (
     ADAM,

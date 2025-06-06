@@ -69,6 +69,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         estimator: BaseEstimatorV2,
         precision: float | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ):
@@ -107,6 +108,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
@@ -114,7 +116,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, precision
+            g_circuits, observables, g_parameter_values, g_parameters, precision=precision
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -124,6 +126,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
@@ -169,11 +172,26 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             # Combine inputs into a single job to reduce overhead.
             if self._derivative_type == DerivativeType.COMPLEX:
                 all_n.append(2 * n)
-                pubs.extend([(gradient_circuit, observable_1, parameter_values_, precision_) for gradient_circuit in gradient_circuits])
-                pubs.extend([(gradient_circuit, observable_2, parameter_values_, precision_) for gradient_circuit in gradient_circuits])
+                pubs.extend(
+                    [
+                        (gradient_circuit, observable_1, parameter_values_, precision_)
+                        for gradient_circuit in gradient_circuits
+                    ]
+                )
+                pubs.extend(
+                    [
+                        (gradient_circuit, observable_2, parameter_values_, precision_)
+                        for gradient_circuit in gradient_circuits
+                    ]
+                )
             else:
                 all_n.append(n)
-                pubs.extend([(gradient_circuit, observable_1, parameter_values_, precision_) for gradient_circuit in gradient_circuits])
+                pubs.extend(
+                    [
+                        (gradient_circuit, observable_1, parameter_values_, precision_)
+                        for gradient_circuit in gradient_circuits
+                    ]
+                )
 
         # Run the single job with all circuits.
         job = self._estimator.run(pubs)
@@ -192,11 +210,20 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             # pylint: disable=comparison-with-callable
             if self.derivative_type == DerivativeType.COMPLEX:
                 gradient = np.zeros(n // 2, dtype="complex")
-                gradient.real = np.array([result.data.evs for result in results[partial_sum_n:partial_sum_n + n // 2]])
-                gradient.imag = np.array([result.data.evs for result in results[partial_sum_n + n // 2:partial_sum_n + n]])
+                gradient.real = np.array(
+                    [result.data.evs for result in results[partial_sum_n : partial_sum_n + n // 2]]
+                )
+                gradient.imag = np.array(
+                    [
+                        result.data.evs
+                        for result in results[partial_sum_n + n // 2 : partial_sum_n + n]
+                    ]
+                )
 
             else:
-                gradient = np.real([result.data.evs for result in results[partial_sum_n:partial_sum_n + n]])
+                gradient = np.real(
+                    [result.data.evs for result in results[partial_sum_n : partial_sum_n + n]]
+                )
 
             partial_sum_n += n
             gradients.append(gradient)

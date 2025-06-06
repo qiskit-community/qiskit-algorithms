@@ -37,11 +37,7 @@ class QFI(ABC):
         - \langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle].
     """
 
-    def __init__(
-        self,
-        qgt: BaseQGT,
-        precision: float | None = None
-    ):
+    def __init__(self, qgt: BaseQGT, precision: float | None = None):
         r"""
         Args:
             qgt: The quantum geometric tensor used to compute the QFI.
@@ -56,6 +52,7 @@ class QFI(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        *,
         precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the QFIs on the given circuits.
@@ -96,9 +93,9 @@ class QFI(ABC):
             ]
 
         if precision is None:
-            precision = self.precision # May still be None
+            precision = self.precision  # May still be None
 
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision)
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
         job._submit()
         return job
 
@@ -107,6 +104,7 @@ class QFI(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> QFIResult:
         """Compute the QFI on the given circuits."""
@@ -116,7 +114,7 @@ class QFI(ABC):
             DerivativeType.REAL,
         )
 
-        job = self._qgt.run(circuits, parameter_values, parameters, precision)
+        job = self._qgt.run(circuits, parameter_values, parameters, precision=precision)
 
         try:
             result = job.result()

@@ -39,11 +39,7 @@ from ...algorithm_job import AlgorithmJob
 class BaseSamplerGradient(ABC):
     """Base class for a ``SamplerGradient`` to compute the gradients of the sampling probability."""
 
-    def __init__(
-        self,
-        sampler: BaseSamplerV2,
-        shots: int | None = None
-    ):
+    def __init__(self, sampler: BaseSamplerV2, shots: int | None = None):
         """
         Args:
             sampler: The sampler used to compute the gradients.
@@ -60,6 +56,7 @@ class BaseSamplerGradient(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        *,
         shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the sampler gradient on the given circuits.
@@ -107,7 +104,7 @@ class BaseSamplerGradient(ABC):
         if shots is None:
             shots = self.shots
 
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots)
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots=shots)
         job._submit()
         return job
 
@@ -117,6 +114,7 @@ class BaseSamplerGradient(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         shots: int | Sequence[int] | None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
@@ -214,9 +212,7 @@ class BaseSamplerGradient(ABC):
                 gradient.append(dict(grad_dist))
             gradients.append(gradient)
             metadata.append([{"parameters": parameters_}])
-        return SamplerGradientResult(
-            gradients=gradients, metadata=metadata, shots=results.shots
-        )
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=results.shots)
 
     @staticmethod
     def _validate_arguments(

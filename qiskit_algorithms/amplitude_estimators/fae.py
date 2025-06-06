@@ -53,6 +53,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         maxiter: int,
         rescale: bool = True,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -99,13 +100,15 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
     def _cos_estimate(self, estimation_problem, k, shots):
 
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
             self._sampler = StatevectorSampler()
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
         try:
-            pub=(circuit, None, shots)
+            pub = (circuit, None, shots)
             job = self._sampler.run([pub])
             result = job.result()[0]
         except Exception as exc:
@@ -192,7 +195,9 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler run error.
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
             self._sampler = StatevectorSampler()
 
         self._num_oracle_calls = 0

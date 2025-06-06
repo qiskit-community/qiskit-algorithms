@@ -118,7 +118,7 @@ def _make_lin_comb_gradient_circuit(
     circuit: QuantumCircuit,
     transpiler: Transpiler | None,
     transpiler_options: dict[str, Any],
-    add_measurement: bool = False
+    add_measurement: bool = False,
 ) -> dict[Parameter, QuantumCircuit]:
     """Makes a circuit that computes the linear combination of the gradient circuits."""
     circuit_temp = circuit.copy()

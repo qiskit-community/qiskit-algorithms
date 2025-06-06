@@ -111,6 +111,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        *,
         precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the QGTs on the given circuits.
@@ -155,9 +156,9 @@ class BaseQGT(ABC):
         self._validate_arguments(circuits, parameter_values, parameters)
 
         if precision is None:
-            precision = self.precision # May still be None
+            precision = self.precision  # May still be None
 
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision)
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
         job._submit()
         return job
 
@@ -167,6 +168,7 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
@@ -294,7 +296,7 @@ class BaseQGT(ABC):
             qgts=qgts,
             derivative_type=self.derivative_type,
             metadata=metadata,
-            precision=results.precision
+            precision=results.precision,
         )
 
     @staticmethod

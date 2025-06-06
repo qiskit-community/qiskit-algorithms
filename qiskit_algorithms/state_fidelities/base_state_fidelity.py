@@ -45,6 +45,7 @@ class BaseStateFidelity(ABC):
 
     def __init__(
         self,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -262,6 +263,7 @@ class BaseStateFidelity(ABC):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
+        *,
         shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""
@@ -292,6 +294,7 @@ class BaseStateFidelity(ABC):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
+        *,
         shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""
@@ -316,7 +319,7 @@ class BaseStateFidelity(ABC):
             Primitive job for the fidelity calculation.
             The job's result is an instance of :class:`.StateFidelityResult`.
         """
-        job = self._run(circuits_1, circuits_2, values_1, values_2, shots)
+        job = self._run(circuits_1, circuits_2, values_1, values_2, shots=shots)
 
         job._submit()
         return job

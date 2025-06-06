@@ -58,7 +58,9 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             settings["regularization"] = 0.01
             expected_nfev = settings["maxiter"] * 5 + 1
         elif method == "qnspsa":
-            settings["fidelity"] = QNSPSA.get_fidelity(circuit, sampler=StatevectorSampler(seed=123))
+            settings["fidelity"] = QNSPSA.get_fidelity(
+                circuit, sampler=StatevectorSampler(seed=123)
+            )
             settings["regularization"] = 0.001
             settings["learning_rate"] = 0.05
             settings["perturbation"] = 0.05
@@ -225,7 +227,9 @@ class TestSPSA(QiskitAlgorithmsTestCase):
             results = estimator.run([(circuit, obs, x)]).result()
             return np.array([res.data.evs for res in results]).real.reshape(-1)
 
-        fidelity = QNSPSA.get_fidelity(circuit, sampler=StatevectorSampler(seed=12, default_shots=10_000))
+        fidelity = QNSPSA.get_fidelity(
+            circuit, sampler=StatevectorSampler(seed=12, default_shots=10_000)
+        )
         optimizer = QNSPSA(fidelity)
         optimizer.maxiter = 1
         optimizer.learning_rate = 0.05

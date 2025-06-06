@@ -60,6 +60,7 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the gradients of the expectation values by the parameter shift rule."""
@@ -67,7 +68,7 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, precision
+            g_circuits, observables, g_parameter_values, g_parameters, precision=precision
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -77,6 +78,7 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""

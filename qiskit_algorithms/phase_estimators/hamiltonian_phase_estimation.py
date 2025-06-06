@@ -86,6 +86,7 @@ class HamiltonianPhaseEstimation:
         self,
         num_evaluation_qubits: int,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:

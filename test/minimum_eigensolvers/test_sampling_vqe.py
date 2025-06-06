@@ -79,7 +79,9 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         initial_point = np.zeros(ansatz.num_parameters)
         initial_point[-ansatz.num_qubits :] = np.pi / 2
 
-        vqe = SamplingVQE(StatevectorSampler(seed=42), ansatz, optimizer, initial_point=initial_point)
+        vqe = SamplingVQE(
+            StatevectorSampler(seed=42), ansatz, optimizer, initial_point=initial_point
+        )
         result = vqe.compute_minimum_eigenvalue(operator=op)
 
         with self.subTest(msg="test eigenvalue"):
@@ -143,7 +145,9 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
     def test_batch_evaluate_slsqp(self, op):
         """Test batching with SLSQP (as representative of SciPyOptimizer)."""
         optimizer = SLSQP(max_evals_grouped=10)
-        vqe = SamplingVQE(StatevectorSampler(default_shots=1_000_000, seed=42), RealAmplitudes(), optimizer)
+        vqe = SamplingVQE(
+            StatevectorSampler(default_shots=1_000_000, seed=42), RealAmplitudes(), optimizer
+        )
         result = vqe.compute_minimum_eigenvalue(operator=op)
         self.assertAlmostEqual(result.eigenvalue, self.optimal_value, places=5)
 

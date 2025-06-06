@@ -18,8 +18,15 @@ from collections.abc import Callable, Iterable
 from typing import Any
 
 import numpy as np
-from qiskit.primitives import BaseSamplerV2, BaseEstimatorV2, PubResult, EstimatorPubLike, DataBin, \
-    SamplerPubLike, PrimitiveResult
+from qiskit.primitives import (
+    BaseSamplerV2,
+    BaseEstimatorV2,
+    PubResult,
+    EstimatorPubLike,
+    DataBin,
+    SamplerPubLike,
+    PrimitiveResult,
+)
 from qiskit.primitives.containers.estimator_pub import EstimatorPub
 from qiskit.quantum_info import SparsePauliOp
 
@@ -29,7 +36,12 @@ from qiskit_algorithms.algorithm_job import AlgorithmJob
 class _DiagonalEstimatorResult(PubResult):
     """A result from an expectation of a diagonal observable."""
 
-    def __init__(self, data: DataBin, metadata: dict[str, Any] | None = None, best_measurements: list[dict[str, Any]] | None = None):
+    def __init__(
+        self,
+        data: DataBin,
+        metadata: dict[str, Any] | None = None,
+        best_measurements: list[dict[str, Any]] | None = None,
+    ):
         super().__init__(data, metadata)
         # TODO make each measurement a dataclass rather than a dict
         self.best_measurements: list[dict[str, Any]] | None = best_measurements
@@ -96,14 +108,14 @@ class _DiagonalEstimator(BaseEstimatorV2):
             _check_observable_is_diagonal(obs)
 
             if pub.precision is None:
-                sampler_pubs.append((bound_circuit.measure_all(inplace=False), ))
+                sampler_pubs.append((bound_circuit.measure_all(inplace=False),))
             else:
                 sampler_pubs.append(
                     (
                         bound_circuit.measure_all(inplace=False),
                         None,
                         # Ensures a standard deviation of at most pub.precision
-                        round(.5 + (sum(obs.coeffs) / pub.precision) ** 2)
+                        round(0.5 + (sum(obs.coeffs) / pub.precision) ** 2),
                     )
                 )
 
@@ -124,12 +136,14 @@ class _DiagonalEstimator(BaseEstimatorV2):
             }
             evs[index] = np.real_if_close(self.aggregation(evaluated.values()))
             best_result = min(evaluated.items(), key=lambda x: x[1][1])
-            best_measurements.append({
-                "state": best_result[0],
-                "bitstring": bin(best_result[0])[2:].zfill(pub.circuit.num_qubits),
-                "value": best_result[1][1],
-                "probability": best_result[1][0],
-            })
+            best_measurements.append(
+                {
+                    "state": best_result[0],
+                    "bitstring": bin(best_result[0])[2:].zfill(pub.circuit.num_qubits),
+                    "value": best_result[1][1],
+                    "probability": best_result[1][0],
+                }
+            )
 
         if self.callback is not None:
             self.callback(best_measurements)
@@ -142,8 +156,9 @@ class _DiagonalEstimator(BaseEstimatorV2):
                 "circuit_metadata": pub.circuit.metadata,
                 "target_precision": pub.precision,
             },
-            best_measurements=best_measurements
+            best_measurements=best_measurements,
         )
+
 
 def _get_cvar_aggregation(alpha: float | None) -> Callable[[Iterable[tuple[float, float]]], float]:
     """Get the aggregation function for CVaR with confidence level ``alpha``."""

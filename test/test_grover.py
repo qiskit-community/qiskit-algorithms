@@ -14,6 +14,7 @@
 
 import unittest
 from itertools import product
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
@@ -25,7 +26,6 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_algorithms import AmplificationProblem, Grover
-from test import QiskitAlgorithmsTestCase
 
 
 @ddt
@@ -108,7 +108,11 @@ class TestGrover(QiskitAlgorithmsTestCase):
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "111")
 
-    @unittest.skip("Skipped until https://github.com/qiskit-community/qiskit-algorithms/issues/136#issuecomment-2291169158 is resolved")
+    @unittest.skip(
+        "Skipped until "
+        "https://github.com/qiskit-community/qiskit-algorithms/issues/136#issuecomment-2291169158 is "
+        "resolved"
+    )
     @data([1, 2, 3], None, 2)
     def test_iterations_with_good_state_sample_from_iterations(self, iterations):
         """Test the algorithm with different iteration types and with good state"""

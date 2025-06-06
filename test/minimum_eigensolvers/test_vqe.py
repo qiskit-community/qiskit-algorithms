@@ -313,11 +313,11 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
         callcount = {"sampler": 0, "estimator": 0}
 
-        def wrapped_estimator_run(*args, **kwargs):
+        def wrapped_estimator_run(*args):
             callcount["estimator"] += 1
             return inner_estimator.run(*args)
 
-        def wrapped_sampler_run(*args, **kwargs):
+        def wrapped_sampler_run(*args):
             callcount["sampler"] += 1
             return inner_sampler.run(*args)
 

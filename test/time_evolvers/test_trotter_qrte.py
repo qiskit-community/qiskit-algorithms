@@ -13,10 +13,8 @@
 """Test TrotterQRTE."""
 
 import unittest
-
-from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-
 from test import QiskitAlgorithmsTestCase
+
 from ddt import ddt, data, unpack
 import numpy as np
 from scipy.linalg import expm
@@ -28,6 +26,7 @@ from qiskit.quantum_info import Statevector, Pauli, SparsePauliOp
 from qiskit.circuit import Parameter
 from qiskit.primitives import StatevectorEstimator
 from qiskit.synthesis import SuzukiTrotter, QDrift
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms import TimeEvolutionProblem, TrotterQRTE
 from qiskit_algorithms.utils import algorithm_globals

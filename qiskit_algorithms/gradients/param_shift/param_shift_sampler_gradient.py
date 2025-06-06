@@ -59,6 +59,7 @@ class ParamShiftSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         shots: int | None,
     ) -> SamplerGradientResult:
         """Compute the estimator gradients on the given circuits."""
@@ -81,12 +82,14 @@ class ParamShiftSamplerGradient(BaseSamplerGradient):
         has_transformed_shots = False
 
         if isinstance(shots, int) or shots is None:
-            shots=[shots]*len(circuits)
+            shots = [shots] * len(circuits)
             has_transformed_shots = True
 
         pubs = []
 
-        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots):
+        for circuit, parameter_values_, parameters_, shots_ in zip(
+            circuits, parameter_values, parameters, shots
+        ):
             metadata.append({"parameters": parameters_})
             # Make parameter values for the parameter shift rule.
             param_shift_parameter_values = _make_param_shift_parameter_values(
@@ -109,10 +112,7 @@ class ParamShiftSamplerGradient(BaseSamplerGradient):
         for n, result_n in zip(all_n, results):
             gradient = []
             result = [
-                {
-                    label: value / res.num_shots
-                    for label, value in res.get_int_counts().items()
-                }
+                {label: value / res.num_shots for label, value in res.get_int_counts().items()}
                 for res in getattr(result_n.data, next(iter(result_n.data)))
             ]
             for dist_plus, dist_minus in zip(result[: n // 2], result[n // 2 :]):

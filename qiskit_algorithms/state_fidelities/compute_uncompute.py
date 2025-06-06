@@ -58,6 +58,7 @@ class ComputeUncompute(BaseStateFidelity):
         sampler: BaseSamplerV2,
         shots: int | None = None,
         local: bool = False,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -95,7 +96,7 @@ class ComputeUncompute(BaseStateFidelity):
         self._sampler: BaseSamplerV2 = sampler
         self._local = local
         self._shots = shots
-        super().__init__(transpiler, transpiler_options)
+        super().__init__(transpiler=transpiler, transpiler_options=transpiler_options)
 
     def create_fidelity_circuit(
         self, circuit_1: QuantumCircuit, circuit_2: QuantumCircuit
@@ -126,6 +127,7 @@ class ComputeUncompute(BaseStateFidelity):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
+        *,
         shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""

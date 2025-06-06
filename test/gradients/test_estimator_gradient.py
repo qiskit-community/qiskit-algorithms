@@ -539,9 +539,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         op = SparsePauliOp.from_list([("Z", 1)])
         estimator = StatevectorEstimator(default_precision=0.2)
         gradient = LinCombEstimatorGradient(
-            estimator,
-            transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
         )
         gradient.run([qc], [op], [[1]]).result()
 

@@ -17,10 +17,9 @@ Abstract base class of gradient for ``Estimator``.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Sequence, Iterable
+from collections.abc import Sequence
 
 import numpy as np
-
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.primitives.utils import _circuit_key
@@ -35,7 +34,6 @@ from ..utils import (
     _make_gradient_parameters,
     _make_gradient_parameter_values,
 )
-
 from ...algorithm_job import AlgorithmJob
 
 
@@ -89,6 +87,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
+        *,
         precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the estimator gradient on the given circuits.
@@ -140,11 +139,11 @@ class BaseEstimatorGradient(ABC):
         self._validate_arguments(circuits, observables, parameter_values, parameters)
 
         if precision is None:
-            precision = self.precision # May still be None
+            precision = self.precision  # May still be None
 
         # Run the job.
         job = AlgorithmJob(
-            self._run, circuits, observables, parameter_values, parameters, precision
+            self._run, circuits, observables, parameter_values, parameters, precision=precision
         )
         job._submit()
         return job
@@ -156,6 +155,7 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""

@@ -27,7 +27,7 @@ class QFIResult:
 
     qfis: list[np.ndarray]
     """The QFI."""
-    metadata: list[dict[str, Any]]
+    metadata: dict[str, Any]
     """Additional information about the job."""
     precision: float | Sequence[float]
     """Precision for the execution of the job."""

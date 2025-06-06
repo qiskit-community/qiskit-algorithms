@@ -12,6 +12,7 @@
 
 """Test phase estimation"""
 import unittest
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -28,7 +29,6 @@ from qiskit_algorithms import (
     PhaseEstimation,
     PhaseEstimationScale,
 )
-from test import QiskitAlgorithmsTestCase
 
 
 @ddt
@@ -113,7 +113,10 @@ class TestHamiltonianPhaseEstimation(QiskitAlgorithmsTestCase):
             counts[0] = kwargs["count"]
 
         phase_est = HamiltonianPhaseEstimation(
-            1, StatevectorSampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
+            1,
+            StatevectorSampler(),
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
         )
         phase_est.estimate(hamiltonian=SparsePauliOp(Pauli("Z")))
 

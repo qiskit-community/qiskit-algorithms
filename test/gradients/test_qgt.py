@@ -317,7 +317,9 @@ class TestQGT(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         estimator = StatevectorEstimator(default_precision=0.1)
-        qgt = LinCombQGT(estimator, transpiler=pass_manager, transpiler_options={"callback": callback})
+        qgt = LinCombQGT(
+            estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
+        )
         qgt.run([qc], [[1]]).result()
 
         self.assertGreater(counts[0], 0)

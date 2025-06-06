@@ -78,6 +78,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         precision: float | None = None,
     ) -> EstimatorGradientResult:
         """Compute the gradients of the expectation values by the parameter shift rule."""
@@ -85,7 +86,7 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
         results = self._run_unique(
-            g_circuits, observables, g_parameter_values, g_parameters, precision
+            g_circuits, observables, g_parameter_values, g_parameters
         )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
@@ -95,7 +96,6 @@ class ReverseEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        precision: float | None = None
     ) -> EstimatorGradientResult:
         num_gradients = len(circuits)
         gradients = []

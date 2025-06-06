@@ -61,9 +61,9 @@ class TrotterQRTE(RealTimeEvolver):
         product_formula: ProductFormula | None = None,
         estimator: BaseEstimatorV2 | None = None,
         num_timesteps: int = 1,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
-        *,
         insert_barriers: bool = False,
     ) -> None:
         """

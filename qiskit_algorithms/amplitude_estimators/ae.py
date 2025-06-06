@@ -71,6 +71,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         phase_estimation_circuit: QuantumCircuit | None = None,
         iqft: QuantumCircuit | None = None,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -304,7 +305,9 @@ class AmplitudeEstimation(AmplitudeEstimator):
                 "The state_preparation property of the estimation problem must be set."
             )
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to StatevectorSampler from qiskit.primitives")
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
             self._sampler = StatevectorSampler()
 
         if estimation_problem.objective_qubits is None:

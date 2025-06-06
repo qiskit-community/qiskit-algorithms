@@ -66,6 +66,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         self,
         sampler: BaseSamplerV2,
         shots: int | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ):
@@ -91,13 +92,14 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the estimator gradients on the given circuits."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, shots)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, shots=shots)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -105,6 +107,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
+        *,
         shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
@@ -113,12 +116,14 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         has_transformed_shots = False
 
         if isinstance(shots, int) or shots is None:
-            shots=[shots]*len(circuits)
+            shots = [shots] * len(circuits)
             has_transformed_shots = True
 
         pubs = []
 
-        for circuit, parameter_values_, parameters_, shots_ in zip(circuits, parameter_values, parameters, shots, strict=True):
+        for circuit, parameter_values_, parameters_, shots_ in zip(
+            circuits, parameter_values, parameters, shots, strict=True
+        ):
             # Prepare circuits for the gradient of the specified parameters.
             # TODO: why is this not wrapped into another list level like it is done elsewhere?
             metadata.append({"parameters": parameters_})
@@ -154,10 +159,9 @@ class LinCombSamplerGradient(BaseSamplerGradient):
 
             for result_n in results[partial_sum_n : partial_sum_n + n]:
                 res = result_n.data.meas
-                result.append({
-                    label: value / res.num_shots
-                    for label, value in res.get_int_counts().items()
-                })
+                result.append(
+                    {label: value / res.num_shots for label, value in res.get_int_counts().items()}
+                )
 
             m = 2 ** circuits[i].num_qubits
             for dist in result:

@@ -19,17 +19,17 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 import rustworkx as rx
 from ddt import ddt, idata, unpack
-from scipy.optimize import minimize as scipy_minimize
-
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
+from scipy.optimize import minimize as scipy_minimize
 
 from qiskit_algorithms.minimum_eigensolvers import QAOA
-from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD, SPSA
+from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit_algorithms.utils import algorithm_globals
+
 
 W1 = np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])
 P1 = 1

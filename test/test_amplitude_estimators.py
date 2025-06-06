@@ -365,13 +365,16 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
         self.pm = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
         self.counts = [0]
 
+        # pylint: disable=unused-argument
         def callback(**kwargs):
             self.counts[0] += 1
 
         self.callback = callback
 
         circuit = QuantumCircuit(1)
-        self.problem = EstimationProblem(circuit, objective_qubits=[0], is_good_state=lambda x: True)
+        self.problem = EstimationProblem(
+            circuit, objective_qubits=[0], is_good_state=lambda x: True
+        )
 
     @idata(
         [
@@ -382,7 +385,9 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
     @unpack
     def test_transpiler_ae_iae(self, qae_class, kwargs):
         """Test that the transpiler is called on AE and IAE"""
-        qae = qae_class(transpiler=self.pm, transpiler_options={"callback": self.callback}, **kwargs)
+        qae = qae_class(
+            transpiler=self.pm, transpiler_options={"callback": self.callback}, **kwargs
+        )
         qae.construct_circuit(self.problem)
 
         self.assertGreater(self.counts[0], 0)
@@ -390,14 +395,18 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
     @unittest.skip("Won't pass until Qiskit/qiskit#14250 is fixed")
     def test_transpiler_mlae(self):
         """Test that the transpiler is called on MLAE"""
-        mlae = MaximumLikelihoodAmplitudeEstimation([0, 1], transpiler=self.pm, transpiler_options={"callback": self.callback})
+        mlae = MaximumLikelihoodAmplitudeEstimation(
+            [0, 1], transpiler=self.pm, transpiler_options={"callback": self.callback}
+        )
         mlae.construct_circuits(self.problem)
 
         self.assertGreater(self.counts[0], 0)
 
     def test_transpiler_fae(self):
         """Test that the transpiler is called on FAE"""
-        fae = FasterAmplitudeEstimation(0.1, 1, transpiler=self.pm, transpiler_options={"callback": self.callback})
+        fae = FasterAmplitudeEstimation(
+            0.1, 1, transpiler=self.pm, transpiler_options={"callback": self.callback}
+        )
         fae.construct_circuit(self.problem, k=1)
 
         self.assertGreater(self.counts[0], 0)

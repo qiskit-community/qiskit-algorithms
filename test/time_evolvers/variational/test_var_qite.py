@@ -85,7 +85,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             2.38728532,
             1.78404205,
             2.11388396,
-            1.92959433
+            1.92959433,
         ]
 
         # SHould be roughly the same in both Exact and shot-based backends
@@ -266,7 +266,9 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             estimator = StatevectorEstimator(seed=self.seed)
             var_principle = ImaginaryMcLachlanPrinciple()
 
-            var_qite = VarQITE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)
+            var_qite = VarQITE(
+                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
+            )
 
             evolution_result = var_qite.evolve(evolution_problem)
 
