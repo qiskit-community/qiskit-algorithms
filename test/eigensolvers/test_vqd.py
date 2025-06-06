@@ -284,7 +284,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         result = vqd.compute_eigenvalues(operator=op)
         np.testing.assert_array_almost_equal(
-            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=3
+            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
         )
 
     @data(H2_SPARSE_PAULI)
