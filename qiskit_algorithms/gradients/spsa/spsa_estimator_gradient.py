@@ -88,8 +88,21 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
 
         pubs = []
 
+        if not (
+            len(circuits)
+            == len(observables)
+            == len(parameters)
+            == len(parameter_values)
+            == len(precision)
+        ):
+            raise ValueError(
+                f"circuits, observables, parameters, parameter_values and precision must have the same "
+                f"length, but have respective lengths {len(circuits)},  {len(observables)}, "
+                f"{len(parameters)}, {len(parameter_values)} and {len(precision)}."
+            )
+
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
-            circuits, observables, parameter_values, parameters, precision, strict=True
+            circuits, observables, parameter_values, parameters, precision
         ):
             metadata.append({"parameters": parameters_})
             # Make random perturbation vectors.

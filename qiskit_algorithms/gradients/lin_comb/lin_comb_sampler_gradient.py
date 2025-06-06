@@ -121,8 +121,15 @@ class LinCombSamplerGradient(BaseSamplerGradient):
 
         pubs = []
 
+        if not (len(circuits) == len(parameters) == len(parameter_values) == len(shots)):
+            raise ValueError(
+                f"circuits, parameters, parameter_values and shots must have the same length, but "
+                f"have respective lengths {len(circuits)},  {len(parameters)}, {len(parameter_values)} "
+                f"and {len(shots)}."
+            )
+
         for circuit, parameter_values_, parameters_, shots_ in zip(
-            circuits, parameter_values, parameters, shots, strict=True
+            circuits, parameter_values, parameters, shots
         ):
             # Prepare circuits for the gradient of the specified parameters.
             # TODO: why is this not wrapped into another list level like it is done elsewhere?

@@ -23,9 +23,9 @@ from qiskit.circuit.library import GroverOperator, PhaseOracle
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit.utils.optionals import HAS_TWEEDLEDUM
 
 from qiskit_algorithms import AmplificationProblem, Grover
+from qiskit_algorithms.utils.optionals import CAN_USE_PHASE_ORACLE
 
 
 @ddt
@@ -91,7 +91,9 @@ class TestGrover(QiskitAlgorithmsTestCase):
         super().setUp()
         self._sampler = StatevectorSampler(seed=123)
 
-    @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
+    @unittest.skipUnless(
+        CAN_USE_PHASE_ORACLE, "tweedledum or qiskit >= 2.0.0 required for this test"
+    )
     def test_implicit_phase_oracle_is_good_state(self):
         """Test implicit default for is_good_state with PhaseOracle."""
         grover = self._prepare_grover()
@@ -265,7 +267,9 @@ class TestGrover(QiskitAlgorithmsTestCase):
         result = grover.amplify(problem)
         self.assertAlmostEqual(result.max_probability, 1.0)
 
-    @unittest.skipUnless(HAS_TWEEDLEDUM, "tweedledum required for this test")
+    @unittest.skipUnless(
+        CAN_USE_PHASE_ORACLE, "tweedledum or qiskit >= 2.0.0 required for this test"
+    )
     def test_oracle_evaluation(self):
         """Test oracle_evaluation for PhaseOracle"""
         oracle = PhaseOracle("x1 & x2 & (not x3)")

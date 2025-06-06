@@ -140,8 +140,15 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
         all_n = []
         pubs = []
 
+        if not (len(circuits) == len(observables) == len(parameters) == len(parameter_values)):
+            raise ValueError(
+                f"circuits, observables, parameters, and parameter_values must have the same length, but "
+                f"have respective lengths {len(circuits)},  {len(observables)}, {len(parameters)} and "
+                f"{len(parameter_values)}."
+            )
+
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
-            circuits, observables, parameter_values, parameters, precision, strict=True
+            circuits, observables, parameter_values, parameters, precision
         ):
             # Prepare circuits for the gradient of the specified parameters.
             meta = {"parameters": parameters_}

@@ -167,8 +167,16 @@ class LinCombQGT(BaseQGT):
             has_transformed_precision = True
 
         pubs = []
+
+        if not (len(circuits) == len(parameters) == len(parameter_values) == len(precision)):
+            raise ValueError(
+                f"circuits, parameters, parameter_values and precision must have the same length, but "
+                f"have respective lengths {len(circuits)},  {len(parameters)}, {len(parameter_values)} "
+                f"and {len(precision)}."
+            )
+
         for circuit, parameter_values_, parameters_, precision_ in zip(
-            circuits, parameter_values, parameters, precision, strict=True
+            circuits, parameter_values, parameters, precision
         ):
             # Prepare circuits for the gradient of the specified parameters.
             parameters_ = [p for p in circuit.parameters if p in parameters_]
