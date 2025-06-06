@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Test primitives that check what kind of operations are in the circuits they execute."""
+from __future__ import annotations
 from typing import Iterable
 
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
