@@ -20,8 +20,7 @@ from typing import Any
 import numpy
 import qiskit
 from qiskit import circuit
-from qiskit.circuit import QuantumCircuit
-from qiskit.circuit.classicalregister import ClassicalRegister
+from qiskit.circuit import QuantumCircuit, ClassicalRegister
 from qiskit.primitives import BaseSamplerV2
 from qiskit.result import Result
 

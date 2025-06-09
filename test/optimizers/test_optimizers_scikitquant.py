@@ -20,7 +20,7 @@ from ddt import ddt, data, unpack
 import numpy
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import VQE
@@ -49,7 +49,7 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
     def _optimize(self, optimizer):
         """launch vqe"""
 
-        vqe = VQE(Estimator(), ansatz=RealAmplitudes(), optimizer=optimizer)
+        vqe = VQE(StatevectorEstimator(), ansatz=RealAmplitudes(), optimizer=optimizer)
         result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 
         self.assertAlmostEqual(result.eigenvalue.real, -1.857, places=1)

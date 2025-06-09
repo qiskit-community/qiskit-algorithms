@@ -62,7 +62,7 @@ def _circuit_key(circuit: QuantumCircuit, functional: bool = True) -> tuple:
         tuple(  # circuit.data
             (
                 _bits_key(data.qubits, circuit),  # qubits
-                _bits_key(data.clbits, circuit),  # clbits
+                _bits_key(data.clbits, circuit),  # classical bits
                 data.operation.name,  # operation.name
                 tuple(_format_params(param) for param in data.operation.params),  # operation.params
             )

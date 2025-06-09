@@ -18,8 +18,7 @@ from typing import Any
 
 import numpy
 
-from qiskit.circuit import QuantumCircuit, QuantumRegister
-from qiskit.circuit.classicalregister import ClassicalRegister
+from qiskit.circuit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.primitives import BaseSamplerV2
 
 from qiskit_algorithms.exceptions import AlgorithmError
