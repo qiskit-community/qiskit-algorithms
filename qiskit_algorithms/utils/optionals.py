@@ -24,7 +24,7 @@ HAS_SKQUANT = LazyImportTester(
     install="pip install scikit-quant",
 )
 HAS_SQSNOBFIT = LazyImportTester("SQSnobFit", install="pip install SQSnobFit")
-# From Qiskit 2.0.0 onwards, tweedledum isn't required anymore to use the phase oracle
+# From Qiskit 2.0.0 onward, tweedledum isn't required anymore to use the phase oracle
 CAN_USE_PHASE_ORACLE = get_version_info() >= "2.0.0" or LazyImportTester(
     "tweedledum", install="pip install tweedledum"
 )
