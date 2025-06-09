@@ -31,6 +31,7 @@ def _bits_key(bits: tuple[Bit, ...], circuit: QuantumCircuit) -> tuple:
         for bit in bits
     )
 
+
 def _format_params(param):
     if isinstance(param, np.ndarray):
         return param.data.tobytes()
@@ -39,6 +40,7 @@ def _format_params(param):
     elif isinstance(param, Iterable):
         return tuple(param)
     return param
+
 
 def _circuit_key(circuit: QuantumCircuit, functional: bool = True) -> tuple:
     """Private key function for QuantumCircuit.
