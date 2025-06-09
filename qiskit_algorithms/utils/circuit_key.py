@@ -1,4 +1,4 @@
-# This code is part of Qiskit.
+# This code is part of a Qiskit project.
 #
 # (C) Copyright IBM 2025.
 #
@@ -68,7 +68,7 @@ def _circuit_key(circuit: QuantumCircuit, functional: bool = True) -> tuple:
             )
             for data in circuit.data
         ),
-        None if circuit.op_start_times is None else tuple(circuit.op_start_times),
+        None if circuit._op_start_times is None else tuple(circuit._op_start_times),
     )
     if functional:
         return functional_key
