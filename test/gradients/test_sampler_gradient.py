@@ -60,11 +60,15 @@ gradient_factories = [
 class TestSamplerGradient(QiskitAlgorithmsTestCase):
     """Test Sampler Gradient"""
 
+    def setUp(self):
+        super().setUp()
+        self.seed = 42
+
     @data(*gradient_factories)
     @unpack
     def test_single_circuit(self, grad, shots, atol, rtol):
         """Test the sampler gradient for a single circuit"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -88,7 +92,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_p(self, grad, shots, atol, rtol):
         """Test the sampler gradient for p"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -112,7 +116,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_u(self, grad, shots, atol, rtol):
         """Test the sampler gradient for u"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         a = Parameter("a")
         b = Parameter("b")
         c = Parameter("c")
@@ -137,7 +141,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_efficient_su2(self, grad, shots, atol, rtol):
         """Test the sampler gradient for EfficientSU2"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         qc = EfficientSU2(2, reps=1)
         qc.measure_all()
         gradient = grad(sampler)
@@ -232,8 +236,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_2qubit_gate(self, grad, shots, atol, rtol):
         """Test the sampler gradient for 2 qubit gates"""
-        # Unfortunately, can't seed... Maybe because of Qiskit/qiskit#13730?
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         for gate in [RXXGate]:
             param_list = [[np.pi / 4], [np.pi / 2]]
             correct_results = [
@@ -255,7 +258,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_parameter_coefficient(self, grad, shots, atol, rtol):
         """Test the sampler gradient for parameter variables with coefficients"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         qc = RealAmplitudes(num_qubits=2, reps=1)
         qc.rz(qc.parameters[0].exp() + 2 * qc.parameters[1], 0)
         qc.rx(3.0 * qc.parameters[0] + qc.parameters[1].sin(), 1)
@@ -330,7 +333,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_parameters(self, grad, shots, atol, rtol):
         """Test the sampler gradient for parameters"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -388,7 +391,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_gradient_multi_arguments(self, grad, shots, atol, rtol):
         """Test the sampler gradient for multiple arguments"""
-        sampler = StatevectorSampler(default_shots=shots)
+        sampler = StatevectorSampler(default_shots=shots, seed=np.random.default_rng(seed=self.seed))
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -453,7 +456,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
 
     def test_spsa_gradient(self):
         """Test the SPSA sampler gradient"""
-        sampler = StatevectorSampler(default_shots=3_000_000)
+        sampler = StatevectorSampler(default_shots=3_000_000, seed=np.random.default_rng(self.seed))
         with self.assertRaises(ValueError):
             _ = SPSASamplerGradient(sampler, epsilon=-0.1)
 
@@ -595,7 +598,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc.global_phase = params[0] * params[1] + params[2].cos().exp()
         qc.measure_all()
 
-        sampler = StatevectorSampler(default_shots=100_000)
+        sampler = StatevectorSampler(default_shots=1_000_000, seed=np.random.default_rng(seed=self.seed))
         findiff = FiniteDiffSamplerGradient(sampler, 1e-2)
         gradient = grad(sampler)
 
