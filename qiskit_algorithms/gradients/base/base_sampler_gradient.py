@@ -22,7 +22,6 @@ from collections.abc import Sequence
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2
-from qiskit.primitives.utils import _circuit_key
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
 from .sampler_gradient_result import SamplerGradientResult
@@ -34,6 +33,7 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseSamplerGradient(ABC):

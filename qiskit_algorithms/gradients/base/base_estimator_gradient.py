@@ -22,7 +22,6 @@ from collections.abc import Sequence
 import numpy as np
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
-from qiskit.primitives.utils import _circuit_key
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
@@ -35,6 +34,7 @@ from ..utils import (
     _make_gradient_parameter_values,
 )
 from ...algorithm_job import AlgorithmJob
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseEstimatorGradient(ABC):

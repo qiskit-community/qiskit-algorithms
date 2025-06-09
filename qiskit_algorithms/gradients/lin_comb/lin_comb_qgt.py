@@ -22,7 +22,6 @@ import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
-from qiskit.primitives.utils import _circuit_key
 from qiskit.quantum_info import SparsePauliOp
 
 from ..base.base_qgt import BaseQGT
@@ -32,6 +31,7 @@ from ..utils import DerivativeType, _make_lin_comb_qgt_circuit, _make_lin_comb_o
 from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
+from ...utils.circuit_key import _circuit_key
 
 
 class LinCombQGT(BaseQGT):

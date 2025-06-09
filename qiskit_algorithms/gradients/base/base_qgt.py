@@ -23,7 +23,6 @@ import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
-from qiskit.primitives.utils import _circuit_key
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
 from .qgt_result import QGTResult
@@ -36,6 +35,7 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseQGT(ABC):

@@ -21,10 +21,10 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import ParameterVector
-from qiskit.primitives.utils import _circuit_key
 
 from ..algorithm_job import AlgorithmJob
 from ..custom_types import Transpiler
+from ..utils.circuit_key import _circuit_key
 
 
 class BaseStateFidelity(ABC):

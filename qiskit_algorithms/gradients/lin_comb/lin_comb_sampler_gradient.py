@@ -21,13 +21,13 @@ from typing import Any
 
 from qiskit.circuit import Parameter, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2
-from qiskit.primitives.utils import _circuit_key
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
 from ..utils import _make_lin_comb_gradient_circuit
 from ...custom_types import Transpiler
 from ...exceptions import AlgorithmError
+from ...utils.circuit_key import _circuit_key
 
 
 class LinCombSamplerGradient(BaseSamplerGradient):
