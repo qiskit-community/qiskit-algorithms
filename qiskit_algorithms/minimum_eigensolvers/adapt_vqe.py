@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -62,7 +62,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
       from qiskit_algorithms.minimum_eigensolvers import AdaptVQE, VQE
       from qiskit_algorithms.optimizers import SLSQP
-      from qiskit.primitives import Estimator
+      from qiskit.primitives import StatevectorEstimator
       from qiskit.circuit.library import EvolvedOperatorAnsatz
 
       # get your Hamiltonian
@@ -71,7 +71,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
       # construct your ansatz
       ansatz = EvolvedOperatorAnsatz(...)
 
-      vqe = VQE(Estimator(), ansatz, SLSQP())
+      vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())
 
       adapt_vqe = AdaptVQE(vqe)
 
@@ -160,6 +160,9 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # The excitations operators are applied later as exp(i*theta*excitation).
         # For this commutator, we need to explicitly pull in the imaginary phase.
         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
+        # We have to call simplify on it since Qiskit doesn't do so from 2.1 onward, see
+        # Qiskit/qiskit/issues/14567
+        commutators = [obs.simplify() for obs in commutators]
         res = estimate_observables(self.solver.estimator, self.solver.ansatz, commutators, theta)
         return res
 

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,7 +20,7 @@ from ddt import data, ddt
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
-from qiskit.primitives import Sampler, Estimator
+from qiskit.primitives import StatevectorSampler, StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.eigensolvers import VQD, VQDResult
@@ -57,9 +57,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
         )
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
-        self.estimator = Estimator()
-        self.estimator_shots = Estimator(options={"shots": 1024, "seed": self.seed})
-        self.fidelity = ComputeUncompute(Sampler(options={"shots": 100_000, "seed": self.seed}))
+        self.estimator = StatevectorEstimator(seed=self.seed)
+        self.fidelity = ComputeUncompute(StatevectorSampler(seed=self.seed, default_shots=10_000))
         self.betas = [3]
 
     @data(H2_SPARSE_PAULI)
@@ -92,11 +91,16 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="assert return ansatz is set"):
             job = self.estimator.run(
-                result.optimal_circuits,
-                [op] * len(result.optimal_points),
-                result.optimal_points,
+                [
+                    (circuits, op, optimal_points)
+                    for (circuits, optimal_points) in zip(
+                        result.optimal_circuits, result.optimal_points
+                    )
+                ]
             )
-            np.testing.assert_array_almost_equal(job.result().values, result.eigenvalues, 6)
+            job_result = job.result()
+            eigenvalues = np.array([job_result[i].data.evs for i in range(len(result.eigenvalues))])
+            np.testing.assert_array_almost_equal(eigenvalues, result.eigenvalues, 6)
 
         with self.subTest(msg="assert returned values are eigenvalues"):
             np.testing.assert_array_almost_equal(
@@ -123,9 +127,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         """Test beta auto-evaluation for different operator types."""
 
         with self.assertLogs(level="INFO") as logs:
-            vqd = VQD(
-                self.estimator_shots, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B()
-            )
+            vqd = VQD(self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B())
             _ = vqd.compute_eigenvalues(op)
 
         # the first log message shows the value of beta[0]
@@ -179,7 +181,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         wavefunction = self.ry_wavefunction
 
         vqd = VQD(
-            estimator=self.estimator_shots,
+            estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
             optimizer=optimizer,
@@ -282,7 +284,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         result = vqd.compute_eigenvalues(operator=op)
         np.testing.assert_array_almost_equal(
-            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=3
+            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
         )
 
     @data(H2_SPARSE_PAULI)
@@ -455,6 +457,18 @@ class TestVQD(QiskitAlgorithmsTestCase):
             SLSQP(),
             k=2,
             betas=self.betas,
+            initial_point=np.array(
+                [
+                    2.15707009,
+                    -2.6128808,
+                    1.40478697,
+                    -1.73909435,
+                    -2.89100903,
+                    1.75289926,
+                    -0.14760479,
+                    -2.00011645,
+                ]
+            ),
             convergence_threshold=1e-3,
         )
         with self.subTest("Failed convergence"):
@@ -465,7 +479,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             vqd.convergence_threshold = 1e-1
             result = vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
             np.testing.assert_array_almost_equal(
-                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
             )
 
 

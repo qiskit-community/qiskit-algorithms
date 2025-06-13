@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,16 +18,14 @@ from collections.abc import Iterator, Generator
 from typing import Any
 
 import numpy as np
-
 from qiskit import ClassicalRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.quantum_info import Statevector
+from qiskit.primitives import BaseSamplerV2
 
 from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.utils import algorithm_globals
-
 from .amplification_problem import AmplificationProblem
 from .amplitude_amplifier import AmplitudeAmplifier, AmplitudeAmplifierResult
+from ..custom_types import Transpiler
 
 
 class Grover(AmplitudeAmplifier):
@@ -116,7 +114,10 @@ class Grover(AmplitudeAmplifier):
         iterations: list[int] | Iterator[int] | int | None = None,
         growth_rate: float | None = None,
         sample_from_iterations: bool = False,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -136,6 +137,11 @@ class Grover(AmplitudeAmplifier):
                 powers of the Grover operator, a random integer sample between 0 and smaller value
                 than the iteration is used as a power, see [1], Section 4.
             sampler: A Sampler to use for sampling the results of the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: If ``growth_rate`` is a float but not larger than 1.
@@ -165,9 +171,11 @@ class Grover(AmplitudeAmplifier):
         self._sampler = sampler
         self._sample_from_iterations = sample_from_iterations
         self._iterations_arg = iterations
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler.
 
         Returns:
@@ -176,7 +184,7 @@ class Grover(AmplitudeAmplifier):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set the sampler.
 
         Args:
@@ -234,23 +242,29 @@ class Grover(AmplitudeAmplifier):
             # sample from [0, power) if specified
             if self._sample_from_iterations:
                 power = algorithm_globals.random.integers(power)
+
             # Run a grover experiment for a given power of the Grover operator.
-            if self._sampler is not None:
-                qc = self.construct_circuit(amplification_problem, power, measurement=True)
-                job = self._sampler.run([qc])
+            qc = self.construct_circuit(amplification_problem, power, measurement=True)
 
-                try:
-                    results = job.result()
-                except Exception as exc:
-                    raise AlgorithmError("Sampler job failed.") from exc
+            if self._transpiler is not None:
+                qc = self._transpiler.run(qc, **self._transpiler_options)
 
-                num_bits = len(amplification_problem.objective_qubits)
-                circuit_results: dict[str, Any] | Statevector | np.ndarray = {
-                    np.binary_repr(k, num_bits): v for k, v in results.quasi_dists[0].items()
-                }
-                top_measurement, max_probability = max(
-                    circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
-                )
+            job = self._sampler.run([qc])
+
+            try:
+                results = job.result()
+            except Exception as exc:
+                raise AlgorithmError("Sampler job failed.") from exc
+
+            circuit_results = getattr(results[0].data, qc.cregs[0].name)
+            circuit_results = {
+                label: value / circuit_results.num_shots
+                for label, value in circuit_results.get_counts().items()
+            }
+
+            top_measurement, max_probability = max(
+                circuit_results.items(), key=lambda x: x[1]  # type: ignore[union-attr]
+            )
 
             all_circuit_results.append(circuit_results)
 
