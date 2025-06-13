@@ -18,7 +18,7 @@ import warnings
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit, ClassicalRegister
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
@@ -51,7 +51,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         delta: float,
         maxiter: int,
         rescale: bool = True,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
     ) -> None:
         r"""
         Args:
@@ -70,7 +70,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -79,7 +79,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -91,13 +91,13 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         if self._sampler is None:
             warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            self._sampler = StatevectorSampler()
 
         circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
         try:
-            job = self._sampler.run([circuit], shots=shots)
-            result = job.result()
+            job = self._sampler.run([(circuit,)], shots=shots)  # PUB format
+            pub_result = job.result()[0]
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
@@ -106,11 +106,15 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         self._num_oracle_calls += (2 * k + 1) * shots
 
         # sum over all probabilities where the objective qubits are 1
-        prob = 0
-        for bit, probabilities in result.quasi_dists[0].binary_probabilities().items():
-            # check if it is a good state
-            if estimation_problem.is_good_state(bit):
-                prob += probabilities
+        counts = pub_result.data.meas.get_counts()
+        prob = (
+            sum(
+                count
+                for bitstr, count in counts.items()
+                if estimation_problem.is_good_state(bitstr)
+            )
+            / shots
+        )
 
         cos_estimate = 1 - 2 * prob
 
@@ -146,7 +150,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         # add classical register if needed
         if measurement:
-            c = ClassicalRegister(len(estimation_problem.objective_qubits))
+            c = ClassicalRegister(len(estimation_problem.objective_qubits), name="meas")
             circuit.add_register(c)
 
         # add A operator
@@ -179,7 +183,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         """
         if self._sampler is None:
             warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            self._sampler = StatevectorSampler()
 
         self._num_oracle_calls = 0
 
