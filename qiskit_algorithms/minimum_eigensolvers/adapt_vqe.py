@@ -162,6 +162,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
         # We have to call simplify on it since Qiskit doesn't do so from 2.1 onward, see
         # Qiskit/qiskit/issues/14567
+        # TODO: Remove the below line once the aforementioned issue is fixed to avoid unnecessary
+        #  overhead
         commutators = [obs.simplify() for obs in commutators]
         res = estimate_observables(self.solver.estimator, self.solver.ansatz, commutators, theta)
         return res
