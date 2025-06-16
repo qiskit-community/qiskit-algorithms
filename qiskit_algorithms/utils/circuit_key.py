@@ -68,7 +68,7 @@ def _circuit_key(circuit: QuantumCircuit, functional: bool = True) -> tuple:
             )
             for data in circuit.data
         ),
-        None if circuit._op_start_times is None else tuple(circuit._op_start_times),
+        None if not hasattr(circuit, "op_start_times") else tuple(circuit.op_start_times),
     )
     if functional:
         return functional_key
