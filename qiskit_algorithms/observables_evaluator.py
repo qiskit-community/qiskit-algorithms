@@ -27,6 +27,7 @@ from .exceptions import AlgorithmError
 from .list_or_dict import ListOrDict
 
 
+# TODO: make estimate_observables accept EstimatorPubLike inputs
 def estimate_observables(
     estimator: BaseEstimatorV2,
     quantum_state: QuantumCircuit,
