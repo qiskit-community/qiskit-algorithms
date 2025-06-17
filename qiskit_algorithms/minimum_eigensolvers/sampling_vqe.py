@@ -319,7 +319,6 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
             nonlocal eval_count
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
             parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            # batch_size = len(parameters)
             job = estimator.run([(ansatz, operator, parameters)])
             estimator_result = job.result()[0]
             values = estimator_result.data.evs

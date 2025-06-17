@@ -296,7 +296,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         result = MaximumLikelihoodAmplitudeEstimationResult()
         result.evaluation_schedule = self._evaluation_schedule
-
         result.minimizer = self._minimizer
         result.post_processing = cast(Callable[[float], float], estimation_problem.post_processing)
 

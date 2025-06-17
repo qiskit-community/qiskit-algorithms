@@ -160,7 +160,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # The excitations operators are applied later as exp(i*theta*excitation).
         # For this commutator, we need to explicitly pull in the imaginary phase.
         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
-        # We have to call simplify on it since Qiskit doesn't do so from 2.1 onward, see
+        # We have to call simplify on it since Qiskit doesn't do so for now, see
         # Qiskit/qiskit/issues/14567
         # TODO: Remove the below line once the aforementioned issue is fixed to avoid unnecessary
         #  overhead

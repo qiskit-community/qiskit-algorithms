@@ -115,7 +115,7 @@ class _DiagonalEstimator(BaseEstimatorV2):
                         bound_circuit.measure_all(inplace=False),
                         None,
                         # Ensures a standard deviation of at most pub.precision
-                        round(0.5 + (sum(obs.coeffs) / pub.precision) ** 2),
+                        round((sum(obs.coeffs) / pub.precision) ** 2),
                     )
                 )
 
