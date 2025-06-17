@@ -249,7 +249,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             COBYLA(),
             reps=2,
             transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            transpiler_options={"callback": callback},
         )
         _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
