@@ -19,7 +19,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 import rustworkx as rx
 from ddt import ddt, idata, unpack
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
@@ -234,6 +234,27 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         result = qaoa.compute_minimum_eigenvalue(qubit_op)
         self.assertEqual(result.cost_function_evals, 5)
 
+    def test_transpiler(self):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        qubit_op, _ = self._get_operator(W1)
+
+        qaoa = QAOA(
+            self.sampler,
+            COBYLA(),
+            reps=2,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
+        self.assertGreater(counts[0], 0)
+
     def _get_operator(self, weight_matrix):
         """Generate Hamiltonian for the max-cut problem of a graph.
 
@@ -259,18 +280,6 @@ class TestQAOA(QiskitAlgorithmsTestCase):
                     shift -= 0.5 * weight_matrix[i, j]
         lst = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
         return SparsePauliOp.from_list(lst), shift
-
-    def _get_graph_solution(self, x: np.ndarray) -> str:
-        """Get graph solution from binary string.
-
-        Args:
-            x : binary string as numpy array.
-
-        Returns:
-            a graph solution as string.
-        """
-
-        return "".join([str(int(i)) for i in 1 - x])
 
     def _sample_most_likely(self, state_vector: QuasiDistribution) -> str:
         """Compute the most likely binary string from state vector.
