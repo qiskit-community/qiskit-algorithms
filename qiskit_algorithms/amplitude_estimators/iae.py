@@ -56,6 +56,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         confint_method: str = "beta",
         min_ratio: float = 2,
         sampler: BaseSamplerV2 | None = None,
+        *,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
