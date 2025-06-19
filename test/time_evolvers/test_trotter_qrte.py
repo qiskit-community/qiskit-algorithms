@@ -254,6 +254,14 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         time = 1
         evolution_problem = TimeEvolutionProblem(operator, time, initial_state)
 
+        # Test transpilation without options
+        trotter_qrte = TrotterQRTE(
+            estimator=StatevectorEstimator(),
+            transpiler=pass_manager,
+        )
+        trotter_qrte.evolve(evolution_problem)
+
+        # Test transpiler is called using callback function
         trotter_qrte = TrotterQRTE(
             estimator=StatevectorEstimator(),
             transpiler=pass_manager,

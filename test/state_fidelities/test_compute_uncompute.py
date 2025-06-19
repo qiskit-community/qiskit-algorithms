@@ -278,6 +278,11 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
         def callback(**kwargs):
             counts[0] = kwargs["count"]
 
+        # Test transpilation without options
+        fidelity = ComputeUncompute(StatevectorSampler(), transpiler=pass_manager)
+        fidelity._construct_circuits(QuantumCircuit(1), QuantumCircuit(1))
+
+        # Test transpiler is called using callback function
         fidelity = ComputeUncompute(
             StatevectorSampler(), transpiler=pass_manager, transpiler_options={"callback": callback}
         )

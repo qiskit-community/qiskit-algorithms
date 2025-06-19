@@ -105,7 +105,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         self._confint_method = confint_method
         self._sampler = sampler
         self._transpiler = transpiler
-        self._transpiler_options = transpiler_options
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @property
     def sampler(self) -> BaseSamplerV2 | None:

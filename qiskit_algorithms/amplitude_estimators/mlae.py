@@ -84,7 +84,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
         super().__init__()
         self._transpiler = transpiler
-        self._transpiler_options = transpiler_options
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         # get parameters
         if isinstance(evaluation_schedule, int):

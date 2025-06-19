@@ -106,7 +106,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
         self._transpiler = transpiler
-        self._transpiler_options = transpiler_options
+        self._transpiler_options = transpiler_options if transpiler_options else {}
 
     @property
     def sampler(self) -> BaseSamplerV2 | None:

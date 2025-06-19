@@ -244,6 +244,16 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
         qubit_op, _ = self._get_operator(W1)
 
+        # Test transpiler without options
+        qaoa = QAOA(
+            self.sampler,
+            COBYLA(),
+            reps=2,
+            transpiler=pass_manager,
+        )
+        _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
+        # Test transpiler is called using callback function
         qaoa = QAOA(
             self.sampler,
             COBYLA(),

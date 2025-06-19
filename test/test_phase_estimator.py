@@ -303,6 +303,25 @@ class TestPhaseEstimation(QiskitAlgorithmsTestCase):
         def callback(**kwargs):
             counts[0] = kwargs["count"]
 
+        # Test transpiler without options
+        if phase_estimator == IterativePhaseEstimation:
+            p_est = IterativePhaseEstimation(
+                num_iterations=6,
+                sampler=StatevectorSampler(),
+                transpiler=pass_manager,
+            )
+        elif phase_estimator == PhaseEstimation:
+            p_est = PhaseEstimation(
+                num_evaluation_qubits=6,
+                sampler=StatevectorSampler(),
+                transpiler=pass_manager,
+            )
+        else:
+            raise ValueError("Unrecognized phase_estimator")
+
+        p_est.estimate(unitary=QuantumCircuit(1), state_preparation=None)
+
+        # Test transpiler is called using callback function
         if phase_estimator == IterativePhaseEstimation:
             p_est = IterativePhaseEstimation(
                 num_iterations=6,

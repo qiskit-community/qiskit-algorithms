@@ -537,7 +537,12 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         op = SparsePauliOp.from_list([("Z", 1)])
+        # Test transpiler without options
         estimator = StatevectorEstimator(default_precision=0.2)
+        gradient = LinCombEstimatorGradient(estimator, transpiler=pass_manager)
+        gradient.run([qc], [op], [[1]]).result()
+
+        # Test that transpiler is called using callback function
         gradient = LinCombEstimatorGradient(
             estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
         )

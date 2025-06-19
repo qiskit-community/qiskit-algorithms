@@ -298,6 +298,14 @@ class TestGrover(QiskitAlgorithmsTestCase):
         # is_good_state=['00'] is intentionally selected to obtain a list of results
         problem = AmplificationProblem(oracle)
 
+        # Test transpilation without setting options
+        Grover(
+            iterations=1,
+            sampler=StatevectorSampler(seed=42),
+            transpiler=pass_manager,
+        ).amplify(problem)
+
+        # Test that transpiler is called using callback function
         Grover(
             iterations=1,
             sampler=StatevectorSampler(seed=42),

@@ -738,6 +738,11 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         sampler = StatevectorSampler()
+        # Test transpilation without options
+        gradient = LinCombSamplerGradient(sampler, transpiler=pass_manager)
+        gradient.run([qc], [[1]]).result()
+
+        # Test transpiler is called using callback function
         gradient = LinCombSamplerGradient(
             sampler, transpiler=pass_manager, transpiler_options={"callback": callback}
         )

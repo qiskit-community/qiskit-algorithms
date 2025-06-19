@@ -385,6 +385,11 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
     @unpack
     def test_transpiler_ae_iae(self, qae_class, kwargs):
         """Test that the transpiler is called on AE and IAE"""
+        # Test transpilation without setting options
+        qae = qae_class(transpiler=self.pm, **kwargs)
+        qae.construct_circuit(self.problem)
+
+        # Test transpiler is called using callback function
         qae = qae_class(
             transpiler=self.pm, transpiler_options={"callback": self.callback}, **kwargs
         )
@@ -395,6 +400,11 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
     @unittest.skip("Won't pass until Qiskit/qiskit#14250 is fixed")
     def test_transpiler_mlae(self):
         """Test that the transpiler is called on MLAE"""
+        # Test transpilation without setting options
+        mlae = MaximumLikelihoodAmplitudeEstimation([0, 1], transpiler=self.pm)
+        mlae.construct_circuits(self.problem)
+
+        # Test transpiler is called using callback function
         mlae = MaximumLikelihoodAmplitudeEstimation(
             [0, 1], transpiler=self.pm, transpiler_options={"callback": self.callback}
         )
@@ -404,6 +414,11 @@ class TestTranspiler(QiskitAlgorithmsTestCase):
 
     def test_transpiler_fae(self):
         """Test that the transpiler is called on FAE"""
+        # Test transpilation without setting options
+        fae = FasterAmplitudeEstimation(0.1, 1, transpiler=self.pm)
+        fae.construct_circuit(self.problem, k=1)
+
+        # Test transpiler is called using callback function
         fae = FasterAmplitudeEstimation(
             0.1, 1, transpiler=self.pm, transpiler_options={"callback": self.callback}
         )

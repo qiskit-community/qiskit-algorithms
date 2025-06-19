@@ -317,6 +317,11 @@ class TestQGT(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         estimator = StatevectorEstimator(default_precision=0.1)
+        # Test transpiler without options
+        qgt = LinCombQGT(estimator, transpiler=pass_manager)
+        qgt.run([qc], [[1]]).result()
+
+        # Test transpiler is called using callback function
         qgt = LinCombQGT(
             estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
         )
