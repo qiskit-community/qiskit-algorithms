@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -66,6 +66,8 @@ class ForwardEulerSolver(OdeSolver):
             self.y = list(np.add(self.y, self._step_length * self.fun(self.t, self.y)))
             self.t += self._step_length
             return True, None
+        # TODO: why do we catch an Exception here? It makes debugging errors quite obscure, as the
+        #  evolve method continues without updating the parameters without signaling the problem
         except Exception as ex:  # pylint: disable=broad-except
             return False, f"Unknown ODE solver error: {str(ex)}."
 

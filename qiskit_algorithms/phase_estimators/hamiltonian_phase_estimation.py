@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,16 +14,18 @@
 
 from __future__ import annotations
 
+from typing import Any
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 from qiskit.quantum_info import SparsePauliOp, Statevector, Pauli
 from qiskit.synthesis import EvolutionSynthesis
 
-from .phase_estimation import PhaseEstimation
 from .hamiltonian_phase_estimation_result import HamiltonianPhaseEstimationResult
+from .phase_estimation import PhaseEstimation
 from .phase_estimation_scale import PhaseEstimationScale
+from ..custom_types import Transpiler
 
 
 class HamiltonianPhaseEstimation:
@@ -83,17 +85,27 @@ class HamiltonianPhaseEstimation:
     def __init__(
         self,
         num_evaluation_qubits: int,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
             num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will
                 be estimated as a binary string with this many bits.
             sampler: The sampler primitive on which the circuit will be sampled.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._phase_estimation = PhaseEstimation(
             num_evaluation_qubits=num_evaluation_qubits,
             sampler=sampler,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options,
         )
 
     def _get_scale(self, hamiltonian, bound=None) -> PhaseEstimationScale:
