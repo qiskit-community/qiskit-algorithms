@@ -140,12 +140,11 @@ class ComputeUncompute(BaseStateFidelity):
             circuits_2: (Parametrized) quantum circuits preparing :math:`|\phi\rangle`.
             values_1: Numerical parameters to be bound to the first circuits.
             values_2: Numerical parameters to be bound to the second circuits.
-            shots: Number of shots to be used by the underlying sampler. If a single integer is
+            shots: Number of shots to be used by the underlying Sampler. If a single integer is
                 provided, this number will be used for all circuits. If a sequence of integers is
-                provided, they will be used on a per-circuit basis. If none is provided, the
-                fidelity's default number of shots will be used for all circuits. If this number is
-                also set to None, the underlying primitive's default number of shots will be used
-                for all circuits.
+                provided, they will be used on a per-circuit basis. If not set, the fidelity's default
+                number of shots will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's default number of shots will be used for all circuits.
 
         Returns:
             An AlgorithmJob for the fidelity calculation.

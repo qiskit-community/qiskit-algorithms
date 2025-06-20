@@ -44,8 +44,8 @@ class BaseSamplerGradient(ABC):
         Args:
             sampler: The sampler used to compute the gradients.
             shots: Number of shots to be used by the underlying Sampler. If provided, this number
-                takes precedence over the default precision of the primitive. If None, the default
-                number of shots of the primitive is used.
+                takes precedence over the default number of shots of the primitive. Otherwise, the
+                default number of shots of the primitive is used.
         """
         self._sampler: BaseSamplerV2 = sampler
         self._shots = shots
@@ -69,12 +69,11 @@ class BaseSamplerGradient(ABC):
                 ``circuits``. Defaults to None, which means that the gradients of all parameters in
                 each circuit are calculated. None in the sequence means that the gradients of all
                 parameters in the corresponding circuit are calculated.
-            shots: Number of shots to be used by the underlying sampler. If a single integer is
+            shots: Number of shots to be used by the underlying Sampler. If a single integer is
                 provided, this number will be used for all circuits. If a sequence of integers is
-                provided, they will be used on a per-circuit basis. If none is provided, the
-                fidelity's default number of shots will be used for all circuits. If this number is
-                also set to None, the underlying primitive's default number of shots will be used
-                for all circuits.
+                provided, they will be used on a per-circuit basis. If not set, the gradient's default
+                number of shots will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's default number of shots will be used for all circuits.
         Returns:
             The job object of the gradients of the sampling probability. The i-th result
             corresponds to ``circuits[i]`` evaluated with parameters bound as ``parameter_values[i]``.

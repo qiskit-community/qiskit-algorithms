@@ -66,10 +66,9 @@ class QFI(ABC):
                 each circuit are calculated.
             precision: Precision to be used by the underlying Estimator. If a single float is
                 provided, this number will be used for all circuits. If a sequence of floats is
-                provided, they will be used on a per-circuit basis. If none is provided, the
-                gradient's default precision will be used for all circuits. If this number is
-                also set to None, the underlying primitive's default precision will be used
-                for all circuits.
+                provided, they will be used on a per-circuit basis. If not set, the gradient's default
+                precision will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's (default) precision will be used for all circuits.
 
         Returns:
             The job object of the QFIs of the expectation values. The i-th result corresponds to
