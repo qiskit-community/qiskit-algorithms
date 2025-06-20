@@ -86,7 +86,7 @@ link_str = (
 )
 nbsphinx_prolog += link_str + "{{ docname }}"
 
-nbsphinx_timeout = 360
+nbsphinx_timeout = 1800
 nbsphinx_execute = os.getenv("QISKIT_DOCS_BUILD_TUTORIALS", "never")
 nbsphinx_widgets_path = ""
 nbsphinx_thumbnails = {
