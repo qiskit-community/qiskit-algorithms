@@ -19,9 +19,12 @@ qiskit-aer>=0.12
 networkx>=2.2
 mypy>=0.991
 mypy-extensions>=0.4.3
+qiskit!=2.1.*
 
 # Tweedledum is unmaintained and its existing Mac wheels are unreliable. If you
 # manage to get a working install on a Mac the functionality should still work,
 # but as a convenience this file won't attempt the install itself.
+# Furthermore, tweedledum won't be required anymore when the oldest supported version
+# of Qiskit is 2.0.
 tweedledum; python_version<'3.11' and platform_system!="Darwin"
 
