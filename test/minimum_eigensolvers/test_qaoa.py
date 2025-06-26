@@ -120,7 +120,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     def test_qaoa_qc_mixer_many_parameters(self):
         """QAOA test with a mixer as a parameterized circuit with the num of parameters > 1."""
-        optimizer = COBYLA()
+        optimizer = COBYLA(maxiter=10000)
         qubit_op, _ = self._get_operator(W1)
 
         num_qubits = qubit_op.num_qubits
@@ -129,7 +129,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             theta = Parameter("θ" + str(i))
             mixer.rx(theta, range(num_qubits))
 
-        qaoa = QAOA(self.sampler, optimizer, reps=2, mixer=mixer)
+        qaoa = QAOA(self.sampler, optimizer, reps=2, mixer=mixer, initial_point=[1]*10)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
         self.log.debug(x)
