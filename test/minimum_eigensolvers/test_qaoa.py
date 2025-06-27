@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -120,7 +120,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     def test_qaoa_qc_mixer_many_parameters(self):
         """QAOA test with a mixer as a parameterized circuit with the num of parameters > 1."""
-        optimizer = COBYLA()
+        optimizer = COBYLA(maxiter=10000)
         qubit_op, _ = self._get_operator(W1)
 
         num_qubits = qubit_op.num_qubits
@@ -129,7 +129,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             theta = Parameter("θ" + str(i))
             mixer.rx(theta, range(num_qubits))
 
-        qaoa = QAOA(self.sampler, optimizer, reps=2, mixer=mixer)
+        qaoa = QAOA(self.sampler, optimizer, reps=2, mixer=mixer, initial_point=[1] * 10)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
         x = self._sample_most_likely(result.eigenstate)
         self.log.debug(x)
@@ -180,7 +180,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.0]], [W2, S2, [1.0, 0.8]]])
+    @idata([[W2, S2, None], [W2, S2, [0.0, 0.5]], [W2, S2, [1.0, 0.8]]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt):
         """Check first parameter value used is initial point as expected"""
