@@ -190,10 +190,10 @@ class TestSamplerVQE(QiskitAlgorithmsTestCase):
         vqe = SamplingVQE(
             StatevectorSampler(),
             RealAmplitudes(),
-            partial(scipy_minimize, method="COBYLA", options={"maxiter": 2}),
+            partial(scipy_minimize, method="COBYLA", options={"maxiter": 8}),
         )
         result = vqe.compute_minimum_eigenvalue(Pauli("Z"))
-        self.assertEqual(result.cost_function_evals, 2)
+        self.assertEqual(result.cost_function_evals, 8)
 
     def test_optimizer_callable(self):
         """Test passing a optimizer directly as callable."""
