@@ -178,7 +178,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     # Can't start from [0.0, 0.0] with a seed, otherwise all initially tested points return the same
     # value and the optimizer gets stuck
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.5]], [W2, S2, [1.0, 0.8]]])
+    @idata([[W2, S2, None], [W2, S2, [3.0, 2.5]], [W2, S2, [1.0, 0.8]]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt):
         """Check first parameter value used is initial point as expected"""
