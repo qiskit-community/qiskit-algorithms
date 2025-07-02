@@ -13,6 +13,7 @@
 """Test VQD"""
 
 import unittest
+from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
@@ -26,7 +27,7 @@ from qiskit_algorithms.eigensolvers import VQD, VQDResult
 from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.utils import algorithm_globals
-from test import QiskitAlgorithmsTestCase
+
 
 H2_SPARSE_PAULI = SparsePauliOp.from_list(
     [
@@ -241,7 +242,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             -0.95,
             -0.15,
             -0.86,
-            -0.55
+            -0.55,
         ]
 
         ref_step = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
