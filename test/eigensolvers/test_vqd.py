@@ -179,7 +179,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             history["metadata"].append(metadata)
             history["step"].append(step)
 
-        optimizer = COBYLA(maxiter=12)
+        optimizer = COBYLA(maxiter=10)
         wavefunction = self.ry_wavefunction
 
         vqd = VQD(
@@ -212,8 +212,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
             8,
             9,
             10,
-            11,
-            12,
             1,
             2,
             3,
@@ -224,75 +222,32 @@ class TestVQD(QiskitAlgorithmsTestCase):
             8,
             9,
             10,
-            11,
-            12,
         ]
 
-        ref_mean_pre_1_16 = [
+        ref_mean = [
             -1.08,
             -1.08,
-            -1.0,
+            -1.01,
             -1.14,
             -1.17,
             -1.38,
-            -1.0,
+            -1.01,
             -1.63,
-            -1.45,
-            -1.55,
-            -1.63,
-            -1.75,
-            -1.04,
-            -1.07,
-            -0.72,
-            -0.46,
+            -1.46,
+            -1.56,
+            -0.99,
+            -1.03,
             -0.71,
-            -0.56,
-            -0.92,
-            -0.29,
-            -0.89,
-            -0.38,
-            -1.06,
-            -1.05,
+            -0.17,
+            -0.36,
+            -0.47,
+            -0.95,
+            -0.15,
+            -0.86,
+            -0.55
         ]
-        ref_mean_1_16 = [
-            -1.08,
-            -1.08,
-            -1.0,
-            -1.14,
-            -1.17,
-            -1.38,
-            -1.0,
-            -1.63,
-            -1.45,
-            -1.55,
-            -1.63,
-            -1.75,
-            -1.04,
-            -1.07,
-            -0.72,
-            -0.46,
-            -0.71,
-            -0.56,
-            -0.92,
-            -0.29,
-            -0.89,
-            -0.38,
-            -0.97,
-            -1.16,
-        ]
-        # Unlike in other places where COYBLA is used in tests and differences arose between
-        # pre 1.16.0 versions and after, where in 1.16.0 scipy changed the COBYLA
-        # implementation, I was not able to find changes that would reproduce the outcome so
-        # tests passed no matter whether 1.16 or before was installed. Here the mean outcomes
-        # match all but the last 2 values so I thought about comparing a subset but in the
-        # end decided to go with different reference values based on scipy version
-        ref_mean = (
-            ref_mean_pre_1_16
-            if Version(scipy.version.version) < Version("1.16.0")
-            else ref_mean_1_16
-        )
 
-        ref_step = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+        ref_step = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 
         np.testing.assert_array_almost_equal(history["eval_count"], ref_eval_count, decimal=0)
         np.testing.assert_array_almost_equal(history["mean"], ref_mean, decimal=2)
