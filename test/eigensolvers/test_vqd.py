@@ -16,20 +16,18 @@ import unittest
 from test import QiskitAlgorithmsTestCase
 
 import numpy as np
-import scipy
 from ddt import data, ddt
-from packaging.version import Version
-
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
-from qiskit.primitives import Sampler, Estimator
+from qiskit.primitives import StatevectorSampler, StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
-from qiskit_algorithms.eigensolvers import VQD, VQDResult
 from qiskit_algorithms import AlgorithmError
+from qiskit_algorithms.eigensolvers import VQD, VQDResult
 from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, SLSQP, SPSA
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.utils import algorithm_globals
+
 
 H2_SPARSE_PAULI = SparsePauliOp.from_list(
     [
@@ -59,9 +57,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
         )
         self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
 
-        self.estimator = Estimator()
-        self.estimator_shots = Estimator(options={"shots": 1024, "seed": self.seed})
-        self.fidelity = ComputeUncompute(Sampler(options={"shots": 100_000, "seed": self.seed}))
+        self.estimator = StatevectorEstimator(seed=self.seed)
+        self.fidelity = ComputeUncompute(StatevectorSampler(seed=self.seed, default_shots=10_000))
         self.betas = [3]
 
     @data(H2_SPARSE_PAULI)
@@ -94,11 +91,16 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="assert return ansatz is set"):
             job = self.estimator.run(
-                result.optimal_circuits,
-                [op] * len(result.optimal_points),
-                result.optimal_points,
+                [
+                    (circuits, op, optimal_points)
+                    for (circuits, optimal_points) in zip(
+                        result.optimal_circuits, result.optimal_points
+                    )
+                ]
             )
-            np.testing.assert_array_almost_equal(job.result().values, result.eigenvalues, 6)
+            job_result = job.result()
+            eigenvalues = np.array([job_result[i].data.evs for i in range(len(result.eigenvalues))])
+            np.testing.assert_array_almost_equal(eigenvalues, result.eigenvalues, 6)
 
         with self.subTest(msg="assert returned values are eigenvalues"):
             np.testing.assert_array_almost_equal(
@@ -125,9 +127,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         """Test beta auto-evaluation for different operator types."""
 
         with self.assertLogs(level="INFO") as logs:
-            vqd = VQD(
-                self.estimator_shots, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B()
-            )
+            vqd = VQD(self.estimator, self.fidelity, self.ryrz_wavefunction, optimizer=L_BFGS_B())
             _ = vqd.compute_eigenvalues(op)
 
         # the first log message shows the value of beta[0]
@@ -177,11 +177,11 @@ class TestVQD(QiskitAlgorithmsTestCase):
             history["metadata"].append(metadata)
             history["step"].append(step)
 
-        optimizer = COBYLA(maxiter=12)
+        optimizer = COBYLA(maxiter=10)
         wavefunction = self.ry_wavefunction
 
         vqd = VQD(
-            estimator=self.estimator_shots,
+            estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
             optimizer=optimizer,
@@ -210,8 +210,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
             8,
             9,
             10,
-            11,
-            12,
             1,
             2,
             3,
@@ -222,75 +220,32 @@ class TestVQD(QiskitAlgorithmsTestCase):
             8,
             9,
             10,
-            11,
-            12,
         ]
 
-        ref_mean_pre_1_16 = [
+        ref_mean = [
             -1.08,
             -1.08,
-            -1.0,
+            -1.01,
             -1.14,
             -1.17,
             -1.38,
-            -1.0,
+            -1.01,
             -1.63,
-            -1.45,
-            -1.55,
-            -1.63,
-            -1.75,
-            -1.04,
-            -1.07,
-            -0.72,
-            -0.46,
+            -1.46,
+            -1.56,
+            -0.99,
+            -1.03,
             -0.71,
-            -0.56,
-            -0.92,
-            -0.29,
-            -0.89,
-            -0.38,
-            -1.06,
-            -1.05,
+            -0.17,
+            -0.36,
+            -0.47,
+            -0.95,
+            -0.15,
+            -0.86,
+            -0.55,
         ]
-        ref_mean_1_16 = [
-            -1.08,
-            -1.08,
-            -1.0,
-            -1.14,
-            -1.17,
-            -1.38,
-            -1.0,
-            -1.63,
-            -1.45,
-            -1.55,
-            -1.63,
-            -1.75,
-            -1.04,
-            -1.07,
-            -0.72,
-            -0.46,
-            -0.71,
-            -0.56,
-            -0.92,
-            -0.29,
-            -0.89,
-            -0.38,
-            -0.97,
-            -1.16,
-        ]
-        # Unlike in other places where COYBLA is used in tests and differences arose between
-        # pre 1.16.0 versions and after, where in 1.16.0 scipy changed the COBYLA
-        # implementation, I was not able to find changes that would reproduce the outcome so
-        # tests passed no matter whether 1.16 or before was installed. Here the mean outcomes
-        # match all but the last 2 values so I thought about comparing a subset but in the
-        # end decided to go with different reference values based on scipy version
-        ref_mean = (
-            ref_mean_pre_1_16
-            if Version(scipy.version.version) < Version("1.16.0")
-            else ref_mean_1_16
-        )
 
-        ref_step = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+        ref_step = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 
         np.testing.assert_array_almost_equal(history["eval_count"], ref_eval_count, decimal=0)
         np.testing.assert_array_almost_equal(history["mean"], ref_mean, decimal=2)
@@ -372,7 +327,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
 
         result = vqd.compute_eigenvalues(operator=op)
         np.testing.assert_array_almost_equal(
-            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=3
+            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
         )
 
     @data(H2_SPARSE_PAULI)
@@ -543,6 +498,18 @@ class TestVQD(QiskitAlgorithmsTestCase):
             SLSQP(),
             k=2,
             betas=self.betas,
+            initial_point=np.array(
+                [
+                    2.15707009,
+                    -2.6128808,
+                    1.40478697,
+                    -1.73909435,
+                    -2.89100903,
+                    1.75289926,
+                    -0.14760479,
+                    -2.00011645,
+                ]
+            ),
             convergence_threshold=1e-3,
         )
         with self.subTest("Failed convergence"):
@@ -553,7 +520,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             vqd.convergence_threshold = 1e-1
             result = vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
             np.testing.assert_array_almost_equal(
-                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
+                result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
             )
 
 

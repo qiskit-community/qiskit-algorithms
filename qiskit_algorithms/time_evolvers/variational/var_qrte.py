@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,7 +21,7 @@ from scipy.integrate import OdeSolver
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
 
@@ -43,7 +43,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
         from qiskit.quantum_info import SparsePauliOp
         from qiskit.quantum_info import SparsePauliOp, Pauli
-        from qiskit.primitives import Estimator
+        from qiskit.primitives import StatevectorEstimator
 
         observable = SparsePauliOp.from_list(
             [
@@ -69,7 +69,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         # evaluating auxiliary operators
         aux_ops = [Pauli("XX"), Pauli("YZ")]
         evolution_problem = TimeEvolutionProblem(observable, time, aux_operators=aux_ops)
-        var_qrte = VarQRTE(ansatz, init_param_values, var_principle, Estimator())
+        var_qrte = VarQRTE(ansatz, init_param_values, var_principle, StatevectorEstimator())
         evolution_result = var_qrte.evolve(evolution_problem)
     """
 
@@ -79,7 +79,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         ansatz: QuantumCircuit,
         initial_parameters: Mapping[Parameter, float] | Sequence[float],
         variational_principle: RealVariationalPrinciple | None = None,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         ode_solver: Type[OdeSolver] | str = ForwardEulerSolver,
         lse_solver: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None,
         num_timesteps: int | None = None,

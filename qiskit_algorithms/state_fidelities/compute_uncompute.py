@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,18 +14,20 @@ Compute-uncompute fidelity interface using primitives
 """
 
 from __future__ import annotations
+
 from collections.abc import Sequence
-from copy import copy
+from typing import Any
 
 from qiskit import QuantumCircuit
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
+from qiskit.primitives.containers.sampler_pub import SamplerPub
 from qiskit.primitives.primitive_job import PrimitiveJob
-from qiskit.providers import Options
 
-from ..exceptions import AlgorithmError
 from .base_state_fidelity import BaseStateFidelity
 from .state_fidelity_result import StateFidelityResult
 from ..algorithm_job import AlgorithmJob
+from ..custom_types import Transpiler
+from ..exceptions import AlgorithmError
 
 
 class ComputeUncompute(BaseStateFidelity):
@@ -53,16 +55,19 @@ class ComputeUncompute(BaseStateFidelity):
 
     def __init__(
         self,
-        sampler: BaseSampler,
-        options: Options | None = None,
+        sampler: BaseSamplerV2,
+        shots: int | None = None,
         local: bool = False,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
             sampler: Sampler primitive instance.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > fidelity's
-                default options > primitive's default setting.
+            shots: Number of shots to be used by the underlying sampler.
+                The order of priority is: number of shots in ``run`` method > fidelity's
+                number of shots > primitive's default number of shots.
                 Higher priority setting overrides lower priority setting.
             local: If set to ``True``, the fidelity is averaged over
                 single-qubit projectors
@@ -75,20 +80,23 @@ class ComputeUncompute(BaseStateFidelity):
                 This coincides with the standard (global) fidelity in the limit of
                 the fidelity approaching 1. Might be used to increase the variance
                 to improve trainability in algorithms such as :class:`~.time_evolvers.PVQD`.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
-            ValueError: If the sampler is not an instance of ``BaseSampler``.
+            ValueError: If the sampler is not an instance of ``BaseSamplerV2``.
         """
-        if not isinstance(sampler, BaseSampler):
+        if not isinstance(sampler, BaseSamplerV2):
             raise ValueError(
-                f"The sampler should be an instance of BaseSampler, " f"but got {type(sampler)}"
+                f"The sampler should be an instance of BaseSamplerV2, " f"but got {type(sampler)}"
             )
-        self._sampler: BaseSampler = sampler
+        self._sampler: BaseSamplerV2 = sampler
         self._local = local
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
-        super().__init__()
+        self._shots = shots
+        super().__init__(transpiler=transpiler, transpiler_options=transpiler_options)
 
     def create_fidelity_circuit(
         self, circuit_1: QuantumCircuit, circuit_2: QuantumCircuit
@@ -119,7 +127,8 @@ class ComputeUncompute(BaseStateFidelity):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
-        **options,
+        *,
+        shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""
         Computes the state overlap (fidelity) calculation between two
@@ -131,10 +140,11 @@ class ComputeUncompute(BaseStateFidelity):
             circuits_2: (Parametrized) quantum circuits preparing :math:`|\phi\rangle`.
             values_1: Numerical parameters to be bound to the first circuits.
             values_2: Numerical parameters to be bound to the second circuits.
-            options: Primitive backend runtime options used for circuit execution.
-                    The order of priority is: options in ``run`` method > fidelity's
-                    default options > primitive's default setting.
-                    Higher priority setting overrides lower priority setting.
+            shots: Number of shots to be used by the underlying Sampler. If a single integer is
+                provided, this number will be used for all circuits. If a sequence of integers is
+                provided, they will be used on a per-circuit basis. If not set, the fidelity's default
+                number of shots will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's default number of shots will be used for all circuits.
 
         Returns:
             An AlgorithmJob for the fidelity calculation.
@@ -143,7 +153,6 @@ class ComputeUncompute(BaseStateFidelity):
             ValueError: At least one pair of circuits must be defined.
             AlgorithmError: If the sampler job is not completed successfully.
         """
-
         circuits = self._construct_circuits(circuits_1, circuits_2)
         if len(circuits) == 0:
             raise ValueError(
@@ -151,79 +160,88 @@ class ComputeUncompute(BaseStateFidelity):
             )
         values = self._construct_value_list(circuits_1, circuits_2, values_1, values_2)
 
-        # The priority of run options is as follows:
-        # options in `evaluate` method > fidelity's default options >
-        # primitive's default options.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
+        # The priority of number of shots options is as follows:
+        # number in `run` method > fidelity's default number of shots >
+        # primitive's default number of shots.
+        if not isinstance(shots, Sequence):
+            if shots is None:
+                shots = self.shots
+            coerced_pubs = [
+                SamplerPub.coerce((circuit, value), shots)
+                for circuit, value in zip(circuits, values)
+            ]
+        else:
+            coerced_pubs = [
+                SamplerPub.coerce((circuit, value), shots_number)
+                for circuit, value, shots_number in zip(circuits, values, shots)
+            ]
 
-        sampler_job = self._sampler.run(circuits=circuits, parameter_values=values, **opts.__dict__)
+        job = self._sampler.run(coerced_pubs)
 
-        local_opts = self._get_local_options(opts.__dict__)
-        return AlgorithmJob(ComputeUncompute._call, sampler_job, circuits, self._local, local_opts)
+        return AlgorithmJob(ComputeUncompute._call, job, circuits, self._local)
 
     @staticmethod
     def _call(
-        job: PrimitiveJob, circuits: Sequence[QuantumCircuit], local: bool, local_opts: Options
+        job: PrimitiveJob, circuits: Sequence[QuantumCircuit], local: bool
     ) -> StateFidelityResult:
         try:
             result = job.result()
         except Exception as exc:
             raise AlgorithmError("Sampler job failed!") from exc
 
+        pub_results_data = [
+            getattr(pub_result.data, circuit.cregs[0].name)
+            for pub_result, circuit in zip(result, circuits)
+        ]
+        quasi_dists = [
+            {
+                label: value / prob_dist.num_shots
+                for label, value in prob_dist.get_int_counts().items()
+            }
+            for prob_dist in pub_results_data
+        ]
+
         if local:
             raw_fidelities = [
                 ComputeUncompute._get_local_fidelity(prob_dist, circuit.num_qubits)
-                for prob_dist, circuit in zip(result.quasi_dists, circuits)
+                for prob_dist, circuit in zip(quasi_dists, circuits)
             ]
         else:
             raw_fidelities = [
-                ComputeUncompute._get_global_fidelity(prob_dist) for prob_dist in result.quasi_dists
+                ComputeUncompute._get_global_fidelity(prob_dist) for prob_dist in quasi_dists
             ]
         fidelities = ComputeUncompute._truncate_fidelities(raw_fidelities)
+        shots = [pub_result_data.num_shots for pub_result_data in pub_results_data]
+
+        if len(shots) == 1:
+            shots = shots[0]
 
         return StateFidelityResult(
             fidelities=fidelities,
             raw_fidelities=raw_fidelities,
             metadata=result.metadata,
-            options=local_opts,
+            shots=shots,
         )
 
     @property
-    def options(self) -> Options:
-        """Return the union of estimator options setting and fidelity default options,
-        where, if the same field is set in both, the fidelity's default options override
-        the primitive's default setting.
+    def shots(self) -> int | None:
+        """Return the number of shots used by the `run` method of the Sampler primitive. If None,
+        the default number of shots of the primitive is used.
 
         Returns:
-            The fidelity default + estimator options.
+            The default number of shots.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._shots
 
-    def update_default_options(self, **options):
-        """Update the fidelity's default options setting.
+    @shots.setter
+    def shots(self, shots: int | None):
+        """Update the fidelity's default number of shots setting.
 
         Args:
-            **options: The fields to update the default options.
+            shots: The new default number of shots.
         """
 
-        self._default_options.update_options(**options)
-
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the fidelity default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > fidelity's
-                default options > primitive's default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The fidelity default + estimator + run options.
-        """
-        opts = copy(self._sampler.options)
-        opts.update_options(**options)
-        return opts
+        self._shots = shots
 
     @staticmethod
     def _get_global_fidelity(probability_distribution: dict[int, float]) -> float:
