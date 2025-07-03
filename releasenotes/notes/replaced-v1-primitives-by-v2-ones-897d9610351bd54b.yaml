@@ -93,11 +93,11 @@ upgrade:
     keyword-only, you must use the above syntax to use them. All options in the
     ``transpiler_options`` dictionary will be passed to the ``run`` method of the
     ``transpiler``. Similarly, if creating a :class:`.VQE` instance could be
-    done like so in th ``0.3`` version::
+    done like so in the ``0.3`` version::
 
         vqe = VQE(Estimator(), ansatz, optimizer)
 
-    You will then have to write the following in the ``0.4`` version::
+    You will now have to write the following in the ``0.4`` version::
 
         vqe = VQE(StatevectorEstimator(), ansatz, optimizer)
 
