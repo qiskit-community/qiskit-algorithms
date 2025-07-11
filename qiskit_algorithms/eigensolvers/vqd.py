@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,30 +17,28 @@ See https://arxiv.org/abs/1805.08138.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Iterable
-from typing import Any, cast
 import logging
+from collections.abc import Callable, Sequence, Iterable
 from time import time
+from typing import Any, cast
 
 import numpy as np
-
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.state_fidelities import BaseStateFidelity
-
-from ..list_or_dict import ListOrDict
-from ..optimizers import Optimizer, Minimizer, OptimizerResult
-from ..variational_algorithm import VariationalAlgorithm
 from .eigensolver import Eigensolver, EigensolverResult
-from ..utils import validate_bounds, validate_initial_point
+from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
+from ..list_or_dict import ListOrDict
 from ..observables_evaluator import estimate_observables
-
+from ..optimizers import Optimizer, Minimizer, OptimizerResult
+from ..utils import validate_bounds, validate_initial_point
 # private function as we expect this to be updated in the next release
 from ..utils.set_batching import _set_default_batchsize
+from ..variational_algorithm import VariationalAlgorithm
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +123,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
         initial_point: np.ndarray | list[np.ndarray] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any], int], None] | None = None,
         convergence_threshold: float | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         """
 
@@ -154,12 +154,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
             convergence_threshold: A threshold under which the algorithm is considered to have
                 converged. It corresponds to the maximal average fidelity an eigenstate is allowed
                 to have with the previous eigenstates. If set to None, no check is performed.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
 
         self.estimator = estimator
         self.fidelity = fidelity
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.optimizer = optimizer
         self.k = k
         self.betas = betas
@@ -167,6 +172,12 @@ class VQD(VariationalAlgorithm, Eigensolver):
         self.initial_point = initial_point
         self.callback = callback
         self.convergence_threshold = convergence_threshold
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
 
         self._eval_count = 0
 
@@ -179,6 +190,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
     def initial_point(self, initial_point: np.ndarray | list[np.ndarray] | None):
         """Sets initial point"""
         self._initial_point = initial_point
+
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         """Check that the number of qubits of operator and ansatz match."""
@@ -205,6 +227,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
     ) -> VQDResult:
         super().compute_eigenvalues(operator, aux_operators)
 
+        if self.ansatz.layout is not None:
+            operator = operator.apply_layout(self.ansatz.layout)
+
         # this sets the size of the ansatz, so it must be called before the initial point
         # validation
         self._check_operator_ansatz(operator)
@@ -213,12 +238,18 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
         # We need to handle the array entries being zero or Optional i.e. having value None
         if aux_operators:
-            zero_op = SparsePauliOp.from_list([("I" * self.ansatz.num_qubits, 0)])
+            if self.ansatz.layout is not None:
+                # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
+                # ansatz, before transpilation
+                zero_op = SparsePauliOp.from_list([("I" * len(self.ansatz.layout.final_index_layout()), 0)])
+            else:
+                zero_op = SparsePauliOp.from_list([("I" * self.ansatz.num_qubits, 0)])
 
             # Convert the None and zero values when aux_operators is a list.
             # Drop None and convert zero values when aux_operators is a dict.
             key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
             if isinstance(aux_operators, list):
+                aux_operators = [op if op is not None else zero_op for op in aux_operators]
                 key_op_iterator = enumerate(aux_operators)
                 converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
             else:
@@ -227,6 +258,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
             for key, op in key_op_iterator:
                 if op is not None:
                     converted[key] = zero_op if op == 0 else op  # type: ignore[index]
+
+                    if self.ansatz.layout is not None:
+                        converted[key] = converted[key].apply_layout(self.ansatz.layout)
 
             aux_operators = converted
 
@@ -389,7 +423,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     def _get_evaluate_energy(  # pylint: disable=too-many-positional-arguments
         self,
         step: int,
-        operator: BaseOperator,
+        operator: SparsePauliOp,
         betas: np.ndarray,
         current_optimal_point: dict["str", Any],
         prev_states: list[QuantumCircuit] | None = None,
@@ -424,8 +458,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 f"Passed previous states of the wrong size."
                 f"Passed array has length {str(len(prev_states))}"
             )
-
-        self._check_operator_ansatz(operator)
 
         def evaluate_energy(parameters: np.ndarray) -> float | np.ndarray:
             # handle broadcasting: ensure parameters is of shape [array, array, ...]

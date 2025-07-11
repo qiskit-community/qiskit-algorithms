@@ -13,11 +13,14 @@
 """Test VQD"""
 
 import unittest
+
+from qiskit.providers.fake_provider import GenericBackendV2
+
 from test import QiskitAlgorithmsTestCase
 
 import numpy as np
-from ddt import data, ddt
-from qiskit import QuantumCircuit
+from ddt import data, ddt, idata, unpack
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
 from qiskit.primitives import StatevectorSampler, StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
@@ -38,6 +41,8 @@ H2_SPARSE_PAULI = SparsePauliOp.from_list(
         ("XX", 0.18093119978423156),
     ]
 )
+
+THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)
 
 
 @ddt
@@ -330,10 +335,26 @@ class TestVQD(QiskitAlgorithmsTestCase):
             result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
         )
 
-    @data(H2_SPARSE_PAULI)
-    def test_aux_operators_list(self, op):
+    # Since we perform actions on the aux_operators when a transpiler is set, we have to check that it
+    # doesn't affect the final result
+    @idata(
+        [
+            [H2_SPARSE_PAULI, None],
+            [
+                H2_SPARSE_PAULI,
+                generate_preset_pass_manager(
+                    backend=THREE_QUBITS_BACKEND,
+                    optimization_level=1,
+                    seed_transpiler=42
+                )
+            ],
+        ]
+    )
+    @unpack
+    def test_aux_operators_list(self, op, transpiler):
         """Test list-based aux_operators."""
         wavefunction = self.ry_wavefunction
+        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
@@ -341,6 +362,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             optimizer=COBYLA(),
             k=2,
             betas=self.betas,
+            transpiler=transpiler,
         )
 
         # Start with an empty list
@@ -383,16 +405,33 @@ class TestVQD(QiskitAlgorithmsTestCase):
         self.assertIsInstance(result.aux_operators_evaluated[0][1][1], dict)
         self.assertIsInstance(result.aux_operators_evaluated[0][3][1], dict)
 
-    @data(H2_SPARSE_PAULI)
-    def test_aux_operators_dict(self, op):
+    # Since we perform actions on the aux_operators when a transpiler is set, we have to check that it
+    # doesn't affect the final result
+    @idata(
+        [
+            [H2_SPARSE_PAULI, None],
+            [
+                H2_SPARSE_PAULI,
+                generate_preset_pass_manager(
+                    backend=THREE_QUBITS_BACKEND,
+                    optimization_level=1,
+                    seed_transpiler=42
+                )
+            ],
+        ]
+    )
+    @unpack
+    def test_aux_operators_dict(self, op, transpiler):
         """Test dictionary compatibility of aux_operators"""
         wavefunction = self.ry_wavefunction
+        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
             ansatz=wavefunction,
             optimizer=COBYLA(),
             betas=self.betas,
+            transpiler=transpiler
         )
 
         # Start with an empty dictionary
@@ -437,10 +476,26 @@ class TestVQD(QiskitAlgorithmsTestCase):
         self.assertIsInstance(result.aux_operators_evaluated[0]["aux_op2"][1], dict)
         self.assertIsInstance(result.aux_operators_evaluated[0]["zero_operator"][1], dict)
 
-    @data(H2_SPARSE_PAULI)
-    def test_aux_operator_std_dev(self, op):
+    # Since we perform actions on the aux_operators when a transpiler is set, we have to check that it
+    # doesn't affect the final result
+    @idata(
+        [
+            [H2_SPARSE_PAULI, None],
+            [
+                H2_SPARSE_PAULI,
+                generate_preset_pass_manager(
+                    backend=THREE_QUBITS_BACKEND,
+                    optimization_level=1,
+                    seed_transpiler=42
+                )
+            ],
+        ]
+    )
+    @unpack
+    def test_aux_operator_std_dev(self, op, transpiler):
         """Test non-zero standard deviations of aux operators."""
         wavefunction = self.ry_wavefunction
+        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
@@ -457,6 +512,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             ],
             optimizer=COBYLA(maxiter=10),
             betas=self.betas,
+            transpiler=transpiler
         )
 
         # Go again with two auxiliary operators
@@ -522,6 +578,35 @@ class TestVQD(QiskitAlgorithmsTestCase):
             np.testing.assert_array_almost_equal(
                 result.eigenvalues.real, self.h2_energy_excited[:2], decimal=2
             )
+
+    @data(None, THREE_QUBITS_BACKEND)
+    def test_transpiler(self, backend):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(
+            backend=backend,
+            optimization_level=1,
+            seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        wavefunction = self.ryrz_wavefunction
+        wavefunction.num_qubits = 2
+        vqd = VQD(
+            estimator=self.estimator,
+            fidelity=self.fidelity,
+            ansatz=wavefunction,
+            optimizer=COBYLA(),
+            betas=self.betas,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        )
+
+        vqd.compute_eigenvalues(operator=H2_SPARSE_PAULI)
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

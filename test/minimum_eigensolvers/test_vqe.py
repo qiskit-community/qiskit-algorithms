@@ -13,6 +13,9 @@
 """Test the variational quantum eigensolver algorithm."""
 
 import unittest
+
+from qiskit.providers.fake_provider import GenericBackendV2
+
 from test import QiskitAlgorithmsTestCase
 
 from functools import partial
@@ -20,7 +23,7 @@ import numpy as np
 from scipy.optimize import minimize as scipy_minimize
 from ddt import data, ddt
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
@@ -42,6 +45,9 @@ from qiskit_algorithms.optimizers import (
 )
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.utils import algorithm_globals
+
+
+THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)
 
 
 # pylint: disable=invalid-name
@@ -367,9 +373,26 @@ class TestVQE(QiskitAlgorithmsTestCase):
         result = vqe.compute_minimum_eigenvalue(SparsePauliOp("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
 
-    def test_aux_operators_list(self):
+    # Since we perform actions on the aux_operators when a transpiler is set, we have to check that it
+    # doesn't affect the final result
+    @data(
+        None,
+        generate_preset_pass_manager(
+            backend=THREE_QUBITS_BACKEND,
+            optimization_level=1,
+            seed_transpiler=42
+        )
+    )
+    def test_aux_operators_list(self, transpiler):
         """Test list-based aux_operators."""
-        vqe = VQE(StatevectorEstimator(seed=42), self.ry_wavefunction, SLSQP(maxiter=300))
+        wavefunction = self.ry_wavefunction
+        wavefunction.num_qubits = 2
+        vqe = VQE(
+            StatevectorEstimator(seed=42),
+            wavefunction,
+            SLSQP(maxiter=300),
+            transpiler=transpiler
+        )
 
         with self.subTest("Test with an empty list."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators=[])
@@ -406,9 +429,26 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertIsInstance(result.aux_operators_evaluated[1][1], dict)
             self.assertIsInstance(result.aux_operators_evaluated[2][1], dict)
 
-    def test_aux_operators_dict(self):
+    # Since we perform actions on the aux_operators when a transpiler is set, we have to check that it
+    # doesn't affect the final result
+    @data(
+        None,
+        generate_preset_pass_manager(
+            backend=THREE_QUBITS_BACKEND,
+            optimization_level=1,
+            seed_transpiler=42
+        )
+    )
+    def test_aux_operators_dict(self, transpiler):
         """Test dictionary compatibility of aux_operators"""
-        vqe = VQE(StatevectorEstimator(seed=42), self.ry_wavefunction, SLSQP(maxiter=300))
+        wavefunction = self.ry_wavefunction
+        wavefunction.num_qubits = 2
+        vqe = VQE(
+            StatevectorEstimator(seed=42),
+            wavefunction,
+            SLSQP(maxiter=300),
+            transpiler=transpiler
+        )
 
         with self.subTest("Test with an empty dictionary."):
             result = vqe.compute_minimum_eigenvalue(self.h2_op, aux_operators={})
@@ -444,6 +484,33 @@ class TestVQE(QiskitAlgorithmsTestCase):
             self.assertIsInstance(result.aux_operators_evaluated["aux_op1"][1], dict)
             self.assertIsInstance(result.aux_operators_evaluated["aux_op2"][1], dict)
             self.assertIsInstance(result.aux_operators_evaluated["zero_operator"][1], dict)
+
+    @data(None, THREE_QUBITS_BACKEND)
+    def test_transpiler(self, backend):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(
+            backend=backend,
+            optimization_level=1,
+            seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        wavefunction = self.ryrz_wavefunction
+        wavefunction.num_qubits = 2
+        vqe = VQE(
+            estimator=StatevectorEstimator(),
+            ansatz=wavefunction,
+            optimizer=COBYLA(),
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        )
+
+        vqe.compute_minimum_eigenvalue(operator=self.h2_op)
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

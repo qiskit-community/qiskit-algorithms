@@ -17,15 +17,17 @@ from __future__ import annotations
 import logging
 from time import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Iterable
 
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
+from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.gradients import BaseEstimatorGradient
+from ..custom_types import Transpiler
 
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
@@ -121,6 +123,8 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         gradient: BaseEstimatorGradient | None = None,
         initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -139,16 +143,27 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
 
         self.estimator = estimator
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.optimizer = optimizer
         self.gradient = gradient
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
         self.callback = callback
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -158,11 +173,25 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     def initial_point(self, value: np.ndarray | None) -> None:
         self._initial_point = value
 
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
+
     def compute_minimum_eigenvalue(
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> VQEResult:
+        if self._transpiler is not None:
+            operator = operator.apply_layout(self.ansatz.layout)
+
         self._check_operator_ansatz(operator)
 
         initial_point = validate_initial_point(self.initial_point, self.ansatz)
@@ -211,6 +240,23 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         )
 
         if aux_operators is not None:
+            if self.ansatz.layout is not None:
+                # We need to handle the array entries being zero or Optional i.e. having value None
+                # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
+                # ansatz, before transpilation
+                zero_op = SparsePauliOp.from_list([("I" * len(self.ansatz.layout.final_index_layout()), 0)])
+                key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
+                if isinstance(aux_operators, list):
+                    key_op_iterator = enumerate(aux_operators)
+                    converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
+                else:
+                    key_op_iterator = aux_operators.items()
+                    converted = {}
+                for key, op in key_op_iterator:
+                    if op is not None:
+                        converted[key] = zero_op.apply_layout(self.ansatz.layout) if op == 0 else op.apply_layout(self.ansatz.layout)
+
+                aux_operators = converted
             aux_operators_evaluated = estimate_observables(
                 self.estimator,
                 self.ansatz,
