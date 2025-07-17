@@ -19,17 +19,17 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 import rustworkx as rx
 from ddt import ddt, idata, unpack
-from scipy.optimize import minimize as scipy_minimize
-
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
-from qiskit.primitives import Sampler
+from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit.result import QuasiDistribution
+from scipy.optimize import minimize as scipy_minimize
 
 from qiskit_algorithms.minimum_eigensolvers import QAOA
 from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit_algorithms.utils import algorithm_globals
+
 
 W1 = np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])
 P1 = 1
@@ -65,9 +65,9 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self.seed = 10598
+        self.seed = 123
         algorithm_globals.random_seed = self.seed
-        self.sampler = Sampler()
+        self.sampler = StatevectorSampler(seed=42)
 
     @idata(
         [
@@ -85,8 +85,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         qaoa = QAOA(self.sampler, COBYLA(), reps=reps, mixer=mixer)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
 
-        x = self._sample_most_likely(result.eigenstate)
-        graph_solution = self._get_graph_solution(x)
+        graph_solution = self._sample_most_likely(result.eigenstate)
         self.assertIn(graph_solution, solutions)
 
     @idata(
@@ -114,8 +113,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
         qaoa = QAOA(self.sampler, optimizer, reps=prob, mixer=mixer)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
-        x = self._sample_most_likely(result.eigenstate)
-        graph_solution = self._get_graph_solution(x)
+        graph_solution = self._sample_most_likely(result.eigenstate)
         self.assertIn(graph_solution, solutions)
 
     def test_qaoa_qc_mixer_many_parameters(self):
@@ -131,9 +129,9 @@ class TestQAOA(QiskitAlgorithmsTestCase):
 
         qaoa = QAOA(self.sampler, optimizer, reps=2, mixer=mixer, initial_point=[1] * 10)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
-        x = self._sample_most_likely(result.eigenstate)
-        self.log.debug(x)
-        graph_solution = self._get_graph_solution(x)
+
+        graph_solution = self._sample_most_likely(result.eigenstate)
+        self.log.debug(graph_solution)
         self.assertIn(graph_solution, S1)
 
     def test_qaoa_qc_mixer_no_parameters(self):
@@ -157,8 +155,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         )
         qaoa = QAOA(self.sampler, COBYLA(), reps=1)
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
-        x = self._sample_most_likely(result.eigenstate)
-        graph_solution = self._get_graph_solution(x)
+        graph_solution = self._sample_most_likely(result.eigenstate)
         with self.subTest(msg="QAOA 4x4"):
             self.assertIn(graph_solution, {"0101", "1010"})
 
@@ -175,12 +172,13 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             )
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
-        x = self._sample_most_likely(result.eigenstate)
-        graph_solution = self._get_graph_solution(x)
+        graph_solution = self._sample_most_likely(result.eigenstate)
         with self.subTest(msg="QAOA 6x6"):
             self.assertIn(graph_solution, {"010101", "101010"})
 
-    @idata([[W2, S2, None], [W2, S2, [0.0, 0.5]], [W2, S2, [1.0, 0.8]]])
+    # Can't start from [0.0, 0.0] with a seed, otherwise all initially tested points return the same
+    # value and the optimizer gets stuck
+    @idata([[W2, S2, None], [W2, S2, [3.0, 2.5]], [W2, S2, [1.0, 0.8]]])
     @unpack
     def test_qaoa_initial_point(self, w, solutions, init_pt):
         """Check first parameter value used is initial point as expected"""
@@ -200,9 +198,7 @@ class TestQAOA(QiskitAlgorithmsTestCase):
             callback=cb_callback,
         )
         result = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
-
-        x = self._sample_most_likely(result.eigenstate)
-        graph_solution = self._get_graph_solution(x)
+        graph_solution = self._sample_most_likely(result.eigenstate)
 
         with self.subTest("Initial Point"):
             # If None the preferred random initial point of QAOA variational form
@@ -238,6 +234,37 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         result = qaoa.compute_minimum_eigenvalue(qubit_op)
         self.assertEqual(result.cost_function_evals, 5)
 
+    def test_transpiler(self):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        qubit_op, _ = self._get_operator(W1)
+
+        # Test transpiler without options
+        qaoa = QAOA(
+            self.sampler,
+            COBYLA(),
+            reps=2,
+            transpiler=pass_manager,
+        )
+        _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
+        # Test transpiler is called using callback function
+        qaoa = QAOA(
+            self.sampler,
+            COBYLA(),
+            reps=2,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        )
+        _ = qaoa.compute_minimum_eigenvalue(operator=qubit_op)
+
+        self.assertGreater(counts[0], 0)
+
     def _get_operator(self, weight_matrix):
         """Generate Hamiltonian for the max-cut problem of a graph.
 
@@ -264,34 +291,15 @@ class TestQAOA(QiskitAlgorithmsTestCase):
         lst = [(pauli[1].to_label(), pauli[0]) for pauli in pauli_list]
         return SparsePauliOp.from_list(lst), shift
 
-    def _get_graph_solution(self, x: np.ndarray) -> str:
-        """Get graph solution from binary string.
-
-        Args:
-            x : binary string as numpy array.
-
-        Returns:
-            a graph solution as string.
-        """
-
-        return "".join([str(int(i)) for i in 1 - x])
-
-    def _sample_most_likely(self, state_vector: QuasiDistribution) -> np.ndarray:
+    def _sample_most_likely(self, state_vector: QuasiDistribution) -> str:
         """Compute the most likely binary string from state vector.
         Args:
             state_vector: Quasi-distribution.
 
         Returns:
-            Binary string as numpy.ndarray of ints.
+            Binary string.
         """
-        values = list(state_vector.values())
-        n = int(np.log2(len(values)))
-        k = np.argmax(np.abs(values))
-        x = np.zeros(n)
-        for i in range(n):
-            x[i] = k % 2
-            k >>= 1
-        return x
+        return max(state_vector.items(), key=lambda x: x[1])[0][::-1]
 
 
 if __name__ == "__main__":

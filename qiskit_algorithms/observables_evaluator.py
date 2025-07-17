@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,15 +20,16 @@ import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from .exceptions import AlgorithmError
 from .list_or_dict import ListOrDict
 
 
+# TODO: make estimate_observables accept EstimatorPubLike inputs
 def estimate_observables(
-    estimator: BaseEstimator,
+    estimator: BaseEstimatorV2,
     quantum_state: QuantumCircuit,
     observables: ListOrDict[BaseOperator],
     parameter_values: Sequence[float] | None = None,
@@ -42,7 +43,7 @@ def estimate_observables(
     Args:
         estimator: An estimator primitive used for calculations.
         quantum_state: A (parameterized) quantum circuit preparing a quantum state that expectation
-            values are computed against.
+            values are computed against. It is expected to be an ISA circuit.
         observables: A list or a dictionary of operators whose expectation values are to be
             calculated.
         parameter_values: Optional list of parameters values to evaluate the quantum circuit on.
@@ -63,21 +64,19 @@ def estimate_observables(
 
     if len(observables_list) > 0:
         observables_list = _handle_zero_ops(observables_list)
-        quantum_state = [quantum_state] * len(observables)
         parameter_values_: Sequence[float] | Sequence[Sequence[float]] | None = parameter_values
-        if parameter_values is not None:
-            parameter_values_ = [parameter_values] * len(observables)
         try:
-            estimator_job = estimator.run(quantum_state, observables_list, parameter_values_)
-            expectation_values = estimator_job.result().values
+            estimator_job = estimator.run([(quantum_state, observables_list, parameter_values_)])
+            estimator_result = estimator_job.result()[0]
+            expectation_values = estimator_result.data.evs
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
 
-        metadata = estimator_job.result().metadata
+        metadata = estimator_result.metadata
         # Discard values below threshold
         observables_means = expectation_values * (np.abs(expectation_values) > threshold)
         # zip means and metadata into tuples
-        observables_results = list(zip(observables_means, metadata))
+        observables_results = list(zip(observables_means, [metadata] * len(observables_means)))
     else:
         observables_results = []
 

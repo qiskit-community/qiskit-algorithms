@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,7 +20,7 @@ import numpy as np
 
 from qiskit.circuit import Parameter, ParameterVector, QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
 from qiskit_algorithms.utils import algorithm_globals
@@ -74,14 +74,14 @@ class PVQD(RealTimeEvolver):
 
             from qiskit_algorithms.state_fidelities import ComputeUncompute
             from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD
-            from qiskit.primitives import Estimator, Sampler
+            from qiskit.primitives import StatevectorEstimator, StatevectorSampler
             from qiskit.circuit.library import EfficientSU2
             from qiskit.quantum_info import SparsePauliOp, Pauli
             from qiskit_algorithms.optimizers import L_BFGS_B
 
-            sampler = Sampler()
+            sampler = StatevectorSampler()
             fidelity = ComputeUncompute(sampler)
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             hamiltonian = 0.1 * SparsePauliOp(["ZZ", "IX", "XI"])
             observable = Pauli("ZZ")
             ansatz = EfficientSU2(2, reps=1)
@@ -121,7 +121,7 @@ class PVQD(RealTimeEvolver):
         fidelity: BaseStateFidelity,
         ansatz: QuantumCircuit,
         initial_parameters: np.ndarray,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         optimizer: Optimizer | Minimizer | None = None,
         num_timesteps: int | None = None,
         evolution: EvolutionSynthesis | None = None,

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,14 +16,15 @@ Base state fidelity interface
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import MutableMapping
-from typing import cast, Sequence, List
+from typing import cast, Sequence, List, Any
 import numpy as np
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import ParameterVector
-from qiskit.primitives.utils import _circuit_key
 
 from ..algorithm_job import AlgorithmJob
+from ..custom_types import Transpiler
+from ..utils.circuit_key import _circuit_key
 
 
 class BaseStateFidelity(ABC):
@@ -42,10 +43,24 @@ class BaseStateFidelity(ABC):
 
     """
 
-    def __init__(self) -> None:
-
+    def __init__(
+        self,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
+    ) -> None:
+        r"""
+        Args:
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
+        """
         # use cache for preventing unnecessary circuit compositions
         self._circuit_cache: MutableMapping[tuple[int, int], QuantumCircuit] = {}
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @staticmethod
     def _preprocess_values(
@@ -195,6 +210,9 @@ class BaseStateFidelity(ABC):
                 # update cache
                 self._circuit_cache[_circuit_key(circuit_1), _circuit_key(circuit_2)] = circuit
 
+        if self._transpiler is not None:
+            return self._transpiler.run(circuits, **self._transpiler_options)
+
         return circuits
 
     def _construct_value_list(
@@ -245,7 +263,8 @@ class BaseStateFidelity(ABC):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
-        **options,
+        *,
+        shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""
         Computes the state overlap (fidelity) calculation between two
@@ -257,10 +276,11 @@ class BaseStateFidelity(ABC):
             circuits_2: (Parametrized) quantum circuits preparing :math:`|\phi\rangle`.
             values_1: Numerical parameters to be bound to the first set of circuits
             values_2: Numerical parameters to be bound to the second set of circuits.
-            options: Primitive backend runtime options used for circuit execution. The order
-                of priority is\: options in ``run`` method > fidelity's default
-                options > primitive's default setting.
-                Higher priority setting overrides lower priority setting.
+            shots: Number of shots to be used by the underlying Sampler. If a single integer is
+                provided, this number will be used for all circuits. If a sequence of integers is
+                provided, they will be used on a per-circuit basis. If not set, the fidelity's default
+                number of shots will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's default number of shots will be used for all circuits.
 
         Returns:
             A newly constructed algorithm job instance to get the fidelity result.
@@ -273,7 +293,8 @@ class BaseStateFidelity(ABC):
         circuits_2: QuantumCircuit | Sequence[QuantumCircuit],
         values_1: Sequence[float] | Sequence[Sequence[float]] | None = None,
         values_2: Sequence[float] | Sequence[Sequence[float]] | None = None,
-        **options,
+        *,
+        shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         r"""
         Runs asynchronously the state overlap (fidelity) calculation between two
@@ -286,18 +307,20 @@ class BaseStateFidelity(ABC):
             circuits_2: (Parametrized) quantum circuits preparing :math:`|\phi\rangle`.
             values_1: Numerical parameters to be bound to the first set of circuits.
             values_2: Numerical parameters to be bound to the second set of circuits.
-            options: Primitive backend runtime options used for circuit execution. The order
-                of priority is\: options in ``run`` method > fidelity's default
-                options > primitive's default setting.
-                Higher priority setting overrides lower priority setting.
+            shots: Number of shots to be used by the underlying sampler. If a single integer is
+                provided, this number will be used for all circuits. If a sequence of integers is
+                provided, they will be used on a per-circuit basis. If none is provided, the
+                fidelity's default number of shots will be used for all circuits. If this number is
+                also set to None, the underlying primitive's default number of shots will be used
+                for all circuits.
 
         Returns:
             Primitive job for the fidelity calculation.
             The job's result is an instance of :class:`.StateFidelityResult`.
         """
-        job = self._run(circuits_1, circuits_2, values_1, values_2, **options)
+        job = self._run(circuits_1, circuits_2, values_1, values_2, shots=shots)
 
-        job.submit()
+        job._submit()
         return job
 
     @staticmethod
