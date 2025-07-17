@@ -81,10 +81,7 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
             )
         self._method = method
         super().__init__(
-            estimator,
-            precision,
-            transpiler=transpiler,
-            transpiler_options=transpiler_options
+            estimator, precision, transpiler=transpiler, transpiler_options=transpiler_options
         )
 
     def _run(

@@ -78,7 +78,9 @@ class SPSASamplerGradient(BaseSamplerGradient):
         self._epsilon = epsilon
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options)
+        super().__init__(
+            sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options
+        )
 
     def _run(
         self,

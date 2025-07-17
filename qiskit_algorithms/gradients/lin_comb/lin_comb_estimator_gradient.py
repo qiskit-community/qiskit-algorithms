@@ -98,7 +98,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             precision,
             derivative_type=derivative_type,
             transpiler=transpiler,
-            transpiler_options=transpiler_options
+            transpiler_options=transpiler_options,
         )
 
     @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]

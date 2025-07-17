@@ -79,7 +79,9 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                 f"The argument method should be central, forward, or backward: {method} is given."
             )
         self._method = method
-        super().__init__(sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options)
+        super().__init__(
+            sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options
+        )
 
     def _run(
         self,

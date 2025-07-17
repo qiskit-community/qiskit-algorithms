@@ -124,7 +124,7 @@ class LinCombQGT(BaseQGT):
             derivative_type,
             precision,
             transpiler=transpiler,
-            transpiler_options=transpiler_options
+            transpiler_options=transpiler_options,
         )
         self._gradient = LinCombEstimatorGradient(
             estimator,
