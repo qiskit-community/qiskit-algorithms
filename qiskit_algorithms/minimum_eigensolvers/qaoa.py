@@ -72,10 +72,6 @@ class QAOA(SamplingVQE):
             that can access the intermediate data at each optimization step. These data are: the
             evaluation count, the optimizer parameters for the ansatz, the evaluated value, and
             the metadata dictionary.
-        transpiler: An optional object with a `run` method allowing to transpile the circuits
-            that are produced within this algorithm. If set to `None`, these won't be transpiled.
-        transpiler_options: A dictionary of options to be passed to the transpiler's `run`
-            method as keyword arguments.
 
 
     References:

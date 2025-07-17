@@ -19,6 +19,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Sequence
+from typing import Any
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2
@@ -33,23 +34,39 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
 from ...utils.circuit_key import _circuit_key
 
 
 class BaseSamplerGradient(ABC):
     """Base class for a ``SamplerGradient`` to compute the gradients of the sampling probability."""
 
-    def __init__(self, sampler: BaseSamplerV2, shots: int | None = None):
+    def __init__(
+        self,
+        sampler: BaseSamplerV2,
+        shots: int | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
+    ):
         """
         Args:
             sampler: The sampler used to compute the gradients.
             shots: Number of shots to be used by the underlying Sampler. If provided, this number
                 takes precedence over the default number of shots of the primitive. Otherwise, the
                 default number of shots of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._sampler: BaseSamplerV2 = sampler
         self._shots = shots
         self._gradient_circuit_cache: dict[tuple, GradientCircuit] = {}
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     def run(
         self,
@@ -102,6 +119,9 @@ class BaseSamplerGradient(ABC):
 
         if shots is None:
             shots = self.shots
+
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
 
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots=shots)
         job._submit()

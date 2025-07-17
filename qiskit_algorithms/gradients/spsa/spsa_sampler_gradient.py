@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 
@@ -24,6 +25,7 @@ from qiskit.primitives import BaseSamplerV2
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
+from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
 
@@ -47,6 +49,9 @@ class SPSASamplerGradient(BaseSamplerGradient):
         batch_size: int = 1,
         seed: int | None = None,
         shots: int | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         """
         Args:
@@ -58,6 +63,11 @@ class SPSASamplerGradient(BaseSamplerGradient):
                 The order of priority is: number of shots in ``run`` method > fidelity's
                 number of shots > primitive's default number of shots.
                 Higher priority setting overrides lower priority setting.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: If ``epsilon`` is not positive.
@@ -68,7 +78,7 @@ class SPSASamplerGradient(BaseSamplerGradient):
         self._epsilon = epsilon
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(sampler, shots)
+        super().__init__(sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options)
 
     def _run(
         self,

@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 
@@ -24,6 +25,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
 from ..base.estimator_gradient_result import EstimatorGradientResult
+from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
 
@@ -47,6 +49,9 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         batch_size: int = 1,
         seed: int | None = None,
         precision: float | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         """
         Args:
@@ -57,6 +62,11 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             precision: Precision to be used by the underlying Estimator. If provided, this number
                 takes precedence over the default precision of the primitive. If None, the default
                 precision of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         Raises:
             ValueError: If ``epsilon`` is not positive.
         """
@@ -66,7 +76,12 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         self._batch_size = batch_size
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(estimator, precision)
+        super().__init__(
+            estimator,
+            precision,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options
+        )
 
     def _run(
         self,

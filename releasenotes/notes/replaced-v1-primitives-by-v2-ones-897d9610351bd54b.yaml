@@ -25,7 +25,6 @@ features:
     keyword-only argument at instantiation, and additional options passed to
     its `run` method can be passed using the `transpiler_options` keyword-only
     argument at instantiation. The classes that support this feature are
-
       - :class:`.Grover`
       - :class:`.AmplitudeEstimation`
       - :class:`.FasterAmplitudeEstimation`
@@ -39,11 +38,29 @@ features:
       - :class:`.PhaseEstimation`
       - :class:`.ComputeUncompute`
       - :class:`.TrotterQRTE`
+    Additionally, the following classes also support this feature. Contrarily
+    to those above, these classes don't create their own
+    :class:`qiskit.circuit.QuantumCircuit` but is instead provided by the user.
+    As such, transpiling the circuits prior to passing them to theses classes
+    has the same effect as providing the class with a `Transpiler`. These classes are
+      - :class:`.FiniteDiffEstimatorGradient`
+      - :class:`.FiniteDiffSamplerGradient`
+      - :class:`.ParamShiftEstimatorGradient`
+      - :class:`.ParamShiftSamplerGradient`
+      - :class:`.SPSAEstimatorGradient`
+      - :class:`.SPSASamplerGradient`
+      - :class:`.QFI`
+      - :class:`.VQD`
+      - :class:`.VQE`
 issues:
   - |
-    Rare bugs might happen when using ``qiskit-algorithms`` in version ``0.4``
+    Rare bugs might occur when using ``qiskit-algorithms`` in version ``0.4``
     in conjunction with ``qiskit`` in version ``2.1.0``. If you encounter some
     difficulties using this version of ``qiskit``, try to downgrade to ``2.0``.
+  - |
+    Passing to :class:`.VQE` or :class:`.VQD` a transpiler along with an ansatz
+    with a number of qubits that hasn't been set results in an error. Setting
+    explicitly the number of qubits fixes it.
 upgrade:
   - |
     The oldest supported version of Qiskit is now ``1.0``.
@@ -69,7 +86,8 @@ upgrade:
             sampler=Sampler()
         )
 
-    could now be translated to::
+    would be translated to, using a custom :class:`~qiskit.providers.fake_provider.GenericBackendV2` to
+    showcase the transpilation options::
 
         from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
         from qiskit.providers.fake_provider import GenericBackendV2
@@ -99,11 +117,16 @@ upgrade:
 
     You will now have to write the following in the ``0.4`` version::
 
-        vqe = VQE(StatevectorEstimator(), ansatz, optimizer)
+        vqe = VQE(
+            StatevectorEstimator(),
+            ansatz,
+            optimizer,
+            transpiler=pm,
+            transpiler_options={"callback": callback}
+        )
 
     Note that since :class:`.VQE` doesn't create a
     :class:`~qiskit.circuit.QuantumCircuit` internally but instead uses the
-    ansatz provided by the user, it doesn't offer the possibility to pass a
-    ``Transpiler`` object as in the :class:`.Grover` case. Instead, the user
-    has to transpile the ansatz for the specific backend they target before
-    passing it to :class:`.VQE`.
+    ansatz provided by the user, transpiling the ansatz before passing it to
+    :class:`.VQE` allows not to provide :class:`.VQE` with a ``Transpiler``.
+    If one is provided, the ansatz will be transpiled using it regardless.

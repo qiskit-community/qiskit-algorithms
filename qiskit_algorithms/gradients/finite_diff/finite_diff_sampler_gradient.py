@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Literal, Sequence
+from typing import Literal, Sequence, Any
 
 import numpy as np
 
@@ -24,6 +24,7 @@ from qiskit.primitives import BaseSamplerV2
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
+from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
 
@@ -43,6 +44,8 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
         shots: int | None = None,
         *,
         method: Literal["central", "forward", "backward"] = "central",
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
@@ -58,6 +61,11 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                     - ``backward`` computes :math:`\frac{f(x)-f(x-e)}{e}`
 
                 where :math:`e` is epsilon.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: If ``epsilon`` is not positive.
@@ -71,7 +79,7 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
                 f"The argument method should be central, forward, or backward: {method} is given."
             )
         self._method = method
-        super().__init__(sampler, shots)
+        super().__init__(sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options)
 
     def _run(
         self,

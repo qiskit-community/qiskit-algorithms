@@ -189,7 +189,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> VQEResult:
-        if self._transpiler is not None:
+        if self.ansatz.layout is not None:
             operator = operator.apply_layout(self.ansatz.layout)
 
         self._check_operator_ansatz(operator)
@@ -244,7 +244,9 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
                 # We need to handle the array entries being zero or Optional i.e. having value None
                 # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
                 # ansatz, before transpilation
-                zero_op = SparsePauliOp.from_list([("I" * len(self.ansatz.layout.final_index_layout()), 0)])
+                zero_op = SparsePauliOp.from_list(
+                    [("I" * len(self.ansatz.layout.final_index_layout()), 0)]
+                )
                 key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
                 if isinstance(aux_operators, list):
                     key_op_iterator = enumerate(aux_operators)
@@ -254,7 +256,11 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
                     converted = {}
                 for key, op in key_op_iterator:
                     if op is not None:
-                        converted[key] = zero_op.apply_layout(self.ansatz.layout) if op == 0 else op.apply_layout(self.ansatz.layout)
+                        converted[key] = (
+                            zero_op.apply_layout(self.ansatz.layout)
+                            if op == 0
+                            else op.apply_layout(self.ansatz.layout)
+                        )
 
                 aux_operators = converted
             aux_operators_evaluated = estimate_observables(

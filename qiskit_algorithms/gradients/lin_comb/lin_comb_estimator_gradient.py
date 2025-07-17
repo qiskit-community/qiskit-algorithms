@@ -93,9 +93,13 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                 method as keyword arguments.
         """
         self._lin_comb_cache: dict[tuple, dict[Parameter, QuantumCircuit]] = {}
-        self._transpiler = transpiler
-        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
-        super().__init__(estimator, precision, derivative_type=derivative_type)
+        super().__init__(
+            estimator,
+            precision,
+            derivative_type=derivative_type,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options
+        )
 
     @BaseEstimatorGradient.derivative_type.setter  # type: ignore[attr-defined]
     def derivative_type(self, derivative_type: DerivativeType) -> None:

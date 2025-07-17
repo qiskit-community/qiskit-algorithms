@@ -83,9 +83,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
                 method as keyword arguments.
         """
         self._lin_comb_cache: dict[tuple, dict[Parameter, QuantumCircuit]] = {}
-        self._transpiler = transpiler
-        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
-        super().__init__(sampler, shots)
+        super().__init__(sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options)
 
     def _run(
         self,

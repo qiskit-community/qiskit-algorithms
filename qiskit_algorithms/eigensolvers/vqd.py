@@ -36,6 +36,7 @@ from ..list_or_dict import ListOrDict
 from ..observables_evaluator import estimate_observables
 from ..optimizers import Optimizer, Minimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point
+
 # private function as we expect this to be updated in the next release
 from ..utils.set_batching import _set_default_batchsize
 from ..variational_algorithm import VariationalAlgorithm
@@ -241,7 +242,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
             if self.ansatz.layout is not None:
                 # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
                 # ansatz, before transpilation
-                zero_op = SparsePauliOp.from_list([("I" * len(self.ansatz.layout.final_index_layout()), 0)])
+                zero_op = SparsePauliOp.from_list(
+                    [("I" * len(self.ansatz.layout.final_index_layout()), 0)]
+                )
             else:
                 zero_op = SparsePauliOp.from_list([("I" * self.ansatz.num_qubits, 0)])
 
@@ -423,7 +426,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
     def _get_evaluate_energy(  # pylint: disable=too-many-positional-arguments
         self,
         step: int,
-        operator: SparsePauliOp,
+        operator: BaseOperator,
         betas: np.ndarray,
         current_optimal_point: dict["str", Any],
         prev_states: list[QuantumCircuit] | None = None,

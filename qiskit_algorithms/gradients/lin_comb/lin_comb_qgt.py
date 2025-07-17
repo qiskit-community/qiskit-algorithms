@@ -118,7 +118,14 @@ class LinCombQGT(BaseQGT):
             transpiler_options: A dictionary of options to be passed to the transpiler's `run`
                 method as keyword arguments.
         """
-        super().__init__(estimator, phase_fix, derivative_type, precision)
+        super().__init__(
+            estimator,
+            phase_fix,
+            derivative_type,
+            precision,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options
+        )
         self._gradient = LinCombEstimatorGradient(
             estimator,
             derivative_type=DerivativeType.COMPLEX,

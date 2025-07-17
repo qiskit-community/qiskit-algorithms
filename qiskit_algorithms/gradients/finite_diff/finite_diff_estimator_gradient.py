@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Literal
+from typing import Literal, Any
 
 import numpy as np
 
@@ -25,6 +25,7 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
 from ..base.estimator_gradient_result import EstimatorGradientResult
+from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
 
@@ -44,6 +45,8 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
         precision: float | None = None,
         *,
         method: Literal["central", "forward", "backward"] = "central",
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
@@ -59,6 +62,11 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
                     - ``backward`` computes :math:`\frac{f(x)-f(x-e)}{e}`
 
                 where :math:`e` is epsilon.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: If ``epsilon`` is not positive.
@@ -72,7 +80,12 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
                 f"The argument method should be central, forward, or backward: {method} is given."
             )
         self._method = method
-        super().__init__(estimator, precision)
+        super().__init__(
+            estimator,
+            precision,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options
+        )
 
     def _run(
         self,

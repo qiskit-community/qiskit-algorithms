@@ -13,26 +13,23 @@
 """An implementation of the AdaptVQE algorithm."""
 from __future__ import annotations
 
-from enum import Enum
-
-import re
 import logging
+import re
+from enum import Enum
+from typing import Iterable
 
 import numpy as np
-
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.circuit.library import EvolvedOperatorAnsatz
+from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.exceptions import AlgorithmError
-
 from qiskit_algorithms.list_or_dict import ListOrDict
-
+from qiskit_algorithms.utils.validation import validate_min
 from .minimum_eigensolver import MinimumEigensolver
 from .vqe import VQE, VQEResult
 from ..observables_evaluator import estimate_observables
 from ..variational_algorithm import VariationalAlgorithm
-
 
 logger = logging.getLogger(__name__)
 
@@ -117,6 +114,11 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 are not considered.
             max_iterations: the maximum number of iterations for the adaptive loop. If ``None``, the
                 algorithm is not bound in its number of iterations.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         validate_min("gradient_threshold", gradient_threshold, 1e-15)
         validate_min("eigenvalue_threshold", eigenvalue_threshold, 1e-15)
@@ -146,7 +148,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
     def _compute_gradients(
         self,
         theta: list[float],
-        operator: BaseOperator,
+        operator: SparsePauliOp,
     ) -> ListOrDict[tuple[float, dict[str, BaseOperator]]]:
         """
         Computes the gradients for all available excitation operators.
@@ -163,8 +165,14 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # We have to call simplify on it since Qiskit doesn't do so for now, see
         # Qiskit/qiskit/issues/14567
         # TODO: Remove the below line once the aforementioned issue is fixed to avoid unnecessary
-        #  overhead
+        #  overhead. The issue will be present in Qiskit 2.1 however
         commutators = [obs.simplify() for obs in commutators]
+
+        # If the ansatz has been transpiled
+        if self.solver.ansatz.layout:
+            commutators = [
+                commutator.apply_layout(self.solver.ansatz.layout) for commutator in commutators
+            ]
         res = estimate_observables(self.solver.estimator, self.solver.ansatz, commutators, theta)
         return res
 
@@ -222,10 +230,10 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # Overwrite the solver's ansatz with the initial state
         self._tmp_ansatz = self.solver.ansatz
         self._excitation_pool = self._tmp_ansatz.operators
+        # This will transpile the initial state if the solver has a transpiler that is set
         self.solver.ansatz = self._tmp_ansatz.initial_state
 
         prev_op_indices: list[int] = []
-        prev_raw_vqe_result: VQEResult | None = None
         raw_vqe_result: VQEResult | None = None
         theta: list[float] = []
         max_grad: tuple[float, dict[str, BaseOperator] | None] = (0.0, None)
@@ -326,6 +334,22 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
         # once finished evaluate auxiliary operators if any
         if aux_operators is not None:
+            if self.solver.ansatz.layout is not None:
+                key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
+                if isinstance(aux_operators, list):
+                    key_op_iterator = enumerate(aux_operators)
+                    # Dummy placeholder
+                    converted: ListOrDict[BaseOperator] = [
+                        SparsePauliOp.from_list([("I", 0)])
+                    ] * len(aux_operators)
+                else:
+                    key_op_iterator = aux_operators.items()
+                    converted = {}
+                for key, op in key_op_iterator:
+                    if op is not None:
+                        converted[key] = op.apply_layout(self.solver.ansatz.layout)
+
+                aux_operators = converted
             aux_values = estimate_observables(
                 self.solver.estimator,
                 self.solver.ansatz,

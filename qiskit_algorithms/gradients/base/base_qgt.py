@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 
@@ -35,6 +36,7 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
 from ...utils.circuit_key import _circuit_key
 
 
@@ -54,6 +56,9 @@ class BaseQGT(ABC):
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
         precision: float | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
@@ -88,6 +93,11 @@ class BaseQGT(ABC):
             precision: Precision to be used by the underlying Estimator. If provided, this number
                 takes precedence over the default precision of the primitive. If None, the default
                 precision of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._estimator: BaseEstimatorV2 = estimator
         self._precision = precision
@@ -95,6 +105,9 @@ class BaseQGT(ABC):
         self._derivative_type: DerivativeType = derivative_type
         self._qgt_circuit_cache: dict[tuple, GradientCircuit] = {}
         self._gradient_circuit_cache: dict[tuple, GradientCircuit] = {}
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @property
     def derivative_type(self) -> DerivativeType:
@@ -156,6 +169,9 @@ class BaseQGT(ABC):
 
         if precision is None:
             precision = self.precision  # May still be None
+
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
 
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
         job._submit()

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
@@ -34,6 +35,7 @@ from ..utils import (
     _make_gradient_parameter_values,
 )
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
 from ...utils.circuit_key import _circuit_key
 
 
@@ -45,6 +47,9 @@ class BaseEstimatorGradient(ABC):
         estimator: BaseEstimatorV2,
         precision: float | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
@@ -62,10 +67,18 @@ class BaseEstimatorGradient(ABC):
                 Defaults to ``DerivativeType.REAL``, as this yields e.g. the commonly-used energy
                 gradient and this type is the only supported type for function-level schemes like
                 finite difference.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._estimator: BaseEstimatorV2 = estimator
         self._precision = precision
         self._derivative_type = derivative_type
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         self._gradient_circuit_cache: dict[
             tuple,
@@ -119,7 +132,7 @@ class BaseEstimatorGradient(ABC):
         if isinstance(circuits, QuantumCircuit):
             # Allow a single circuit to be passed in.
             circuits = (circuits,)
-        if isinstance(observables, (BaseOperator)):
+        if isinstance(observables, BaseOperator):
             # Allow a single observable to be passed in.
             observables = (observables,)
 
@@ -139,6 +152,12 @@ class BaseEstimatorGradient(ABC):
 
         if precision is None:
             precision = self.precision  # May still be None
+
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
+            observables = [
+                obs.apply_layout(circuit.layout) for (circuit, obs) in zip(circuits, observables)
+            ]
 
         # Run the job.
         job = AlgorithmJob(
