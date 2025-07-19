@@ -13,9 +13,6 @@
 """Test the variational quantum eigensolver algorithm."""
 
 import unittest
-
-from qiskit.providers.fake_provider import GenericBackendV2
-
 from test import QiskitAlgorithmsTestCase
 
 from functools import partial
@@ -26,6 +23,7 @@ from ddt import data, ddt
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import RealAmplitudes, TwoLocal
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
+from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 
 from qiskit_algorithms import AlgorithmError
@@ -378,20 +376,15 @@ class TestVQE(QiskitAlgorithmsTestCase):
     @data(
         None,
         generate_preset_pass_manager(
-            backend=THREE_QUBITS_BACKEND,
-            optimization_level=1,
-            seed_transpiler=42
-        )
+            backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+        ),
     )
     def test_aux_operators_list(self, transpiler):
         """Test list-based aux_operators."""
         wavefunction = self.ry_wavefunction
         wavefunction.num_qubits = 2
         vqe = VQE(
-            StatevectorEstimator(seed=42),
-            wavefunction,
-            SLSQP(maxiter=300),
-            transpiler=transpiler
+            StatevectorEstimator(seed=42), wavefunction, SLSQP(maxiter=300), transpiler=transpiler
         )
 
         with self.subTest("Test with an empty list."):
@@ -434,20 +427,15 @@ class TestVQE(QiskitAlgorithmsTestCase):
     @data(
         None,
         generate_preset_pass_manager(
-            backend=THREE_QUBITS_BACKEND,
-            optimization_level=1,
-            seed_transpiler=42
-        )
+            backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+        ),
     )
     def test_aux_operators_dict(self, transpiler):
         """Test dictionary compatibility of aux_operators"""
         wavefunction = self.ry_wavefunction
         wavefunction.num_qubits = 2
         vqe = VQE(
-            StatevectorEstimator(seed=42),
-            wavefunction,
-            SLSQP(maxiter=300),
-            transpiler=transpiler
+            StatevectorEstimator(seed=42), wavefunction, SLSQP(maxiter=300), transpiler=transpiler
         )
 
         with self.subTest("Test with an empty dictionary."):
@@ -489,9 +477,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_transpiler(self, backend):
         """Test that the transpiler is called"""
         pass_manager = generate_preset_pass_manager(
-            backend=backend,
-            optimization_level=1,
-            seed_transpiler=42
+            backend=backend, optimization_level=1, seed_transpiler=42
         )
         counts = [0]
 

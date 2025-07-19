@@ -13,9 +13,6 @@
 """Test VQD"""
 
 import unittest
-
-from qiskit.providers.fake_provider import GenericBackendV2
-
 from test import QiskitAlgorithmsTestCase
 
 import numpy as np
@@ -23,6 +20,7 @@ from ddt import data, ddt, idata, unpack
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit.library import TwoLocal, RealAmplitudes
 from qiskit.primitives import StatevectorSampler, StatevectorEstimator
+from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms import AlgorithmError
@@ -343,10 +341,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
             [
                 H2_SPARSE_PAULI,
                 generate_preset_pass_manager(
-                    backend=THREE_QUBITS_BACKEND,
-                    optimization_level=1,
-                    seed_transpiler=42
-                )
+                    backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+                ),
             ],
         ]
     )
@@ -413,10 +409,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
             [
                 H2_SPARSE_PAULI,
                 generate_preset_pass_manager(
-                    backend=THREE_QUBITS_BACKEND,
-                    optimization_level=1,
-                    seed_transpiler=42
-                )
+                    backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+                ),
             ],
         ]
     )
@@ -431,7 +425,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             ansatz=wavefunction,
             optimizer=COBYLA(),
             betas=self.betas,
-            transpiler=transpiler
+            transpiler=transpiler,
         )
 
         # Start with an empty dictionary
@@ -484,10 +478,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
             [
                 H2_SPARSE_PAULI,
                 generate_preset_pass_manager(
-                    backend=THREE_QUBITS_BACKEND,
-                    optimization_level=1,
-                    seed_transpiler=42
-                )
+                    backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+                ),
             ],
         ]
     )
@@ -512,7 +504,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
             ],
             optimizer=COBYLA(maxiter=10),
             betas=self.betas,
-            transpiler=transpiler
+            transpiler=transpiler,
         )
 
         # Go again with two auxiliary operators
@@ -583,9 +575,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
     def test_transpiler(self, backend):
         """Test that the transpiler is called"""
         pass_manager = generate_preset_pass_manager(
-            backend=backend,
-            optimization_level=1,
-            seed_transpiler=42
+            backend=backend, optimization_level=1, seed_transpiler=42
         )
         counts = [0]
 

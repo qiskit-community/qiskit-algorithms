@@ -175,10 +175,12 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
+        """Returns the ansatz used by the VQE algorithm"""
         return self._ansatz
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
+        """Sets the ansatz used by the VQD algorithm"""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:
