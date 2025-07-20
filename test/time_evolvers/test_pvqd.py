@@ -22,6 +22,8 @@ from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
+from qiskit import generate_preset_pass_manager
+from qiskit.providers.fake_provider import GenericBackendV2
 
 from qiskit_algorithms import AlgorithmError
 from qiskit_algorithms.time_evolvers import TimeEvolutionProblem
@@ -268,6 +270,44 @@ class TestPVQD(QiskitAlgorithmsTestCase):
 
         with self.assertRaises(ValueError):
             _ = pvqd.evolve(problem)
+
+    def test_transpiler(self):
+        """Test that the transpiler is called."""
+        time = 0.02
+        hamiltonian = Pauli("XX")
+        optimizer = L_BFGS_B(maxiter=1)
+
+        sampler = StatevectorSampler()
+        estimator = StatevectorEstimator()
+        fidelity_primitive = ComputeUncompute(sampler)
+
+        pass_manager = generate_preset_pass_manager(
+            backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
+            optimization_level=1,
+            seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        # run pVQD keeping track of the energy and the magnetization
+        pvqd = PVQD(
+            fidelity_primitive,
+            self.ansatz,
+            self.initial_parameters,
+            estimator,
+            optimizer=optimizer,
+            num_timesteps=None,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        problem = TimeEvolutionProblem(
+            hamiltonian, time, aux_operators=[hamiltonian, self.observable]
+        )
+        pvqd.evolve(problem)
+
+        self.assertGreater(counts[0], 0)
 
 
 class TestPVQDUtils(QiskitAlgorithmsTestCase):

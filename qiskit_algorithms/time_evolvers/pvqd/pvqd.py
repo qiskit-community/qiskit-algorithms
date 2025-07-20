@@ -15,16 +15,17 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from typing import Any
 
 import numpy as np
-
 from qiskit.circuit import Parameter, ParameterVector, QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
-from qiskit_algorithms.utils import algorithm_globals
 
+from qiskit_algorithms.utils import algorithm_globals
+from ...custom_types import Transpiler
 from ...exceptions import AlgorithmError
 from ...optimizers import Minimizer, Optimizer
 from ...state_fidelities.base_state_fidelity import BaseStateFidelity
@@ -127,6 +128,9 @@ class PVQD(RealTimeEvolver):
         evolution: EvolutionSynthesis | None = None,
         use_parameter_shift: bool = True,
         initial_guess: np.ndarray | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         """
         Args:
@@ -158,7 +162,7 @@ class PVQD(RealTimeEvolver):
         if evolution is None:
             evolution = LieTrotter()
 
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.initial_parameters = initial_parameters
         self.num_timesteps = num_timesteps
         self.optimizer = optimizer
@@ -167,6 +171,25 @@ class PVQD(RealTimeEvolver):
         self.fidelity_primitive = fidelity
         self.evolution = evolution
         self.use_parameter_shift = use_parameter_shift
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
+
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        """Returns the ansatz used by the VQE algorithm"""
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        """Sets the ansatz used by the VQE algorithm"""
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
 
     # pylint: disable=too-many-positional-arguments
     def step(
@@ -348,6 +371,10 @@ class PVQD(RealTimeEvolver):
         time = evolution_problem.time
         observables = evolution_problem.aux_operators
         hamiltonian = evolution_problem.hamiltonian
+
+        if self.ansatz.layout is not None:
+            observables = [obs.apply_layout(self.ansatz.layout) for obs in observables]
+            hamiltonian = hamiltonian.apply_layout(self.ansatz.layout)
 
         # determine the number of timesteps and set the timestep
         num_timesteps = (
