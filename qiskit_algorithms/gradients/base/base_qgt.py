@@ -170,9 +170,6 @@ class BaseQGT(ABC):
         if precision is None:
             precision = self.precision  # May still be None
 
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits, **self._transpiler_options)
-
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
         job._submit()
         return job

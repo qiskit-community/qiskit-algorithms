@@ -237,6 +237,12 @@ class LinCombQGT(BaseQGT):
                     ]
                 )
 
+        if self._transpiler is not None:
+            for index, pub in enumerate(pubs):
+                new_circuit = self._transpiler.run(pub[0], **self._transpiler_options)
+                new_observable = pub[1].apply_layout(new_circuit.layout)
+                pubs[index] = (new_circuit, new_observable) + pub[2:]
+
         # Run the single job with all circuits.
         job = self._estimator.run(pubs)
 
