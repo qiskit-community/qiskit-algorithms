@@ -49,7 +49,6 @@ features:
       - :class:`.ParamShiftSamplerGradient`
       - :class:`.SPSAEstimatorGradient`
       - :class:`.SPSASamplerGradient`
-      - :class:`.QFI`
       - :class:`.VQD`
       - :class:`.VQE`
 issues:

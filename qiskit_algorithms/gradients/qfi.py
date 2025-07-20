@@ -17,7 +17,6 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Sequence
-from typing import Any
 
 from qiskit.circuit import Parameter, QuantumCircuit
 
@@ -25,7 +24,6 @@ from .base.base_qgt import BaseQGT
 from .lin_comb.lin_comb_estimator_gradient import DerivativeType
 from .qfi_result import QFIResult
 from ..algorithm_job import AlgorithmJob
-from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
 
 
@@ -43,26 +41,15 @@ class QFI(ABC):
         self,
         qgt: BaseQGT,
         precision: float | None = None,
-        *,
-        transpiler: Transpiler | None = None,
-        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
             qgt: The quantum geometric tensor used to compute the QFI.
             precision: Precision to override the BaseQGT's. If None, the BaseQGT's precision will
                 be used.
-            transpiler: An optional object with a `run` method allowing to transpile the circuits
-                that are run when using this algorithm. If set to `None`, these won't be
-                transpiled.
-            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
-                method as keyword arguments.
         """
         self._qgt: BaseQGT = qgt
         self._precision = precision
-
-        self._transpiler = transpiler
-        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     def run(
         self,
@@ -110,9 +97,6 @@ class QFI(ABC):
 
         if precision is None:
             precision = self.precision  # May still be None
-
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits, **self._transpiler_options)
 
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
         job._submit()
