@@ -13,9 +13,6 @@
 """Test Variational Quantum Imaginary Time Evolution algorithm."""
 
 import unittest
-
-from qiskit.providers.fake_provider import GenericBackendV2
-
 from test import QiskitAlgorithmsTestCase
 from ddt import ddt
 import numpy as np
@@ -26,6 +23,7 @@ from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.circuit.library import EfficientSU2
 from qiskit.quantum_info import Statevector
+from qiskit.providers.fake_provider import GenericBackendV2
 
 from qiskit_algorithms.gradients import LinCombQGT, LinCombEstimatorGradient
 from qiskit_algorithms import TimeEvolutionProblem, VarQITE
@@ -360,7 +358,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
         pass_manager = generate_preset_pass_manager(
             backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
             optimization_level=1,
-            seed_transpiler=42
+            seed_transpiler=42,
         )
         counts = [0]
 
@@ -374,7 +372,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             estimator,
             num_timesteps=25,
             transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            transpiler_options={"callback": callback},
         )
         var_qite.evolve(evolution_problem)
 

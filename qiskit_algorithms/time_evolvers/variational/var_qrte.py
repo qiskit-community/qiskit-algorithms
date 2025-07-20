@@ -130,5 +130,5 @@ class VarQRTE(VarQTE, RealTimeEvolver):
             imag_part_tol=imag_part_tol,
             num_instability_tol=num_instability_tol,
             transpiler=transpiler,
-            transpiler_options=transpiler_options
+            transpiler_options=transpiler_options,
         )

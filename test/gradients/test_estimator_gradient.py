@@ -537,9 +537,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     def test_transpiler(self, gradient_cls):
         """Test that the transpiler is called for the LinCombEstimatorGradient"""
         pass_manager = generate_preset_pass_manager(
-            backend=THREE_QUBITS_BACKEND,
-            optimization_level=1,
-            seed_transpiler=42
+            backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
         )
         counts = [0]
 
@@ -566,13 +564,11 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
                 estimator,
                 epsilon=0.01,
                 transpiler=pass_manager,
-                transpiler_options={"callback": callback}
+                transpiler_options={"callback": callback},
             )
         else:
             gradient = gradient_cls(
-                estimator,
-                transpiler=pass_manager,
-                transpiler_options={"callback": callback}
+                estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
             )
 
         gradient.run([qc], [op], [[1]]).result()

@@ -152,7 +152,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
 
         if self._transpiler is not None:
             for index, pub in enumerate(pubs):
-                pubs[index] = (self._transpiler.run(pub[0], **self._transpiler_options), ) + pub[1:]
+                pubs[index] = (self._transpiler.run(pub[0], **self._transpiler_options),) + pub[1:]
 
         # Run the single job with all circuits.
         job = self._sampler.run(pubs)

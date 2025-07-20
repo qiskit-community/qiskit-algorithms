@@ -738,9 +738,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     def test_transpiler(self, gradient_cls):
         """Test that the transpiler is called"""
         pass_manager = generate_preset_pass_manager(
-            backend=THREE_QUBITS_BACKEND,
-            optimization_level=1,
-            seed_transpiler=42
+            backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
         )
         counts = [0]
 
@@ -767,13 +765,11 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
                 sampler,
                 epsilon=1e-2,
                 transpiler=pass_manager,
-                transpiler_options={"callback": callback}
+                transpiler_options={"callback": callback},
             )
         else:
             gradient = gradient_cls(
-                sampler,
-                transpiler=pass_manager,
-                transpiler_options={"callback": callback}
+                sampler, transpiler=pass_manager, transpiler_options={"callback": callback}
             )
 
         gradient.run([qc], [[1]]).result()

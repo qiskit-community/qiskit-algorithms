@@ -193,7 +193,8 @@ class VarQTE(ABC):
                 )
                 if self.ansatz.layout is not None:
                     aux_operators = [
-                        obs.apply_layout(self.ansatz.layout) for obs in evolution_problem.aux_operators
+                        obs.apply_layout(self.ansatz.layout)
+                        for obs in evolution_problem.aux_operators
                     ]
                 else:
                     aux_operators = evolution_problem.aux_operators

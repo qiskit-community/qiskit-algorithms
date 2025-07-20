@@ -284,7 +284,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
         pass_manager = generate_preset_pass_manager(
             backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
             optimization_level=1,
-            seed_transpiler=42
+            seed_transpiler=42,
         )
         counts = [0]
 
@@ -300,7 +300,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
             optimizer=optimizer,
             num_timesteps=None,
             transpiler=pass_manager,
-            transpiler_options={"callback": callback}
+            transpiler_options={"callback": callback},
         )
         problem = TimeEvolutionProblem(
             hamiltonian, time, aux_operators=[hamiltonian, self.observable]
