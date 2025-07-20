@@ -139,7 +139,7 @@ class LinCombSamplerGradient(BaseSamplerGradient):
                 # Cache the circuits for the linear combination of unitaries.
                 # We only cache the circuits for the specified parameters in the future.
                 self._lin_comb_cache[circuit_key] = _make_lin_comb_gradient_circuit(
-                    circuit, self._transpiler, self._transpiler_options, add_measurement=True
+                    circuit, add_measurement=True
                 )
             lin_comb_circuits = self._lin_comb_cache[circuit_key]
             gradient_circuits = []
@@ -149,6 +149,10 @@ class LinCombSamplerGradient(BaseSamplerGradient):
             n = len(gradient_circuits)
             pubs.extend([(circ, parameter_values_, shots_) for circ in gradient_circuits])
             all_n.append(n)
+
+        if self._transpiler is not None:
+            for index, pub in enumerate(pubs):
+                pubs[index] = (self._transpiler.run(pub[0], **self._transpiler_options), ) + pub[1:]
 
         # Run the single job with all circuits.
         job = self._sampler.run(pubs)

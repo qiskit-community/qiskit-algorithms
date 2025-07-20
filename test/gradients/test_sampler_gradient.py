@@ -23,6 +23,7 @@ from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import StatevectorSampler
+from qiskit.providers.fake_provider import GenericBackendV2
 
 from qiskit_algorithms.gradients import (
     FiniteDiffSamplerGradient,
@@ -54,6 +55,8 @@ gradient_factories = [
     (ParamShiftSamplerGradient, 1_000_000, 1e-2, 1e-2),
     (LinCombSamplerGradient, 1_000_000, 1e-2, 1e-2),
 ]
+
+THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)
 
 
 @ddt
@@ -726,9 +729,19 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
             array2 = _quasi2array(expect, num_qubits=2)
             np.testing.assert_allclose(array1, array2, atol=1e-1, rtol=1e-1)
 
-    def test_transpiler(self):
-        """Test that the transpiler is called for the LinCombSamplerGradient"""
-        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+    @data(
+        FiniteDiffSamplerGradient,
+        ParamShiftSamplerGradient,
+        LinCombSamplerGradient,
+        SPSASamplerGradient,
+    )
+    def test_transpiler(self, gradient_cls):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(
+            backend=THREE_QUBITS_BACKEND,
+            optimization_level=1,
+            seed_transpiler=42
+        )
         counts = [0]
 
         def callback(**kwargs):
@@ -737,15 +750,32 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
+        qc.measure_all()
         sampler = StatevectorSampler()
+
         # Test transpilation without options
-        gradient = LinCombSamplerGradient(sampler, transpiler=pass_manager)
+        if gradient_cls in [SPSASamplerGradient, FiniteDiffSamplerGradient]:
+            gradient = gradient_cls(sampler, epsilon=1e-2, transpiler=pass_manager)
+        else:
+            gradient = gradient_cls(sampler, transpiler=pass_manager)
+
         gradient.run([qc], [[1]]).result()
 
         # Test transpiler is called using callback function
-        gradient = LinCombSamplerGradient(
-            sampler, transpiler=pass_manager, transpiler_options={"callback": callback}
-        )
+        if gradient_cls in [SPSASamplerGradient, FiniteDiffSamplerGradient]:
+            gradient = gradient_cls(
+                sampler,
+                epsilon=1e-2,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback}
+            )
+        else:
+            gradient = gradient_cls(
+                sampler,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback}
+            )
+
         gradient.run([qc], [[1]]).result()
 
         self.assertGreater(counts[0], 0)

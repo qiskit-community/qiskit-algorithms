@@ -67,6 +67,13 @@ class ParamShiftEstimatorGradient(BaseEstimatorGradient):
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
+
+        if self._transpiler is not None:
+            g_circuits = self._transpiler.run(g_circuits, **self._transpiler_options)
+            observables = [
+                obs.apply_layout(circuit.layout) for (circuit, obs) in zip(g_circuits, observables)
+            ]
+
         results = self._run_unique(
             g_circuits, observables, g_parameter_values, g_parameters, precision=precision
         )

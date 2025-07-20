@@ -66,6 +66,10 @@ class ParamShiftSamplerGradient(BaseSamplerGradient):
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
+
+        if self._transpiler is not None:
+            g_circuits = self._transpiler.run(g_circuits, **self._transpiler_options)
+
         results = self._run_unique(g_circuits, g_parameter_values, g_parameters, shots)
         return self._postprocess(results, circuits, parameter_values, parameters)
 

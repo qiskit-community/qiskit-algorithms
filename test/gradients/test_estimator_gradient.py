@@ -18,7 +18,6 @@ from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
-
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
@@ -27,6 +26,8 @@ from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.quantum_info.random import random_pauli_list
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.providers.fake_provider import GenericBackendV2
+
 
 from qiskit_algorithms.gradients import (
     FiniteDiffEstimatorGradient,
@@ -47,6 +48,8 @@ gradient_factories = [
     LinCombEstimatorGradient,
     lambda estimator: ReverseEstimatorGradient(),  # does not take an estimator!
 ]
+
+THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)
 
 
 @ddt
@@ -525,9 +528,19 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         with self.assertRaises(NotImplementedError):
             _ = derive_circuit(qc, p)
 
-    def test_transpiler(self):
+    @data(
+        FiniteDiffEstimatorGradient,
+        ParamShiftEstimatorGradient,
+        LinCombEstimatorGradient,
+        SPSAEstimatorGradient,
+    )
+    def test_transpiler(self, gradient_cls):
         """Test that the transpiler is called for the LinCombEstimatorGradient"""
-        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        pass_manager = generate_preset_pass_manager(
+            backend=THREE_QUBITS_BACKEND,
+            optimization_level=1,
+            seed_transpiler=42
+        )
         counts = [0]
 
         def callback(**kwargs):
@@ -537,15 +550,31 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         op = SparsePauliOp.from_list([("Z", 1)])
-        # Test transpiler without options
         estimator = StatevectorEstimator(default_precision=0.2)
-        gradient = LinCombEstimatorGradient(estimator, transpiler=pass_manager)
+
+        # Test transpiler without options
+        if gradient_cls in [SPSAEstimatorGradient, FiniteDiffEstimatorGradient]:
+            gradient = gradient_cls(estimator, epsilon=0.01, transpiler=pass_manager)
+        else:
+            gradient = gradient_cls(estimator, transpiler=pass_manager)
+
         gradient.run([qc], [op], [[1]]).result()
 
         # Test that transpiler is called using callback function
-        gradient = LinCombEstimatorGradient(
-            estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
-        )
+        if gradient_cls in [SPSAEstimatorGradient, FiniteDiffEstimatorGradient]:
+            gradient = gradient_cls(
+                estimator,
+                epsilon=0.01,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback}
+            )
+        else:
+            gradient = gradient_cls(
+                estimator,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback}
+            )
+
         gradient.run([qc], [op], [[1]]).result()
 
         self.assertGreater(counts[0], 0)

@@ -157,12 +157,14 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
             # Prepare circuits for the gradient of the specified parameters.
             meta = {"parameters": parameters_}
             circuit_key = _circuit_key(circuit)
+
             if circuit_key not in self._lin_comb_cache:
                 # Cache the circuits for the linear combination of unitaries.
                 # We only cache the circuits for the specified parameters in the future.
                 self._lin_comb_cache[circuit_key] = _make_lin_comb_gradient_circuit(
-                    circuit, self._transpiler, self._transpiler_options, add_measurement=False
+                    circuit, add_measurement=False
                 )
+
             lin_comb_circuits = self._lin_comb_cache[circuit_key]
             gradient_circuits = []
 
@@ -203,6 +205,12 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                         for gradient_circuit in gradient_circuits
                     ]
                 )
+
+        if self._transpiler is not None:
+            for index, pub in enumerate(pubs):
+                new_circuit = self._transpiler.run(pub[0], **self._transpiler_options)
+                new_observable = pub[1].apply_layout(new_circuit.layout)
+                pubs[index] = (new_circuit, new_observable) + pub[2:]
 
         # Run the single job with all circuits.
         job = self._estimator.run(pubs)

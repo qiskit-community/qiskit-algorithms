@@ -100,6 +100,9 @@ class FiniteDiffSamplerGradient(BaseSamplerGradient):
             shots = [shots] * len(circuits)
             has_transformed_shots = True
 
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
+
         pubs = []
         for circuit, parameter_values_, parameters_, shots_ in zip(
             circuits, parameter_values, parameters, shots

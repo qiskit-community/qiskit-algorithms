@@ -101,6 +101,9 @@ class SPSASamplerGradient(BaseSamplerGradient):
 
         pubs = []
 
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
+
         for circuit, parameter_values_, parameters_, shots_ in zip(
             circuits, parameter_values, parameters, shots
         ):

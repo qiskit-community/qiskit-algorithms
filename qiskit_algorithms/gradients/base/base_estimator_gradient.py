@@ -153,12 +153,6 @@ class BaseEstimatorGradient(ABC):
         if precision is None:
             precision = self.precision  # May still be None
 
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits, **self._transpiler_options)
-            observables = [
-                obs.apply_layout(circuit.layout) for (circuit, obs) in zip(circuits, observables)
-            ]
-
         # Run the job.
         job = AlgorithmJob(
             self._run, circuits, observables, parameter_values, parameters, precision=precision

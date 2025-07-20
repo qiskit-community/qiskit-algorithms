@@ -120,9 +120,6 @@ class BaseSamplerGradient(ABC):
         if shots is None:
             shots = self.shots
 
-        if self._transpiler is not None:
-            circuits = self._transpiler.run(circuits, **self._transpiler_options)
-
         job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots=shots)
         job._submit()
         return job

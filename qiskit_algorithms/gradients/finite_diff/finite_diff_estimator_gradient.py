@@ -102,6 +102,12 @@ class FiniteDiffEstimatorGradient(BaseEstimatorGradient):
             precision = [precision] * len(circuits)
             has_transformed_precision = True
 
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
+            observables = [
+                obs.apply_layout(circuit.layout) for (circuit, obs) in zip(circuits, observables)
+            ]
+
         pubs = []
 
         for circuit, observable, parameter_values_, parameters_, precision_ in zip(
