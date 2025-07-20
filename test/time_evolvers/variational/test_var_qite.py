@@ -13,11 +13,14 @@
 """Test Variational Quantum Imaginary Time Evolution algorithm."""
 
 import unittest
+
+from qiskit.providers.fake_provider import GenericBackendV2
+
 from test import QiskitAlgorithmsTestCase
 from ddt import ddt
 import numpy as np
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
@@ -41,7 +44,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
 
     def test_run_d_1_with_aux_ops(self):
         """Test VarQITE for d = 1 and t = 1 with evaluating auxiliary operator and the Forward
-        Euler solver.."""
+        Euler solver."""
 
         observable = SparsePauliOp.from_list(
             [
@@ -88,7 +91,7 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             1.92959433,
         ]
 
-        # SHould be roughly the same in both Exact and shot-based backends
+        # Should be roughly the same in both Exact and shot-based backends
         expected_aux_ops = (-0.2177982985749799, 0.2556790598588627)
 
         with self.subTest(msg="Test exact backend"):
@@ -321,6 +324,61 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
             np.testing.assert_almost_equal(
                 float(parameter_value), thetas_expected[i], decimal=decimal
             )
+
+    def test_transpiler(self):
+        """Test VarQITE for d = 1 and t = 1 with evaluating auxiliary operator and the Forward
+        Euler solver."""
+
+        observable = SparsePauliOp.from_list(
+            [
+                ("II", 0.2252),
+                ("ZZ", 0.5716),
+                ("IZ", 0.3435),
+                ("ZI", -0.4347),
+                ("YY", 0.091),
+                ("XX", 0.091),
+            ]
+        )
+        aux_ops = [Pauli("XX"), Pauli("YZ")]
+        d = 1  # pylint: disable=invalid-name
+        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+
+        parameters = list(ansatz.parameters)
+        init_param_values = np.zeros(len(parameters))
+        for i in range(len(parameters)):
+            init_param_values[i] = np.pi / 2
+        init_param_values[0] = 1
+        time = 1
+
+        evolution_problem = TimeEvolutionProblem(observable, time, aux_operators=aux_ops)
+
+        estimator = StatevectorEstimator(seed=self.seed)
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator)
+        var_principle = ImaginaryMcLachlanPrinciple(qgt, gradient)
+
+        pass_manager = generate_preset_pass_manager(
+            backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
+            optimization_level=1,
+            seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        var_qite = VarQITE(
+            ansatz,
+            init_param_values,
+            var_principle,
+            estimator,
+            num_timesteps=25,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        var_qite.evolve(evolution_problem)
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

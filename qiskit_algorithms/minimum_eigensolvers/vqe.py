@@ -163,7 +163,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         if self._transpiler is not None:
-            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
+            self.ansatz = ansatz
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -180,7 +180,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
-        """Sets the ansatz used by the VQD algorithm"""
+        """Sets the ansatz used by the VQE algorithm"""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:

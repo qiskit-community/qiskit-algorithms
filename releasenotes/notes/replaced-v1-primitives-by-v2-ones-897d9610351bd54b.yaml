@@ -25,6 +25,7 @@ features:
     keyword-only argument at instantiation, and additional options passed to
     its `run` method can be passed using the `transpiler_options` keyword-only
     argument at instantiation. The classes that support this feature are
+
       - :class:`.Grover`
       - :class:`.AmplitudeEstimation`
       - :class:`.FasterAmplitudeEstimation`
@@ -35,14 +36,17 @@ features:
       - :class:`.LinCombSamplerGradient`
       - :class:`.QAOA`
       - :class:`.IterativePhaseEstimation`
+      - :class:`.HamiltonianPhaseEstimation`
       - :class:`.PhaseEstimation`
       - :class:`.ComputeUncompute`
       - :class:`.TrotterQRTE`
+
     Additionally, the following classes also support this feature. Contrarily
     to those above, these classes don't create their own
-    :class:`qiskit.circuit.QuantumCircuit` but is instead provided by the user.
+    :class:`qiskit.circuit.QuantumCircuit`, which is instead provided by the user.
     As such, transpiling the circuits prior to passing them to theses classes
-    has the same effect as providing the class with a `Transpiler`. These classes are
+    has the same effect as providing these classes with a `Transpiler`. These classes are
+
       - :class:`.FiniteDiffEstimatorGradient`
       - :class:`.FiniteDiffSamplerGradient`
       - :class:`.ParamShiftEstimatorGradient`
@@ -51,6 +55,9 @@ features:
       - :class:`.SPSASamplerGradient`
       - :class:`.VQD`
       - :class:`.VQE`
+      - :class:`.PVQD`
+      - :class:`.VarQITE`
+      - :class:`.VarQRTE`
 issues:
   - |
     Rare bugs might occur when using ``qiskit-algorithms`` in version ``0.4``
@@ -127,5 +134,5 @@ upgrade:
     Note that since :class:`.VQE` doesn't create a
     :class:`~qiskit.circuit.QuantumCircuit` internally but instead uses the
     ansatz provided by the user, transpiling the ansatz before passing it to
-    :class:`.VQE` allows not to provide :class:`.VQE` with a ``Transpiler``.
+    :class:`.VQE` allows to not provide :class:`.VQE` with a ``Transpiler``.
     If one is provided, the ansatz will be transpiled using it regardless.

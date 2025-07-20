@@ -13,12 +13,15 @@
 """Test Variational Quantum Real Time Evolution algorithm."""
 
 import unittest
+
+from qiskit.providers.fake_provider import GenericBackendV2
+
 from test import QiskitAlgorithmsTestCase
 
 from ddt import ddt
 import numpy as np
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter, ParameterVector
 from qiskit.circuit.library import EfficientSU2
 from qiskit.primitives import StatevectorEstimator
@@ -259,6 +262,61 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         for i, parameter_value in enumerate(parameter_values):
             np.testing.assert_almost_equal(float(parameter_value), thetas_expected[i], decimal=4)
+
+    def test_transpiler(self):
+        """Test VarQRTE for d = 1 and t = 1 with evaluating auxiliary operator and the Forward
+        Euler solver."""
+
+        observable = SparsePauliOp.from_list(
+            [
+                ("II", 0.2252),
+                ("ZZ", 0.5716),
+                ("IZ", 0.3435),
+                ("ZI", -0.4347),
+                ("YY", 0.091),
+                ("XX", 0.091),
+            ]
+        )
+        aux_ops = [Pauli("XX"), Pauli("YZ")]
+        d = 1  # pylint: disable=invalid-name
+        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+
+        parameters = list(ansatz.parameters)
+        init_param_values = np.zeros(len(parameters))
+        for i in range(len(parameters)):
+            init_param_values[i] = np.pi / 2
+        init_param_values[0] = 1
+        time = 1
+
+        evolution_problem = TimeEvolutionProblem(observable, time, aux_operators=aux_ops)
+
+        estimator = StatevectorEstimator(seed=self.seed)
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
+        var_principle = RealMcLachlanPrinciple(qgt, gradient)
+
+        pass_manager = generate_preset_pass_manager(
+            backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
+            optimization_level=1,
+            seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        var_qrte = VarQRTE(
+            ansatz,
+            init_param_values,
+            var_principle,
+            estimator,
+            num_timesteps=25,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback}
+        )
+        var_qrte.evolve(evolution_problem)
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

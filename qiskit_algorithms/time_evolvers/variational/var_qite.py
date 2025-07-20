@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Type, Callable
+from typing import Type, Callable, Any
 
 import numpy as np
 from scipy.integrate import OdeSolver
@@ -29,6 +29,7 @@ from .variational_principles import ImaginaryVariationalPrinciple, ImaginaryMcLa
 from .var_qte import VarQTE
 
 from ..imaginary_time_evolver import ImaginaryTimeEvolver
+from ...custom_types import Transpiler
 
 
 class VarQITE(VarQTE, ImaginaryTimeEvolver):
@@ -84,6 +85,9 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
         num_timesteps: int | None = None,
         imag_part_tol: float = 1e-7,
         num_instability_tol: float = 1e-7,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -105,6 +109,11 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
                 imaginary part is expected.
             num_instability_tol: The amount of negative value that is allowed to be
                 rounded up to 0 for quantities that are expected to be non-negative.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         if variational_principle is None:
             variational_principle = ImaginaryMcLachlanPrinciple()
@@ -118,4 +127,6 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
             num_timesteps=num_timesteps,
             imag_part_tol=imag_part_tol,
             num_instability_tol=num_instability_tol,
+            transpiler=transpiler,
+            transpiler_options=transpiler_options
         )

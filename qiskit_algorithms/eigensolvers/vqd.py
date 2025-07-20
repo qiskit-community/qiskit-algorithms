@@ -178,7 +178,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         if self._transpiler is not None:
-            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
+            self.ansatz = ansatz
 
         self._eval_count = 0
 

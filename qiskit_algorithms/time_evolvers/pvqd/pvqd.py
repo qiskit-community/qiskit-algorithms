@@ -157,6 +157,11 @@ class PVQD(RealTimeEvolver):
             initial_guess: The initial guess for the first VQE optimization. Afterwards the
                 previous iteration result is used as initial guess. If None, this is set to
                 a random vector with elements in the interval :math:`[-0.01, 0.01]`.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
         if evolution is None:
@@ -180,12 +185,12 @@ class PVQD(RealTimeEvolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
-        """Returns the ansatz used by the VQE algorithm"""
+        """Returns the ansatz used by the PVQD algorithm"""
         return self._ansatz
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
-        """Sets the ansatz used by the VQE algorithm"""
+        """Sets the ansatz used by the PVQD algorithm"""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:
