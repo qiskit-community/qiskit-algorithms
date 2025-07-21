@@ -91,7 +91,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 estimation as indicated in the VQD paper.
             fidelity (BaseStateFidelity): The fidelity class instance used to compute the
                 overlap estimation as indicated in the VQD paper.
-            ansatz (QuantumCircuit): A parameterized circuit used as ansatz for the wave function.
             optimizer(Optimizer | Sequence[Optimizer]): A classical optimizer or a list of optimizers,
                 one for every k-th eigenvalue. Can either be a Qiskit optimizer or a callable
                 that takes an array as input and returns a Qiskit or SciPy optimization result.
@@ -132,6 +131,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         Args:
             estimator: The estimator primitive.
             fidelity: The fidelity class using primitives.
+            ansatz: A parameterized circuit used as ansatz for the wave function.
             optimizer: A classical optimizer or a list of optimizers, one for every k-th eigenvalue.
                 Can either be a Qiskit optimizer or a callable
                 that takes an array as input and returns a Qiskit or SciPy optimization result.
@@ -193,15 +193,14 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
-        """Returns the ansatz used by the VQD algorithm.
-
-        The ansatz is a parameterized circuit used to prepare the trial state.
+        """
+        A parameterized circuit used as ansatz for the wave function. If a transpiler has been
+        provided, the ansatz will be automatically transpiled upon being set.
         """
         return self._ansatz
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
-        """Sets the ansatz used by the VQD algorithm"""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:

@@ -98,7 +98,6 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     Attributes:
         estimator (BaseEstimatorV2): The estimator primitive to compute the expectation value of the
             Hamiltonian operator.
-        ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
             can either be a Qiskit :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
@@ -130,6 +129,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         Args:
             estimator: The estimator primitive to compute the expectation value of the
                 Hamiltonian operator.
+            ansatz: A parameterized quantum circuit to prepare the trial state.
             optimizer: A classical optimizer to find the minimum energy. This can either be a
                 Qiskit :class:`.Optimizer` or a callable implementing the :class:`.Minimizer`
                 protocol.
@@ -174,15 +174,14 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
-        """Returns the ansatz used by the VQE algorithm.
-
-        The ansatz is a parameterized quantum circuit used to prepare the trial state.
+        """
+        A parameterized quantum circuit to prepare the trial state. If a transpiler has been
+        provided, the ansatz will be automatically transpiled upon being set.
         """
         return self._ansatz
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
-        """Sets the ansatz used by the VQE algorithm"""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:
