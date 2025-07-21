@@ -135,8 +135,6 @@ class PVQD(RealTimeEvolver):
         """
         Args:
             fidelity: A fidelity primitive used by the algorithm.
-            ansatz: A parameterized circuit preparing the variational ansatz to model the
-                time evolved quantum state.
             initial_parameters: The initial parameters for the ansatz. Together with the ansatz,
                 these define the initial state of the time evolution.
             estimator: An estimator primitive used for calculating expected values of auxiliary
@@ -185,12 +183,16 @@ class PVQD(RealTimeEvolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
-        """Returns the ansatz used by the PVQD algorithm"""
+        """Returns the ansatz used by the PVQD algorithm.
+
+        The ansatz is a parameterized circuit preparing the variational ansatz to model the
+                time evolved quantum state.
+        """
         return self._ansatz
 
     @ansatz.setter
     def ansatz(self, value: QuantumCircuit | None) -> None:
-        """Sets the ansatz used by the PVQD algorithm"""
+        """Sets the ansatz used by the PVQD algorithm."""
         if self._transpiler is not None:
             self._ansatz = self._transpiler.run(value, **self._transpiler_options)
         else:

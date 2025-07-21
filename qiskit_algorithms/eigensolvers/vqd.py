@@ -132,7 +132,6 @@ class VQD(VariationalAlgorithm, Eigensolver):
         Args:
             estimator: The estimator primitive.
             fidelity: The fidelity class using primitives.
-            ansatz: A parameterized circuit used as ansatz for the wave function.
             optimizer: A classical optimizer or a list of optimizers, one for every k-th eigenvalue.
                 Can either be a Qiskit optimizer or a callable
                 that takes an array as input and returns a Qiskit or SciPy optimization result.
@@ -194,7 +193,10 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     @property
     def ansatz(self) -> QuantumCircuit:
-        """Returns the ansatz used by the VQD algorithm"""
+        """Returns the ansatz used by the VQD algorithm.
+
+        The ansatz is a parameterized circuit used to prepare the trial state.
+        """
         return self._ansatz
 
     @ansatz.setter
