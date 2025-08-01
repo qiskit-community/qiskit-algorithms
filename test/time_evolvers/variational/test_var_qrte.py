@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,17 +18,16 @@ from test import QiskitAlgorithmsTestCase
 from ddt import ddt
 import numpy as np
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter, ParameterVector
 from qiskit.circuit.library import EfficientSU2
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector
+from qiskit.providers.fake_provider import GenericBackendV2
 
 from qiskit_algorithms.gradients import LinCombQGT, DerivativeType, LinCombEstimatorGradient
 from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
-from qiskit_algorithms.time_evolvers.variational import (
-    RealMcLachlanPrinciple,
-)
+from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
 from qiskit_algorithms.utils import algorithm_globals
 
 
@@ -60,7 +59,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         final_time = 0.75
         evolution_problem = TimeEvolutionProblem(hamiltonian, t_param=t_param, time=final_time)
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         varqrte = VarQRTE(circuit, initial_parameters, estimator=estimator)
 
         result = varqrte.evolve(evolution_problem)
@@ -110,20 +109,11 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             1.53853696496673,
         ]
 
-        thetas_expected_shots = [
-            0.886975892820015,
-            1.53822607733397,
-            1.57058096749141,
-            1.59023223608564,
-            1.60105707043745,
-            1.57018042397236,
-            1.64010900210835,
-            1.53959523034133,
-        ]
+        expected_aux_ops = [0.06836996703935797, 0.7711574493422457]
 
         with self.subTest(msg="Test exact backend."):
             algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
+            estimator = StatevectorEstimator(seed=self.seed)
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
@@ -136,8 +126,6 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             aux_ops = evolution_result.aux_ops_evaluated
 
             parameter_values = evolution_result.parameter_values[-1]
-
-            expected_aux_ops = [0.06836996703935797, 0.7711574493422457]
 
             for i, parameter_value in enumerate(parameter_values):
                 np.testing.assert_almost_equal(
@@ -148,10 +136,10 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
                 [result[0] for result in aux_ops], expected_aux_ops
             )
 
-        with self.subTest(msg="Test shot-based backend."):
+        with self.subTest(msg="Test non-zero precision backend."):
             algorithm_globals.random_seed = self.seed
-
-            estimator = Estimator(options={"shots": 4 * 4096, "seed": self.seed})
+            # A precision of pow(2, -7) roughly corresponds to 4 * 4096 shots
+            estimator = StatevectorEstimator(seed=self.seed, default_precision=pow(2, -7))
             qgt = LinCombQGT(estimator)
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
             var_principle = RealMcLachlanPrinciple(qgt, gradient)
@@ -165,14 +153,9 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
             parameter_values = evolution_result.parameter_values[-1]
 
-            expected_aux_ops = [
-                0.070436,
-                0.777938,
-            ]
-
             for i, parameter_value in enumerate(parameter_values):
                 np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
+                    float(parameter_value), thetas_expected[i], decimal=2
                 )
 
             np.testing.assert_array_almost_equal(
@@ -199,7 +182,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         init_param_values = np.zeros(len(parameters))
         for i in range(len(parameters)):
             init_param_values[i] = np.pi / 4
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         qgt = LinCombQGT(estimator)
         gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
 
@@ -251,51 +234,23 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         evolution_problem = TimeEvolutionProblem(observable, time, t_param=t_param)
 
-        thetas_expected = [1.27675647831902e-18, 1.5707963267949, 0.990000000000001]
-
-        thetas_expected_shots = [0.00534345821469238, 1.56260960200375, 0.990017403734316]
+        thetas_expected = [0.0, 1.5707963267949, 0.99]
 
         # the expected final state is Statevector([0.62289306-0.33467034j, 0.62289306+0.33467034j])
 
-        with self.subTest(msg="Test exact backend."):
-            algorithm_globals.random_seed = self.seed
-            estimator = Estimator()
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
+        algorithm_globals.random_seed = self.seed
+        estimator = StatevectorEstimator()
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
+        var_principle = RealMcLachlanPrinciple(qgt, gradient)
 
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
-            )
-            evolution_result = var_qrte.evolve(evolution_problem)
+        var_qrte = VarQRTE(ansatz, init_param_values, var_principle, estimator, num_timesteps=100)
+        evolution_result = var_qrte.evolve(evolution_problem)
 
-            parameter_values = evolution_result.parameter_values[-1]
+        parameter_values = evolution_result.parameter_values[-1]
 
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected[i], decimal=2
-                )
-
-        with self.subTest(msg="Test shot-based backend."):
-            algorithm_globals.random_seed = self.seed
-
-            estimator = Estimator(options={"shots": 4 * 4096, "seed": self.seed})
-            qgt = LinCombQGT(estimator)
-            gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
-            var_principle = RealMcLachlanPrinciple(qgt, gradient)
-
-            var_qrte = VarQRTE(
-                ansatz, init_param_values, var_principle, estimator, num_timesteps=100
-            )
-
-            evolution_result = var_qrte.evolve(evolution_problem)
-
-            parameter_values = evolution_result.parameter_values[-1]
-
-            for i, parameter_value in enumerate(parameter_values):
-                np.testing.assert_almost_equal(
-                    float(parameter_value), thetas_expected_shots[i], decimal=2
-                )
+        for i, parameter_value in enumerate(parameter_values):
+            np.testing.assert_almost_equal(float(parameter_value), thetas_expected[i], decimal=2)
 
     def _test_helper(self, observable, thetas_expected, time, var_qrte):
         evolution_problem = TimeEvolutionProblem(observable, time)
@@ -305,6 +260,61 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
 
         for i, parameter_value in enumerate(parameter_values):
             np.testing.assert_almost_equal(float(parameter_value), thetas_expected[i], decimal=4)
+
+    def test_transpiler(self):
+        """Test VarQRTE for d = 1 and t = 1 with evaluating auxiliary operator and the Forward
+        Euler solver."""
+
+        observable = SparsePauliOp.from_list(
+            [
+                ("II", 0.2252),
+                ("ZZ", 0.5716),
+                ("IZ", 0.3435),
+                ("ZI", -0.4347),
+                ("YY", 0.091),
+                ("XX", 0.091),
+            ]
+        )
+        aux_ops = [Pauli("XX"), Pauli("YZ")]
+        d = 1  # pylint: disable=invalid-name
+        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+
+        parameters = list(ansatz.parameters)
+        init_param_values = np.zeros(len(parameters))
+        for i in range(len(parameters)):
+            init_param_values[i] = np.pi / 2
+        init_param_values[0] = 1
+        time = 1
+
+        evolution_problem = TimeEvolutionProblem(observable, time, aux_operators=aux_ops)
+
+        estimator = StatevectorEstimator(seed=self.seed)
+        qgt = LinCombQGT(estimator)
+        gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
+        var_principle = RealMcLachlanPrinciple(qgt, gradient)
+
+        pass_manager = generate_preset_pass_manager(
+            backend=GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54),
+            optimization_level=1,
+            seed_transpiler=42,
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        var_qrte = VarQRTE(
+            ansatz,
+            init_param_values,
+            var_principle,
+            estimator,
+            num_timesteps=25,
+            transpiler=pass_manager,
+            transpiler_options={"callback": callback},
+        )
+        var_qrte.evolve(evolution_problem)
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

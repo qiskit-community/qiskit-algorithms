@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,7 +21,7 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit, Parameter, ParameterExpression
 from qiskit.compiler import transpile
 from qiskit.exceptions import QiskitError
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.gradients import ParamShiftSamplerGradient as ParamShift
@@ -75,7 +75,7 @@ def _is_gradient_supported(ansatz: QuantumCircuit) -> bool:
 def _get_observable_evaluator(
     ansatz: QuantumCircuit,
     observables: BaseOperator | list[BaseOperator],
-    estimator: BaseEstimator,
+    estimator: BaseEstimatorV2,
 ) -> Callable[[np.ndarray], float | list[float]]:
     """Get a callable to evaluate a (list of) observable(s) for given circuit parameters."""
 
@@ -91,18 +91,10 @@ def _get_observable_evaluator(
         Raises:
             AlgorithmError: If a primitive job fails.
         """
-        if isinstance(observables, list):
-            num_observables = len(observables)
-            obs = observables
-        else:
-            num_observables = 1
-            obs = [observables]
-        states = [ansatz] * num_observables
-        parameter_values = [theta] * num_observables
 
         try:
-            estimator_job = estimator.run(states, obs, parameter_values=parameter_values)
-            results = estimator_job.result().values
+            estimator_job = estimator.run([(ansatz, observables, theta)])
+            results = estimator_job.result()[0].data.evs
         except Exception as exc:
             raise AlgorithmError("The primitive job failed!") from exc
 

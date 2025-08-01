@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,30 +17,29 @@ See https://arxiv.org/abs/1805.08138.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Iterable
-from typing import Any, cast
 import logging
+from collections.abc import Callable, Sequence, Iterable
 from time import time
+from typing import Any, cast
 
 import numpy as np
-
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
-from qiskit.quantum_info.operators.base_operator import BaseOperator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.state_fidelities import BaseStateFidelity
-
-from ..list_or_dict import ListOrDict
-from ..optimizers import Optimizer, Minimizer, OptimizerResult
-from ..variational_algorithm import VariationalAlgorithm
 from .eigensolver import Eigensolver, EigensolverResult
-from ..utils import validate_bounds, validate_initial_point
+from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
+from ..list_or_dict import ListOrDict
 from ..observables_evaluator import estimate_observables
+from ..optimizers import Optimizer, Minimizer, OptimizerResult
+from ..utils import validate_bounds, validate_initial_point
 
 # private function as we expect this to be updated in the next release
 from ..utils.set_batching import _set_default_batchsize
+from ..variational_algorithm import VariationalAlgorithm
 
 logger = logging.getLogger(__name__)
 
@@ -88,11 +87,10 @@ class VQD(VariationalAlgorithm, Eigensolver):
     updated once the VQD object has been constructed.
 
     Attributes:
-            estimator (BaseEstimator): The primitive instance used to perform the expectation
+            estimator (BaseEstimatorV2): The primitive instance used to perform the expectation
                 estimation as indicated in the VQD paper.
             fidelity (BaseStateFidelity): The fidelity class instance used to compute the
                 overlap estimation as indicated in the VQD paper.
-            ansatz (QuantumCircuit): A parameterized circuit used as ansatz for the wave function.
             optimizer(Optimizer | Sequence[Optimizer]): A classical optimizer or a list of optimizers,
                 one for every k-th eigenvalue. Can either be a Qiskit optimizer or a callable
                 that takes an array as input and returns a Qiskit or SciPy optimization result.
@@ -115,7 +113,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         fidelity: BaseStateFidelity,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer | Sequence[Optimizer | Minimizer],
@@ -125,6 +123,8 @@ class VQD(VariationalAlgorithm, Eigensolver):
         initial_point: np.ndarray | list[np.ndarray] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any], int], None] | None = None,
         convergence_threshold: float | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         """
 
@@ -154,12 +154,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
             convergence_threshold: A threshold under which the algorithm is considered to have
                 converged. It corresponds to the maximal average fidelity an eigenstate is allowed
                 to have with the previous eigenstates. If set to None, no check is performed.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
 
         self.estimator = estimator
         self.fidelity = fidelity
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.optimizer = optimizer
         self.k = k
         self.betas = betas
@@ -167,6 +172,12 @@ class VQD(VariationalAlgorithm, Eigensolver):
         self.initial_point = initial_point
         self.callback = callback
         self.convergence_threshold = convergence_threshold
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self.ansatz = ansatz
 
         self._eval_count = 0
 
@@ -179,6 +190,21 @@ class VQD(VariationalAlgorithm, Eigensolver):
     def initial_point(self, initial_point: np.ndarray | list[np.ndarray] | None):
         """Sets initial point"""
         self._initial_point = initial_point
+
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        """
+        A parameterized circuit used as ansatz for the wave function. If a transpiler has been
+        provided, the ansatz will be automatically transpiled upon being set.
+        """
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         """Check that the number of qubits of operator and ansatz match."""
@@ -205,6 +231,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
     ) -> VQDResult:
         super().compute_eigenvalues(operator, aux_operators)
 
+        if self.ansatz.layout is not None:
+            operator = operator.apply_layout(self.ansatz.layout)
+
         # this sets the size of the ansatz, so it must be called before the initial point
         # validation
         self._check_operator_ansatz(operator)
@@ -213,12 +242,20 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
         # We need to handle the array entries being zero or Optional i.e. having value None
         if aux_operators:
-            zero_op = SparsePauliOp.from_list([("I" * self.ansatz.num_qubits, 0)])
+            if self.ansatz.layout is not None:
+                # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
+                # ansatz, before transpilation
+                zero_op = SparsePauliOp.from_list(
+                    [("I" * len(self.ansatz.layout.final_index_layout()), 0)]
+                )
+            else:
+                zero_op = SparsePauliOp.from_list([("I" * self.ansatz.num_qubits, 0)])
 
             # Convert the None and zero values when aux_operators is a list.
             # Drop None and convert zero values when aux_operators is a dict.
             key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
             if isinstance(aux_operators, list):
+                aux_operators = [op if op is not None else zero_op for op in aux_operators]
                 key_op_iterator = enumerate(aux_operators)
                 converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
             else:
@@ -227,6 +264,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
             for key, op in key_op_iterator:
                 if op is not None:
                     converted[key] = zero_op if op == 0 else op  # type: ignore[index]
+
+                    if self.ansatz.layout is not None:
+                        converted[key] = converted[key].apply_layout(self.ansatz.layout)
 
             aux_operators = converted
 
@@ -363,9 +403,9 @@ class VQD(VariationalAlgorithm, Eigensolver):
 
                     raise AlgorithmError(
                         f"Convergence threshold is set to {self.convergence_threshold} but an "
-                        f"average fidelity of {average_fidelity:.5f} with the previous eigenstates"
-                        f"has been observed during the evaluation of the {step}{suffix} lowest"
-                        f"eigenvalue."
+                        f"average (weighted by the betas) fidelity of {average_fidelity:.5f} with "
+                        f"the previous eigenstates has been observed during the evaluation of the "
+                        f"{step}{suffix} lowest eigenvalue."
                     )
                 logger.info(
                     (
@@ -425,17 +465,13 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 f"Passed array has length {str(len(prev_states))}"
             )
 
-        self._check_operator_ansatz(operator)
-
         def evaluate_energy(parameters: np.ndarray) -> float | np.ndarray:
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
             if len(parameters.shape) == 1:
                 parameters = np.reshape(parameters, (-1, num_parameters))
             batch_size = len(parameters)
 
-            estimator_job = self.estimator.run(
-                batch_size * [self.ansatz], batch_size * [operator], parameters
-            )
+            estimator_job = self.estimator.run([(self.ansatz, operator, parameters)])
 
             total_cost = np.zeros(batch_size)
 
@@ -454,18 +490,17 @@ class VQD(VariationalAlgorithm, Eigensolver):
                     total_cost += np.real(betas[state] * cost)
 
             try:
-                estimator_result = estimator_job.result()
+                estimator_result = estimator_job.result()[0]
 
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
 
-            values = estimator_result.values + total_cost
+            values = estimator_result.data.evs + total_cost
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
-                for params, value, meta in zip(parameters, values, metadata):
+                for params, value in zip(parameters, values):
                     self._eval_count += 1
-                    self.callback(self._eval_count, params, value, meta, step)
+                    self.callback(self._eval_count, params, value, estimator_result.metadata, step)
             else:
                 self._eval_count += len(values)
 

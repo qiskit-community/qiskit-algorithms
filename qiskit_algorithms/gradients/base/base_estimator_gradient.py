@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023
+# (C) Copyright IBM 2022, 2025
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,14 +18,11 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from copy import copy
+from typing import Any
 
 import numpy as np
-
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.primitives import BaseEstimator
-from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
@@ -37,8 +34,9 @@ from ..utils import (
     _make_gradient_parameters,
     _make_gradient_parameter_values,
 )
-
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseEstimatorGradient(ABC):
@@ -46,17 +44,19 @@ class BaseEstimatorGradient(ABC):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
-        options: Options | None = None,
+        estimator: BaseEstimatorV2,
+        precision: float | None = None,
         derivative_type: DerivativeType = DerivativeType.REAL,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
             estimator: The estimator used to compute the gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
             derivative_type: The type of derivative. Can be either ``DerivativeType.REAL``
                 ``DerivativeType.IMAG``, or ``DerivativeType.COMPLEX``.
 
@@ -67,12 +67,18 @@ class BaseEstimatorGradient(ABC):
                 Defaults to ``DerivativeType.REAL``, as this yields e.g. the commonly-used energy
                 gradient and this type is the only supported type for function-level schemes like
                 finite difference.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
-        self._estimator: BaseEstimator = estimator
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
+        self._estimator: BaseEstimatorV2 = estimator
+        self._precision = precision
         self._derivative_type = derivative_type
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         self._gradient_circuit_cache: dict[
             tuple,
@@ -94,7 +100,8 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        **options,
+        *,
+        precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the estimator gradient on the given circuits.
 
@@ -107,10 +114,11 @@ class BaseEstimatorGradient(ABC):
                 ``circuits``. Defaults to None, which means that the gradients of all parameters in
                 each circuit are calculated. None in the sequence means that the gradients of all
                 parameters in the corresponding circuit are calculated.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            precision: Precision to be used by the underlying Estimator. If a single float is
+                provided, this number will be used for all circuits. If a sequence of floats is
+                provided, they will be used on a per-circuit basis. If not set, the gradient's default
+                precision will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's (default) precision will be used for all circuits.
 
         Returns:
             The job object of the gradients of the expectation values. The i-th result corresponds to
@@ -124,7 +132,7 @@ class BaseEstimatorGradient(ABC):
         if isinstance(circuits, QuantumCircuit):
             # Allow a single circuit to be passed in.
             circuits = (circuits,)
-        if isinstance(observables, (BaseOperator)):
+        if isinstance(observables, BaseOperator):
             # Allow a single observable to be passed in.
             observables = (observables,)
 
@@ -141,15 +149,15 @@ class BaseEstimatorGradient(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, observables, parameter_values, parameters)
-        # The priority of run option is as follows:
-        # options in ``run`` method > gradient's default options > primitive's default setting.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
+
+        if precision is None:
+            precision = self.precision  # May still be None
+
         # Run the job.
         job = AlgorithmJob(
-            self._run, circuits, observables, parameter_values, parameters, **opts.__dict__
+            self._run, circuits, observables, parameter_values, parameters, precision=precision
         )
-        job.submit()
+        job._submit()
         return job
 
     @abstractmethod
@@ -159,7 +167,8 @@ class BaseEstimatorGradient(ABC):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
         raise NotImplementedError()
@@ -262,7 +271,7 @@ class BaseEstimatorGradient(ABC):
             gradients.append(gradient)
             metadata.append({"parameters": parameters_})
         return EstimatorGradientResult(
-            gradients=gradients, metadata=metadata, options=results.options
+            gradients=gradients, metadata=metadata, precision=results.precision
         )
 
     @staticmethod
@@ -327,37 +336,21 @@ class BaseEstimatorGradient(ABC):
                 )
 
     @property
-    def options(self) -> Options:
-        """Return the union of estimator options setting and gradient default options,
-        where, if the same field is set in both, the gradient's default options override
-        the primitive's default setting.
+    def precision(self) -> float | None:
+        """Return the precision used by the `run` method of the Estimator primitive. If None,
+        the default precision of the primitive is used.
 
         Returns:
-            The gradient default + estimator options.
+            The default precision.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._precision
 
-    def update_default_options(self, **options):
-        """Update the gradient's default options setting.
+    @precision.setter
+    def precision(self, precision: float | None):
+        """Update the gradient's default precision setting.
 
         Args:
-            **options: The fields to update the default options.
+            precision: The new default precision.
         """
 
-        self._default_options.update_options(**options)
-
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the gradient default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The gradient default + estimator + run options.
-        """
-        opts = copy(self._estimator.options)
-        opts.update_options(**options)
-        return opts
+        self._precision = precision

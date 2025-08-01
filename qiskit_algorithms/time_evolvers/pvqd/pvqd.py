@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,16 +15,17 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from typing import Any
 
 import numpy as np
-
 from qiskit.circuit import Parameter, ParameterVector, QuantumCircuit
 from qiskit.circuit.library import PauliEvolutionGate
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.synthesis import EvolutionSynthesis, LieTrotter
-from qiskit_algorithms.utils import algorithm_globals
 
+from qiskit_algorithms.utils import algorithm_globals
+from ...custom_types import Transpiler
 from ...exceptions import AlgorithmError
 from ...optimizers import Minimizer, Optimizer
 from ...state_fidelities.base_state_fidelity import BaseStateFidelity
@@ -50,7 +51,6 @@ class PVQD(RealTimeEvolver):
 
     Attributes:
 
-        ansatz (QuantumCircuit): The parameterized circuit representing the time-evolved state.
         initial_parameters (np.ndarray): The parameters of the ansatz at time 0.
         optimizer (Optional[Union[Optimizer, Minimizer]]): The classical optimization routine
             used to maximize the fidelity of the Trotter step and ansatz.
@@ -74,14 +74,14 @@ class PVQD(RealTimeEvolver):
 
             from qiskit_algorithms.state_fidelities import ComputeUncompute
             from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD
-            from qiskit.primitives import Estimator, Sampler
+            from qiskit.primitives import StatevectorEstimator, StatevectorSampler
             from qiskit.circuit.library import EfficientSU2
             from qiskit.quantum_info import SparsePauliOp, Pauli
             from qiskit_algorithms.optimizers import L_BFGS_B
 
-            sampler = Sampler()
+            sampler = StatevectorSampler()
             fidelity = ComputeUncompute(sampler)
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             hamiltonian = 0.1 * SparsePauliOp(["ZZ", "IX", "XI"])
             observable = Pauli("ZZ")
             ansatz = EfficientSU2(2, reps=1)
@@ -121,12 +121,15 @@ class PVQD(RealTimeEvolver):
         fidelity: BaseStateFidelity,
         ansatz: QuantumCircuit,
         initial_parameters: np.ndarray,
-        estimator: BaseEstimator | None = None,
+        estimator: BaseEstimatorV2 | None = None,
         optimizer: Optimizer | Minimizer | None = None,
         num_timesteps: int | None = None,
         evolution: EvolutionSynthesis | None = None,
         use_parameter_shift: bool = True,
         initial_guess: np.ndarray | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         """
         Args:
@@ -153,12 +156,17 @@ class PVQD(RealTimeEvolver):
             initial_guess: The initial guess for the first VQE optimization. Afterwards the
                 previous iteration result is used as initial guess. If None, this is set to
                 a random vector with elements in the interval :math:`[-0.01, 0.01]`.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
         if evolution is None:
             evolution = LieTrotter()
 
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.initial_parameters = initial_parameters
         self.num_timesteps = num_timesteps
         self.optimizer = optimizer
@@ -167,6 +175,28 @@ class PVQD(RealTimeEvolver):
         self.fidelity_primitive = fidelity
         self.evolution = evolution
         self.use_parameter_shift = use_parameter_shift
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(self._ansatz, **self._transpiler_options)
+
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        """
+        A parameterized circuit preparing the variational ansatz to model the time evolved
+        quantum state. If a transpiler has been provided, the ansatz will be automatically
+        transpiled upon being set.
+        """
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
 
     # pylint: disable=too-many-positional-arguments
     def step(
@@ -348,6 +378,10 @@ class PVQD(RealTimeEvolver):
         time = evolution_problem.time
         observables = evolution_problem.aux_operators
         hamiltonian = evolution_problem.hamiltonian
+
+        if self.ansatz.layout is not None:
+            observables = [obs.apply_layout(self.ansatz.layout) for obs in observables]
+            hamiltonian = hamiltonian.apply_layout(self.ansatz.layout)
 
         # determine the number of timesteps and set the timestep
         num_timesteps = (

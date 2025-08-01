@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
-from typing import Callable, List, Tuple, cast
+from typing import Callable, List, Tuple, cast, Any
 import warnings
 
 import numpy as np
@@ -22,10 +22,11 @@ from scipy.optimize import brute
 from scipy.stats import norm, chi2
 
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
-from qiskit.primitives import BaseSampler, Sampler
+from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
 from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
+from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
 
 MINIMIZER = Callable[[Callable[[float], float], List[Tuple[float, float]]], float]
@@ -54,7 +55,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self,
         evaluation_schedule: list[int] | int,
         minimizer: MINIMIZER | None = None,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -68,12 +72,19 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
                 argument and a list of (float, float) tuples (as bounds) as second argument and
                 returns a single float which is the found minimum.
             sampler: A sampler primitive to evaluate the circuits.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
+
 
         Raises:
             ValueError: If the number of oracle circuits is smaller than 1.
         """
 
         super().__init__()
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         # get parameters
         if isinstance(evaluation_schedule, int):
@@ -101,7 +112,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         self._sampler = sampler
 
     @property
-    def sampler(self) -> BaseSampler | None:
+    def sampler(self) -> BaseSamplerV2 | None:
         """Get the sampler primitive.
 
         Returns:
@@ -110,7 +121,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         return self._sampler
 
     @sampler.setter
-    def sampler(self, sampler: BaseSampler) -> None:
+    def sampler(self, sampler: BaseSamplerV2) -> None:
         """Set sampler primitive.
 
         Args:
@@ -162,6 +173,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
             circuits += [qc_k]
 
+        if self._transpiler is not None:
+            # circuits = self._transpiler.run(circuits,  **self._transpiler_options)
+            circuits = self._transpiler.run(circuits[0], **self._transpiler_options)
+
         return circuits
 
     @staticmethod
@@ -170,7 +185,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
-        exact: bool = False,
     ) -> tuple[float, float]:
         """Compute the `alpha` confidence interval using the method `kind`.
 
@@ -184,7 +198,6 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             kind: The method to compute the confidence interval. Defaults to 'fisher', which
                 computes the theoretical Fisher information.
             apply_post_processing: If True, apply post-processing to the confidence interval.
-            exact: Whether the result comes from a statevector simulation or not
 
         Returns:
             The specified confidence interval.
@@ -195,11 +208,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         """
         interval: tuple[float, float] | None = None
 
-        # if statevector simulator the estimate is exact
-        if exact:
-            interval = (result.estimation, result.estimation)
-
-        elif kind in ["likelihood_ratio", "lr"]:
+        if kind in ["likelihood_ratio", "lr"]:
             interval = _likelihood_ratio_confint(result, alpha)
 
         elif kind in ["fisher", "fi"]:
@@ -275,8 +284,10 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
             AlgorithmError: Sampler job run error
         """
         if self._sampler is None:
-            warnings.warn("No sampler provided, defaulting to Sampler from qiskit.primitives")
-            self._sampler = Sampler()
+            warnings.warn(
+                "No sampler provided, defaulting to StatevectorSampler from qiskit.primitives"
+            )
+            self._sampler = StatevectorSampler()
 
         if estimation_problem.state_preparation is None:
             raise AlgorithmError(
@@ -291,28 +302,20 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         circuits = self.construct_circuits(estimation_problem, measurement=True)
 
         try:
-            job = self._sampler.run(circuits)
+            pubs = [(circuit,) for circuit in circuits]
+            job = self._sampler.run(pubs)
             ret = job.result()
         except Exception as exc:
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
-        circuit_results = []
-        shots = ret.metadata[0].get("shots")
-        exact = True
-        if shots is None:
-            for quasi_dist in ret.quasi_dists:
-                circuit_result = quasi_dist.binary_probabilities()
-                circuit_results.append(circuit_result)
-            shots = 1
-        else:
-            # get counts and construct MLE input
-            for quasi_dist in ret.quasi_dists:
-                counts = {k: round(v * shots) for k, v in quasi_dist.binary_probabilities().items()}
-                circuit_results.append(counts)
-            exact = False
+        pub_results_data = [
+            getattr(pub_result.data, circuit.cregs[0].name)
+            for pub_result, circuit in zip(ret, circuits)
+        ]
 
-        result.shots = shots
-        result.circuit_results = circuit_results
+        result.shots = self._sampler.default_shots
+        # get counts and construct MLE input
+        result.circuit_results = [prob_dist.get_counts() for prob_dist in pub_results_data]
         # run maximum likelihood estimation
         num_state_qubits = circuits[0].num_qubits - circuits[0].num_ancillas
 
@@ -334,9 +337,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         result.num_oracle_queries = result.shots * sum(k for k in result.evaluation_schedule)
 
         # compute and store confidence interval
-        confidence_interval = self.compute_confidence_interval(
-            result, alpha=0.05, kind="fisher", exact=exact
-        )
+        confidence_interval = self.compute_confidence_interval(result, alpha=0.05, kind="fisher")
         result.confidence_interval = confidence_interval
         result.confidence_interval_processed = tuple(  # type: ignore[assignment]
             estimation_problem.post_processing(value)  # type: ignore[arg-type]
@@ -460,7 +461,6 @@ def _compute_fisher_information(
         # one_hits = one_hits[:num_sum_terms]
 
     # Compute the Fisher information
-    fisher_information = None
     if observed:
         # Note, that the observed Fisher information is very unreliable in this algorithm!
         d_loglik = 0
@@ -470,7 +470,6 @@ def _compute_fisher_information(
 
         d_loglik /= np.sqrt(a * (1 - a))
         fisher_information = d_loglik**2 / len(all_hits)
-
     else:
         fisher_information = sum(
             shots_k * (2 * m_k + 1) ** 2 for shots_k, m_k in zip(all_hits, evaluation_schedule)

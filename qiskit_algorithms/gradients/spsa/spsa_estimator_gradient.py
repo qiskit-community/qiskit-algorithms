@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,16 +15,17 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseEstimator
-from qiskit.providers import Options
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..base.base_estimator_gradient import BaseEstimatorGradient
 from ..base.estimator_gradient_result import EstimatorGradientResult
+from ...custom_types import Transpiler
 
 from ...exceptions import AlgorithmError
 
@@ -43,11 +44,14 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
     # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         epsilon: float,
         batch_size: int = 1,
         seed: int | None = None,
-        options: Options | None = None,
+        precision: float | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         """
         Args:
@@ -55,11 +59,14 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             epsilon: The offset size for the SPSA gradients.
             batch_size: The number of gradients to average.
             seed: The seed for a random perturbation vector.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
-
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         Raises:
             ValueError: If ``epsilon`` is not positive.
         """
@@ -69,7 +76,9 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         self._batch_size = batch_size
         self._seed = np.random.default_rng(seed)
 
-        super().__init__(estimator, options)
+        super().__init__(
+            estimator, precision, transpiler=transpiler, transpiler_options=transpiler_options
+        )
 
     def _run(
         self,
@@ -77,16 +86,42 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
         observables: Sequence[BaseOperator],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        precision: float | Sequence[float] | None,
     ) -> EstimatorGradientResult:
         """Compute the estimator gradients on the given circuits."""
-        job_circuits, job_observables, job_param_values, metadata, offsets = [], [], [], [], []
-        all_n = []
-        for circuit, observable, parameter_values_, parameters_ in zip(
-            circuits, observables, parameter_values, parameters
+        metadata = []
+        offsets = []
+        has_transformed_precision = False
+
+        if isinstance(precision, float) or precision is None:
+            precision = [precision] * len(circuits)
+            has_transformed_precision = True
+
+        if self._transpiler is not None:
+            circuits = self._transpiler.run(circuits, **self._transpiler_options)
+            observables = [
+                obs.apply_layout(circuit.layout) for (circuit, obs) in zip(circuits, observables)
+            ]
+
+        pubs = []
+
+        if not (
+            len(circuits)
+            == len(observables)
+            == len(parameters)
+            == len(parameter_values)
+            == len(precision)
         ):
-            # Indices of parameters to be differentiated.
-            indices = [circuit.parameters.data.index(p) for p in parameters_]
+            raise ValueError(
+                f"circuits, observables, parameters, parameter_values and precision must have the same "
+                f"length, but have respective lengths {len(circuits)},  {len(observables)}, "
+                f"{len(parameters)}, {len(parameter_values)} and {len(precision)}."
+            )
+
+        for circuit, observable, parameter_values_, parameters_, precision_ in zip(
+            circuits, observables, parameter_values, parameters, precision
+        ):
             metadata.append({"parameters": parameters_})
             # Make random perturbation vectors.
             offset = [
@@ -98,18 +133,10 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             offsets.append(offset)
 
             # Combine inputs into a single job to reduce overhead.
-            job_circuits.extend([circuit] * 2 * self._batch_size)
-            job_observables.extend([observable] * 2 * self._batch_size)
-            job_param_values.extend(plus + minus)
-            all_n.append(2 * self._batch_size)
+            pubs.append((circuit, observable, plus + minus, precision_))
 
         # Run the single job with all circuits.
-        job = self._estimator.run(
-            job_circuits,
-            job_observables,
-            job_param_values,
-            **options,
-        )
+        job = self._estimator.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -117,12 +144,10 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
 
         # Compute the gradients.
         gradients = []
-        partial_sum_n = 0
-        for i, n in enumerate(all_n):
-            result = results.values[partial_sum_n : partial_sum_n + n]
-            partial_sum_n += n
-            n = len(result) // 2
-            diffs = (result[:n] - result[n:]) / (2 * self._epsilon)
+        for i, result in enumerate(results):
+            evs = result.data.evs
+            n = evs.shape[0] // 2
+            diffs = (evs[:n] - evs[n:]) / (2 * self._epsilon)
             # Calculate the gradient for each batch. Note that (``diff`` / ``offset``) is the gradient
             # since ``offset`` is a perturbation vector of 1s and -1s.
             batch_gradients = np.array([diff / offset for diff, offset in zip(diffs, offsets[i])])
@@ -131,5 +156,14 @@ class SPSAEstimatorGradient(BaseEstimatorGradient):
             indices = [circuits[i].parameters.data.index(p) for p in metadata[i]["parameters"]]
             gradients.append(gradient[indices])
 
-        opt = self._get_local_options(options)
-        return EstimatorGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_precision:
+            precision = precision[0]
+
+            if precision is None:
+                precision = results[0].metadata["target_precision"]
+        else:
+            for i, (precision_, result) in enumerate(zip(precision, results)):
+                if precision_ is None:
+                    precision[i] = results[i].metadata["target_precision"]
+
+        return EstimatorGradientResult(gradients=gradients, metadata=metadata, precision=precision)

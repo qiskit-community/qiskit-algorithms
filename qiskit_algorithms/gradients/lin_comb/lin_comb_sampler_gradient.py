@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,17 +17,17 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Sequence
+from typing import Any
 
 from qiskit.circuit import Parameter, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
+from qiskit.primitives import BaseSamplerV2
 
 from ..base.base_sampler_gradient import BaseSamplerGradient
 from ..base.sampler_gradient_result import SamplerGradientResult
 from ..utils import _make_lin_comb_gradient_circuit
-
+from ...custom_types import Transpiler
 from ...exceptions import AlgorithmError
+from ...utils.circuit_key import _circuit_key
 
 
 class LinCombSamplerGradient(BaseSamplerGradient):
@@ -62,30 +62,44 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         "z",
     ]
 
-    def __init__(self, sampler: BaseSampler, options: Options | None = None):
+    def __init__(
+        self,
+        sampler: BaseSamplerV2,
+        shots: int | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
+    ):
         """
         Args:
             sampler: The sampler used to compute the gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            shots: Number of shots to be used by the underlying Sampler. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                number of shots of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         self._lin_comb_cache: dict[tuple, dict[Parameter, QuantumCircuit]] = {}
-        super().__init__(sampler, options)
+        super().__init__(
+            sampler, shots, transpiler=transpiler, transpiler_options=transpiler_options
+        )
 
     def _run(
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the estimator gradients on the given circuits."""
         g_circuits, g_parameter_values, g_parameters = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, **options)
+        results = self._run_unique(g_circuits, g_parameter_values, g_parameters, shots=shots)
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -93,12 +107,30 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        shots: int | None = None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
-        job_circuits, job_param_values, metadata = [], [], []
+        metadata = []
         all_n = []
-        for circuit, parameter_values_, parameters_ in zip(circuits, parameter_values, parameters):
+        has_transformed_shots = False
+
+        if isinstance(shots, int) or shots is None:
+            shots = [shots] * len(circuits)
+            has_transformed_shots = True
+
+        pubs = []
+
+        if not (len(circuits) == len(parameters) == len(parameter_values) == len(shots)):
+            raise ValueError(
+                f"circuits, parameters, parameter_values and shots must have the same length, but "
+                f"have respective lengths {len(circuits)},  {len(parameters)}, {len(parameter_values)} "
+                f"and {len(shots)}."
+            )
+
+        for circuit, parameter_values_, parameters_, shots_ in zip(
+            circuits, parameter_values, parameters, shots
+        ):
             # Prepare circuits for the gradient of the specified parameters.
             # TODO: why is this not wrapped into another list level like it is done elsewhere?
             metadata.append({"parameters": parameters_})
@@ -115,12 +147,15 @@ class LinCombSamplerGradient(BaseSamplerGradient):
                 gradient_circuits.append(lin_comb_circuits[param])
             # Combine inputs into a single job to reduce overhead.
             n = len(gradient_circuits)
-            job_circuits.extend(gradient_circuits)
-            job_param_values.extend([parameter_values_] * n)
+            pubs.extend([(circ, parameter_values_, shots_) for circ in gradient_circuits])
             all_n.append(n)
 
+        if self._transpiler is not None:
+            for index, pub in enumerate(pubs):
+                pubs[index] = (self._transpiler.run(pub[0], **self._transpiler_options),) + pub[1:]
+
         # Run the single job with all circuits.
-        job = self._sampler.run(job_circuits, job_param_values, **options)
+        job = self._sampler.run(pubs)
         try:
             results = job.result()
         except Exception as exc:
@@ -131,7 +166,14 @@ class LinCombSamplerGradient(BaseSamplerGradient):
         partial_sum_n = 0
         for i, n in enumerate(all_n):
             gradient = []
-            result = results.quasi_dists[partial_sum_n : partial_sum_n + n]
+            result = []
+
+            for result_n in results[partial_sum_n : partial_sum_n + n]:
+                res = result_n.data.meas
+                result.append(
+                    {label: value / res.num_shots for label, value in res.get_int_counts().items()}
+                )
+
             m = 2 ** circuits[i].num_qubits
             for dist in result:
                 grad_dist: dict[int, float] = defaultdict(float)
@@ -144,5 +186,14 @@ class LinCombSamplerGradient(BaseSamplerGradient):
             gradients.append(gradient)
             partial_sum_n += n
 
-        opt = self._get_local_options(options)
-        return SamplerGradientResult(gradients=gradients, metadata=metadata, options=opt)
+        if has_transformed_shots:
+            shots = shots[0]
+
+            if shots is None:
+                shots = results[0].metadata["shots"]
+        else:
+            for i, (shots_, result) in enumerate(zip(shots, results)):
+                if shots_ is None:
+                    shots[i] = result.metadata["shots"]
+
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=shots)

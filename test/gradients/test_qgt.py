@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,10 +19,10 @@ from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data
 import numpy as np
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import RealAmplitudes
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 
 from qiskit_algorithms.gradients import DerivativeType, LinCombQGT, ReverseQGT
 
@@ -35,7 +35,7 @@ class TestQGT(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        self.estimator = Estimator()
+        self.estimator = StatevectorEstimator()
 
     @data(LinCombQGT, ReverseQGT)
     def test_qgt_derivative_type(self, qgt_type):
@@ -241,41 +241,41 @@ class TestQGT(QiskitAlgorithmsTestCase):
             with self.assertRaises(ValueError):
                 qgt.run([qc], parameter_values, parameters=[[a], [a]])
 
-    def test_options(self):
-        """Test QGT's options"""
+    def test_precision(self):
+        """Test QGT's precision option"""
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
-        estimator = Estimator(options={"shots": 100})
+        estimator = StatevectorEstimator(default_precision=0.1)
 
         with self.subTest("estimator"):
             qgt = LinCombQGT(estimator)
-            options = qgt.options
+            precision = qgt.precision
             result = qgt.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.1)
+            self.assertEqual(precision, None)
 
         with self.subTest("QGT init"):
-            qgt = LinCombQGT(estimator, options={"shots": 200})
+            qgt = LinCombQGT(estimator, precision=0.2)
             result = qgt.run([qc], [[1]]).result()
-            options = qgt.options
-            self.assertEqual(result.options.get("shots"), 200)
-            self.assertEqual(options.get("shots"), 200)
+            precision = qgt.precision
+            self.assertEqual(result.precision, 0.2)
+            self.assertEqual(precision, 0.2)
 
         with self.subTest("QGT update"):
-            qgt = LinCombQGT(estimator, options={"shots": 200})
-            qgt.update_default_options(shots=100)
-            options = qgt.options
+            qgt = LinCombQGT(estimator, precision=0.2)
+            qgt.precision = 0.1
+            precision = qgt.precision
             result = qgt.run([qc], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.1)
+            self.assertEqual(precision, 0.1)
 
         with self.subTest("QGT run"):
-            qgt = LinCombQGT(estimator, options={"shots": 200})
-            result = qgt.run([qc], [[0]], shots=300).result()
-            options = qgt.options
-            self.assertEqual(result.options.get("shots"), 300)
-            self.assertEqual(options.get("shots"), 200)
+            qgt = LinCombQGT(estimator, precision=0.2)
+            result = qgt.run([qc], [[0]], precision=0.3).result()
+            precision = qgt.precision
+            self.assertEqual(result.precision, 0.3)
+            self.assertEqual(precision, 0.2)
 
     def test_operations_preserved(self):
         """Test non-parameterized instructions are preserved and not unrolled."""
@@ -304,6 +304,30 @@ class TestQGT(QiskitAlgorithmsTestCase):
 
         with self.subTest(msg="assert result is correct"):
             np.testing.assert_allclose(result.qgts[0], expect, atol=1e-5)
+
+    def test_transpiler(self):
+        """Test that the transpiler is called for the LinCombQGT"""
+        pass_manager = generate_preset_pass_manager(optimization_level=1, seed_transpiler=42)
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        a = Parameter("a")
+        qc = QuantumCircuit(1)
+        qc.rx(a, 0)
+        estimator = StatevectorEstimator(default_precision=0.1)
+        # Test transpiler without options
+        qgt = LinCombQGT(estimator, transpiler=pass_manager)
+        qgt.run([qc], [[1]]).result()
+
+        # Test transpiler is called using callback function
+        qgt = LinCombQGT(
+            estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
+        )
+        qgt.run([qc], [[1]]).result()
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

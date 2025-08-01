@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023
+# (C) Copyright IBM 2022, 2025
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -19,12 +19,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Sequence
-from copy import copy
+from typing import Any
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.primitives import BaseSampler
-from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
+from qiskit.primitives import BaseSamplerV2
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
 from .sampler_gradient_result import SamplerGradientResult
@@ -36,32 +34,47 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseSamplerGradient(ABC):
     """Base class for a ``SamplerGradient`` to compute the gradients of the sampling probability."""
 
-    def __init__(self, sampler: BaseSampler, options: Options | None = None):
+    def __init__(
+        self,
+        sampler: BaseSamplerV2,
+        shots: int | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
+    ):
         """
         Args:
             sampler: The sampler used to compute the gradients.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            shots: Number of shots to be used by the underlying Sampler. If provided, this number
+                takes precedence over the default number of shots of the primitive. Otherwise, the
+                default number of shots of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
-        self._sampler: BaseSampler = sampler
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
+        self._sampler: BaseSamplerV2 = sampler
+        self._shots = shots
         self._gradient_circuit_cache: dict[tuple, GradientCircuit] = {}
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     def run(
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        **options,
+        *,
+        shots: int | Sequence[int] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the sampler gradient on the given circuits.
 
@@ -73,10 +86,11 @@ class BaseSamplerGradient(ABC):
                 ``circuits``. Defaults to None, which means that the gradients of all parameters in
                 each circuit are calculated. None in the sequence means that the gradients of all
                 parameters in the corresponding circuit are calculated.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting
+            shots: Number of shots to be used by the underlying Sampler. If a single integer is
+                provided, this number will be used for all circuits. If a sequence of integers is
+                provided, they will be used on a per-circuit basis. If not set, the gradient's default
+                number of shots will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's default number of shots will be used for all circuits.
         Returns:
             The job object of the gradients of the sampling probability. The i-th result
             corresponds to ``circuits[i]`` evaluated with parameters bound as ``parameter_values[i]``.
@@ -102,12 +116,12 @@ class BaseSamplerGradient(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, parameter_values, parameters)
-        # The priority of run option is as follows:
-        # options in `run` method > gradient's default options > primitive's default options.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, **opts.__dict__)
-        job.submit()
+
+        if shots is None:
+            shots = self.shots
+
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, shots=shots)
+        job._submit()
         return job
 
     @abstractmethod
@@ -116,7 +130,8 @@ class BaseSamplerGradient(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        shots: int | Sequence[int] | None,
     ) -> SamplerGradientResult:
         """Compute the sampler gradients on the given circuits."""
         raise NotImplementedError()
@@ -213,9 +228,7 @@ class BaseSamplerGradient(ABC):
                 gradient.append(dict(grad_dist))
             gradients.append(gradient)
             metadata.append([{"parameters": parameters_}])
-        return SamplerGradientResult(
-            gradients=gradients, metadata=metadata, options=results.options
-        )
+        return SamplerGradientResult(gradients=gradients, metadata=metadata, shots=results.shots)
 
     @staticmethod
     def _validate_arguments(
@@ -264,37 +277,21 @@ class BaseSamplerGradient(ABC):
                 )
 
     @property
-    def options(self) -> Options:
-        """Return the union of sampler options setting and gradient default options,
-        where, if the same field is set in both, the gradient's default options override
-        the primitive's default setting.
+    def shots(self) -> int | None:
+        """Return the number of shots used by the `run` method of the Sampler primitive. If None,
+        the default number of shots of the primitive is used.
 
         Returns:
-            The gradient default + sampler options.
+            The default number of shots.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._shots
 
-    def update_default_options(self, **options):
-        """Update the gradient's default options setting.
+    @shots.setter
+    def shots(self, shots: int | None):
+        """Update the gradient's default number of shots setting.
 
         Args:
-            **options: The fields to update the default options.
+            shots: The new default number of shots.
         """
 
-        self._default_options.update_options(**options)
-
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the gradient default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > gradient's
-                default options > primitive's default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The gradient default + sampler + run options.
-        """
-        opts = copy(self._sampler.options)
-        opts.update_options(**options)
-        return opts
+        self._shots = shots
