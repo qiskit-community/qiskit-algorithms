@@ -61,8 +61,9 @@ features:
 issues:
   - |
     Rare bugs might occur when using ``qiskit-algorithms`` in version ``0.4``
-    in conjunction with ``qiskit`` in version ``2.1.0``. If you encounter some
-    difficulties using this version of ``qiskit``, try to downgrade to ``2.0``.
+    in conjunction with ``qiskit`` in version ``2.1.0`` and ``2.1.1``. If you encounter some
+    difficulties using this version of ``qiskit``, try to downgrade to ``2.0.X`` or upgrade to ``2.1.2``
+    or newer.
   - |
     Passing to :class:`.VQE` or :class:`.VQD` a transpiler along with an ansatz
     with a number of qubits that hasn't been set results in an error. Setting
