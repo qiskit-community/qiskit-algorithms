@@ -19,15 +19,22 @@ from ddt import ddt, data, unpack
 
 import numpy as np
 
+from qiskit import generate_preset_pass_manager
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.primitives import StatevectorEstimator
+from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
 from qiskit_algorithms.optimizers import SLSQP
 from qiskit_algorithms.utils import algorithm_globals
+
+
+FIVE_QUBITS_BACKEND = GenericBackendV2(
+    num_qubits=5, coupling_map=[[0, 1], [1, 2], [2, 3], [3, 4]], seed=54
+)
 
 
 @ddt
@@ -190,9 +197,19 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
         self.assertEqual(solver.ansatz, calc.solver.ansatz)
 
-    def test_gradient_calculation(self):
+    # We perform additional actions if the transpiler of the inner VQE is set, so we have to check
+    # whether this affects AdaptVQE
+    @data(
+        None,
+        generate_preset_pass_manager(
+            backend=FIVE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+        ),
+    )
+    def test_gradient_calculation(self, transpiler):
         """Test to check if the gradient calculation"""
-        solver = VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer)
+        solver = VQE(
+            StatevectorEstimator(), QuantumCircuit(1), self.optimizer, transpiler=transpiler
+        )
         calc = AdaptVQE(solver)
         calc._excitation_pool = [SparsePauliOp("X")]
         res = calc._compute_gradients(operator=SparsePauliOp("Y"), theta=[])
@@ -209,6 +226,62 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
         self.assertAlmostEqual(res.aux_operators_evaluated[0][0], expected_eigenvalue, places=6)
         np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
+
+    @data(None, FIVE_QUBITS_BACKEND)
+    def test_transpiler_without_aux_operators(self, backend):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(
+            backend=backend, optimization_level=1, seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        calc = AdaptVQE(
+            VQE(
+                StatevectorEstimator(),
+                self.ansatz,
+                self.optimizer,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback},
+            )
+        )
+
+        calc.compute_minimum_eigenvalue(operator=self.h2_op)
+
+        self.assertGreater(counts[0], 0)
+
+    @data(None, FIVE_QUBITS_BACKEND)
+    def test_transpiler_with_aux_operators(self, backend):
+        """Test that the transpiler is called"""
+        pass_manager = generate_preset_pass_manager(
+            backend=backend, optimization_level=1, seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        calc = AdaptVQE(
+            VQE(
+                StatevectorEstimator(),
+                self.ansatz,
+                self.optimizer,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback},
+            )
+        )
+
+        with self.subTest("aux_operators as list"):
+            calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+            self.assertGreater(counts[0], 0)
+
+        counts = [0]
+
+        with self.subTest("aux_operators as dict"):
+            calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators={"op": self.h2_op})
+            self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

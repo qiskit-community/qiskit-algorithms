@@ -22,6 +22,7 @@ import numpy as np
 from qiskit.circuit.library import EvolvedOperatorAnsatz
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
+from qiskit.version import get_version_info as get_qiskit_version_info
 
 from qiskit_algorithms.exceptions import AlgorithmError
 from qiskit_algorithms.list_or_dict import ListOrDict
@@ -114,11 +115,6 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 are not considered.
             max_iterations: the maximum number of iterations for the adaptive loop. If ``None``, the
                 algorithm is not bound in its number of iterations.
-            transpiler: An optional object with a `run` method allowing to transpile the circuits
-                that are run when using this algorithm. If set to `None`, these won't be
-                transpiled.
-            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
-                method as keyword arguments.
         """
         validate_min("gradient_threshold", gradient_threshold, 1e-15)
         validate_min("eigenvalue_threshold", eigenvalue_threshold, 1e-15)
@@ -162,11 +158,10 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # The excitations operators are applied later as exp(i*theta*excitation).
         # For this commutator, we need to explicitly pull in the imaginary phase.
         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
-        # We have to call simplify on it since Qiskit doesn't do so for now, see
+        # We have to call simplify on it since Qiskit doesn't do so in versions 2.1.0 and 2.1.1, see
         # Qiskit/qiskit/issues/14567
-        # TODO: Remove the below line once the aforementioned issue is fixed to avoid unnecessary
-        #  overhead. The issue will be present in Qiskit 2.1 however
-        commutators = [obs.simplify() for obs in commutators]
+        if get_qiskit_version_info() in ["2.1.0", "2.1.1"]:
+            commutators = [obs.simplify() for obs in commutators]
 
         # If the ansatz has been transpiled
         if self.solver.ansatz.layout:
@@ -220,15 +215,15 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 the first iteration of the algorithm.
 
         Returns:
-            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also but also
+            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also
             includes runtime information about the AdaptVQE algorithm like the number of iterations,
             termination criterion, and the final maximum gradient.
         """
-        if not isinstance(self.solver.ansatz, EvolvedOperatorAnsatz):
+        if not isinstance(self.solver._original_ansatz, EvolvedOperatorAnsatz):
             raise TypeError("The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type.")
 
         # Overwrite the solver's ansatz with the initial state
-        self._tmp_ansatz = self.solver.ansatz
+        self._tmp_ansatz = self.solver._original_ansatz
         self._excitation_pool = self._tmp_ansatz.operators
         # This will transpile the initial state if the solver has a transpiler that is set
         self.solver.ansatz = self._tmp_ansatz.initial_state

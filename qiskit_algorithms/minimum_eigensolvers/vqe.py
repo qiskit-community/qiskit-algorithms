@@ -152,6 +152,11 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
         self.estimator = estimator
         self._ansatz = ansatz
+
+        # TODO: remove the following line once AdaptVQE doesn't use the EvolvedOperatorAnsatz class
+        #  anymore
+        self._original_ansatz = ansatz
+
         self.optimizer = optimizer
         self.gradient = gradient
         # this has to go via getters and setters due to the VariationalAlgorithm interface
