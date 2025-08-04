@@ -103,7 +103,6 @@ def _handle_zero_ops(
 
     if observables_list:
         for observable in observables_list:
-            # TODO: should consider Pauli objects too
             if observable == 0 or (
                 isinstance(observable, SparsePauliOp) and not observable.simplify().coeffs.any()
             ):

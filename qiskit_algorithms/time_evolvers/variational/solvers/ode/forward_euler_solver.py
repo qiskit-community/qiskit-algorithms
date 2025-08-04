@@ -66,8 +66,6 @@ class ForwardEulerSolver(OdeSolver):
             self.y = list(np.add(self.y, self._step_length * self.fun(self.t, self.y)))
             self.t += self._step_length
             return True, None
-        # TODO: why do we catch an Exception here? It makes debugging errors quite obscure, as the
-        #  evolve method continues without updating the parameters without signaling the problem
         except Exception as ex:  # pylint: disable=broad-except
             return False, f"Unknown ODE solver error: {str(ex)}."
 
