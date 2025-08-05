@@ -71,7 +71,7 @@ def run_estimator_job(
                 purged_pubs.append((pub[0], observables[mask], None, precision))
             else:
                 # try to apply mask, if not possible then we shouldn't have applied it because the
-                # parameter values are broadcasted
+                # parameter values are broadcast
                 try:
                     purged_pubs.append(
                         (pub[0], observables[mask], parameter_values[mask], precision)
