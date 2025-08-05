@@ -36,6 +36,7 @@ from ....gradients import (
     LinCombQGT,
     LinCombEstimatorGradient,
 )
+from ....run_estimator_job import run_estimator_job
 
 
 class RealMcLachlanPrinciple(RealVariationalPrinciple):
@@ -102,12 +103,9 @@ class RealMcLachlanPrinciple(RealVariationalPrinciple):
             AlgorithmError: If a gradient job fails.
         """
 
-        try:
-            estimator_job = self.gradient._estimator.run([(ansatz, hamiltonian, param_values)])
-            energy = estimator_job.result()[0].data.evs
-        except Exception as exc:
-            raise AlgorithmError("The primitive job failed!") from exc
-
+        energy = run_estimator_job(self.gradient._estimator, [(ansatz, hamiltonian, param_values)])[
+            0
+        ].data.evs
         modified_hamiltonian = self._construct_modified_hamiltonian(hamiltonian, real(energy))
 
         try:

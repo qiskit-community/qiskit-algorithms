@@ -28,7 +28,7 @@ from ..base.base_estimator_gradient import BaseEstimatorGradient
 from ..base.estimator_gradient_result import EstimatorGradientResult
 from ..utils import DerivativeType, _make_lin_comb_gradient_circuit, _make_lin_comb_observables
 from ...custom_types import Transpiler
-from ...exceptions import AlgorithmError
+from ...run_estimator_job import run_estimator_job
 from ...utils.circuit_key import _circuit_key
 
 
@@ -213,11 +213,7 @@ class LinCombEstimatorGradient(BaseEstimatorGradient):
                 pubs[index] = (new_circuit, new_observable) + pub[2:]
 
         # Run the single job with all circuits.
-        job = self._estimator.run(pubs)
-        try:
-            results = job.result()
-        except AlgorithmError as exc:
-            raise AlgorithmError("Estimator job failed.") from exc
+        results = run_estimator_job(self._estimator, pubs)
 
         # Compute the gradients.
         gradients = []

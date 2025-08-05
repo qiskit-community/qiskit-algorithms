@@ -61,13 +61,13 @@ class ForwardEulerSolver(OdeSolver):
         """
         Takes an Euler step.
         """
-        try:
-            self._y_old = self.y
-            self.y = list(np.add(self.y, self._step_length * self.fun(self.t, self.y)))
-            self.t += self._step_length
-            return True, None
-        except Exception as ex:  # pylint: disable=broad-except
-            return False, f"Unknown ODE solver error: {str(ex)}."
+        # try:
+        self._y_old = self.y
+        self.y = list(np.add(self.y, self._step_length * self.fun(self.t, self.y)))
+        self.t += self._step_length
+        return True, None
+        # except Exception as ex:  # pylint: disable=broad-except
+        #     return False, f"Unknown ODE solver error: {str(ex)}."
 
     def _dense_output_impl(self):
         return ConstantDenseOutput(self.t_old, self.t, self._y_old)
