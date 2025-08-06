@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,14 +15,14 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Mapping, Callable, Sequence
-from typing import Type
+from typing import Type, Any
 
 import numpy as np
 from scipy.integrate import OdeSolver
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
@@ -34,7 +34,7 @@ from .variational_principles.variational_principle import VariationalPrinciple
 from .var_qte_result import VarQTEResult
 
 from ..time_evolution_problem import TimeEvolutionProblem
-
+from ...custom_types import Transpiler
 from ...observables_evaluator import estimate_observables
 
 
@@ -77,12 +77,15 @@ class VarQTE(ABC):
         ansatz: QuantumCircuit,
         initial_parameters: Mapping[Parameter, float] | Sequence[float],
         variational_principle: VariationalPrinciple,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         ode_solver: Type[OdeSolver] | str = ForwardEulerSolver,
         lse_solver: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None,
         num_timesteps: int | None = None,
         imag_part_tol: float = 1e-7,
         num_instability_tol: float = 1e-7,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -103,9 +106,14 @@ class VarQTE(ABC):
             num_instability_tol: The amount of negative value that is allowed to be
                 rounded up to 0 for quantities that are expected to be
                 non-negative.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
-        self.ansatz = ansatz
+        self._ansatz = ansatz
         self.initial_parameters = initial_parameters
         self.variational_principle = variational_principle
         self.estimator = estimator
@@ -117,6 +125,25 @@ class VarQTE(ABC):
         # OdeFunction abstraction kept for potential extensions - unclear at the moment;
         # currently hidden from the user
         self._ode_function_factory = OdeFunctionFactory()
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self.ansatz = ansatz
+
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        """Returns the ansatz used by the VarQTE algorithm"""
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        """Sets the ansatz used by the VarQTE algorithm"""
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
 
     def evolve(self, evolution_problem: TimeEvolutionProblem) -> VarQTEResult:
         """Apply Variational Quantum Time Evolution to the given operator.
@@ -146,6 +173,9 @@ class VarQTE(ABC):
 
         hamiltonian = evolution_problem.hamiltonian
 
+        if self.ansatz.layout is not None:
+            hamiltonian = hamiltonian.apply_layout(self.ansatz.layout)
+
         evolved_state, param_values, time_points = self._evolve(
             init_state_param_dict,
             hamiltonian,
@@ -161,10 +191,17 @@ class VarQTE(ABC):
                 evol_state = self.ansatz.assign_parameters(
                     dict(zip(init_state_param_dict.keys(), values))
                 )
+                if self.ansatz.layout is not None:
+                    aux_operators = [
+                        obs.apply_layout(self.ansatz.layout)
+                        for obs in evolution_problem.aux_operators
+                    ]
+                else:
+                    aux_operators = evolution_problem.aux_operators
                 observable = estimate_observables(
                     self.estimator,
                     evol_state,
-                    evolution_problem.aux_operators,
+                    aux_operators,
                 )
                 observables.append(observable)
 

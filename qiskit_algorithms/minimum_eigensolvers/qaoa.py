@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,12 +20,13 @@ import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library.n_local.qaoa_ansatz import QAOAAnsatz
 from qiskit.quantum_info.operators.base_operator import BaseOperator
-from qiskit.primitives import BaseSampler
+from qiskit.primitives import BaseSamplerV2
 
 from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.optimizers import Minimizer, Optimizer
 
 from .sampling_vqe import SamplingVQE
+from ..custom_types import Transpiler
 
 
 class QAOA(SamplingVQE):
@@ -54,7 +55,7 @@ class QAOA(SamplingVQE):
     the QAOA object has been constructed.
 
     Attributes:
-        sampler (BaseSampler): The sampler primitive to sample the circuits.
+        sampler (BaseSamplerV2): The sampler primitive to sample the circuits.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
             can either be an :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
@@ -72,6 +73,7 @@ class QAOA(SamplingVQE):
             evaluation count, the optimizer parameters for the ansatz, the evaluated value, and
             the metadata dictionary.
 
+
     References:
         [1]: Farhi, E., Goldstone, J., Gutmann, S., "A Quantum Approximate Optimization Algorithm"
             `arXiv:1411.4028 <https://arxiv.org/abs/1411.4028>`__
@@ -85,7 +87,7 @@ class QAOA(SamplingVQE):
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         optimizer: Optimizer | Minimizer,
         *,
         reps: int = 1,
@@ -94,6 +96,8 @@ class QAOA(SamplingVQE):
         initial_point: np.ndarray | None = None,
         aggregation: float | Callable[[list[float]], float] | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -117,6 +121,10 @@ class QAOA(SamplingVQE):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 evaluated value, the metadata dictionary.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         validate_min("reps", reps, 1)
 
@@ -124,6 +132,8 @@ class QAOA(SamplingVQE):
         self.mixer = mixer
         self.initial_state = initial_state
         self._cost_operator = None
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
         super().__init__(
             sampler=sampler,
@@ -136,6 +146,9 @@ class QAOA(SamplingVQE):
 
     def _check_operator_ansatz(self, operator: BaseOperator):
         # Recreates a circuit based on operator parameter.
-        self.ansatz = QAOAAnsatz(
+        ansatz = QAOAAnsatz(
             operator, self.reps, initial_state=self.initial_state, mixer_operator=self.mixer
-        ).decompose()  # TODO remove decompose once #6674 is fixed
+        )
+        if self._transpiler is not None:
+            ansatz = self._transpiler.run(ansatz, **self._transpiler_options)
+        self.ansatz = ansatz

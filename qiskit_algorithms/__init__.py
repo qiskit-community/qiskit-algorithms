@@ -277,6 +277,7 @@ from .phase_estimators import (
 )
 from .exceptions import AlgorithmError
 from .observables_evaluator import estimate_observables
+from .run_estimator_job import run_estimator_job
 
 from .time_evolvers import (
     ImaginaryTimeEvolver,
@@ -359,6 +360,7 @@ __all__ = [
     "IterativePhaseEstimation",
     "AlgorithmError",
     "estimate_observables",
+    "run_estimator_job",
     "VarQITE",
     "VarQRTE",
     "VarQTE",

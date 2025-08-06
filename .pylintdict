@@ -145,6 +145,7 @@ hopkins
 hoyer
 https
 hyperparameters
+iae
 idx
 im
 imag
@@ -155,6 +156,7 @@ interatomic
 ints
 iprint
 iqft
+isa
 ising
 iteratively
 iz
@@ -333,6 +335,7 @@ spsa
 sqrt
 statefn
 statevector
+statevectorestimator
 statevectors
 stddev
 stdout
@@ -367,8 +370,12 @@ trainability
 transpilation
 transpile
 transpiled
+transpiler
+transpiler's
+transpiling
 trotterization
 trotterized
+tweedledum
 uncompute
 unitaries
 univariate

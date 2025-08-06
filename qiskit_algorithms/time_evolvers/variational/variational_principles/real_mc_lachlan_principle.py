@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,7 +22,7 @@ from numpy import real
 
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
@@ -36,6 +36,7 @@ from ....gradients import (
     LinCombQGT,
     LinCombEstimatorGradient,
 )
+from ....run_estimator_job import run_estimator_job
 
 
 class RealMcLachlanPrinciple(RealVariationalPrinciple):
@@ -70,7 +71,7 @@ class RealMcLachlanPrinciple(RealVariationalPrinciple):
                     "The provided gradient instance does not contain an estimator primitive."
                 ) from exc
         else:
-            estimator = Estimator()
+            estimator = StatevectorEstimator()
             gradient = LinCombEstimatorGradient(estimator, derivative_type=DerivativeType.IMAG)
 
         if qgt is None:
@@ -102,12 +103,9 @@ class RealMcLachlanPrinciple(RealVariationalPrinciple):
             AlgorithmError: If a gradient job fails.
         """
 
-        try:
-            estimator_job = self.gradient._estimator.run([ansatz], [hamiltonian], [param_values])
-            energy = estimator_job.result().values[0]
-        except Exception as exc:
-            raise AlgorithmError("The primitive job failed!") from exc
-
+        energy = run_estimator_job(self.gradient._estimator, [(ansatz, hamiltonian, param_values)])[
+            0
+        ].data.evs
         modified_hamiltonian = self._construct_modified_hamiltonian(hamiltonian, real(energy))
 
         try:

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2023.
+# (C) Copyright IBM 2018, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -74,7 +74,7 @@ class UMDA(Optimizer):
             from qiskit_algorithms.optimizers import UMDA
             from qiskit_algorithms import QAOA
             from qiskit.quantum_info import Pauli
-            from qiskit.primitives import Sampler
+            from qiskit.primitives import StatevectorSampler
 
             X = Pauli("X")
             I = Pauli("I")
@@ -89,7 +89,7 @@ class UMDA(Optimizer):
             p = 2  # Toy example: 2 layers with 2 parameters in each layer: 4 variables
 
             opt = UMDA(maxiter=100, size_gen=20)
-            qaoa = QAOA(Sampler(), opt,reps=p)
+            qaoa = QAOA(StatevectorSampler(), opt,reps=p)
             result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
         If it is desired to modify the percentage of individuals considered to update the
@@ -99,7 +99,7 @@ class UMDA(Optimizer):
         .. code-block:: python
 
             opt = UMDA(maxiter=100, size_gen=20, alpha = 0.6)
-            qaoa = QAOA(Sampler(), opt,reps=p)
+            qaoa = QAOA(StatevectorSampler(), opt,reps=p)
             result = qaoa.compute_minimum_eigenvalue(operator=H2_op)
 
     .. note::

@@ -1,0 +1,139 @@
+---
+prelude: >
+    Following up on the deprecation of V1 primitives in Qiskit 1.X and their
+    subsequent removal in Qiskit 2.X, this release of ``qiskit-algorithms``
+    drops their support in favor of the V2 primitives. You can read about
+    how to modify your imports in your code in the
+    [Qiskit migration guide to the V2 primitives](https://quantum.cloud.ibm.com/docs/en/migration-guides/v2-primitives).
+    Since V2 primitives may require users to transpile their circuit, it is
+    now possible for the users to provide the classes that define their own
+    :class:`~qiskit.circuit.QuantumCircuit` with a ``Transpiler``
+    along with some options. A ``Transpiler`` is any object having a ``run``
+    method that can take as input a
+    :class:`~qiskit.circuit.QuantumCircuit` or a list thereof and
+    additional options and returns the transpiled version of its input(s)
+    according to the provided options.
+features:
+  - |
+    Some classes, notably those that create their own
+    :class:`~qiskit.circuit.QuantumCircuit`, now support being passed a
+    ``Transpiler`` along with some options. A ``Transpiler`` is any object
+    having a `run` method that can take as input
+    a :class:`~qiskit.circuit.QuantumCircuit` or a list thereof and additional options and returns
+    the transpiled version of its input(s) according to the provided options.
+    Passing a ``Transpiler`` to such a class is done via the `transpiler`
+    keyword-only argument at instantiation, and additional options passed to
+    its `run` method can be passed using the `transpiler_options` keyword-only
+    argument at instantiation. The classes that support this feature are
+
+      - :class:`.Grover`
+      - :class:`.AmplitudeEstimation`
+      - :class:`.FasterAmplitudeEstimation`
+      - :class:`.IterativeAmplitudeEstimation`
+      - :class:`.MaximumLikelihoodAmplitudeEstimation`
+      - :class:`.LinCombEstimatorGradient`
+      - :class:`.LinCombQGT`
+      - :class:`.LinCombSamplerGradient`
+      - :class:`.QAOA`
+      - :class:`.IterativePhaseEstimation`
+      - :class:`.HamiltonianPhaseEstimation`
+      - :class:`.PhaseEstimation`
+      - :class:`.ComputeUncompute`
+      - :class:`.TrotterQRTE`
+
+    Additionally, the following classes also support this feature. Contrarily
+    to those above, these classes don't create their own
+    :class:`qiskit.circuit.QuantumCircuit`, which is instead provided by the user.
+    As such, transpiling the circuits prior to passing them to theses classes
+    has the same effect as providing these classes with a `Transpiler`. These classes are
+
+      - :class:`.FiniteDiffEstimatorGradient`
+      - :class:`.FiniteDiffSamplerGradient`
+      - :class:`.ParamShiftEstimatorGradient`
+      - :class:`.ParamShiftSamplerGradient`
+      - :class:`.SPSAEstimatorGradient`
+      - :class:`.SPSASamplerGradient`
+      - :class:`.VQD`
+      - :class:`.VQE`
+      - :class:`.PVQD`
+      - :class:`.VarQITE`
+      - :class:`.VarQRTE`
+issues:
+  - |
+    Rare bugs might occur when using ``qiskit-algorithms`` in version ``0.4``
+    in conjunction with ``qiskit`` in version ``2.1.0`` and ``2.1.1``. If you encounter some
+    difficulties using this version of ``qiskit``, try to downgrade to ``2.0.X`` or upgrade to ``2.1.2``
+    or newer.
+  - |
+    Passing to :class:`.VQE` or :class:`.VQD` a transpiler along with an ansatz
+    with a number of qubits that hasn't been set results in an error. Setting
+    explicitly the number of qubits fixes it.
+upgrade:
+  - |
+    The oldest supported version of Qiskit is now ``1.0``.
+  - |
+    The V1 primitives such as ``Sampler`` and ``Estimator`` from ``qiskit`` or
+    ``SamplerV1`` and ``EstimatorV1`` from ``qiskit-ibm-runtime`` are no longer
+    supported.
+  - |
+    Upgrading to ``qiskit-algorithms`` version ``0.4`` can be done in the
+    following manner:
+
+      1. Replace all usage of V1 primitives by their V2 counterpart.
+      2. If needed, provide the class you want to use with a ``Transpiler`` set
+         up for the backend you wish to use. Note that if you use the
+         Statevector simulation primitives from Qiskit you do not need to use
+         this feature. You do need to use it if you intend to run on an actual
+         quantum computer.
+
+    For instance, the following code for instantiating the :class:`.Grover`
+    class in the ``0.3`` version::
+
+        grover = Grover(
+            sampler=Sampler()
+        )
+
+    would be translated to, using a custom :class:`~qiskit.providers.fake_provider.GenericBackendV2` to
+    showcase the transpilation options::
+
+        from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+        from qiskit.providers.fake_provider import GenericBackendV2
+
+        coupling_map = [(0, 1), (1, 2)]
+        backend = GenericBackendV2(num_qubits=3, coupling_map=coupling_map)
+
+        pm = generate_preset_pass_manager(optimization_level=2, backend=backend)
+
+        def callback(**kwargs):
+            if kwargs["count"] == 0:
+                print(f"Callback function has been called!")
+
+        grover = Grover(
+            sampler=StatevectorSampler(),
+            transpiler=pm,
+            transpiler_options={"callback": callback}
+        )
+
+    Note that the ``transpiler`` and ``transpiler_options`` arguments are
+    keyword-only, you must use the above syntax to use them. All options in the
+    ``transpiler_options`` dictionary will be passed to the ``run`` method of the
+    ``transpiler``. Similarly, if creating a :class:`.VQE` instance could be
+    done like so in the ``0.3`` version::
+
+        vqe = VQE(Estimator(), ansatz, optimizer)
+
+    You will now have to write the following in the ``0.4`` version::
+
+        vqe = VQE(
+            StatevectorEstimator(),
+            ansatz,
+            optimizer,
+            transpiler=pm,
+            transpiler_options={"callback": callback}
+        )
+
+    Note that since :class:`.VQE` doesn't create a
+    :class:`~qiskit.circuit.QuantumCircuit` internally but instead uses the
+    ansatz provided by the user, transpiling the ansatz before passing it to
+    :class:`.VQE` allows to not provide :class:`.VQE` with a ``Transpiler``.
+    If one is provided, the ansatz will be transpiled using it regardless.

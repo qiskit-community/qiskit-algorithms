@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2023.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -23,7 +23,7 @@ class PhaseEstimationResult(PhaseEstimatorResult):
 
     This class is instantiated by the ``PhaseEstimation`` class, not via user code.
     The ``PhaseEstimation`` class generates a list of phases and corresponding weights. Upon
-    completion it returns the results as an instance of this class. The main method for
+    completion, it returns the results as an instance of this class. The main method for
     accessing the results is `filter_phases`.
 
     The canonical phase satisfying the ``PhaseEstimator`` interface, returned by the

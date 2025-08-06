@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2024.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -21,8 +21,7 @@ import numpy as np
 
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.quantum_info import Statevector
-from qiskit.providers import Options
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 
 from ..base.base_qgt import BaseQGT
 from ..base.qgt_result import QGTResult
@@ -66,30 +65,24 @@ class ReverseQGT(BaseQGT):
             derivative_type: Determines whether the complex QGT or only the real or imaginary
                 parts are calculated.
         """
-        dummy_estimator = Estimator()  # this method does not need an estimator
+        dummy_estimator = StatevectorEstimator()  # this method does not need an estimator
         super().__init__(dummy_estimator, phase_fix, derivative_type)
-
-    @property
-    def options(self) -> Options:
-        """There are no options for the reverse QGT, returns an empty options dict.
-
-        Returns:
-            Empty options.
-        """
-        return Options()
 
     def _run(  # pylint: disable=arguments-renamed
         self,
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        precision: float | None = None,
     ) -> QGTResult:
         """Compute the QGT on the given circuits."""
         g_circuits, g_parameter_values, g_parameter_sets = self._preprocess(
             circuits, parameter_values, parameters, self.SUPPORTED_GATES
         )
-        results = self._run_unique(g_circuits, g_parameter_values, g_parameter_sets, **options)
+        results = self._run_unique(
+            g_circuits, g_parameter_values, g_parameter_sets, precision=precision
+        )
         return self._postprocess(results, circuits, parameter_values, parameters)
 
     def _run_unique(
@@ -97,7 +90,8 @@ class ReverseQGT(BaseQGT):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameter_sets: Sequence[Sequence[Parameter]],
-        **options,  # pylint: disable=unused-argument
+        *,
+        precision: float | None = None,
     ) -> QGTResult:
         num_qgts = len(circuits)
         qgts = []
@@ -108,7 +102,6 @@ class ReverseQGT(BaseQGT):
             circuit = circuits[k]
             parameters = list(parameter_sets[k])
 
-            num_parameters = len(parameters)
             original_parameter_order = [p for p in circuit.parameters if p in parameters]
             metadata.append({"parameters": original_parameter_order})
 
@@ -216,7 +209,8 @@ class ReverseQGT(BaseQGT):
             # append and cast to real/imag if required
             qgts.append(self._to_derivtype(qgt))
 
-        result = QGTResult(qgts, self.derivative_type, metadata, options=None)
+        # Doesn't really make sense to pass the precision since it's not used
+        result = QGTResult(qgts, self.derivative_type, metadata, precision=precision)
         return result
 
     def _to_derivtype(self, qgt):

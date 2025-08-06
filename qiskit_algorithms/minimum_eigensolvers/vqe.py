@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,15 +17,17 @@ from __future__ import annotations
 import logging
 from time import time
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Iterable
 
 import numpy as np
 
 from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseEstimator
+from qiskit.primitives import BaseEstimatorV2
+from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.gradients import BaseEstimatorGradient
+from ..custom_types import Transpiler
 
 from ..exceptions import AlgorithmError
 from ..list_or_dict import ListOrDict
@@ -94,9 +96,8 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     the VQE object has been constructed.
 
     Attributes:
-        estimator (BaseEstimator): The estimator primitive to compute the expectation value of the
+        estimator (BaseEstimatorV2): The estimator primitive to compute the expectation value of the
             Hamiltonian operator.
-        ansatz (QuantumCircuit): A parameterized quantum circuit to prepare the trial state.
         optimizer (Optimizer | Minimizer): A classical optimizer to find the minimum energy. This
             can either be a Qiskit :class:`.Optimizer` or a callable implementing the
             :class:`.Minimizer` protocol.
@@ -114,13 +115,15 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         ansatz: QuantumCircuit,
         optimizer: Optimizer | Minimizer,
         *,
         gradient: BaseEstimatorGradient | None = None,
         initial_point: np.ndarray | None = None,
         callback: Callable[[int, np.ndarray, float, dict[str, Any]], None] | None = None,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
@@ -139,16 +142,32 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             callback: A callback that can access the intermediate data at each optimization step.
                 These data are: the evaluation count, the optimizer parameters for the ansatz, the
                 estimated value, and the metadata dictionary.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
         super().__init__()
 
         self.estimator = estimator
-        self.ansatz = ansatz
+        self._ansatz = ansatz
+
+        # TODO: remove the following line once AdaptVQE doesn't use the EvolvedOperatorAnsatz class
+        #  anymore
+        self._original_ansatz = ansatz
+
         self.optimizer = optimizer
         self.gradient = gradient
         # this has to go via getters and setters due to the VariationalAlgorithm interface
         self.initial_point = initial_point
         self.callback = callback
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
+
+        if self._transpiler is not None:
+            self.ansatz = ansatz
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -158,11 +177,29 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
     def initial_point(self, value: np.ndarray | None) -> None:
         self._initial_point = value
 
+    @property
+    def ansatz(self) -> QuantumCircuit:
+        """
+        A parameterized quantum circuit to prepare the trial state. If a transpiler has been
+        provided, the ansatz will be automatically transpiled upon being set.
+        """
+        return self._ansatz
+
+    @ansatz.setter
+    def ansatz(self, value: QuantumCircuit | None) -> None:
+        if self._transpiler is not None:
+            self._ansatz = self._transpiler.run(value, **self._transpiler_options)
+        else:
+            self._ansatz = value
+
     def compute_minimum_eigenvalue(
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
     ) -> VQEResult:
+        if self.ansatz.layout is not None:
+            operator = operator.apply_layout(self.ansatz.layout)
+
         self._check_operator_ansatz(operator)
 
         initial_point = validate_initial_point(self.initial_point, self.ansatz)
@@ -211,6 +248,29 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
         )
 
         if aux_operators is not None:
+            if self.ansatz.layout is not None:
+                # We need to handle the array entries being zero or Optional i.e. having value None
+                # len(self.ansatz.layout.final_index_layout()) is the original number of qubits in the
+                # ansatz, before transpilation
+                zero_op = SparsePauliOp.from_list(
+                    [("I" * len(self.ansatz.layout.final_index_layout()), 0)]
+                )
+                key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
+                if isinstance(aux_operators, list):
+                    key_op_iterator = enumerate(aux_operators)
+                    converted: ListOrDict[BaseOperator] = [zero_op] * len(aux_operators)
+                else:
+                    key_op_iterator = aux_operators.items()
+                    converted = {}
+                for key, op in key_op_iterator:
+                    if op is not None:
+                        converted[key] = (
+                            zero_op.apply_layout(self.ansatz.layout)
+                            if op == 0
+                            else op.apply_layout(self.ansatz.layout)
+                        )
+
+                aux_operators = converted
             aux_operators_evaluated = estimate_observables(
                 self.estimator,
                 self.ansatz,
@@ -258,22 +318,23 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
             nonlocal eval_count
 
             # handle broadcasting: ensure parameters is of shape [array, array, ...]
-            parameters = np.reshape(parameters, (-1, num_parameters)).tolist()
-            batch_size = len(parameters)
+            parameters = np.reshape(parameters, (-1, num_parameters))
 
             try:
-                job = self.estimator.run(batch_size * [ansatz], batch_size * [operator], parameters)
-                estimator_result = job.result()
+                job = self.estimator.run([(ansatz, operator, parameters)])
+                estimator_result = job.result()[0]
             except Exception as exc:
                 raise AlgorithmError("The primitive job to evaluate the energy failed!") from exc
 
-            values = estimator_result.values
+            values = estimator_result.data.evs
+
+            if not values.shape:
+                values = values.reshape(1)
 
             if self.callback is not None:
-                metadata = estimator_result.metadata
-                for params, value, meta in zip(parameters, values, metadata):
+                for params, value in zip(parameters.reshape(-1, 1), values):
                     eval_count += 1
-                    self.callback(eval_count, params, value, meta)
+                    self.callback(eval_count, params, value, estimator_result.metadata)
 
             energy = values[0] if len(values) == 1 else values
 

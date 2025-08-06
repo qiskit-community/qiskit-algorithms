@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,40 +14,49 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence, Mapping, Iterable, MappingView
+from collections.abc import Callable, Iterable
 from typing import Any
 
-from dataclasses import dataclass
-
 import numpy as np
-from qiskit.circuit import QuantumCircuit
-from qiskit.primitives import BaseSampler, BaseEstimator, EstimatorResult
-from qiskit.primitives.utils import init_observable, _circuit_key
+from qiskit.primitives import (
+    BaseSamplerV2,
+    BaseEstimatorV2,
+    PubResult,
+    EstimatorPubLike,
+    DataBin,
+    SamplerPubLike,
+    PrimitiveResult,
+)
+from qiskit.primitives.containers.estimator_pub import EstimatorPub
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.algorithm_job import AlgorithmJob
 
 
-@dataclass(frozen=True)
-class _DiagonalEstimatorResult(EstimatorResult):
+class _DiagonalEstimatorResult(PubResult):
     """A result from an expectation of a diagonal observable."""
 
-    # TODO make each measurement a dataclass rather than a dict
-    best_measurements: Sequence[Mapping[str, Any]] | None = None
+    def __init__(
+        self,
+        data: DataBin,
+        metadata: dict[str, Any] | None = None,
+        best_measurements: list[dict[str, Any]] | None = None,
+    ):
+        super().__init__(data, metadata)
+        # TODO make each measurement a dataclass rather than a dict
+        self.best_measurements: list[dict[str, Any]] | None = best_measurements
 
 
-class _DiagonalEstimator(BaseEstimator):
+class _DiagonalEstimator(BaseEstimatorV2):
     """An estimator for diagonal observables."""
 
     def __init__(
         self,
-        sampler: BaseSampler,
+        sampler: BaseSamplerV2,
         aggregation: float | Callable[[Iterable[tuple[float, float]]], float] | None = None,
-        callback: Callable[[Sequence[Mapping[str, Any]]], None] | None = None,
-        **options,
+        callback: Callable[[list[dict[str, Any]]], None] | None = None,
     ) -> None:
-        r"""Evaluate the expectation of quantum state with respect to a diagonal operator.
+        r"""Evaluate the expectation of quantum state with respect to diagonal operators.
 
         Args:
             sampler: The sampler used to evaluate the circuits.
@@ -55,93 +64,82 @@ class _DiagonalEstimator(BaseEstimator):
                 this specified the CVaR :math:`\alpha` parameter.
             callback: A callback which is given the best measurements of all circuits in each
                 evaluation.
-            run_options: Options for the sampler.
-
         """
-        super().__init__(options=options)
-        self._circuits: list[QuantumCircuit] = []  # See Qiskit pull request 11051
-        self._parameters: list[MappingView] = []
-        self._observables: list[SparsePauliOp] = []
-
         self.sampler = sampler
+
         if not callable(aggregation):
             aggregation = _get_cvar_aggregation(aggregation)
 
         self.aggregation = aggregation
         self.callback = callback
-        self._circuit_ids: dict[int, QuantumCircuit] = {}
-        self._observable_ids: dict[int, BaseOperator] = {}
 
-    def _run(
-        self,
-        circuits: Sequence[QuantumCircuit],
-        observables: Sequence[BaseOperator],
-        parameter_values: Sequence[Sequence[float]],
-        **run_options,
-    ) -> AlgorithmJob:
-        circuit_indices = []
-        for circuit in circuits:
-            key = _circuit_key(circuit)
-            index = self._circuit_ids.get(key)
-            if index is not None:
-                circuit_indices.append(index)
-            else:
-                circuit_indices.append(len(self._circuits))
-                self._circuit_ids[key] = len(self._circuits)
-                self._circuits.append(circuit)
-                self._parameters.append(circuit.parameters)
-        observable_indices = []
-        for observable in observables:
-            index = self._observable_ids.get(id(observable))
-            if index is not None:
-                observable_indices.append(index)
-            else:
-                observable_indices.append(len(self._observables))
-                self._observable_ids[id(observable)] = len(self._observables)
-                converted_observable = init_observable(observable)
-                _check_observable_is_diagonal(converted_observable)  # check it's diagonal
-                self._observables.append(converted_observable)
-        job = AlgorithmJob(
-            self._call, circuit_indices, observable_indices, parameter_values, **run_options
-        )
-        job.submit()
+    # If precision is set to None, the default number of shots of the Sampler will be used. It will
+    # otherwise be computed as a function of the observable and the precision
+    def run(
+        self, pubs: Iterable[EstimatorPubLike], *, precision: float | None = None
+    ) -> AlgorithmJob[PrimitiveResult[_DiagonalEstimatorResult]]:
+        # Since we will convert the standalone observables to a list, this `observables` list will
+        # remember the shape of the original observables, either standalone or in a list.
+        coerced_pubs = [EstimatorPub.coerce(pub, precision) for pub in pubs]
+
+        job = AlgorithmJob(self._run, coerced_pubs)
+        job._submit()
         return job
 
-    def _call(
-        self,
-        circuits: Sequence[int],
-        observables: Sequence[int],
-        parameter_values: Sequence[Sequence[float]],
-        **run_options,
-    ) -> _DiagonalEstimatorResult:
-        job = self.sampler.run(
-            [self._circuits[i] for i in circuits],
-            parameter_values,
-            **run_options,
-        )
-        sampler_result = job.result()
-        samples = sampler_result.quasi_dists
+    def _run(self, pubs: list[EstimatorPub]) -> PrimitiveResult[_DiagonalEstimatorResult]:
+        return PrimitiveResult([self._run_pub(pub) for pub in pubs])
 
-        # a list of dictionaries containing: {state: (measurement probability, value)}
-        evaluations: list[dict[int, tuple[float, float]]] = [
-            {
-                state: (probability, _evaluate_sparsepauli(state, self._observables[i]))
+    # Adapted from StatevectorEstimator, OK with the license?
+    def _run_pub(self, pub: EstimatorPub) -> _DiagonalEstimatorResult:
+        circuit = pub.circuit
+        observables = pub.observables
+        parameter_values = pub.parameter_values
+        bound_circuits = parameter_values.bind_all(circuit)
+        bc_circuits, bc_obs = np.broadcast_arrays(bound_circuits, observables)
+        sampler_pubs: list[SamplerPubLike] = []
+        evs = np.zeros_like(bc_circuits, dtype=np.float64)
+        best_measurements = []
+
+        for index in np.ndindex(*bc_circuits.shape):
+            bound_circuit = bc_circuits[index]
+            observable = bc_obs[index]
+            paulis, coeffs = zip(*observable.items())
+            obs = SparsePauliOp(paulis, coeffs)
+            _check_observable_is_diagonal(obs)
+
+            if pub.precision is None:
+                sampler_pubs.append((bound_circuit.measure_all(inplace=False),))
+            else:
+                sampler_pubs.append(
+                    (
+                        bound_circuit.measure_all(inplace=False),
+                        None,
+                        # Ensures a standard deviation of at most pub.precision
+                        round((sum(obs.coeffs) / pub.precision) ** 2),
+                    )
+                )
+
+        job = self.sampler.run(sampler_pubs)
+        sampler_pubs_results = job.result()
+
+        for sampler_pub_result, index in zip(sampler_pubs_results, np.ndindex(*bc_circuits.shape)):
+            observable = bc_obs[index]
+            paulis, coeffs = zip(*observable.items())
+            obs = SparsePauliOp(paulis, coeffs)
+            sampled = {
+                label: value / sampler_pub_result.data.meas.num_shots
+                for label, value in sampler_pub_result.data.meas.get_int_counts().items()
+            }
+            evaluated = {
+                state: (probability, _evaluate_sparsepauli(state, obs))
                 for state, probability in sampled.items()
             }
-            for i, sampled in zip(observables, samples)
-        ]
-
-        results = np.array([self.aggregation(evaluated.values()) for evaluated in evaluations])
-
-        # get the best measurements
-        best_measurements = []
-        num_qubits = self._circuits[0].num_qubits
-        for evaluated in evaluations:
+            evs[index] = np.real_if_close(self.aggregation(evaluated.values()))
             best_result = min(evaluated.items(), key=lambda x: x[1][1])
             best_measurements.append(
                 {
                     "state": best_result[0],
-                    "bitstring": bin(best_result[0])[2:].zfill(num_qubits),
+                    "bitstring": bin(best_result[0])[2:].zfill(pub.circuit.num_qubits),
                     "value": best_result[1][1],
                     "probability": best_result[1][0],
                 }
@@ -150,8 +148,15 @@ class _DiagonalEstimator(BaseEstimator):
         if self.callback is not None:
             self.callback(best_measurements)
 
+        data = DataBin(evs=evs, shape=evs.shape)
+
         return _DiagonalEstimatorResult(
-            values=results, metadata=sampler_result.metadata, best_measurements=best_measurements
+            data,
+            metadata={
+                "circuit_metadata": pub.circuit.metadata,
+                "target_precision": pub.precision,
+            },
+            best_measurements=best_measurements,
         )
 
 

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,17 +14,18 @@
 """The Iterative Quantum Phase Estimation Algorithm."""
 
 from __future__ import annotations
+from typing import Any
 
 import numpy
 
-from qiskit.circuit import QuantumCircuit, QuantumRegister
-from qiskit.circuit.classicalregister import ClassicalRegister
-from qiskit.primitives import BaseSampler
+from qiskit.circuit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit.primitives import BaseSamplerV2
 
 from qiskit_algorithms.exceptions import AlgorithmError
 
 from .phase_estimator import PhaseEstimator
 from .phase_estimator import PhaseEstimatorResult
+from ..custom_types import Transpiler
 
 
 class IterativePhaseEstimation(PhaseEstimator):
@@ -40,12 +41,20 @@ class IterativePhaseEstimation(PhaseEstimator):
     def __init__(
         self,
         num_iterations: int,
-        sampler: BaseSampler | None = None,
+        sampler: BaseSamplerV2 | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ) -> None:
         r"""
         Args:
             num_iterations: The number of iterations (rounds) of the phase estimation to run.
             sampler: The sampler primitive on which the circuit will be sampled.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are produced within this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
 
         Raises:
             ValueError: if num_iterations is not greater than zero.
@@ -58,6 +67,8 @@ class IterativePhaseEstimation(PhaseEstimator):
             raise ValueError("`num_iterations` must be greater than zero.")
         self._num_iterations = num_iterations
         self._sampler = sampler
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     # pylint: disable=too-many-positional-arguments
     def construct_circuit(
@@ -126,9 +137,17 @@ class IterativePhaseEstimation(PhaseEstimator):
             qc = self.construct_circuit(
                 unitary, state_preparation, k, -2 * numpy.pi * omega_coef, True
             )
+
+            if self._transpiler is not None:
+                qc = self._transpiler.run(qc, **self._transpiler_options)
+
             try:
                 sampler_job = self._sampler.run([qc])
-                result = sampler_job.result().quasi_dists[0]
+                result = sampler_job.result()[0].data.c
+                result = {
+                    label: value / result.num_shots
+                    for label, value in result.get_int_counts().items()
+                }
             except Exception as exc:
                 raise AlgorithmError("The primitive job failed!") from exc
             x = 1 if result.get(1, 0) > result.get(0, 0) else 0

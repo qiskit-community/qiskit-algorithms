@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,14 +18,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
-from copy import copy
+from typing import Any
 
 import numpy as np
 
 from qiskit.circuit import Parameter, ParameterExpression, QuantumCircuit
-from qiskit.primitives import BaseEstimator
-from qiskit.primitives.utils import _circuit_key
-from qiskit.providers import Options
+from qiskit.primitives import BaseEstimatorV2
 from qiskit.transpiler.passes import TranslateParameterizedGates
 
 from .qgt_result import QGTResult
@@ -38,6 +36,8 @@ from ..utils import (
 )
 
 from ...algorithm_job import AlgorithmJob
+from ...custom_types import Transpiler
+from ...utils.circuit_key import _circuit_key
 
 
 class BaseQGT(ABC):
@@ -52,10 +52,13 @@ class BaseQGT(ABC):
 
     def __init__(
         self,
-        estimator: BaseEstimator,
+        estimator: BaseEstimatorV2,
         phase_fix: bool = True,
         derivative_type: DerivativeType = DerivativeType.COMPLEX,
-        options: Options | None = None,
+        precision: float | None = None,
+        *,
+        transpiler: Transpiler | None = None,
+        transpiler_options: dict[str, Any] | None = None,
     ):
         r"""
         Args:
@@ -87,19 +90,24 @@ class BaseQGT(ABC):
 
                     \mathrm{QGT}_{ij}= [\langle \partial_i \psi | \partial_j \psi \rangle
                         - \langle\partial_i \psi | \psi \rangle \langle\psi | \partial_j \psi \rangle].
-
-            options: Backend runtime options used for circuit execution. The order of priority is:
-                options in ``run`` method > QGT's default options > primitive's default
-                setting. Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If provided, this number
+                takes precedence over the default precision of the primitive. If None, the default
+                precision of the primitive is used.
+            transpiler: An optional object with a `run` method allowing to transpile the circuits
+                that are run when using this algorithm. If set to `None`, these won't be
+                transpiled.
+            transpiler_options: A dictionary of options to be passed to the transpiler's `run`
+                method as keyword arguments.
         """
-        self._estimator: BaseEstimator = estimator
+        self._estimator: BaseEstimatorV2 = estimator
+        self._precision = precision
         self._phase_fix: bool = phase_fix
         self._derivative_type: DerivativeType = derivative_type
-        self._default_options = Options()
-        if options is not None:
-            self._default_options.update_options(**options)
         self._qgt_circuit_cache: dict[tuple, GradientCircuit] = {}
         self._gradient_circuit_cache: dict[tuple, GradientCircuit] = {}
+
+        self._transpiler = transpiler
+        self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
     @property
     def derivative_type(self) -> DerivativeType:
@@ -116,7 +124,8 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter] | None] | None = None,
-        **options,
+        *,
+        precision: float | Sequence[float] | None = None,
     ) -> AlgorithmJob:
         """Run the job of the QGTs on the given circuits.
 
@@ -127,10 +136,11 @@ class BaseQGT(ABC):
                 the specified parameters. Each sequence of parameters corresponds to a circuit in
                 ``circuits``. Defaults to None, which means that the QGTs of all parameters in
                 each circuit are calculated.
-            options: Primitive backend runtime options used for circuit execution.
-                The order of priority is: options in ``run`` method > QGT's
-                default options > primitive's default setting.
-                Higher priority setting overrides lower priority setting.
+            precision: Precision to be used by the underlying Estimator. If a single float is
+                provided, this number will be used for all circuits. If a sequence of floats is
+                provided, they will be used on a per-circuit basis. If not set, the gradient's default
+                precision will be used for all circuits, and if that is None (not set) then the
+                underlying primitive's (default) precision will be used for all circuits.
 
         Returns:
             The job object of the QGTs of the expectation values. The i-th result corresponds to
@@ -156,12 +166,12 @@ class BaseQGT(ABC):
             ]
         # Validate the arguments.
         self._validate_arguments(circuits, parameter_values, parameters)
-        # The priority of run option is as follows:
-        # options in ``run`` method > QGT's default options > primitive's default setting.
-        opts = copy(self._default_options)
-        opts.update_options(**options)
-        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, **opts.__dict__)
-        job.submit()
+
+        if precision is None:
+            precision = self.precision  # May still be None
+
+        job = AlgorithmJob(self._run, circuits, parameter_values, parameters, precision=precision)
+        job._submit()
         return job
 
     @abstractmethod
@@ -170,7 +180,8 @@ class BaseQGT(ABC):
         circuits: Sequence[QuantumCircuit],
         parameter_values: Sequence[Sequence[float]],
         parameters: Sequence[Sequence[Parameter]],
-        **options,
+        *,
+        precision: float | Sequence[float] | None,
     ) -> QGTResult:
         """Compute the QGTs on the given circuits."""
         raise NotImplementedError()
@@ -297,7 +308,7 @@ class BaseQGT(ABC):
             qgts=qgts,
             derivative_type=self.derivative_type,
             metadata=metadata,
-            options=results.options,
+            precision=results.precision,
         )
 
     @staticmethod
@@ -352,37 +363,21 @@ class BaseQGT(ABC):
                 )
 
     @property
-    def options(self) -> Options:
-        """Return the union of estimator options setting and QGT default options,
-        where, if the same field is set in both, the QGT's default options override
-        the primitive's default setting.
+    def precision(self) -> float | None:
+        """Return the precision used by the `run` method of the Estimator primitive. If None,
+        the default precision of the primitive is used.
 
         Returns:
-            The QGT default + estimator options.
+            The default precision.
         """
-        return self._get_local_options(self._default_options.__dict__)
+        return self._precision
 
-    def update_default_options(self, **options):
-        """Update the gradient's default options setting.
+    @precision.setter
+    def precision(self, precision: float | None):
+        """Update the gradient's default precision setting.
 
         Args:
-            **options: The fields to update the default options.
+            precision: The new default precision.
         """
 
-        self._default_options.update_options(**options)
-
-    def _get_local_options(self, options: Options) -> Options:
-        """Return the union of the primitive's default setting,
-        the QGT default options, and the options in the ``run`` method.
-        The order of priority is: options in ``run`` method > QGT's default options > primitive's
-        default setting.
-
-        Args:
-            options: The fields to update the options
-
-        Returns:
-            The QGT default + estimator + run options.
-        """
-        opts = copy(self._estimator.options)
-        opts.update_options(**options)
-        return opts
+        self._precision = precision

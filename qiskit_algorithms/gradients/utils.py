@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -22,7 +22,6 @@ from dataclasses import dataclass
 from enum import Enum
 
 import numpy as np
-
 from qiskit.circuit import (
     ClassicalRegister,
     Gate,
@@ -112,7 +111,8 @@ def _make_param_shift_parameter_values(  # pylint: disable=invalid-name
 ## Linear combination gradient and Linear combination QGT
 ################################################################################
 def _make_lin_comb_gradient_circuit(
-    circuit: QuantumCircuit, add_measurement: bool = False
+    circuit: QuantumCircuit,
+    add_measurement: bool = False,
 ) -> dict[Parameter, QuantumCircuit]:
     """Makes a circuit that computes the linear combination of the gradient circuits."""
     circuit_temp = circuit.copy()
@@ -136,7 +136,12 @@ def _make_lin_comb_gradient_circuit(
                 lin_comb_circuit.data.insert(i, lin_comb_circuit.data.pop())
                 lin_comb_circuit.h(qr_aux)
                 if add_measurement:
+                    # Measure so that cr_aux is removed by the following line
                     lin_comb_circuit.measure(qr_aux, cr_aux)
+                    # Merge classical registers
+                    lin_comb_circuit.remove_final_measurements()
+                    lin_comb_circuit.measure_all()
+
                 lin_comb_circuits[p] = lin_comb_circuit
 
     return lin_comb_circuits

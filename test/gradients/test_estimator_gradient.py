@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2024.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,14 +18,16 @@ from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
-
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.circuit.library import EfficientSU2, RealAmplitudes
 from qiskit.circuit.library.standard_gates import RXXGate, RYYGate, RZXGate, RZZGate
-from qiskit.primitives import Estimator
+from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
 from qiskit.quantum_info.random import random_pauli_list
+from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
+from qiskit.providers.fake_provider import GenericBackendV2
+
 
 from qiskit_algorithms.gradients import (
     FiniteDiffEstimatorGradient,
@@ -47,6 +49,8 @@ gradient_factories = [
     lambda estimator: ReverseEstimatorGradient(),  # does not take an estimator!
 ]
 
+THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)
+
 
 @ddt
 class TestEstimatorGradient(QiskitAlgorithmsTestCase):
@@ -55,7 +59,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_operators(self, grad):
         """Test the estimator gradient for different operators"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -74,7 +78,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_single_circuit_observable(self, grad):
         """Test the estimator gradient for a single circuit and observable"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -90,7 +94,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_p(self, grad):
         """Test the estimator gradient for p"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.h(0)
@@ -108,7 +112,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_u(self, grad):
         """Test the estimator gradient for u"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         b = Parameter("b")
         c = Parameter("c")
@@ -129,7 +133,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_efficient_su2(self, grad):
         """Test the estimator gradient for EfficientSU2"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         qc = EfficientSU2(2, reps=1)
         op = SparsePauliOp.from_list([("ZI", 1)])
         gradient = grad(estimator)
@@ -157,7 +161,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_2qubit_gate(self, grad):
         """Test the estimator gradient for 2 qubit gates"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         for gate in [RXXGate, RYYGate, RZZGate, RZXGate]:
             param_list = [[np.pi / 4], [np.pi / 2]]
             correct_results = [
@@ -182,7 +186,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_parameter_coefficient(self, grad):
         """Test the estimator gradient for parameter variables with coefficients"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         qc = RealAmplitudes(num_qubits=2, reps=1)
         qc.rz(qc.parameters[0].exp() + 2 * qc.parameters[1], 0)
         qc.rx(3.0 * qc.parameters[0] + qc.parameters[1].sin(), 1)
@@ -203,7 +207,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_parameters(self, grad):
         """Test the estimator gradient for parameters"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -246,7 +250,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_multi_arguments(self, grad):
         """Test the estimator gradient for multiple arguments"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         b = Parameter("b")
         qc = QuantumCircuit(1)
@@ -285,7 +289,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     def test_gradient_validation(self, grad):
         """Test estimator gradient's validation"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
@@ -303,7 +307,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
 
     def test_spsa_gradient(self):
         """Test the SPSA estimator gradient"""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         with self.assertRaises(ValueError):
             _ = SPSAEstimatorGradient(estimator, epsilon=-0.1)
         a = Parameter("a")
@@ -391,7 +395,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         op = SparsePauliOp(random_pauli_list(num_qubits=qc.num_qubits, size=size, seed=rng))
         op.coeffs = rng.normal(0, 10, size)
 
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         findiff = FiniteDiffEstimatorGradient(estimator, 1e-6)
         gradient = grad(estimator)
 
@@ -407,7 +411,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     @unpack
     def test_complex_gradient(self, derivative_type, expected_gradient_value):
         """Tests if the ``LinCombEstimatorGradient`` has the correct value."""
-        estimator = Estimator()
+        estimator = StatevectorEstimator()
         lcu = LinCombEstimatorGradient(estimator, derivative_type=derivative_type)
         reverse = ReverseEstimatorGradient(derivative_type=derivative_type)
 
@@ -424,54 +428,54 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         LinCombEstimatorGradient,
         SPSAEstimatorGradient,
     )
-    def test_options(self, grad):
-        """Test estimator gradient's run options"""
+    def test_precision(self, grad):
+        """Test estimator gradient's precision"""
         a = Parameter("a")
         qc = QuantumCircuit(1)
         qc.rx(a, 0)
         op = SparsePauliOp.from_list([("Z", 1)])
-        estimator = Estimator(options={"shots": 100})
+        estimator = StatevectorEstimator(default_precision=0.2)
         with self.subTest("estimator"):
             if grad is FiniteDiffEstimatorGradient or grad is SPSAEstimatorGradient:
                 gradient = grad(estimator, epsilon=1e-6)
             else:
                 gradient = grad(estimator)
-            options = gradient.options
+            precision = gradient.precision
             result = gradient.run([qc], [op], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.2)
+            self.assertEqual(precision, None)
 
         with self.subTest("gradient init"):
             if grad is FiniteDiffEstimatorGradient or grad is SPSAEstimatorGradient:
-                gradient = grad(estimator, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(estimator, epsilon=1e-6, precision=0.3)
             else:
-                gradient = grad(estimator, options={"shots": 200})
-            options = gradient.options
+                gradient = grad(estimator, precision=0.3)
+            precision = gradient.precision
             result = gradient.run([qc], [op], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 200)
-            self.assertEqual(options.get("shots"), 200)
+            self.assertEqual(result.precision, 0.3)
+            self.assertEqual(precision, 0.3)
 
         with self.subTest("gradient update"):
             if grad is FiniteDiffEstimatorGradient or grad is SPSAEstimatorGradient:
-                gradient = grad(estimator, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(estimator, epsilon=1e-6, precision=0.4)
             else:
-                gradient = grad(estimator, options={"shots": 200})
-            gradient.update_default_options(shots=100)
-            options = gradient.options
+                gradient = grad(estimator, precision=0.4)
+            gradient.precision = 0.5
+            precision = gradient.precision
             result = gradient.run([qc], [op], [[1]]).result()
-            self.assertEqual(result.options.get("shots"), 100)
-            self.assertEqual(options.get("shots"), 100)
+            self.assertEqual(result.precision, 0.5)
+            self.assertEqual(precision, 0.5)
 
         with self.subTest("gradient run"):
             if grad is FiniteDiffEstimatorGradient or grad is SPSAEstimatorGradient:
-                gradient = grad(estimator, epsilon=1e-6, options={"shots": 200})
+                gradient = grad(estimator, epsilon=1e-6, precision=0.6)
             else:
-                gradient = grad(estimator, options={"shots": 200})
-            options = gradient.options
-            result = gradient.run([qc], [op], [[1]], shots=300).result()
-            self.assertEqual(result.options.get("shots"), 300)
+                gradient = grad(estimator, precision=0.6)
+            precision = gradient.precision
+            result = gradient.run([qc], [op], [[1]], precision=0.7).result()
+            self.assertEqual(result.precision, 0.7)
             # Only default + estimator options. Not run.
-            self.assertEqual(options.get("shots"), 200)
+            self.assertEqual(precision, 0.6)
 
     @data(
         FiniteDiffEstimatorGradient,
@@ -523,6 +527,53 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
 
         with self.assertRaises(NotImplementedError):
             _ = derive_circuit(qc, p)
+
+    @data(
+        FiniteDiffEstimatorGradient,
+        ParamShiftEstimatorGradient,
+        LinCombEstimatorGradient,
+        SPSAEstimatorGradient,
+    )
+    def test_transpiler(self, gradient_cls):
+        """Test that the transpiler is called for the LinCombEstimatorGradient"""
+        pass_manager = generate_preset_pass_manager(
+            backend=THREE_QUBITS_BACKEND, optimization_level=1, seed_transpiler=42
+        )
+        counts = [0]
+
+        def callback(**kwargs):
+            counts[0] = kwargs["count"]
+
+        a = Parameter("a")
+        qc = QuantumCircuit(1)
+        qc.rx(a, 0)
+        op = SparsePauliOp.from_list([("Z", 1)])
+        estimator = StatevectorEstimator(default_precision=0.2)
+
+        # Test transpiler without options
+        if gradient_cls in [SPSAEstimatorGradient, FiniteDiffEstimatorGradient]:
+            gradient = gradient_cls(estimator, epsilon=0.01, transpiler=pass_manager)
+        else:
+            gradient = gradient_cls(estimator, transpiler=pass_manager)
+
+        gradient.run([qc], [op], [[1]]).result()
+
+        # Test that transpiler is called using callback function
+        if gradient_cls in [SPSAEstimatorGradient, FiniteDiffEstimatorGradient]:
+            gradient = gradient_cls(
+                estimator,
+                epsilon=0.01,
+                transpiler=pass_manager,
+                transpiler_options={"callback": callback},
+            )
+        else:
+            gradient = gradient_cls(
+                estimator, transpiler=pass_manager, transpiler_options={"callback": callback}
+            )
+
+        gradient.run([qc], [op], [[1]]).result()
+
+        self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

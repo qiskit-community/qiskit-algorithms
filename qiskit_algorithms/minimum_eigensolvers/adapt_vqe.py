@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,26 +13,24 @@
 """An implementation of the AdaptVQE algorithm."""
 from __future__ import annotations
 
-from enum import Enum
-
-import re
 import logging
+import re
+from enum import Enum
+from typing import Iterable
 
 import numpy as np
-
-from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.circuit.library import EvolvedOperatorAnsatz
+from qiskit.quantum_info import SparsePauliOp
+from qiskit.quantum_info.operators.base_operator import BaseOperator
+from qiskit.version import get_version_info as get_qiskit_version_info
 
-from qiskit_algorithms.utils.validation import validate_min
 from qiskit_algorithms.exceptions import AlgorithmError
-
 from qiskit_algorithms.list_or_dict import ListOrDict
-
+from qiskit_algorithms.utils.validation import validate_min
 from .minimum_eigensolver import MinimumEigensolver
 from .vqe import VQE, VQEResult
 from ..observables_evaluator import estimate_observables
 from ..variational_algorithm import VariationalAlgorithm
-
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +60,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
       from qiskit_algorithms.minimum_eigensolvers import AdaptVQE, VQE
       from qiskit_algorithms.optimizers import SLSQP
-      from qiskit.primitives import Estimator
+      from qiskit.primitives import StatevectorEstimator
       from qiskit.circuit.library import EvolvedOperatorAnsatz
 
       # get your Hamiltonian
@@ -71,7 +69,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
       # construct your ansatz
       ansatz = EvolvedOperatorAnsatz(...)
 
-      vqe = VQE(Estimator(), ansatz, SLSQP())
+      vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())
 
       adapt_vqe = AdaptVQE(vqe)
 
@@ -146,7 +144,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
     def _compute_gradients(
         self,
         theta: list[float],
-        operator: BaseOperator,
+        operator: SparsePauliOp,
     ) -> ListOrDict[tuple[float, dict[str, BaseOperator]]]:
         """
         Computes the gradients for all available excitation operators.
@@ -160,6 +158,16 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # The excitations operators are applied later as exp(i*theta*excitation).
         # For this commutator, we need to explicitly pull in the imaginary phase.
         commutators = [1j * (operator @ exc - exc @ operator) for exc in self._excitation_pool]
+        # We have to call simplify on it since Qiskit doesn't do so in versions 2.1.0 and 2.1.1, see
+        # Qiskit/qiskit/issues/14567
+        if get_qiskit_version_info() in ["2.1.0", "2.1.1"]:
+            commutators = [obs.simplify() for obs in commutators]
+
+        # If the ansatz has been transpiled
+        if self.solver.ansatz.layout:
+            commutators = [
+                commutator.apply_layout(self.solver.ansatz.layout) for commutator in commutators
+            ]
         res = estimate_observables(self.solver.estimator, self.solver.ansatz, commutators, theta)
         return res
 
@@ -207,20 +215,20 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 the first iteration of the algorithm.
 
         Returns:
-            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also but also
+            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also
             includes runtime information about the AdaptVQE algorithm like the number of iterations,
             termination criterion, and the final maximum gradient.
         """
-        if not isinstance(self.solver.ansatz, EvolvedOperatorAnsatz):
+        if not isinstance(self.solver._original_ansatz, EvolvedOperatorAnsatz):
             raise TypeError("The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type.")
 
         # Overwrite the solver's ansatz with the initial state
-        self._tmp_ansatz = self.solver.ansatz
+        self._tmp_ansatz = self.solver._original_ansatz
         self._excitation_pool = self._tmp_ansatz.operators
+        # This will transpile the initial state if the solver has a transpiler that is set
         self.solver.ansatz = self._tmp_ansatz.initial_state
 
         prev_op_indices: list[int] = []
-        prev_raw_vqe_result: VQEResult | None = None
         raw_vqe_result: VQEResult | None = None
         theta: list[float] = []
         max_grad: tuple[float, dict[str, BaseOperator] | None] = (0.0, None)
@@ -321,6 +329,22 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
         # once finished evaluate auxiliary operators if any
         if aux_operators is not None:
+            if self.solver.ansatz.layout is not None:
+                key_op_iterator: Iterable[tuple[str | int, BaseOperator]]
+                if isinstance(aux_operators, list):
+                    key_op_iterator = enumerate(aux_operators)
+                    # Dummy placeholder
+                    converted: ListOrDict[BaseOperator] = [
+                        SparsePauliOp.from_list([("I", 0)])
+                    ] * len(aux_operators)
+                else:
+                    key_op_iterator = aux_operators.items()
+                    converted = {}
+                for key, op in key_op_iterator:
+                    if op is not None:
+                        converted[key] = op.apply_layout(self.solver.ansatz.layout)
+
+                aux_operators = converted
             aux_values = estimate_observables(
                 self.solver.estimator,
                 self.solver.ansatz,
