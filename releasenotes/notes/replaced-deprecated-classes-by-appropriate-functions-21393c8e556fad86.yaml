@@ -52,7 +52,7 @@ features:
     Note that the ansatz passed to the `class`:.VQE: solver is ignored when using this method.
     More generally, :class:`.AdaptVQE` now accepts (as keyword arguments only) every possible
     argument that can be passed to :func:`~qiskit.circuit.library.evolved_operator_ansatz`, with
-    the addition of an ``initial_state`` that can be prepended to the ansatz.
+    the addition of an ``initial_state`` to prepend to the ansatz.
 deprecations:
   - |
     Setting the number of qubits at runtime during the execution of :class:`.VQE`,
