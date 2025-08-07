@@ -321,7 +321,8 @@ class TestPVQDUtils(QiskitAlgorithmsTestCase):
     def test_gradient_supported(self):
         """Test the gradient support is correctly determined."""
         # gradient supported here
-        wrapped = efficient_su2(2)  # a circuit wrapped into a big instruction
+        wrapped = QuantumCircuit(2)  # a circuit wrapped into a big instruction
+        wrapped.append(efficient_su2(2).to_gate(), [0, 1])
         plain = wrapped.decompose()  # a plain circuit with already supported instructions
 
         # gradients not supported on the following circuits
