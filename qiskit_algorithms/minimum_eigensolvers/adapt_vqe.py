@@ -15,11 +15,14 @@ from __future__ import annotations
 
 import logging
 import re
+import warnings
+from collections.abc import Sequence
 from enum import Enum
 from typing import Iterable
 
 import numpy as np
-from qiskit.circuit.library import EvolvedOperatorAnsatz
+from qiskit import QuantumCircuit
+from qiskit.circuit.library import EvolvedOperatorAnsatz, evolved_operator_ansatz
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.version import get_version_info as get_qiskit_version_info
@@ -62,6 +65,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
       from qiskit_algorithms.optimizers import SLSQP
       from qiskit.primitives import StatevectorEstimator
       from qiskit.circuit.library import EvolvedOperatorAnsatz
+      from qiskit import QuantumCircuit
 
       # get your Hamiltonian
       hamiltonian = ...
@@ -73,6 +77,11 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
 
       adapt_vqe = AdaptVQE(vqe)
 
+      # or you can do it without EvolvedOperatorAnsatz
+      vqe = VQE(StatevectorEstimator(), QuantumCircuit(1), SLSQP())
+
+      adapt_vqe = AdaptVQE(vqe, operators=...)
+
       eigenvalue, _ = adapt_vqe.compute_minimum_eigenvalue(hamiltonian)
 
     The following attributes can be set via the initializer but can also be read and updated once
@@ -81,7 +90,8 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
     Attributes:
         solver: a :class:`~.VQE` instance used internally to compute the minimum eigenvalues.
             It is a requirement that the :attr:`~.VQE.ansatz` of this solver is of type
-            :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.
+            :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` if the `operators` arguments is
+            not set.
         gradient_threshold: once all gradients have an absolute value smaller than this threshold,
             the algorithm has converged and terminates.
         eigenvalue_threshold: once the eigenvalue has changed by less than this threshold from one
@@ -100,12 +110,25 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         gradient_threshold: float = 1e-5,
         eigenvalue_threshold: float = 1e-5,
         max_iterations: int | None = None,
+        operators: BaseOperator | Sequence[BaseOperator] | None = None,
+        reps: int = 1,
+        evolution=None,
+        insert_barriers: bool = False,
+        name: str = "EvolvedOps",
+        parameter_prefix: str | Sequence[str] = "t",
+        remove_identities: bool = True,
+        initial_state: QuantumCircuit | None = None,
+        flatten: bool | None = None,
     ) -> None:
         """
         Args:
             solver: a :class:`~.VQE` instance used internally to compute the minimum eigenvalues.
-                It is a requirement that the :attr:`~.VQE.ansatz` of this solver is of type
-                :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.
+                It is a requirement that either the :attr:`~.VQE.ansatz` of this solver is of type
+                :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` or that the `operators`
+                argument is specified. The former is deprecated from the 0.4 version of
+                qiskit-algorithms and this option won't be possible anymore once the oldest
+                supported Qiskit version is 3.0. In the latter case, this class will build its own
+                ansatz using the evolved_operator_ansatz function.
             gradient_threshold: once all gradients have an absolute value smaller than this
                 threshold, the algorithm has converged and terminates. Defaults to ``1e-5``.
             eigenvalue_threshold: once the eigenvalue has changed by less than this threshold from
@@ -115,17 +138,74 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                 are not considered.
             max_iterations: the maximum number of iterations for the adaptive loop. If ``None``, the
                 algorithm is not bound in its number of iterations.
+            operators: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function. If set, the
+                ansatz of the underlying :class:`.VQE` solver won't be used.
+            reps: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            evolution: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            insert_barriers: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            name: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            parameter_prefix: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            remove_identities: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
+            initial_state: a :class:`~qiskit.circuit.QuantumCircuit` object to prepend to the
+                ansatz.
+            flatten: used to build the ansatz using the
+                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.
         """
         validate_min("gradient_threshold", gradient_threshold, 1e-15)
         validate_min("eigenvalue_threshold", eigenvalue_threshold, 1e-15)
 
         self.solver = solver
+
+        if (
+            not isinstance(self.solver._original_ansatz, EvolvedOperatorAnsatz)
+            and operators is None
+        ):
+            raise TypeError(
+                "The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type or the operators "
+                "argument must be set."
+            )
+        if operators is not None:
+            if not isinstance(operators, list):
+                operators = list(operators)
+
+            self._excitation_pool: list[BaseOperator] = operators
+            self._initial_state = (
+                initial_state
+                if initial_state is not None
+                else QuantumCircuit(operators[0].num_qubits)
+            )
+        else:
+            warnings.warn(
+                "The :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` is deprecated "
+                "as of Qiskit 2.1 and will be removed in Qiskit 3.0. Use the keywords arguments of"
+                "the constructor to specify the ansatz instead. Passing the ansatz via the "
+                "underlying :class:`.VQE` solver is deprecated as of qiskit-algorithms 0.4 and "
+                "won't be supported anymore one the oldest supported Qiskit version is 3.0.",
+                category=DeprecationWarning,
+            )
+            self._excitation_pool = self.solver._original_ansatz.operators
+
         self.gradient_threshold = gradient_threshold
         self.eigenvalue_threshold = eigenvalue_threshold
         self.max_iterations = max_iterations
         self._tmp_ansatz: EvolvedOperatorAnsatz | None = None
-        self._excitation_pool: list[BaseOperator] = []
         self._excitation_list: list[BaseOperator] = []
+
+        self._operators = operators
+        self._reps = reps
+        self._evolution = evolution
+        self._insert_barriers = insert_barriers
+        self._name = name
+        self._parameter_prefix = parameter_prefix
+        self._remove_identities = remove_identities
+        self._flatten = flatten
 
     @property
     def initial_point(self) -> np.ndarray | None:
@@ -198,6 +278,21 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
         # nature of the algorithm.
         return match is not None or (len(indices) > 1 and indices[-2] == indices[-1])
 
+    def _build_ansatz(self) -> QuantumCircuit:
+        """Builds the ansatz out of the provided parameters."""
+        return self._initial_state.compose(
+            evolved_operator_ansatz(
+                operators=self._operators,
+                reps=self._reps,
+                evolution=self._evolution,
+                insert_barriers=self._insert_barriers,
+                name=self._name,
+                parameter_prefix=self._parameter_prefix,
+                remove_identities=self._remove_identities,
+                flatten=self._flatten,
+            )
+        )
+
     def compute_minimum_eigenvalue(
         self,
         operator: BaseOperator,
@@ -219,14 +314,12 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             includes runtime information about the AdaptVQE algorithm like the number of iterations,
             termination criterion, and the final maximum gradient.
         """
-        if not isinstance(self.solver._original_ansatz, EvolvedOperatorAnsatz):
-            raise TypeError("The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type.")
-
         # Overwrite the solver's ansatz with the initial state
-        self._tmp_ansatz = self.solver._original_ansatz
-        self._excitation_pool = self._tmp_ansatz.operators
-        # This will transpile the initial state if the solver has a transpiler that is set
-        self.solver.ansatz = self._tmp_ansatz.initial_state
+        if self._operators is not None:
+            self.solver.ansatz = self._initial_state
+        elif isinstance(self.solver._original_ansatz, EvolvedOperatorAnsatz):
+            self._tmp_ansatz = self.solver._original_ansatz
+            self.solver.ansatz = self._tmp_ansatz.initial_state
 
         prev_op_indices: list[int] = []
         raw_vqe_result: VQEResult | None = None
@@ -284,8 +377,13 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             self._excitation_list.append(self._excitation_pool[max_grad_index])
             theta.append(0.0)
             # setting up the ansatz for the VQE iteration
-            self._tmp_ansatz.operators = self._excitation_list
-            self.solver.ansatz = self._tmp_ansatz
+            if self._operators is not None:
+                self._operators = self._excitation_list
+                self.solver.ansatz = self._build_ansatz()
+            else:
+                self._tmp_ansatz.operators = self._excitation_list
+                self.solver.ansatz = self._tmp_ansatz
+
             self.solver.initial_point = np.asarray(theta)
             # evaluating the eigenvalue with the internal VQE
             prev_raw_vqe_result = raw_vqe_result
@@ -306,8 +404,13 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
                     )
                     self._excitation_list.pop()
                     theta.pop()
-                    self._tmp_ansatz.operators = self._excitation_list
-                    self.solver.ansatz = self._tmp_ansatz
+                    if self._operators is not None:
+                        self._operators = self._excitation_list
+                        self.solver.ansatz = self._build_ansatz()
+                    else:
+                        self._tmp_ansatz.operators = self._excitation_list
+                        self.solver.ansatz = self._tmp_ansatz
+
                     self.solver.initial_point = np.asarray(theta)
                     raw_vqe_result = prev_raw_vqe_result
                     break

@@ -19,7 +19,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import GroverOperator, PhaseOracle
+from qiskit.circuit.library import GroverOperator, PhaseOracle, PhaseOracleGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -94,10 +94,11 @@ class TestGrover(QiskitAlgorithmsTestCase):
     @unittest.skipUnless(
         CAN_USE_PHASE_ORACLE, "tweedledum or qiskit >= 2.0.0 required for this test"
     )
-    def test_implicit_phase_oracle_is_good_state(self):
-        """Test implicit default for is_good_state with PhaseOracle."""
+    @data(PhaseOracle, PhaseOracleGate)
+    def test_implicit_phase_oracle_is_good_state(self, oracle_cls):
+        """Test implicit default for is_good_state with PhaseOracle and PhaseOracleGate."""
         grover = self._prepare_grover()
-        oracle = PhaseOracle("x & y")
+        oracle = oracle_cls("x & y")
         problem = AmplificationProblem(oracle)
         result = grover.amplify(problem)
         self.assertEqual(result.top_measurement, "11")
@@ -270,10 +271,11 @@ class TestGrover(QiskitAlgorithmsTestCase):
     @unittest.skipUnless(
         CAN_USE_PHASE_ORACLE, "tweedledum or qiskit >= 2.0.0 required for this test"
     )
-    def test_oracle_evaluation(self):
-        """Test oracle_evaluation for PhaseOracle"""
-        oracle = PhaseOracle("x1 & x2 & (not x3)")
-        problem = AmplificationProblem(oracle, is_good_state=oracle.evaluate_bitstring)
+    @data(PhaseOracle, PhaseOracleGate)
+    def test_oracle_evaluation(self, oracle_cls):
+        """Test oracle_evaluation"""
+        oracle = oracle_cls("x1 & x2 & (not x3)")
+        problem = AmplificationProblem(oracle)
         grover = self._prepare_grover()
         result = grover.amplify(problem)
         self.assertTrue(result.oracle_evaluation)

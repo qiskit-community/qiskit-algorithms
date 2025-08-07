@@ -20,7 +20,7 @@ import numpy as np
 from ddt import ddt, data, unpack
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter
-from qiskit.circuit.library import EfficientSU2, RealAmplitudes
+from qiskit.circuit.library import efficient_su2, real_amplitudes
 from qiskit.circuit.library.standard_gates import RXXGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.providers.fake_provider import GenericBackendV2
@@ -149,11 +149,11 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     @data(*gradient_factories)
     @unpack
     def test_gradient_efficient_su2(self, grad, shots, atol, rtol):
-        """Test the sampler gradient for EfficientSU2"""
+        """Test the sampler gradient for efficient_su2"""
         sampler = StatevectorSampler(
             default_shots=shots, seed=np.random.default_rng(seed=self.seed)
         )
-        qc = EfficientSU2(2, reps=1)
+        qc = efficient_su2(2, reps=1)
         qc.measure_all()
         gradient = grad(sampler)
         param_list = [
@@ -274,7 +274,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
         sampler = StatevectorSampler(
             default_shots=shots, seed=np.random.default_rng(seed=self.seed)
         )
-        qc = RealAmplitudes(num_qubits=2, reps=1)
+        qc = real_amplitudes(num_qubits=2, reps=1)
         qc.rz(qc.parameters[0].exp() + 2 * qc.parameters[1], 0)
         qc.rx(3.0 * qc.parameters[0] + qc.parameters[1].sin(), 1)
         qc.u(qc.parameters[0], qc.parameters[1], qc.parameters[3], 1)
@@ -595,7 +595,7 @@ class TestSamplerGradient(QiskitAlgorithmsTestCase):
     def test_gradient_random_parameters(self, grad):
         """Test param shift and lin comb w/ random parameters"""
         rng = np.random.default_rng(123)
-        qc = RealAmplitudes(num_qubits=3, reps=1)
+        qc = real_amplitudes(num_qubits=3, reps=1)
         params = qc.parameters
         qc.rx(3.0 * params[0] + params[1].sin(), 0)
         qc.ry(params[0].exp() + 2 * params[1], 1)

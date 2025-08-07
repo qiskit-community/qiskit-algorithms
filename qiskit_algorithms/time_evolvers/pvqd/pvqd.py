@@ -75,7 +75,7 @@ class PVQD(RealTimeEvolver):
             from qiskit_algorithms.state_fidelities import ComputeUncompute
             from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD
             from qiskit.primitives import StatevectorEstimator, StatevectorSampler
-            from qiskit.circuit.library import EfficientSU2
+            from qiskit.circuit.library import efficient_su2
             from qiskit.quantum_info import SparsePauliOp, Pauli
             from qiskit_algorithms.optimizers import L_BFGS_B
 
@@ -84,7 +84,7 @@ class PVQD(RealTimeEvolver):
             estimator = StatevectorEstimator()
             hamiltonian = 0.1 * SparsePauliOp(["ZZ", "IX", "XI"])
             observable = Pauli("ZZ")
-            ansatz = EfficientSU2(2, reps=1)
+            ansatz = efficient_su2(2, reps=1)
             initial_parameters = np.zeros(ansatz.num_parameters)
 
             time = 1

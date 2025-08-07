@@ -18,6 +18,7 @@ See https://arxiv.org/abs/1805.08138.
 from __future__ import annotations
 
 import logging
+import warnings
 from collections.abc import Callable, Sequence, Iterable
 from time import time
 from typing import Any, cast
@@ -213,6 +214,15 @@ class VQD(VariationalAlgorithm, Eigensolver):
                 # try to set the number of qubits on the ansatz, if possible
                 try:
                     self.ansatz.num_qubits = operator.num_qubits
+                    warnings.warn(
+                        "Setting the number of qubits of the ansatz is a functionality that is only "
+                        "available on BlueprintCircuits, which are deprecated as of Qiskit 2.1 and "
+                        "will be removed in Qiskit 3.0. As such, setting the number of qubits "
+                        "dynamically is deprecated as of qiskit-algorithms 0.4, and this "
+                        "functionality will be removed when the oldest supported Qiskit version is "
+                        "3.0.",
+                        category=DeprecationWarning,
+                    )
                 except AttributeError as exc:
                     raise AlgorithmError(
                         "The number of qubits of the ansatz does not match the "

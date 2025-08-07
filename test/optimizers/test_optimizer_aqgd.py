@@ -16,7 +16,7 @@ import unittest
 from test import QiskitAlgorithmsTestCase, slow_test
 import numpy as np
 from ddt import ddt, data
-from qiskit.circuit.library import RealAmplitudes
+from qiskit.circuit.library import real_amplitudes
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
@@ -54,7 +54,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         vqe = VQE(
             self.estimator,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=aqgd,
             gradient=self.gradient,
         )
@@ -69,7 +69,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         vqe = VQE(
             self.estimator,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=aqgd,
         )
         result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
@@ -87,7 +87,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         vqe = VQE(
             self.estimator,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=aqgd,
             gradient=self.gradient,
         )
@@ -102,7 +102,7 @@ class TestOptimizerAQGD(QiskitAlgorithmsTestCase):
 
         vqe = VQE(
             self.estimator,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=aqgd,
             gradient=self.gradient,
         )
