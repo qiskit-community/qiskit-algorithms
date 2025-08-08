@@ -185,7 +185,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             warnings.warn(
                 "The :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` is deprecated "
                 "as of Qiskit 2.1 and will be removed in Qiskit 3.0. Use the keywords arguments of"
-                "the constructor to specify the ansatz instead. Passing the ansatz via the "
+                "the AdaptVQE's constructor to specify the ansatz instead. Passing the ansatz via the "
                 "underlying :class:`.VQE` solver is deprecated as of qiskit-algorithms 0.4 and "
                 "won't be supported anymore one the oldest supported Qiskit version is 3.0.",
                 category=DeprecationWarning,
