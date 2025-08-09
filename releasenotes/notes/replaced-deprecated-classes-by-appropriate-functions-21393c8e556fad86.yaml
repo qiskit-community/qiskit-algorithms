@@ -65,7 +65,7 @@ deprecations:
   - |
     Previously, it was possible to pass to :class:`.VQE`, :class:`.SamplingVQE` and :class:`.VQD` a
     ``BlueprintCircuit`` as an ansatz without its number of qubits being set, the algorithm taking
-    care of setting it. Since ``BlueprintCircuit``s are now  deprecated, and those being the only
+    care of setting it. Since ``BlueprintCircuit``\s are now  deprecated, and those being the only
     ones that can have their number of qubits set after their initialization, this behavior is now
     also deprecated, and won't be supported once the oldest supported Qiskit version is 3.0. As
     such, users that made use of this feature would now need to ensure that the ansatz they pass to
