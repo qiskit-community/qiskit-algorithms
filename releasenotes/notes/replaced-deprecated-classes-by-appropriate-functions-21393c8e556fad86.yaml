@@ -53,10 +53,21 @@ features:
     More generally, :class:`.AdaptVQE` now accepts (as keyword arguments only) every possible
     argument that can be passed to :func:`~qiskit.circuit.library.evolved_operator_ansatz`, with
     the addition of an ``initial_state`` to prepend to the ansatz.
+upgrade:
+  - |
+    Previously, the ``compute_minimum_eigenvalue`` method set the ``operators`` attribute of its
+    solver's ansatz, which was assumed to be of type
+    :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`. Since this behavior was undocumented,
+    and since the ansatz's type can't be assumed to still be
+    :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` at the end because of transpilation,
+    this feature has been removed.
 deprecations:
   - |
-    Setting the number of qubits at runtime during the execution of :class:`.VQE`,
-    :class:`.SamplingVQE` and :class:`.VQD` is now deprecated since only ``BlueprintCircuit``
-    support this feature. Since those are deprecated as of Qiskit 2.1 and will be removed in Qiskit
-    3.0, this feature will stop to be supported in ``qiskit-algorithms`` when the oldest supported
-    version is 3.0. You should use the replacements functions to build these circuits instead.
+    Previously, it was possible to pass to :class:`.VQE`, :class:`.SamplingVQE` and :class:`.VQD` a
+    ``BlueprintCircuit`` as an ansatz without its number of qubits being set, the algorithm taking
+    care of setting it. Since ``BlueprintCircuit``s are now  deprecated, and those being the only
+    ones that can have their number of qubits set after their initialization, this behavior is now
+    also deprecated, and won't be supported once the oldest supported Qiskit version is 3.0. As
+    such, users that made use of this feature would now need to ensure that the ansatz they pass to
+    these algorithms have their number of qubits set and matching with that of the operator they
+    wish to run the algorithm on.

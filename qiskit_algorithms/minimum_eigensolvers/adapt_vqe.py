@@ -457,7 +457,7 @@ class AdaptVQE(VariationalAlgorithm, MinimumEigensolver):
             result.aux_operators_evaluated = aux_values  # type: ignore[assignment]
 
         logger.info("The final eigenvalue is: %s", str(result.eigenvalue))
-        self.solver.ansatz.operators = self._excitation_pool
+
         return result
 
 

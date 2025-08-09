@@ -386,12 +386,15 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
                 )
                 self.ansatz.num_qubits = operator.num_qubits
                 warnings.warn(
-                    "Setting the number of qubits of the ansatz is a functionality that is only "
-                    "available on BlueprintCircuits, which are deprecated as of Qiskit 2.1 and "
-                    "will be removed in Qiskit 3.0. As such, setting the number of qubits "
-                    "dynamically is deprecated as of qiskit-algorithms 0.4, and this "
-                    "functionality will be removed when the oldest supported Qiskit version is "
-                    "3.0.",
+                    "Previously, it was possible to pass to VQE a BlueprintCircuit as an "
+                    "ansatz without its number of qubits being set, the algorithm taking care "
+                    "of setting it. Since BlueprintCircuits are now  deprecated, and those "
+                    "being the only ones that can have their number of qubits set after their "
+                    "initialization, this behavior is now also deprecated, and won't be "
+                    "supported once the oldest supported Qiskit version is 3.0. As such, users "
+                    "that made use of this feature would now need to ensure that the ansatz "
+                    "they pass to these algorithms have their number of qubits set and matching "
+                    "with that of the operator they wish to run the algorithm on.",
                     category=DeprecationWarning,
                 )
             except AttributeError as error:
