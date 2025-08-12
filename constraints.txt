@@ -1,3 +1,1 @@
 # Constraints may be listed here
-nbconvert<7.14  # workaround https://github.com/jupyter/nbconvert/issues/2092
-
