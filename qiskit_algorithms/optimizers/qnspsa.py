@@ -77,7 +77,7 @@ class QNSPSA(SPSA):
 
             def loss(x):
                 result = estimator.run([(ansatz, observable, x)]).result()[0]
-                return np.real(result.data.evs)
+                return np.real(result.data.evs) # pylint: disable=wrong-spelling-in-docstring
 
             # fidelity for estimation of the geometric tensor
             sampler = StatevectorSampler()
