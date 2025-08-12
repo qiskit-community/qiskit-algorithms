@@ -1,0 +1,73 @@
+---
+prelude: |
+    Following up on the deprecation of ``BlueprintsCircuit`` in the 2.1 version of Qiskit, most
+    tests have been updated to use the replacements functions instead. These circuits are still
+    supported by ``qiskit-algorithms``, though their use is now deprecated, and their support will
+    be removed when the oldest supported Qiskit version is 3.0.
+
+    The :class:`.AmplificationProblem` and :class:`.Grover` classes now support being
+    passed :class:`~qiskit.circuit.library.Gate` objects to support the use of
+    :class:`~qiskit.circuit.library.PhaseOracleGate` in addition to
+    :class:`~qiskit.circuit.library.PhaseOracle`.
+
+    The :class:`.AdaptVQE` class now supports a new way to specify its ansatz, following up on the
+    deprecation of :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.
+features:
+  - |
+    The :class:`.AmplificationProblem` and :class:`.Grover` classes now support being
+    passed :class:`~qiskit.circuit.library.Gate` objects to support the use of
+    :class:`~qiskit.circuit.library.PhaseOracleGate` in addition to
+    :class:`~qiskit.circuit.library.PhaseOracle`. For instance, the
+    following is a valid way to instantiate the :class:`.AmplificationProblem` class::
+
+        from qiskit.circuit.library.phase_oracle import PhaseOracleGate
+        from qiskit_algorithms import AmplificationProblem
+
+        problem = AmplificationProblem(PhaseOracleGate("(a & b)"))
+  - |
+    The :class:`.AdaptVQE` class now supports a new way to specify its ansatz, following up on the
+    deprecation of :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`. For instance, the following
+    code to create a :class:`.AdaptVQE` instance in the 0.3 version::
+
+        AdaptVQE(
+            VQE(
+                StatevectorEstimator(),
+                EvolvedOperatorAnsatz(operators, initial_state=initial_state),
+                SLSQP(),
+            )
+        )
+
+    is now deprecated, and should instead be written as::
+
+        AdaptVQE(
+            VQE(
+                StatevectorEstimator(),
+                QuantumCircuit(1),
+                SLSQP(),
+            ),
+            operators=operators,
+            initial_state=initial_state,
+        )
+
+    Note that the ansatz passed to the `class`:.VQE: solver is ignored when using this method.
+    More generally, :class:`.AdaptVQE` now accepts (as keyword arguments only) every possible
+    argument that can be passed to :func:`~qiskit.circuit.library.evolved_operator_ansatz`, with
+    the addition of an ``initial_state`` to prepend to the ansatz.
+upgrade:
+  - |
+    Previously, the ``compute_minimum_eigenvalue`` method set the ``operators`` attribute of its
+    solver's ansatz, which was assumed to be of type
+    :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`. Since this behavior was undocumented,
+    and since the ansatz's type can't be assumed to still be
+    :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` at the end because of transpilation,
+    this feature has been removed.
+deprecations:
+  - |
+    Previously, it was possible to pass to :class:`.VQE`, :class:`.SamplingVQE` and :class:`.VQD` a
+    ``BlueprintCircuit`` as an ansatz without its number of qubits being set, the algorithm taking
+    care of setting it. Since ``BlueprintCircuit``\s are now  deprecated, and those being the only
+    ones that can have their number of qubits set after their initialization, this behavior is now
+    also deprecated, and won't be supported once the oldest supported Qiskit version is 3.0. As
+    such, users that made use of this feature would now need to ensure that the ansatz they pass to
+    these algorithms have their number of qubits set and matching with that of the operator they
+    wish to run the algorithm on.

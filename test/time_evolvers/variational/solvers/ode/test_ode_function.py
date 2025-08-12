@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -18,7 +18,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit import Parameter
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 
 from qiskit_algorithms.time_evolvers.variational.solvers.var_qte_linear_solver import (
     VarQTELinearSolver,
@@ -48,7 +48,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
         )
 
         d = 2  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
         parameters = list(ansatz.parameters)
@@ -100,7 +100,7 @@ class TestOdeFunctionGenerator(QiskitAlgorithmsTestCase):
         )
 
         d = 2  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
         parameters = list(ansatz.parameters)

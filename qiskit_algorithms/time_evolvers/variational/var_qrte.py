@@ -40,7 +40,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
         import numpy as np
 
         from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
-        from qiskit.circuit.library import EfficientSU2
+        from qiskit.circuit.library import efficient_su2
         from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
         from qiskit.quantum_info import SparsePauliOp
         from qiskit.quantum_info import SparsePauliOp, Pauli
@@ -57,7 +57,7 @@ class VarQRTE(VarQTE, RealTimeEvolver):
             ]
         )
 
-        ansatz = EfficientSU2(observable.num_qubits, reps=1)
+        ansatz = efficient_su2(observable.num_qubits, reps=1)
         init_param_values = np.ones(len(ansatz.parameters)) * np.pi/2
         var_principle = RealMcLachlanPrinciple()
         time = 1

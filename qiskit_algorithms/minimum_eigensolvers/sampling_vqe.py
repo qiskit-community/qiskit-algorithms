@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable
 import logging
 from time import time
@@ -172,6 +173,18 @@ class SamplingVQE(VariationalAlgorithm, SamplingMinimumEigensolver):
                     "Trying to resize ansatz to match operator on %s qubits.", operator.num_qubits
                 )
                 self.ansatz.num_qubits = operator.num_qubits
+                warnings.warn(
+                    "Previously, it was possible to pass to SamplingVQE a BlueprintCircuit as an "
+                    "ansatz without its number of qubits being set, the algorithm taking care "
+                    "of setting it. Since BlueprintCircuits are now  deprecated, and those "
+                    "being the only ones that can have their number of qubits set after their "
+                    "initialization, this behavior is now also deprecated, and won't be "
+                    "supported once the oldest supported Qiskit version is 3.0. As such, users "
+                    "that made use of this feature would now need to ensure that the ansatz "
+                    "they pass to these algorithms have their number of qubits set and matching "
+                    "with that of the operator they wish to run the algorithm on.",
+                    category=DeprecationWarning,
+                )
             except AttributeError as error:
                 raise AlgorithmError(
                     "The number of qubits of the ansatz does not match the "

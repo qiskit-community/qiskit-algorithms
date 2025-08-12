@@ -89,49 +89,73 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         self.optimizer = SLSQP()
 
     def test_default(self):
-        """Default execution"""
-        calc = AdaptVQE(VQE(StatevectorEstimator(), self.ansatz, self.optimizer))
-
-        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-
+        """Default execution with evolved ansatz"""
         expected_eigenvalue = -1.85727503
 
-        self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
-        np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    self.ansatz,
+                    self.optimizer,
+                )
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
+            np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
 
-    def test_with_quantum_info(self):
-        """Test behavior with quantum_info-based operators."""
-        ansatz = EvolvedOperatorAnsatz(
-            self.excitation_pool,
-            initial_state=self.initial_state,
-        )
-        calc = AdaptVQE(VQE(StatevectorEstimator(), ansatz, self.optimizer))
-
-        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-
-        expected_eigenvalue = -1.85727503
-
-        self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
-        np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    QuantumCircuit(1),
+                    self.optimizer,
+                ),
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
+            np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
 
     def test_converged(self):
         """Test to check termination criteria"""
-        calc = AdaptVQE(
-            VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
-            gradient_threshold=1e-3,
-        )
-        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-
-        self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
+                gradient_threshold=1e-3,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer),
+                gradient_threshold=1e-3,
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
     def test_maximum(self):
         """Test to check termination criteria"""
-        calc = AdaptVQE(
-            VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
-            max_iterations=1,
-        )
-        res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-        self.assertEqual(res.termination_criterion, TerminationCriterion.MAXIMUM)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), self.ansatz, self.optimizer),
+                max_iterations=1,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(res.termination_criterion, TerminationCriterion.MAXIMUM)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer),
+                max_iterations=1,
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(res.termination_criterion, TerminationCriterion.MAXIMUM)
 
     def test_eigenvalue_threshold(self):
         """Test for the eigenvalue_threshold attribute."""
@@ -142,21 +166,34 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
                 ("XZ", -0.5),
             ]
         )
-        ansatz = EvolvedOperatorAnsatz(
-            [
-                SparsePauliOp.from_list([("YZ", 0.4)]),
-                SparsePauliOp.from_list([("ZY", 0.5)]),
-            ],
-            initial_state=QuantumCircuit(2),
-        )
+        operators = [
+            SparsePauliOp.from_list([("YZ", 0.4)]),
+            SparsePauliOp.from_list([("ZY", 0.5)]),
+        ]
 
-        calc = AdaptVQE(
-            VQE(StatevectorEstimator(), ansatz, self.optimizer),
-            eigenvalue_threshold=1,
-        )
-        res = calc.compute_minimum_eigenvalue(operator)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            ansatz = EvolvedOperatorAnsatz(
+                operators,
+                initial_state=QuantumCircuit(2),
+            )
 
-        self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), ansatz, self.optimizer),
+                eigenvalue_threshold=1,
+            )
+            res = calc.compute_minimum_eigenvalue(operator)
+
+            self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer),
+                eigenvalue_threshold=1,
+                operators=operators,
+            )
+            res = calc.compute_minimum_eigenvalue(operator)
+
+            self.assertEqual(res.termination_criterion, TerminationCriterion.CONVERGED)
 
     @data(
         ([1, 1], True),
@@ -192,10 +229,19 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
 
     def test_vqe_solver(self):
         """Test to check if the VQE solver remains the same or not"""
-        solver = VQE(StatevectorEstimator(), self.ansatz, self.optimizer)
-        calc = AdaptVQE(solver)
-        _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
-        self.assertEqual(solver.ansatz, calc.solver.ansatz)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            solver = VQE(StatevectorEstimator(), self.ansatz, self.optimizer)
+            calc = AdaptVQE(solver)
+            _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(solver.ansatz, calc.solver.ansatz)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            solver = VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer)
+            calc = AdaptVQE(
+                solver, operators=self.excitation_pool, initial_state=self.initial_state
+            )
+            _ = calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertEqual(solver.ansatz, calc.solver.ansatz)
 
     # We perform additional actions if the transpiler of the inner VQE is set, so we have to check
     # whether this affects AdaptVQE
@@ -206,26 +252,54 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         ),
     )
     def test_gradient_calculation(self, transpiler):
-        """Test to check if the gradient calculation"""
-        solver = VQE(
-            StatevectorEstimator(), QuantumCircuit(1), self.optimizer, transpiler=transpiler
-        )
-        calc = AdaptVQE(solver)
-        calc._excitation_pool = [SparsePauliOp("X")]
-        res = calc._compute_gradients(operator=SparsePauliOp("Y"), theta=[])
-        # compare with manually computed reference value
-        self.assertAlmostEqual(res[0][0], 2.0)
+        """Test to check if the gradient calculation works properly"""
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            solver = VQE(
+                StatevectorEstimator(),
+                EvolvedOperatorAnsatz(SparsePauliOp("I")),
+                self.optimizer,
+                transpiler=transpiler,
+            )
+            calc = AdaptVQE(solver)
+            calc._excitation_pool = [SparsePauliOp("X")]
+            res = calc._compute_gradients(operator=SparsePauliOp("Y"), theta=[])
+            # compare with manually computed reference value
+            self.assertAlmostEqual(res[0][0], 2.0)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            solver = VQE(
+                StatevectorEstimator(),
+                QuantumCircuit(1),
+                self.optimizer,
+                transpiler=transpiler,
+            )
+            calc = AdaptVQE(solver, operators=SparsePauliOp("I"))
+            calc._excitation_pool = [SparsePauliOp("X")]
+            res = calc._compute_gradients(operator=SparsePauliOp("Y"), theta=[])
+            # compare with manually computed reference value
+            self.assertAlmostEqual(res[0][0], 2.0)
 
     def test_supports_aux_operators(self):
         """Test that auxiliary operators are supported"""
-        calc = AdaptVQE(VQE(StatevectorEstimator(), self.ansatz, self.optimizer))
-        res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
-
         expected_eigenvalue = -1.85727503
 
-        self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
-        self.assertAlmostEqual(res.aux_operators_evaluated[0][0], expected_eigenvalue, places=6)
-        np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(VQE(StatevectorEstimator(), self.ansatz, self.optimizer))
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+            self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
+            self.assertAlmostEqual(res.aux_operators_evaluated[0][0], expected_eigenvalue, places=6)
+            np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(StatevectorEstimator(), QuantumCircuit(1), self.optimizer),
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+            res = calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+            self.assertAlmostEqual(res.eigenvalue, expected_eigenvalue, places=6)
+            self.assertAlmostEqual(res.aux_operators_evaluated[0][0], expected_eigenvalue, places=6)
+            np.testing.assert_allclose(res.eigenvalue_history, [expected_eigenvalue], rtol=1e-6)
 
     @data(None, FIVE_QUBITS_BACKEND)
     def test_transpiler_without_aux_operators(self, backend):
@@ -238,19 +312,36 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         def callback(**kwargs):
             counts[0] = kwargs["count"]
 
-        calc = AdaptVQE(
-            VQE(
-                StatevectorEstimator(),
-                self.ansatz,
-                self.optimizer,
-                transpiler=pass_manager,
-                transpiler_options={"callback": callback},
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    self.ansatz,
+                    self.optimizer,
+                    transpiler=pass_manager,
+                    transpiler_options={"callback": callback},
+                )
             )
-        )
 
-        calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertGreater(counts[0], 0)
 
-        self.assertGreater(counts[0], 0)
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            counts = [0]
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    QuantumCircuit(1),
+                    self.optimizer,
+                    transpiler=pass_manager,
+                    transpiler_options={"callback": callback},
+                ),
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+
+            calc.compute_minimum_eigenvalue(operator=self.h2_op)
+            self.assertGreater(counts[0], 0)
 
     @data(None, FIVE_QUBITS_BACKEND)
     def test_transpiler_with_aux_operators(self, backend):
@@ -263,25 +354,54 @@ class TestAdaptVQE(QiskitAlgorithmsTestCase):
         def callback(**kwargs):
             counts[0] = kwargs["count"]
 
-        calc = AdaptVQE(
-            VQE(
-                StatevectorEstimator(),
-                self.ansatz,
-                self.optimizer,
-                transpiler=pass_manager,
-                transpiler_options={"callback": callback},
+        with self.subTest("With EvolvedOperatorAnsatz"):
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    self.ansatz,
+                    self.optimizer,
+                    transpiler=pass_manager,
+                    transpiler_options={"callback": callback},
+                )
             )
-        )
 
-        with self.subTest("aux_operators as list"):
-            calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
-            self.assertGreater(counts[0], 0)
+            with self.subTest("aux_operators as list"):
+                calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+                self.assertGreater(counts[0], 0)
 
-        counts = [0]
+            counts = [0]
 
-        with self.subTest("aux_operators as dict"):
-            calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators={"op": self.h2_op})
-            self.assertGreater(counts[0], 0)
+            with self.subTest("aux_operators as dict"):
+                calc.compute_minimum_eigenvalue(
+                    operator=self.h2_op, aux_operators={"op": self.h2_op}
+                )
+                self.assertGreater(counts[0], 0)
+
+        with self.subTest("Without EvolvedOperatorAnsatz"):
+            counts = [0]
+            calc = AdaptVQE(
+                VQE(
+                    StatevectorEstimator(),
+                    QuantumCircuit(1),
+                    self.optimizer,
+                    transpiler=pass_manager,
+                    transpiler_options={"callback": callback},
+                ),
+                operators=self.excitation_pool,
+                initial_state=self.initial_state,
+            )
+
+            with self.subTest("aux_operators as list"):
+                calc.compute_minimum_eigenvalue(operator=self.h2_op, aux_operators=[self.h2_op])
+                self.assertGreater(counts[0], 0)
+
+            counts = [0]
+
+            with self.subTest("aux_operators as dict"):
+                calc.compute_minimum_eigenvalue(
+                    operator=self.h2_op, aux_operators={"op": self.h2_op}
+                )
+                self.assertGreater(counts[0], 0)
 
 
 if __name__ == "__main__":

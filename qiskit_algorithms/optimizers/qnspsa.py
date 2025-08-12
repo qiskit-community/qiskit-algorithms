@@ -57,18 +57,18 @@ class QNSPSA(SPSA):
     Examples:
 
         This short example runs QN-SPSA for the ground state calculation of the ``Z ^ Z``
-        observable where the ansatz is a ``PauliTwoDesign`` circuit.
+        observable where the ansatz is a ``pauli_two_design`` circuit.
 
         .. code-block:: python
 
             import numpy as np
             from qiskit_algorithms.optimizers import QNSPSA
-            from qiskit.circuit.library import PauliTwoDesign
+            from qiskit.circuit.library import pauli_two_design
             from qiskit.primitives import StatevectorEstimator, StatevectorSampler
             from qiskit.quantum_info import Pauli
 
             # problem setup
-            ansatz = PauliTwoDesign(2, reps=1, seed=2)
+            ansatz = pauli_two_design(2, reps=1, seed=2)
             observable = Pauli("ZZ")
             initial_point = np.random.random(ansatz.num_parameters)
 

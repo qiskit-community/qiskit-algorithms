@@ -20,7 +20,7 @@ import numpy as np
 from ddt import ddt, data, unpack
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
-from qiskit.circuit.library import EfficientSU2, RealAmplitudes
+from qiskit.circuit.library import efficient_su2, real_amplitudes
 from qiskit.circuit.library.standard_gates import RXXGate, RYYGate, RZXGate, RZZGate
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli
@@ -132,9 +132,9 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
 
     @data(*gradient_factories)
     def test_gradient_efficient_su2(self, grad):
-        """Test the estimator gradient for EfficientSU2"""
+        """Test the estimator gradient for efficient_su2"""
         estimator = StatevectorEstimator()
-        qc = EfficientSU2(2, reps=1)
+        qc = efficient_su2(2, reps=1)
         op = SparsePauliOp.from_list([("ZI", 1)])
         gradient = grad(estimator)
         param_list = [
@@ -187,7 +187,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     def test_gradient_parameter_coefficient(self, grad):
         """Test the estimator gradient for parameter variables with coefficients"""
         estimator = StatevectorEstimator()
-        qc = RealAmplitudes(num_qubits=2, reps=1)
+        qc = real_amplitudes(num_qubits=2, reps=1)
         qc.rz(qc.parameters[0].exp() + 2 * qc.parameters[1], 0)
         qc.rx(3.0 * qc.parameters[0] + qc.parameters[1].sin(), 1)
         qc.u(qc.parameters[0], qc.parameters[1], qc.parameters[3], 1)
@@ -370,7 +370,7 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
     def test_gradient_random_parameters(self, grad):
         """Test param shift and lin comb w/ random parameters"""
         rng = np.random.default_rng(123)
-        qc = RealAmplitudes(num_qubits=3, reps=1)
+        qc = real_amplitudes(num_qubits=3, reps=1)
         params = qc.parameters
         qc.rx(3.0 * params[0] + params[1].sin(), 0)
         qc.ry(params[0].exp() + 2 * params[1], 1)

@@ -21,7 +21,10 @@ from scipy.optimize import minimize as scipy_minimize
 from ddt import data, ddt
 
 from qiskit import QuantumCircuit, generate_preset_pass_manager
-from qiskit.circuit.library import RealAmplitudes, TwoLocal
+
+# TODO: RealAmplitudes is still imported to check the resize of the ansatz, remove when this
+#  feature isn't supported anymore
+from qiskit.circuit.library import real_amplitudes, RealAmplitudes, n_local
 from qiskit.quantum_info import SparsePauliOp, Operator, Pauli
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
@@ -81,8 +84,8 @@ class TestVQE(QiskitAlgorithmsTestCase):
         )
         self.h2_energy = -1.85727503
 
-        self.ryrz_wavefunction = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
-        self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
+        self.ryrz_wavefunction = n_local(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
+        self.ry_wavefunction = n_local(2, rotation_blocks="ry", entanglement_blocks="cz")
 
     @data(L_BFGS_B(), COBYLA())
     def test_using_ref_estimator(self, optimizer):
@@ -132,6 +135,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         with self.assertRaises(ValueError):
             _ = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
 
+    # TODO: remove this test once BlueprintCircuit support has been removed
     def test_ansatz_resize(self):
         """Test the ansatz is properly resized if it's a blueprint circuit."""
         ansatz = RealAmplitudes(1, reps=1)
@@ -142,7 +146,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_invalid_ansatz_size(self):
         """Test an error is raised if the ansatz has the wrong number of qubits."""
         ansatz = QuantumCircuit(1)
-        ansatz.compose(RealAmplitudes(1, reps=2))
+        ansatz.compose(real_amplitudes(1, reps=2))
         vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())
 
         with self.assertRaises(AlgorithmError):
@@ -191,7 +195,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         estimator = StatevectorEstimator(seed=42)
         vqe = VQE(
             estimator,
-            RealAmplitudes(),
+            real_amplitudes(2),
             partial(_mock_optimizer, inputs=inputs),
             gradient=ParamShiftEstimatorGradient(estimator),
         )
@@ -204,7 +208,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         estimator = StatevectorEstimator(seed=42)
         vqe = VQE(
             estimator,
-            RealAmplitudes(),
+            real_amplitudes(2),
             GradientDescent(maxiter=200, learning_rate=0.1),
             gradient=ParamShiftEstimatorGradient(estimator),
         )
@@ -242,7 +246,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_reuse(self):
         """Test re-using a VQE algorithm instance."""
-        ansatz = TwoLocal(rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
+        ansatz = n_local(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
         vqe = VQE(StatevectorEstimator(seed=42), ansatz, SLSQP(maxiter=300))
         with self.subTest(msg="assert VQE works once all info is available"):
             result = vqe.compute_minimum_eigenvalue(operator=self.h2_op)
@@ -278,7 +282,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_default_batch_evaluation_on_spsa(self):
         """Test the default batching works."""
-        ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
+        ansatz = n_local(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
         wrapped_estimator = StatevectorEstimator(seed=42)
         inner_estimator = StatevectorEstimator(seed=43)
@@ -307,7 +311,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_batch_evaluate_with_qnspsa(self):
         """Test batch evaluating with QNSPSA works."""
-        ansatz = TwoLocal(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
+        ansatz = n_local(2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz")
 
         wrapped_sampler = StatevectorSampler(seed=42)
         inner_sampler = StatevectorSampler(seed=43)
@@ -366,7 +370,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
 
     def test_optimizer_callable(self):
         """Test passing a optimizer directly as callable."""
-        ansatz = RealAmplitudes(1, reps=1)
+        ansatz = real_amplitudes(1, reps=1)
         vqe = VQE(StatevectorEstimator(seed=42), ansatz, _mock_optimizer)
         result = vqe.compute_minimum_eigenvalue(SparsePauliOp("Z"))
         self.assertTrue(np.all(result.optimal_point == np.zeros(ansatz.num_parameters)))
@@ -382,7 +386,6 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_aux_operators_list(self, transpiler):
         """Test list-based aux_operators."""
         wavefunction = self.ry_wavefunction
-        wavefunction.num_qubits = 2
         vqe = VQE(
             StatevectorEstimator(seed=42), wavefunction, SLSQP(maxiter=300), transpiler=transpiler
         )
@@ -433,7 +436,6 @@ class TestVQE(QiskitAlgorithmsTestCase):
     def test_aux_operators_dict(self, transpiler):
         """Test dictionary compatibility of aux_operators"""
         wavefunction = self.ry_wavefunction
-        wavefunction.num_qubits = 2
         vqe = VQE(
             StatevectorEstimator(seed=42), wavefunction, SLSQP(maxiter=300), transpiler=transpiler
         )
@@ -485,7 +487,6 @@ class TestVQE(QiskitAlgorithmsTestCase):
             counts[0] = kwargs["count"]
 
         wavefunction = self.ryrz_wavefunction
-        wavefunction.num_qubits = 2
         vqe = VQE(
             estimator=StatevectorEstimator(),
             ansatz=wavefunction,
