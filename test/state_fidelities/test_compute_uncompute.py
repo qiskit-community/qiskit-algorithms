@@ -18,7 +18,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import ddt
 from qiskit.circuit import QuantumCircuit, ParameterVector
-from qiskit.circuit.library import RealAmplitudes
+from qiskit.circuit.library import real_amplitudes
 from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
@@ -189,7 +189,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
         """test for different input format variations"""
 
         fidelity = ComputeUncompute(self._sampler)
-        circuit = RealAmplitudes(2)
+        circuit = real_amplitudes(2)
         values = np.random.random(circuit.num_parameters)
         shift = np.ones_like(values) * 0.01
 

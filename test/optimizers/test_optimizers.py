@@ -21,7 +21,7 @@ from ddt import ddt, data, unpack
 import numpy as np
 from scipy.optimize import rosen, rosen_der
 
-from qiskit.circuit.library import RealAmplitudes
+from qiskit.circuit.library import real_amplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -410,7 +410,7 @@ class TestOptimizerSerialization(QiskitAlgorithmsTestCase):
 
     def test_qnspsa(self):
         """Test QN-SPSA optimizer is serializable."""
-        ansatz = RealAmplitudes(1)
+        ansatz = real_amplitudes(1)
         fidelity = QNSPSA.get_fidelity(
             ansatz,
             sampler=StatevectorSampler(seed=123),

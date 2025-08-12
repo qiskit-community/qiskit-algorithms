@@ -18,7 +18,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 from ddt import data, ddt, idata, unpack
 from qiskit import QuantumCircuit, generate_preset_pass_manager
-from qiskit.circuit.library import TwoLocal, RealAmplitudes
+from qiskit.circuit.library import n_local, real_amplitudes, RealAmplitudes
 from qiskit.primitives import StatevectorSampler, StatevectorEstimator
 from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit.quantum_info import SparsePauliOp
@@ -55,10 +55,10 @@ class TestVQD(QiskitAlgorithmsTestCase):
         self.h2_energy = -1.85727503
         self.h2_energy_excited = [-1.85727503, -1.24458455, -0.88272215, -0.22491125]
 
-        self.ryrz_wavefunction = TwoLocal(
-            rotation_blocks=["ry", "rz"], entanglement_blocks="cz", reps=1
+        self.ryrz_wavefunction = n_local(
+            2, rotation_blocks=["ry", "rz"], entanglement_blocks="cz", reps=1
         )
-        self.ry_wavefunction = TwoLocal(rotation_blocks="ry", entanglement_blocks="cz")
+        self.ry_wavefunction = n_local(2, rotation_blocks="ry", entanglement_blocks="cz")
 
         self.estimator = StatevectorEstimator(seed=self.seed)
         self.fidelity = ComputeUncompute(StatevectorSampler(seed=self.seed, default_shots=10_000))
@@ -152,6 +152,23 @@ class TestVQD(QiskitAlgorithmsTestCase):
         )
         with self.assertRaises(AlgorithmError):
             _ = vqd.compute_eigenvalues(operator=op)
+
+    # TODO: remove this test once BlueprintCircuit support has been removed
+    @data(H2_SPARSE_PAULI)
+    def test_ansatz_resize(self, op):
+        """Test the ansatz is properly resized if it's a blueprint circuit."""
+        ansatz = RealAmplitudes(1, reps=1)
+        vqd = VQD(
+            estimator=self.estimator,
+            fidelity=self.fidelity,
+            ansatz=ansatz,
+            optimizer=COBYLA(),
+            betas=self.betas,
+        )
+        result = vqd.compute_eigenvalues(operator=op)
+        np.testing.assert_array_almost_equal(
+            result.eigenvalues.real, self.h2_energy_excited[:2], decimal=1
+        )
 
     @data(H2_SPARSE_PAULI)
     def test_missing_varform_params(self, op):
@@ -261,10 +278,10 @@ class TestVQD(QiskitAlgorithmsTestCase):
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=COBYLA(),
             k=2,
-            betas=self.betas,
+            betas=[1],
         )
 
         def run_check():
@@ -321,7 +338,7 @@ class TestVQD(QiskitAlgorithmsTestCase):
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
-            ansatz=RealAmplitudes(),
+            ansatz=real_amplitudes(2),
             optimizer=optimizers,
             initial_point=[initial_point_1, initial_point_2],
             k=2,
@@ -350,7 +367,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
     def test_aux_operators_list(self, op, transpiler):
         """Test list-based aux_operators."""
         wavefunction = self.ry_wavefunction
-        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
@@ -418,7 +434,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
     def test_aux_operators_dict(self, op, transpiler):
         """Test dictionary compatibility of aux_operators"""
         wavefunction = self.ry_wavefunction
-        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
@@ -487,7 +502,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
     def test_aux_operator_std_dev(self, op, transpiler):
         """Test non-zero standard deviations of aux operators."""
         wavefunction = self.ry_wavefunction
-        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,
@@ -542,8 +556,8 @@ class TestVQD(QiskitAlgorithmsTestCase):
         vqd = VQD(
             self.estimator,
             self.fidelity,
-            RealAmplitudes(),
-            SLSQP(),
+            real_amplitudes(2),
+            SLSQP(eps=1e-4),
             k=2,
             betas=self.betas,
             initial_point=np.array(
@@ -583,7 +597,6 @@ class TestVQD(QiskitAlgorithmsTestCase):
             counts[0] = kwargs["count"]
 
         wavefunction = self.ryrz_wavefunction
-        wavefunction.num_qubits = 2
         vqd = VQD(
             estimator=self.estimator,
             fidelity=self.fidelity,

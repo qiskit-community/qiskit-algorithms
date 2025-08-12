@@ -22,7 +22,7 @@ from test import QiskitAlgorithmsTestCase
 import numpy as np
 
 from qiskit.quantum_info import SparsePauliOp
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 from qiskit.primitives import StatevectorEstimator
 
 from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
@@ -48,7 +48,7 @@ class TestImaginaryMcLachlanPrinciple(QiskitAlgorithmsTestCase):
         )
 
         d = 2  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
         parameters = list(ansatz.parameters)
@@ -73,7 +73,7 @@ class TestImaginaryMcLachlanPrinciple(QiskitAlgorithmsTestCase):
         )
 
         d = 2  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         # Define a set of initial parameters
         parameters = list(ansatz.parameters)

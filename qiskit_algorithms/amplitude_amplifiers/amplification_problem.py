@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2024.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -16,7 +16,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, List, cast
 
-from qiskit.circuit import QuantumCircuit
+from qiskit.circuit import QuantumCircuit, Gate
 from qiskit.circuit.library import GroverOperator
 from qiskit.quantum_info import Statevector
 
@@ -32,7 +32,7 @@ class AmplificationProblem:
     # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
-        oracle: QuantumCircuit | Statevector,
+        oracle: QuantumCircuit | Gate | Statevector,
         state_preparation: QuantumCircuit | None = None,
         grover_operator: QuantumCircuit | None = None,
         post_processing: Callable[[str], Any] | None = None,
@@ -41,7 +41,9 @@ class AmplificationProblem:
     ) -> None:
         r"""
         Args:
-            oracle: The oracle reflecting about the bad states.
+            oracle: The oracle reflecting about the bad states. If a
+                :class:`~qiskit.circuit.library.Gate` is passed, it will be converted to a
+                :class:`~qiskit.circuit.QuantumCircuit`.
             state_preparation: A circuit preparing the input state, referred to as
                 :math:`\mathcal{A}`. If None, a layer of Hadamard gates is used.
             grover_operator: The Grover operator :math:`\mathcal{Q}` used as unitary in the
@@ -52,19 +54,26 @@ class AmplificationProblem:
                 If None, all qubits will be measured. The ``is_good_state`` function will be
                 applied on the measurement outcome of these qubits.
             is_good_state: A function to check whether a string represents a good state. By default
-                if the ``oracle`` argument has an ``evaluate_bitstring`` method (currently only
-                provided by the :class:`~qiskit.circuit.library.PhaseOracle` class) this will be
-                used, otherwise this kwarg is required and **must** be specified.
+                if the ``oracle`` argument has a ``boolean_expression`` attribute (currently only
+                provided by the :class:`~qiskit.circuit.library.PhaseOracle` and
+                :class:`~qiskit.circuit.library.PhaseOracleGate` classes) this will be
+                used for the check, otherwise this kwarg is required and **must** be specified.
         """
-        self._oracle = oracle
+        if isinstance(oracle, Gate):
+            self._oracle = QuantumCircuit(oracle.num_qubits).compose(oracle)
+        else:
+            self._oracle = oracle
+
         self._state_preparation = state_preparation
         self._grover_operator = grover_operator
         self._post_processing = post_processing
         self._objective_qubits = objective_qubits
         if is_good_state is not None:
             self._is_good_state = is_good_state
-        elif hasattr(oracle, "evaluate_bitstring"):
-            self._is_good_state = oracle.evaluate_bitstring
+        elif hasattr(oracle, "boolean_expression"):
+            self._is_good_state = lambda bitstring: oracle.boolean_expression.simulate(
+                bitstring[::-1]
+            )
         else:
             self._is_good_state = None
 

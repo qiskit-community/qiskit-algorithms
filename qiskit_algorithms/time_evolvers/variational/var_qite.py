@@ -41,7 +41,7 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
 
         from qiskit_algorithms import TimeEvolutionProblem, VarQITE
         from qiskit_algorithms.time_evolvers.variational import ImaginaryMcLachlanPrinciple
-        from qiskit.circuit.library import EfficientSU2
+        from qiskit.circuit.library import efficient_su2
         from qiskit.quantum_info import SparsePauliOp, Pauli
         from qiskit.primitives import StatevectorEstimator
 
@@ -56,7 +56,7 @@ class VarQITE(VarQTE, ImaginaryTimeEvolver):
             ]
         )
 
-        ansatz = EfficientSU2(observable.num_qubits, reps=1)
+        ansatz = efficient_su2(observable.num_qubits, reps=1)
         init_param_values = np.ones(len(ansatz.parameters)) * np.pi/2
         var_principle = ImaginaryMcLachlanPrinciple()
         time = 1
