@@ -77,7 +77,7 @@ class QNSPSA(SPSA):
 
             def loss(x):
                 result = estimator.run([(ansatz, observable, x)]).result()[0]
-                return np.real(result.data.evs[0])
+                return np.real(result.data.evs)
 
             # fidelity for estimation of the geometric tensor
             sampler = StatevectorSampler()
@@ -85,7 +85,7 @@ class QNSPSA(SPSA):
 
             # run QN-SPSA
             qnspsa = QNSPSA(fidelity, maxiter=300)
-            result = qnspsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)
+            result = qnspsa.minimize(loss, x0=initial_point)
 
     References:
 
