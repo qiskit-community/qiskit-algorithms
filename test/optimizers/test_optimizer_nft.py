@@ -14,7 +14,7 @@
 
 import unittest
 from test import QiskitAlgorithmsTestCase
-from qiskit.circuit.library import RealAmplitudes
+from qiskit.circuit.library import real_amplitudes
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
@@ -40,7 +40,7 @@ class TestOptimizerNFT(QiskitAlgorithmsTestCase):
     def test_nft(self):
         """Test NFT optimizer by using it"""
 
-        vqe = VQE(StatevectorEstimator(), ansatz=RealAmplitudes(), optimizer=NFT())
+        vqe = VQE(StatevectorEstimator(), ansatz=real_amplitudes(2), optimizer=NFT())
 
         result = vqe.compute_minimum_eigenvalue(operator=self.qubit_op)
 

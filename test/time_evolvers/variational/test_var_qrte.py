@@ -20,7 +20,7 @@ import numpy as np
 
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter, ParameterVector
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp, Pauli, Statevector
 from qiskit.providers.fake_provider import GenericBackendV2
@@ -86,7 +86,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         )
         aux_ops = [Pauli("XX"), Pauli("YZ")]
         d = 1  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
         init_param_values = np.zeros(len(parameters))
@@ -176,7 +176,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
             ]
         )
         d = 2  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
         init_param_values = np.zeros(len(parameters))
@@ -277,7 +277,7 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
         )
         aux_ops = [Pauli("XX"), Pauli("YZ")]
         d = 1  # pylint: disable=invalid-name
-        ansatz = EfficientSU2(observable.num_qubits, reps=d)
+        ansatz = efficient_su2(observable.num_qubits, reps=d)
 
         parameters = list(ansatz.parameters)
         init_param_values = np.zeros(len(parameters))

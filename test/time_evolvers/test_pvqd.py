@@ -19,7 +19,7 @@ import numpy as np
 from ddt import data, ddt, unpack
 
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
-from qiskit.circuit.library import EfficientSU2
+from qiskit.circuit.library import efficient_su2
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.quantum_info import Pauli, SparsePauliOp
 from qiskit import generate_preset_pass_manager
@@ -62,7 +62,7 @@ class TestPVQD(QiskitAlgorithmsTestCase):
         super().setUp()
         self.hamiltonian = 0.1 * SparsePauliOp([Pauli("ZZ"), Pauli("IX"), Pauli("XI")])
         self.observable = Pauli("ZZ")
-        self.ansatz = EfficientSU2(2, reps=1)
+        self.ansatz = efficient_su2(2, reps=1)
         self.initial_parameters = np.zeros(self.ansatz.num_parameters)
         algorithm_globals.random_seed = 123
 
@@ -316,12 +316,13 @@ class TestPVQDUtils(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
         self.hamiltonian = 0.1 * SparsePauliOp([Pauli("ZZ"), Pauli("IX"), Pauli("XI")])
-        self.ansatz = EfficientSU2(2, reps=1)
+        self.ansatz = efficient_su2(2, reps=1)
 
     def test_gradient_supported(self):
         """Test the gradient support is correctly determined."""
         # gradient supported here
-        wrapped = EfficientSU2(2)  # a circuit wrapped into a big instruction
+        wrapped = QuantumCircuit(2)  # a circuit wrapped into a big instruction
+        wrapped.append(efficient_su2(2).to_gate(), [0, 1])
         plain = wrapped.decompose()  # a plain circuit with already supported instructions
 
         # gradients not supported on the following circuits

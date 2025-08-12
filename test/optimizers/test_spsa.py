@@ -17,7 +17,7 @@ from ddt import ddt, data
 
 import numpy as np
 
-from qiskit.circuit.library import PauliTwoDesign
+from qiskit.circuit.library import pauli_two_design
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 
 from qiskit.quantum_info import SparsePauliOp, Statevector
@@ -39,7 +39,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
     @data("spsa", "2spsa", "qnspsa")
     def test_pauli_two_design(self, method):
         """Test SPSA on the Pauli two-design example."""
-        circuit = PauliTwoDesign(3, reps=1, seed=1)
+        circuit = pauli_two_design(3, reps=1, seed=1)
         parameters = list(circuit.parameters)
         obs = SparsePauliOp("ZZI")  # Z^Z^I
 
@@ -203,7 +203,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
     def test_qnspsa_fidelity_primitives(self):
         """Test the primitives can be used in get_fidelity."""
-        ansatz = PauliTwoDesign(2, reps=1, seed=2)
+        ansatz = pauli_two_design(2, reps=1, seed=2)
         initial_point = np.random.random(ansatz.num_parameters)
 
         with self.subTest(msg="pass as kwarg"):
@@ -214,7 +214,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
     def test_qnspsa_max_evals_grouped(self):
         """Test using max_evals_grouped with QNSPSA."""
-        circuit = PauliTwoDesign(3, reps=1, seed=1)
+        circuit = pauli_two_design(3, reps=1, seed=1)
 
         obs = SparsePauliOp("ZZI")  # Z^Z^I
         estimator = StatevectorEstimator(seed=12)
