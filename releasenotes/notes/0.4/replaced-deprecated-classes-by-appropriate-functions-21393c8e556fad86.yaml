@@ -1,5 +1,5 @@
 ---
-prelude: |
+prelude: >
     Following up on the deprecation of ``BlueprintsCircuit`` in the 2.1 version of Qiskit, most
     tests have been updated to use the replacements functions instead. These circuits are still
     supported by ``qiskit-algorithms``, though their use is now deprecated, and their support will
@@ -12,6 +12,7 @@ prelude: |
 
     The :class:`.AdaptVQE` class now supports a new way to specify its ansatz, following up on the
     deprecation of :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.
+
 features:
   - |
     The :class:`.AmplificationProblem` and :class:`.Grover` classes now support being
