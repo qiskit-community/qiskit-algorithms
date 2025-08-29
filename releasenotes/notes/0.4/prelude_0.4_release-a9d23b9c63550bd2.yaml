@@ -1,0 +1,11 @@
+---
+prelude: >
+    This release compiles a series of important updates to the package, including:
+    
+    - dropped support for Python 3.8 and added support for Python 3.13
+    - added support for PrimitivesV2
+    - addressed deprecations from the 1.x cycle
+    
+    These changes allow for qiskit-algorithms to now support 
+    `Qiskit 2.x <https://docs.quantum.ibm.com/api/qiskit/release-notes/2.0>`__
+    while maintaining support for the 1.x cycle.
