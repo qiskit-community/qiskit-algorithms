@@ -73,6 +73,6 @@ runs:
           fi
         else
           echo 'Install Qiskit from Stable'
-          pip install -U qiskit!=2.1.2
+          pip install -U qiskit
         fi
       shell: bash
