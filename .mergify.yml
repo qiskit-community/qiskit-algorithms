@@ -16,7 +16,7 @@ pull_request_rules:
     actions:
       backport:
         branches:
-          - stable/0.3
+          - stable/0.4
   - name: refactored queue action rule
     conditions: []
     actions:
