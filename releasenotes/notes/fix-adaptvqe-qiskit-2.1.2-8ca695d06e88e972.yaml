@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    :class:`.AdaptVQE` now works correctly when using qiskit in version 2.1.2.
