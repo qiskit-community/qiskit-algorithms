@@ -2,10 +2,39 @@
 prelude: >
     This release compiles a series of important updates to the package, including:
     
-    - dropped support for Python 3.8 and added support for Python 3.13
-    - added support for PrimitivesV2
-    - addressed deprecations from the 1.x cycle
-    
-    These changes allow for qiskit-algorithms to now support 
+        * dropped support for Python 3.8 and added support for Python 3.13
+        * added support for ``PrimitivesV2``
+        * addressed deprecations from the Qiskit 1.x cycle
+        
+    These changes allow for ``qiskit-algorithms`` to now support 
     `Qiskit 2.x <https://docs.quantum.ibm.com/api/qiskit/release-notes/2.0>`__
     while maintaining support for the 1.x cycle.
+
+    In further detail:
+
+        Following up on the deprecation of V1 primitives in Qiskit 1.X and their
+        subsequent removal in Qiskit 2.X, this release of ``qiskit-algorithms``
+        drops their support in favor of the V2 primitives. You can read about
+        how to modify your imports in your code in the
+        [Qiskit migration guide to the V2 primitives](https://quantum.cloud.ibm.com/docs/en/migration-guides/v2-primitives).
+        Since V2 primitives may require users to transpile their circuit, it is
+        now possible for the users to provide the classes that define their own
+        :class:`~qiskit.circuit.QuantumCircuit` with a ``Transpiler``
+        along with some options. A ``Transpiler`` is any object having a ``run``
+        method that can take as input a
+        :class:`~qiskit.circuit.QuantumCircuit` or a list thereof and
+        additional options and returns the transpiled version of its input(s)
+        according to the provided options.
+
+        Following up on the deprecation of ``BlueprintCircuit`` in the 2.1 version of Qiskit, most
+        tests have been updated to use the replacements functions instead. These circuits are still
+        supported by ``qiskit-algorithms``, though their use is now deprecated, and their support will
+        be removed when the oldest supported Qiskit version is 3.0.
+
+        The :class:`.AmplificationProblem` and :class:`.Grover` classes now support being
+        passed :class:`~qiskit.circuit.library.Gate` objects to support the use of
+        :class:`~qiskit.circuit.library.PhaseOracleGate` in addition to
+        :class:`~qiskit.circuit.library.PhaseOracle`.
+
+        The :class:`.AdaptVQE` class now supports a new way to specify its ansatz, following up on the
+        deprecation of :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.

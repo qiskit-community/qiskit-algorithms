@@ -1,6 +1,4 @@
 ---
-prelude: >
-    Support for Python 3.8 has been dropped.
 upgrade:
   - |
     Python 3.8 support was dropped as Python 3.8 reached End Of Life
