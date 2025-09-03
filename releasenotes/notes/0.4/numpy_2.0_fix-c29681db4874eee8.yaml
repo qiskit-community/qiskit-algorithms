@@ -1,6 +1,6 @@
 ---
 fixes:
   - |
-    Compatibility fix for scipy 1.14 version. csr_matrix.H had been deprecated
+    Compatibility fix for scipy 1.14 version. ``csr_matrix.H`` had been deprecated
     and was removed. The :class:`.NumPyEigensolver` algorithm, which
     had been using that, has been updated to use an alternative.
