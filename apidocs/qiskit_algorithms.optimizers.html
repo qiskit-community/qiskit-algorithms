@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="OptimizerResult" href="../stubs/qiskit_algorithms.optimizers.OptimizerResult.html" /><link rel="prev" title="QAOA" href="../stubs/qiskit_algorithms.QAOA.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Optimizers (qiskit_algorithms.optimizers) - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Optimizers (qiskit_algorithms.optimizers) - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -365,8 +366,8 @@
           </label>
         </div>
         <article role="main">
-          <br><br><br><span class="target" id="module-qiskit_algorithms.optimizers"><span id="qiskit-algorithms-optimizers"></span></span><section id="optimizers-qiskit-algorithms-optimizers">
-<h1>Optimizers (<a class="reference internal" href="#module-qiskit_algorithms.optimizers" title="qiskit_algorithms.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.optimizers</span></code></a>)<a class="headerlink" href="#optimizers-qiskit-algorithms-optimizers" title="Permalink to this heading">#</a></h1>
+          <br><br><br><section id="optimizers-qiskit-algorithms-optimizers">
+<span id="module-qiskit_algorithms.optimizers"></span><span id="qiskit-algorithms-optimizers"></span><h1>Optimizers (<a class="reference internal" href="#module-qiskit_algorithms.optimizers" title="qiskit_algorithms.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.optimizers</span></code></a>)<a class="headerlink" href="#optimizers-qiskit-algorithms-optimizers" title="Link to this heading">¶</a></h1>
 <p>Classical Optimizers.</p>
 <p>This package contains a variety of classical optimizers and were designed for use by
 qiskit_algorithm’s quantum variational algorithms, such as <a class="reference internal" href="../stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a>.
@@ -380,7 +381,7 @@ that attempts to find an optimal value among all possible solutions.</p>
 </dd>
 </dl>
 <section id="optimizer-base-classes">
-<h2>Optimizer Base Classes<a class="headerlink" href="#optimizer-base-classes" title="Permalink to this heading">#</a></h2>
+<h2>Optimizer Base Classes<a class="headerlink" href="#optimizer-base-classes" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -398,7 +399,7 @@ that attempts to find an optimal value among all possible solutions.</p>
 </div>
 </section>
 <section id="steppable-optimization">
-<h2>Steppable Optimization<a class="headerlink" href="#steppable-optimization" title="Permalink to this heading">#</a></h2>
+<h2>Steppable Optimization<a class="headerlink" href="#steppable-optimization" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -428,7 +429,7 @@ that attempts to find an optimal value among all possible solutions.</p>
 </div>
 </section>
 <section id="local-optimizers">
-<h2>Local Optimizers<a class="headerlink" href="#local-optimizers" title="Permalink to this heading">#</a></h2>
+<h2>Local Optimizers<a class="headerlink" href="#local-optimizers" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -509,9 +510,21 @@ To install the <code class="docutils literal notranslate"><span class="pre">scik
 </tbody>
 </table>
 </div>
+<p>Qiskit also provides local optimizers based on
+<a class="reference external" href="https://nlopt.readthedocs.io/en/latest/">NLOpt</a>.
+See Global Optimizers section below for the optional NLOpt installation instructions.</p>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html#qiskit_algorithms.optimizers.SBPLX" title="qiskit_algorithms.optimizers.SBPLX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SBPLX</span></code></a></p></td>
+<td><p>Subplex optimizer.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="global-optimizers">
-<h2>Global Optimizers<a class="headerlink" href="#global-optimizers" title="Permalink to this heading">#</a></h2>
+<h2>Global Optimizers<a class="headerlink" href="#global-optimizers" title="Link to this heading">¶</a></h2>
 <p>The global optimizers here all use <a class="reference external" href="https://nlopt.readthedocs.io/en/latest/">NLOpt</a> for their
 core function and can only be used if the optional dependent <code class="docutils literal notranslate"><span class="pre">NLOpt</span></code> package is installed.
 To install the <code class="docutils literal notranslate"><span class="pre">NLOpt</span></code> dependent package you can use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">nlopt</span></code>.</p>
@@ -567,13 +580,13 @@ To install the <code class="docutils literal notranslate"><span class="pre">NLOp
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -616,11 +629,13 @@ To install the <code class="docutils literal notranslate"><span class="pre">NLOp
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

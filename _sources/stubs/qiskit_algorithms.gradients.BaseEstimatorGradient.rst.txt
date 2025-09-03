@@ -12,7 +12,7 @@
    .. rubric:: Attributes
     
    .. autoattribute:: derivative_type
-   .. autoattribute:: options
+   .. autoattribute:: precision
   
 
   
@@ -20,5 +20,4 @@
    .. rubric:: Methods
     
    .. automethod:: run
-   .. automethod:: update_default_options
   

@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="NumPyMinimumEigensolverResult" href="qiskit_algorithms.NumPyMinimumEigensolverResult.html" /><link rel="prev" title="MinimumEigensolverResult" href="qiskit_algorithms.MinimumEigensolverResult.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>NumPyMinimumEigensolver - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>NumPyMinimumEigensolver - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="numpyminimumeigensolver">
-<h1>NumPyMinimumEigensolver<a class="headerlink" href="#numpyminimumeigensolver" title="Permalink to this heading">#</a></h1>
+<h1>NumPyMinimumEigensolver<a class="headerlink" href="#numpyminimumeigensolver" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.NumPyMinimumEigensolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NumPyMinimumEigensolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NumPyMinimumEigensolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.MinimumEigensolver.html#qiskit_algorithms.MinimumEigensolver" title="qiskit_algorithms.minimum_eigensolvers.minimum_eigensolver.MinimumEigensolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigensolver</span></code></a></p>
 <p>The NumPy minimum eigensolver algorithm.</p>
 <dl class="field-list simple">
@@ -385,21 +386,21 @@ can even be empty.</p>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.NumPyMinimumEigensolver.filter_criterion">
-<span class="sig-name descname"><span class="pre">filter_criterion</span></span><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.filter_criterion" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">filter_criterion</span></span><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.filter_criterion" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the criterion for filtering eigenstates/eigenvalues.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.NumPyMinimumEigensolver.compute_minimum_eigenvalue">
-<span class="sig-name descname"><span class="pre">compute_minimum_eigenvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver.compute_minimum_eigenvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.compute_minimum_eigenvalue" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_minimum_eigenvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver.compute_minimum_eigenvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.compute_minimum_eigenvalue" title="Link to this definition">¶</a></dt>
 <dd><p>Computes the minimum eigenvalue. The <code class="docutils literal notranslate"><span class="pre">operator</span></code> and <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> are supplied here.
 While an <code class="docutils literal notranslate"><span class="pre">operator</span></code> is required by algorithms, <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> are optional.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>operator</strong> (<em>BaseOperator</em>) – Qubit operator of the observable.</p></li>
-<li><p><strong>aux_operators</strong> (<em>ListOrDict</em><em>[</em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Optional list of auxiliary operators to be evaluated with the
+<li><p><strong>aux_operators</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a><em>[</em><em>BaseOperator</em><em> | </em><em>None</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Optional list of auxiliary operators to be evaluated with the
 parameters of the minimum eigenvalue main result and their expectation values
 returned. For instance in chemistry these can be dipole operators and total particle
 count operators, so we can get values for these at the ground state.</p></li>
@@ -409,14 +410,14 @@ count operators, so we can get values for these at the ground state.</p></li>
 <dd class="field-even"><p>A minimum eigensolver result.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.NumPyMinimumEigensolverResult.html#qiskit_algorithms.NumPyMinimumEigensolverResult" title="qiskit_algorithms.NumPyMinimumEigensolverResult">NumPyMinimumEigensolverResult</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.NumPyMinimumEigensolverResult.html#qiskit_algorithms.NumPyMinimumEigensolverResult" title="qiskit_algorithms.minimum_eigensolvers.numpy_minimum_eigensolver.NumPyMinimumEigensolverResult"><em>NumPyMinimumEigensolverResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.NumPyMinimumEigensolver.supports_aux_operators">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.supports_aux_operators" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/numpy_minimum_eigensolver.html#NumPyMinimumEigensolver.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.NumPyMinimumEigensolver.supports_aux_operators" title="Link to this definition">¶</a></dt>
 <dd><p>Whether computing the expectation value of auxiliary operators is supported.</p>
 <p>If the minimum eigensolver computes an eigenvalue of the main <code class="docutils literal notranslate"><span class="pre">operator</span></code> then it can
 compute the expectation value of the <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> for that state. Otherwise they will
@@ -463,13 +464,13 @@ be ignored.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -510,11 +511,11 @@ be ignored.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

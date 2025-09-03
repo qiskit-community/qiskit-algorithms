@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.optimizers.imfil - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.optimizers.imfil - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -377,17 +378,19 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;IMplicit FILtering (IMFIL) optimizer.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">optionals</span> <span class="k">as</span> <span class="n">_optionals</span>
-<span class="kn">from</span> <span class="nn">.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerSupportLevel</span><span class="p">,</span> <span class="n">OptimizerResult</span><span class="p">,</span> <span class="n">POINT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">optionals</span> <span class="k">as</span> <span class="n">_optionals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerSupportLevel</span><span class="p">,</span> <span class="n">OptimizerResult</span><span class="p">,</span> <span class="n">POINT</span>
 
 
-<div class="viewcode-block" id="IMFIL"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL">[docs]</a><span class="nd">@_optionals</span><span class="o">.</span><span class="n">HAS_SKQUANT</span><span class="o">.</span><span class="n">require_in_instance</span>
-<span class="k">class</span> <span class="nc">IMFIL</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+<div class="viewcode-block" id="IMFIL">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL">[docs]</a>
+<span class="nd">@_optionals</span><span class="o">.</span><span class="n">HAS_SKQUANT</span><span class="o">.</span><span class="n">require_in_instance</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IMFIL</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;IMplicit FILtering algorithm.</span>
 
 <span class="sd">    Implicit filtering is a way to solve bound-constrained optimization problems for</span>
@@ -400,7 +403,7 @@
 <span class="sd">    https://github.com/scikit-quant/scikit-quant and https://qat4chem.lbl.gov/software.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -414,7 +417,9 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maxiter</span> <span class="o">=</span> <span class="n">maxiter</span>
 
-<div class="viewcode-block" id="IMFIL.get_support_level"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL.get_support_level">[docs]</a>    <span class="k">def</span> <span class="nf">get_support_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IMFIL.get_support_level">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL.get_support_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_support_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns support level dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;gradient&quot;</span><span class="p">:</span> <span class="n">OptimizerSupportLevel</span><span class="o">.</span><span class="n">ignored</span><span class="p">,</span>
@@ -422,20 +427,23 @@
             <span class="s2">&quot;initial_point&quot;</span><span class="p">:</span> <span class="n">OptimizerSupportLevel</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
         <span class="p">}</span></div>
 
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxiter</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="IMFIL.minimize"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL.minimize">[docs]</a>    <span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span>
+<div class="viewcode-block" id="IMFIL.minimize">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html#qiskit_algorithms.optimizers.IMFIL.minimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minimize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">POINT</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">POINT</span><span class="p">,</span>
         <span class="n">jac</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">POINT</span><span class="p">],</span> <span class="n">POINT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">bounds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerResult</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">skquant</span> <span class="kn">import</span> <span class="n">opt</span> <span class="k">as</span> <span class="n">skq</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">skquant</span><span class="w"> </span><span class="kn">import</span> <span class="n">opt</span> <span class="k">as</span> <span class="n">skq</span>
 
         <span class="n">res</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">skq</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span>
             <span class="n">func</span><span class="o">=</span><span class="n">fun</span><span class="p">,</span>
@@ -449,7 +457,9 @@
         <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">optpar</span>
         <span class="n">optimizer_result</span><span class="o">.</span><span class="n">fun</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">optval</span>
         <span class="n">optimizer_result</span><span class="o">.</span><span class="n">nfev</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">optimizer_result</span></div></div>
+        <span class="k">return</span> <span class="n">optimizer_result</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -461,13 +471,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -484,11 +494,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

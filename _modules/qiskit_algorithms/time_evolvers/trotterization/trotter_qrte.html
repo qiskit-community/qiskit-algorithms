@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.time_evolvers.trotterization.trotter_qrte - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.time_evolvers.trotterization.trotter_qrte - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.time_evolvers.trotterization.trotter_qrte</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2021, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2021, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -378,23 +379,28 @@
 
 <span class="sd">&quot;&quot;&quot;An algorithm to implement a Trotterization real time-evolution.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.parametertable</span> <span class="kn">import</span> <span class="n">ParameterView</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span>
-<span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">ProductFormula</span><span class="p">,</span> <span class="n">LieTrotter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers.time_evolution_problem</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers.time_evolution_result</span> <span class="kn">import</span> <span class="n">TimeEvolutionResult</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers.real_time_evolver</span> <span class="kn">import</span> <span class="n">RealTimeEvolver</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.observables_evaluator</span> <span class="kn">import</span> <span class="n">estimate_observables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.parametertable</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimatorV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProductFormula</span><span class="p">,</span> <span class="n">LieTrotter</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers.time_evolution_problem</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers.time_evolution_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers.real_time_evolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealTimeEvolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.observables_evaluator</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_observables</span>
 
 
-<div class="viewcode-block" id="TrotterQRTE"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE">[docs]</a><span class="k">class</span> <span class="nc">TrotterQRTE</span><span class="p">(</span><span class="n">RealTimeEvolver</span><span class="p">):</span>
+<div class="viewcode-block" id="TrotterQRTE">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TrotterQRTE</span><span class="p">(</span><span class="n">RealTimeEvolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Quantum Real Time Evolution using Trotterization.</span>
 
 <span class="sd">    The type of Trotterization is defined by the :class:`~qiskit.synthesis.ProductFormula`</span>
@@ -407,24 +413,26 @@
 <span class="sd">            from qiskit.quantum_info import Pauli, SparsePauliOp</span>
 <span class="sd">            from qiskit import QuantumCircuit</span>
 <span class="sd">            from qiskit_algorithms import TrotterQRTE, TimeEvolutionProblem</span>
-<span class="sd">            from qiskit.primitives import Estimator</span>
+<span class="sd">            from qiskit.primitives import StatevectorEstimator</span>
 
 <span class="sd">            operator = SparsePauliOp([Pauli(&quot;X&quot;), Pauli(&quot;Z&quot;)])</span>
 <span class="sd">            initial_state = QuantumCircuit(1)</span>
 <span class="sd">            time = 1</span>
 <span class="sd">            evolution_problem = TimeEvolutionProblem(operator, time, initial_state)</span>
 <span class="sd">            # LieTrotter with 1 rep</span>
-<span class="sd">            estimator = Estimator()</span>
+<span class="sd">            estimator = StatevectorEstimator()</span>
 <span class="sd">            trotter_qrte = TrotterQRTE(estimator=estimator)</span>
 <span class="sd">            evolved_state = trotter_qrte.evolve(evolution_problem).evolved_state</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">product_formula</span><span class="p">:</span> <span class="n">ProductFormula</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimatorV2</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">insert_barriers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -439,6 +447,11 @@
 <span class="sd">                ``TimeEvolutionProblem.aux_operators``.</span>
 <span class="sd">            num_timesteps: The number of time-steps the full evolution time is divided into</span>
 <span class="sd">                (repetitions of ``product_formula``).</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are produced within this algorithm. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 <span class="sd">            insert_barriers: If True, insert a barrier after the initial state and after each Trotter</span>
 <span class="sd">                step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -447,14 +460,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span> <span class="o">=</span> <span class="n">num_timesteps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span> <span class="o">=</span> <span class="n">insert_barriers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="o">=</span> <span class="n">transpiler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span> <span class="o">=</span> <span class="n">transpiler_options</span> <span class="k">if</span> <span class="n">transpiler_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">product_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProductFormula</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">product_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProductFormula</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a product formula.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_product_formula</span>
 
     <span class="nd">@product_formula</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">product_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_formula</span><span class="p">:</span> <span class="n">ProductFormula</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">product_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_formula</span><span class="p">:</span> <span class="n">ProductFormula</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a product formula. If ``None`` provided, sets the Lie-Trotter first order product</span>
 <span class="sd">        formula with a single repetition.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">product_formula</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -462,26 +477,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_product_formula</span> <span class="o">=</span> <span class="n">product_formula</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEstimator</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEstimatorV2</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an estimator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimator</span>
 
     <span class="nd">@estimator</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimatorV2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets an estimator.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_estimator</span> <span class="o">=</span> <span class="n">estimator</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_timesteps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_timesteps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of timesteps.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_timesteps</span>
 
     <span class="nd">@num_timesteps</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">num_timesteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_timesteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the number of time-steps.</span>
 
@@ -494,8 +509,10 @@
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_timesteps</span> <span class="o">=</span> <span class="n">num_timesteps</span>
 
-<div class="viewcode-block" id="TrotterQRTE.supports_aux_operators"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE.supports_aux_operators">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">supports_aux_operators</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="TrotterQRTE.supports_aux_operators">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE.supports_aux_operators">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_aux_operators</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Whether computing the expectation value of auxiliary operators is supported.</span>
 
@@ -505,7 +522,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="TrotterQRTE.evolve"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE.evolve">[docs]</a>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evolution_problem</span><span class="p">:</span> <span class="n">TimeEvolutionProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEvolutionResult</span><span class="p">:</span>
+
+<div class="viewcode-block" id="TrotterQRTE.evolve">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE.evolve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evolution_problem</span><span class="p">:</span> <span class="n">TimeEvolutionProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEvolutionResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evolves a quantum state for a given time using the Trotterization method</span>
 <span class="sd">        based on a product formula provided. The result is provided in the form of a quantum</span>
@@ -563,6 +583,10 @@
 
         <span class="n">evolved_state</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">initial_state</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
         <span class="n">evolved_state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initial_state</span><span class="p">,</span> <span class="n">evolved_state</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">evolved_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">evolved_state</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span><span class="p">:</span>
             <span class="n">evolved_state</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
 
@@ -601,6 +625,10 @@
                     <span class="n">synthesis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">product_formula</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="n">evolved_state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single_step_evolution_gate</span><span class="p">,</span> <span class="n">evolved_state</span><span class="o">.</span><span class="n">qubits</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">evolved_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">evolved_state</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span><span class="p">:</span>
                 <span class="n">evolved_state</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
 
@@ -621,7 +649,9 @@
 
         <span class="k">return</span> <span class="n">TimeEvolutionResult</span><span class="p">(</span>
             <span class="n">evolved_state</span><span class="p">,</span> <span class="n">evaluated_aux_ops</span><span class="p">,</span> <span class="n">observables</span>  <span class="c1"># type: ignore[arg-type]</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -633,13 +663,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -656,11 +686,11 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

@@ -4,20 +4,3 @@
 .. automodule:: qiskit_algorithms.optimizers.optimizer_utils
 
    
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-   
-   
-   
-
-
-

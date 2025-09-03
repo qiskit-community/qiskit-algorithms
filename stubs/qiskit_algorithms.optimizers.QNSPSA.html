@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="TNC" href="qiskit_algorithms.optimizers.TNC.html" /><link rel="prev" title="SPSA" href="qiskit_algorithms.optimizers.SPSA.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>QNSPSA - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>QNSPSA - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="qnspsa">
-<h1>QNSPSA<a class="headerlink" href="#qnspsa" title="Permalink to this heading">#</a></h1>
+<h1>QNSPSA<a class="headerlink" href="#qnspsa" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QNSPSA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_increase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamplings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_hessian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination_checker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/qnspsa.html#QNSPSA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">QNSPSA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_increase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resamplings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hessian_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lse_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_hessian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">termination_checker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/qnspsa.html#QNSPSA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.optimizers.SPSA.html#qiskit_algorithms.optimizers.SPSA" title="qiskit_algorithms.optimizers.spsa.SPSA"><code class="xref py py-class docutils literal notranslate"><span class="pre">SPSA</span></code></a></p>
 <p>The Quantum Natural SPSA (QN-SPSA) optimizer.</p>
 <p>The QN-SPSA optimizer [1] is a stochastic optimizer that belongs to the family of gradient
@@ -392,32 +393,31 @@ then you should set the random number generator seed in the algorithm_globals
 </div>
 <p class="rubric">Examples</p>
 <p>This short example runs QN-SPSA for the ground state calculation of the <code class="docutils literal notranslate"><span class="pre">Z</span> <span class="pre">^</span> <span class="pre">Z</span></code>
-observable where the ansatz is a <code class="docutils literal notranslate"><span class="pre">PauliTwoDesign</span></code> circuit.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">QNSPSA</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliTwoDesign</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span><span class="p">,</span> <span class="n">Sampler</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span>
+observable where the ansatz is a <code class="docutils literal notranslate"><span class="pre">pauli_two_design</span></code> circuit.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">QNSPSA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">pauli_two_design</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span><span class="p">,</span> <span class="n">StatevectorSampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pauli</span>
 
 <span class="c1"># problem setup</span>
-<span class="n">ansatz</span> <span class="o">=</span> <span class="n">PauliTwoDesign</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">pauli_two_design</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">observable</span> <span class="o">=</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">)</span>
 <span class="n">initial_point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">)</span>
 
 <span class="c1"># loss function</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">ansatz</span><span class="p">],</span> <span class="p">[</span><span class="n">observable</span><span class="p">],</span> <span class="p">[</span><span class="n">x</span><span class="p">])</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">loss</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">observable</span><span class="p">,</span> <span class="n">x</span><span class="p">)])</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
 
 <span class="c1"># fidelity for estimation of the geometric tensor</span>
-<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">()</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">StatevectorSampler</span><span class="p">()</span>
 <span class="n">fidelity</span> <span class="o">=</span> <span class="n">QNSPSA</span><span class="o">.</span><span class="n">get_fidelity</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)</span>
 
 <span class="c1"># run QN-SPSA</span>
 <span class="n">qnspsa</span> <span class="o">=</span> <span class="n">QNSPSA</span><span class="p">(</span><span class="n">fidelity</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">qnspsa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">qnspsa</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">initial_point</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -480,92 +480,92 @@ evaluations used in the estimate of the gradient.</p></li>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.bounds_support_level">
-<span class="sig-name descname"><span class="pre">bounds_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.bounds_support_level" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">bounds_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.bounds_support_level" title="Link to this definition">¶</a></dt>
 <dd><p>Returns bounds support level</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.gradient_support_level">
-<span class="sig-name descname"><span class="pre">gradient_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.gradient_support_level" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">gradient_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.gradient_support_level" title="Link to this definition">¶</a></dt>
 <dd><p>Returns gradient support level</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.initial_point_support_level">
-<span class="sig-name descname"><span class="pre">initial_point_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.initial_point_support_level" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_point_support_level</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.initial_point_support_level" title="Link to this definition">¶</a></dt>
 <dd><p>Returns initial point support level</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_bounds_ignored">
-<span class="sig-name descname"><span class="pre">is_bounds_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_ignored" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_bounds_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_ignored" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is bounds ignored</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_bounds_required">
-<span class="sig-name descname"><span class="pre">is_bounds_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_required" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_bounds_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_required" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is bounds required</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_bounds_supported">
-<span class="sig-name descname"><span class="pre">is_bounds_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_supported" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_bounds_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_bounds_supported" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is bounds supported</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_gradient_ignored">
-<span class="sig-name descname"><span class="pre">is_gradient_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_ignored" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_gradient_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_ignored" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is gradient ignored</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_gradient_required">
-<span class="sig-name descname"><span class="pre">is_gradient_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_required" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_gradient_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_required" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is gradient required</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_gradient_supported">
-<span class="sig-name descname"><span class="pre">is_gradient_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_supported" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_gradient_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_gradient_supported" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is gradient supported</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_initial_point_ignored">
-<span class="sig-name descname"><span class="pre">is_initial_point_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_ignored" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_initial_point_ignored</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_ignored" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is initial point ignored</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_initial_point_required">
-<span class="sig-name descname"><span class="pre">is_initial_point_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_required" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_initial_point_required</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_required" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is initial point required</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.is_initial_point_supported">
-<span class="sig-name descname"><span class="pre">is_initial_point_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_supported" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">is_initial_point_supported</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.is_initial_point_supported" title="Link to this definition">¶</a></dt>
 <dd><p>Returns is initial point supported</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.setting">
-<span class="sig-name descname"><span class="pre">setting</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.setting" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">setting</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.setting" title="Link to this definition">¶</a></dt>
 <dd><p>Return setting</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.settings">
-<span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.settings" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.settings" title="Link to this definition">¶</a></dt>
 <dd><p>The optimizer settings in a dictionary format.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.calibrate">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calibrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stability_constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.602</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.101</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.calibrate" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calibrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stability_constant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.602</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.101</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.calibrate" title="Link to this definition">¶</a></dt>
 <dd><p>Calibrate SPSA parameters with a power series as learning rate and perturbation coeffs.</p>
 <p>The power series are:</p>
 <div class="math-wrapper docutils container">
@@ -575,8 +575,8 @@ evaluations used in the estimate of the gradient.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loss</strong> (<em>Callable</em><em>[</em><em>[</em><em>np.ndarray</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The loss function.</p></li>
-<li><p><strong>initial_point</strong> (<em>np.ndarray</em>) – The initial guess of the iteration.</p></li>
+<li><p><strong>loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The loss function.</p></li>
+<li><p><strong>initial_point</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>) – The initial guess of the iteration.</p></li>
 <li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The initial perturbation magnitude.</p></li>
 <li><p><strong>stability_constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The value of <cite>A</cite>.</p></li>
 <li><p><strong>target_magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><em>None</em>) – The target magnitude for the first update step, defaults to
@@ -604,7 +604,7 @@ Defaults to 1, i.e. no grouping.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.estimate_stddev">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">estimate_stddev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.estimate_stddev" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">estimate_stddev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.estimate_stddev" title="Link to this definition">¶</a></dt>
 <dd><p>Estimate the standard deviation of the loss function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -615,7 +615,7 @@ Defaults to 1, i.e. no grouping.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.get_fidelity">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_fidelity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/qnspsa.html#QNSPSA.get_fidelity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.get_fidelity" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_fidelity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/qnspsa.html#QNSPSA.get_fidelity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.get_fidelity" title="Link to this definition">¶</a></dt>
 <dd><p>Get a function to compute the fidelity of <code class="docutils literal notranslate"><span class="pre">circuit</span></code> with itself.</p>
 <p>Let <code class="docutils literal notranslate"><span class="pre">circuit</span></code> be a parameterized quantum circuit performing the operation
 <span class="math notranslate nohighlight">\(U(\theta)\)</span> given a set of parameters <span class="math notranslate nohighlight">\(\theta\)</span>. Then this method returns
@@ -629,28 +629,33 @@ a function to evaluate</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit</strong> (<em>QuantumCircuit</em>) – The circuit preparing the parameterized ansatz.</p></li>
-<li><p><strong>sampler</strong> (<em>BaseSampler</em><em> | </em><em>None</em>) – A sampler primitive to sample from a quantum state.</p></li>
+<li><p><strong>circuit</strong> (<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><em>QuantumCircuit</em></a>) – The circuit preparing the parameterized ansatz.</p></li>
+<li><p><strong>sampler</strong> (<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.BaseSamplerV2" title="(in Qiskit v2.1)"><em>BaseSamplerV2</em></a>) – A sampler primitive to sample from a quantum state.</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are produced by the fidelity object. If set to <cite>None</cite>, these won’t be
+transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><em>Any</em></a><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A handle to the function <span class="math notranslate nohighlight">\(F\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Callable[[np.ndarray, np.ndarray], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.get_support_level">
-<span class="sig-name descname"><span class="pre">get_support_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.get_support_level" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_support_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.get_support_level" title="Link to this definition">¶</a></dt>
 <dd><p>Get the support level dictionary.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.gradient_num_diff">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gradient_num_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.gradient_num_diff" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gradient_num_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_evals_grouped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.gradient_num_diff" title="Link to this definition">¶</a></dt>
 <dd><p>We compute the gradient with the numeric differentiation in the parallel way,
 around the point x_center.</p>
 <dl class="field-list simple">
@@ -673,14 +678,14 @@ around the point x_center.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.minimize">
-<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.minimize" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fun</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.minimize" title="Link to this definition">¶</a></dt>
 <dd><p>Minimize the scalar function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fun</strong> (<em>Callable</em><em>[</em><em>[</em><em>POINT</em><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The scalar function to minimize.</p></li>
-<li><p><strong>x0</strong> (<em>POINT</em>) – The initial point for the minimization.</p></li>
-<li><p><strong>jac</strong> (<em>Callable</em><em>[</em><em>[</em><em>POINT</em><em>]</em><em>, </em><em>POINT</em><em>] </em><em>| </em><em>None</em>) – The gradient of the scalar function <code class="docutils literal notranslate"><span class="pre">fun</span></code>.</p></li>
+<li><p><strong>fun</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – The scalar function to minimize.</p></li>
+<li><p><strong>x0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>) – The initial point for the minimization.</p></li>
+<li><p><strong>jac</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.13)"><em>Callable</em></a><em>[</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a><em>] </em><em>| </em><em>None</em>) – The gradient of the scalar function <code class="docutils literal notranslate"><span class="pre">fun</span></code>.</p></li>
 <li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – Bounds for the variables of <code class="docutils literal notranslate"><span class="pre">fun</span></code>. This argument might be ignored if the
 optimizer does not support bounds.</p></li>
 </ul>
@@ -689,26 +694,26 @@ optimizer does not support bounds.</p></li>
 <dd class="field-even"><p>The result of the optimization, containing e.g. the result as attribute <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.optimizers.OptimizerResult.html#qiskit_algorithms.optimizers.OptimizerResult" title="qiskit_algorithms.optimizers.OptimizerResult">OptimizerResult</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.optimizers.OptimizerResult.html#qiskit_algorithms.optimizers.OptimizerResult" title="qiskit_algorithms.optimizers.optimizer.OptimizerResult"><em>OptimizerResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.print_options">
-<span class="sig-name descname"><span class="pre">print_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.print_options" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">print_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.print_options" title="Link to this definition">¶</a></dt>
 <dd><p>Print algorithm-specific options.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.set_max_evals_grouped">
-<span class="sig-name descname"><span class="pre">set_max_evals_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.set_max_evals_grouped" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_max_evals_grouped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.set_max_evals_grouped" title="Link to this definition">¶</a></dt>
 <dd><p>Set max evals grouped</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.set_options">
-<span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.set_options" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.set_options" title="Link to this definition">¶</a></dt>
 <dd><p>Sets or updates values in the options dictionary.</p>
 <p>The options dictionary may be used internally by a given optimizer to
 pass additional optional values for the underlying optimizer/optimization
@@ -723,7 +728,7 @@ a set of key/values when the given optimizer is constructed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.QNSPSA.wrap_function">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrap_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.wrap_function" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrap_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.QNSPSA.wrap_function" title="Link to this definition">¶</a></dt>
 <dd><p>Wrap the function to implicitly inject the args at the call of the function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -773,13 +778,13 @@ a set of key/values when the given optimizer is constructed.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -841,11 +846,11 @@ a set of key/values when the given optimizer is constructed.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

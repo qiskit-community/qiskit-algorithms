@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Grover’s algorithm examples" href="07_grover_examples.html" /><link rel="prev" title="Quantum Approximate Optimization Algorithm" href="05_qaoa.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Grover’s Algorithm and Amplitude Amplification - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Grover’s Algorithm and Amplitude Amplification - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,10 +368,10 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/06_grover.ipynb">docs/tutorials/06_grover.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/06_grover.ipynb">docs/tutorials/06_grover.ipynb</a>.</p>
 </div>
 <section id="Grover's-Algorithm-and-Amplitude-Amplification">
-<h1>Grover’s Algorithm and Amplitude Amplification<a class="headerlink" href="#Grover's-Algorithm-and-Amplitude-Amplification" title="Permalink to this heading">#</a></h1>
+<h1>Grover’s Algorithm and Amplitude Amplification<a class="headerlink" href="#Grover's-Algorithm-and-Amplitude-Amplification" title="Link to this heading">¶</a></h1>
 <p>Grover’s algorithm is one of the most famous quantum algorithms introduced by Lov Grover in 1996 [1]. It has initially been proposed for unstructured search problems, i.e. for finding a marked element in a unstructured database. However, Grover’s algorithm is now a subroutine to several other algorithms, such as Grover Adaptive Search [2]. For the details of Grover’s algorithm, please see <a class="reference external" href="https://github.com/Qiskit/textbook/blob/main/notebooks/ch-algorithms/grover.ipynb">Grover’s Algorithm</a>
 in the Qiskit textbook.</p>
 <p>Qiskit implements Grover’s algorithm in the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class. This class also includes the generalized version, Amplitude Amplification [3], and allows setting individual iterations and other meta-settings to Grover’s algorithm.</p>
@@ -379,34 +380,40 @@ in the Qiskit textbook.</p>
 <p>[2]: A. Gilliam, S. Woerner, C. Gonciulea, Grover Adaptive Search for Constrained Polynomial Binary Optimization. <a class="reference external" href="https://arxiv.org/abs/1912.04088">https://arxiv.org/abs/1912.04088</a></p>
 <p>[3]: Brassard, G., Hoyer, P., Mosca, M., &amp; Tapp, A. (2000). Quantum Amplitude Amplification and Estimation. <a class="reference external" href="http://arxiv.org/abs/quant-ph/0005055">http://arxiv.org/abs/quant-ph/0005055</a></p>
 <section id="Grover's-algorithm">
-<h2>Grover’s algorithm<a class="headerlink" href="#Grover's-algorithm" title="Permalink to this heading">#</a></h2>
+<h2>Grover’s algorithm<a class="headerlink" href="#Grover's-algorithm" title="Link to this heading">¶</a></h2>
 <p>Grover’s algorithm uses the Grover operator <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> to amplify the amplitudes of the good states:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\mathcal{Q} = \mathcal{A}\mathcal{S_0}\mathcal{A}^\dagger \mathcal{S_f}\]</div>
 </div>
-<p>Here, * <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is the initial search state for the algorithm, which is just Hadamards, <span class="math notranslate nohighlight">\(H^{\otimes n}\)</span> for the textbook Grover search, but can be more elaborate for Amplitude Amplification * <span class="math notranslate nohighlight">\(\mathcal{S_0}\)</span> is the reflection about the all 0 state</p>
+<p>Here,</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(\mathcal{A}\)</span> is the initial search state for the algorithm, which is just Hadamards, <span class="math notranslate nohighlight">\(H^{\otimes n}\)</span> for the textbook Grover search, but can be more elaborate for Amplitude Amplification</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathcal{S_0}\)</span> is the reflection about the all 0 state</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\begin{split}|x\rangle \mapsto \begin{cases} -|x\rangle, &amp;x \neq 0 \\ |x\rangle, &amp;x = 0\end{cases}\end{split}\]</div>
 </div>
-<p>* <span class="math notranslate nohighlight">\(\mathcal{S_f}\)</span> is the oracle that applies</p>
+</li>
+<li><p><span class="math notranslate nohighlight">\(\mathcal{S_f}\)</span> is the oracle that applies</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[|x\rangle \mapsto (-1)^{f(x)}|x\rangle\]</div>
 </div>
 <p>    　where <span class="math notranslate nohighlight">\(f(x)\)</span> is 1 if <span class="math notranslate nohighlight">\(x\)</span> is a good state and otherwise 0.</p>
+</li>
+</ul>
 <p>In a nutshell, Grover’s algorithm applies different powers of <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> and after each execution checks whether a good solution has been found.</p>
 <section id="Running-Grover's-algorithm">
-<h3>Running Grover’s algorithm<a class="headerlink" href="#Running-Grover's-algorithm" title="Permalink to this heading">#</a></h3>
+<h3>Running Grover’s algorithm<a class="headerlink" href="#Running-Grover's-algorithm" title="Link to this heading">¶</a></h3>
 <p>To run Grover’s algorithm with the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class, firstly, we need to specify an oracle for the circuit of Grover’s algorithm. In the following example, we use <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> as the oracle of Grover’s algorithm. However, there are several other class that we can use as the oracle of Grover’s algorithm. We talk about them later in this tutorial.</p>
 <p>Note that the oracle for <code class="docutils literal notranslate"><span class="pre">Grover</span></code> must be a <em>phase-flip</em> oracle. That is, it multiplies the amplitudes of the of “good states” by a factor of <span class="math notranslate nohighlight">\(-1\)</span>. We explain later how to convert a <em>bit-flip</em> oracle to a phase-flip oracle.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">AmplificationProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">AmplificationProblem</span>
 
 <span class="c1"># the state we desire to find is &#39;11&#39;</span>
 <span class="n">good_state</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;11&quot;</span><span class="p">]</span>
@@ -439,11 +446,11 @@ in the Qiskit textbook.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">Grover</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grover</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorSampler</span>
 
 
-<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">())</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">()</span>
@@ -452,7 +459,7 @@ in the Qiskit textbook.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -461,32 +468,23 @@ Result type: &lt;class &#39;qiskit_algorithms.amplitude_amplifiers.grover.Grover
 
 Success!
 Top measurement: 11
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7196/808285332.py:5: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  grover = Grover(sampler=Sampler())
 </pre></div></div>
 </div>
 <p>In the example, the result of <code class="docutils literal notranslate"><span class="pre">top_measurement</span></code> is <code class="docutils literal notranslate"><span class="pre">11</span></code> which is one of “good state”. Thus, we succeeded to find the answer by using <code class="docutils literal notranslate"><span class="pre">Grover</span></code>.</p>
 </section>
 <section id="Using-the-different-types-of-classes-as-the-oracle-of-Grover">
-<h3>Using the different types of classes as the oracle of <code class="docutils literal notranslate"><span class="pre">Grover</span></code><a class="headerlink" href="#Using-the-different-types-of-classes-as-the-oracle-of-Grover" title="Permalink to this heading">#</a></h3>
+<h3>Using the different types of classes as the oracle of <code class="docutils literal notranslate"><span class="pre">Grover</span></code><a class="headerlink" href="#Using-the-different-types-of-classes-as-the-oracle-of-Grover" title="Link to this heading">¶</a></h3>
 <p>In the above example, we used <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> as the oracle of <code class="docutils literal notranslate"><span class="pre">Grover</span></code>. However, we can also use <code class="docutils literal notranslate"><span class="pre">qiskit.quantum_info.Statevector</span></code> as oracle. All the following examples are when <span class="math notranslate nohighlight">\(|11\rangle\)</span> is “good state”</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
 
 <span class="n">oracle</span> <span class="o">=</span> <span class="n">Statevector</span><span class="o">.</span><span class="n">from_label</span><span class="p">(</span><span class="s2">&quot;11&quot;</span><span class="p">)</span>
 <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">is_good_state</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;11&quot;</span><span class="p">])</span>
 
-<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">())</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Result type:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">()</span>
@@ -495,7 +493,7 @@ Top measurement: 11
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -504,15 +502,6 @@ Result type: &lt;class &#39;qiskit_algorithms.amplitude_amplifiers.grover.Grover
 
 Success!
 Top measurement: 11
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7196/1906973721.py:6: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  grover = Grover(sampler=Sampler())
 </pre></div></div>
 </div>
 <p>Internally, the statevector is mapped to a quantum circuit:</p>
@@ -532,19 +521,22 @@ Top measurement: 11
 <img alt="../_images/tutorials_06_grover_9_0.png" src="../_images/tutorials_06_grover_9_0.png" />
 </div>
 </div>
-<p>Qiskit allows for an easy construction of more complex oracles: * <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code>: for parsing logical expressions such as <code class="docutils literal notranslate"><span class="pre">'~a</span> <span class="pre">|</span> <span class="pre">b'</span></code>. This is especially useful for solving 3-SAT problems and is shown in the accompanying <a class="reference internal" href="07_grover_examples.html"><span class="doc">Grover Examples</span></a> tutorial.</p>
-<p>Here we’ll use the <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> for the simple example of finding the state <span class="math notranslate nohighlight">\(|11\rangle\)</span>, which corresponds to <code class="docutils literal notranslate"><span class="pre">'a</span> <span class="pre">&amp;</span> <span class="pre">b'</span></code>.</p>
+<p>Qiskit allows for an easy construction of more complex oracles:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code>: for parsing logical expressions such as <code class="docutils literal notranslate"><span class="pre">'~a</span> <span class="pre">|</span> <span class="pre">b'</span></code>. This is especially useful for solving 3-SAT problems and is shown in the accompanying <a class="reference internal" href="07_grover_examples.html"><span class="doc">Grover Examples</span></a> tutorial.</p></li>
+</ul>
+<p>Here we’ll use the <code class="docutils literal notranslate"><span class="pre">PhaseOracleGate</span></code> for the simple example of finding the state <span class="math notranslate nohighlight">\(|11\rangle\)</span>, which corresponds to <code class="docutils literal notranslate"><span class="pre">'a</span> <span class="pre">&amp;</span> <span class="pre">b'</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit.library.phase_oracle</span> <span class="kn">import</span> <span class="n">PhaseOracle</span>
-<span class="kn">from</span> <span class="nn">qiskit.exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalLibraryError</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library.phase_oracle</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhaseOracleGate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingOptionalLibraryError</span>
 
-<span class="c1"># `Oracle` (`PhaseOracle`) as the `oracle` argument</span>
+<span class="c1"># `Oracle` (`PhaseOracleGate`) as the `oracle` argument</span>
 <span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;(a &amp; b)&quot;</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracle</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracleGate</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
     <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">grover_operator</span><span class="o">.</span><span class="n">oracle</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s2">&quot;mpl&quot;</span><span class="p">))</span>
 <span class="k">except</span> <span class="n">MissingOptionalLibraryError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
@@ -565,17 +557,17 @@ Top measurement: 11
 </section>
 </section>
 <section id="Amplitude-amplification">
-<h2>Amplitude amplification<a class="headerlink" href="#Amplitude-amplification" title="Permalink to this heading">#</a></h2>
+<h2>Amplitude amplification<a class="headerlink" href="#Amplitude-amplification" title="Link to this heading">¶</a></h2>
 <p>Grover’s algorithm uses Hadamard gates to create the uniform superposition of all the states at the beginning of the Grover operator <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span>. If some information on the good states is available, it might be useful to not start in a uniform superposition but only initialize specific states. This, generalized, version of Grover’s algorithm is referred to <em>Amplitude Amplification</em>.</p>
 <p>In Qiskit, the initial superposition state can easily be adjusted by setting the <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code> argument.</p>
 <section id="State-preparation">
-<h3>State preparation<a class="headerlink" href="#State-preparation" title="Permalink to this heading">#</a></h3>
+<h3>State preparation<a class="headerlink" href="#State-preparation" title="Link to this heading">¶</a></h3>
 <p>A <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code> argument is used to specify a quantum circuit that prepares a quantum state for the start point of the amplitude amplification. By default, a circuit with <span class="math notranslate nohighlight">\(H^{\otimes n}\)</span> is used to prepare uniform superposition (so it will be Grover’s search). The diffusion circuit of the amplitude amplification reflects <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code> automatically.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Specifying `state_preparation`</span>
 <span class="c1"># to prepare a superposition of |01&gt;, |10&gt;, and |11&gt;</span>
@@ -620,14 +612,14 @@ state preparation circuit:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">())</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Success!&quot;</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">oracle_evaluation</span> <span class="k">else</span> <span class="s2">&quot;Failure!&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top measurement:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">top_measurement</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -636,20 +628,16 @@ Success!
 Top measurement: 111
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7196/336064450.py:1: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  grover = Grover(sampler=Sampler())
-</pre></div></div>
-</div>
 </section>
 <section id="Full-flexibility">
-<h3>Full flexibility<a class="headerlink" href="#Full-flexibility" title="Permalink to this heading">#</a></h3>
+<h3>Full flexibility<a class="headerlink" href="#Full-flexibility" title="Link to this heading">¶</a></h3>
 <p>For more advanced use, it is also possible to specify the entire Grover operator by setting the <code class="docutils literal notranslate"><span class="pre">grover_operator</span></code> argument. This might be useful if you know more efficient implementation for <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> than the default construction via zero reflection, oracle and state preparation.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.library.GroverOperator</span></code> can be a good starting point and offers more options for an automated construction of the Grover operator. You can for instance * set the <code class="docutils literal notranslate"><span class="pre">mcx_mode</span></code> * ignore qubits in the zero reflection by setting <code class="docutils literal notranslate"><span class="pre">reflection_qubits</span></code> * explicitly exchange the <span class="math notranslate nohighlight">\(\mathcal{S_f}, \mathcal{S_0}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> operations using the <code class="docutils literal notranslate"><span class="pre">oracle</span></code>, <code class="docutils literal notranslate"><span class="pre">zero_reflection</span></code> and <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code> arguments</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">qiskit.circuit.library.GroverOperator</span></code> can be a good starting point and offers more options for an automated construction of the Grover operator. You can for instance</p>
+<ul class="simple">
+<li><p>set the <code class="docutils literal notranslate"><span class="pre">mcx_mode</span></code></p></li>
+<li><p>ignore qubits in the zero reflection by setting <code class="docutils literal notranslate"><span class="pre">reflection_qubits</span></code></p></li>
+<li><p>explicitly exchange the <span class="math notranslate nohighlight">\(\mathcal{S_f}, \mathcal{S_0}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{A}\)</span> operations using the <code class="docutils literal notranslate"><span class="pre">oracle</span></code>, <code class="docutils literal notranslate"><span class="pre">zero_reflection</span></code> and <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code> arguments</p></li>
+</ul>
 <p>For instance, imagine the good state is a three qubit state <span class="math notranslate nohighlight">\(|111\rangle\)</span> but we used 2 additional qubits as auxiliary qubits.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -674,7 +662,7 @@ Top measurement: 111
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">GroverOperator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroverOperator</span>
 
 <span class="n">grover_op</span> <span class="o">=</span> <span class="n">GroverOperator</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">insert_barriers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">grover_op</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
@@ -710,10 +698,10 @@ Top measurement: 111
 </section>
 </section>
 <section id="Dive-into-other-arguments-of-Grover">
-<h2>Dive into other arguments of <code class="docutils literal notranslate"><span class="pre">Grover</span></code><a class="headerlink" href="#Dive-into-other-arguments-of-Grover" title="Permalink to this heading">#</a></h2>
+<h2>Dive into other arguments of <code class="docutils literal notranslate"><span class="pre">Grover</span></code><a class="headerlink" href="#Dive-into-other-arguments-of-Grover" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Grover</span></code> has arguments other than <code class="docutils literal notranslate"><span class="pre">oracle</span></code> and <code class="docutils literal notranslate"><span class="pre">state_preparation</span></code>. We will explain them in this section.</p>
 <section id="Specifying-good_state">
-<h3>Specifying <code class="docutils literal notranslate"><span class="pre">good_state</span></code><a class="headerlink" href="#Specifying-good_state" title="Permalink to this heading">#</a></h3>
+<h3>Specifying <code class="docutils literal notranslate"><span class="pre">good_state</span></code><a class="headerlink" href="#Specifying-good_state" title="Link to this heading">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">good_state</span></code> is used to check whether the measurement result is correct or not internally. It can be a list of binary strings, a list of integer, <code class="docutils literal notranslate"><span class="pre">Statevector</span></code>, and Callable. If the input is a list of bitstrings, each bitstrings in the list represents a good state. If the input is a list of integer, each integer represent the index of the good state to be <span class="math notranslate nohighlight">\(|1\rangle\)</span>. If it is a <code class="docutils literal notranslate"><span class="pre">Statevector</span></code>, it represents a superposition of all good states.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -761,7 +749,7 @@ True
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
 
 <span class="c1"># `Statevector` good state</span>
 <span class="n">oracle</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -785,7 +773,7 @@ True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Callable good state</span>
-<span class="k">def</span> <span class="nf">callable_good_state</span><span class="p">(</span><span class="n">bitstr</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">callable_good_state</span><span class="p">(</span><span class="n">bitstr</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">bitstr</span> <span class="o">==</span> <span class="s2">&quot;11&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
@@ -808,8 +796,12 @@ True
 </div>
 </section>
 <section id="The-number-of-iterations">
-<h3>The number of <code class="docutils literal notranslate"><span class="pre">iterations</span></code><a class="headerlink" href="#The-number-of-iterations" title="Permalink to this heading">#</a></h3>
-<p>The number of repetition of applying the Grover operator is important to obtain the correct result with Grover’s algorithm. The number of iteration can be set by the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> argument of <code class="docutils literal notranslate"><span class="pre">Grover</span></code>. The following inputs are supported: * an integer to specify a single power of the Grover operator that’s applied * or a list of integers, in which all these different powers of the Grover operator are run consecutively and after each time we check if a correct solution has been found</p>
+<h3>The number of <code class="docutils literal notranslate"><span class="pre">iterations</span></code><a class="headerlink" href="#The-number-of-iterations" title="Link to this heading">¶</a></h3>
+<p>The number of repetition of applying the Grover operator is important to obtain the correct result with Grover’s algorithm. The number of iteration can be set by the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> argument of <code class="docutils literal notranslate"><span class="pre">Grover</span></code>. The following inputs are supported:</p>
+<ul class="simple">
+<li><p>an integer to specify a single power of the Grover operator that’s applied</p></li>
+<li><p>or a list of integers, in which all these different powers of the Grover operator are run consecutively and after each time we check if a correct solution has been found</p></li>
+</ul>
 <p>Additionally there is the <code class="docutils literal notranslate"><span class="pre">sample_from_iterations</span></code> argument. When it is <code class="docutils literal notranslate"><span class="pre">True</span></code>, instead of the specific power in <code class="docutils literal notranslate"><span class="pre">iterations</span></code>, a random integer between 0 and the value in <code class="docutils literal notranslate"><span class="pre">iteration</span></code> is used as the power Grover’s operator. This approach is useful when we don’t even know the number of solution.</p>
 <p>For more details of the algorithm using <code class="docutils literal notranslate"><span class="pre">sample_from_iterations</span></code>, see [4].</p>
 <p><strong>References:</strong></p>
@@ -871,13 +863,13 @@ True
 </div>
 </section>
 <section id="Applying-post_processing">
-<h3>Applying <code class="docutils literal notranslate"><span class="pre">post_processing</span></code><a class="headerlink" href="#Applying-post_processing" title="Permalink to this heading">#</a></h3>
+<h3>Applying <code class="docutils literal notranslate"><span class="pre">post_processing</span></code><a class="headerlink" href="#Applying-post_processing" title="Link to this heading">¶</a></h3>
 <p>We can apply an optional post processing to the top measurement for ease of readability. It can be used e.g. to convert from the bit-representation of the measurement <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">1]</span></code> to a DIMACS CNF format <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">-2,</span> <span class="pre">3]</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">to_DIAMACS_CNF_format</span><span class="p">(</span><span class="n">bit_rep</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">to_DIAMACS_CNF_format</span><span class="p">(</span><span class="n">bit_rep</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bit_rep</span><span class="p">)]</span>
 
 
@@ -897,11 +889,79 @@ True
 [1, -2, 3]
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
+</section>
+<section id="Transpiling-options">
+<h3>Transpiling options<a class="headerlink" href="#Transpiling-options" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class doesn’t expose the quantum circuit it uses to the user. However, this may lead to problems when running on actual quantum hardware, since the quantum circuit has to be transpiled beforehand. In order to still let the user choose the transpilation method and its properties in general, it is possible to pass to the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class a <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code>, which is any object having a <code class="docutils literal notranslate"><span class="pre">run</span></code> method that can transpile a <code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> into one another, or a list of
+<code class="docutils literal notranslate"><span class="pre">QuantumCircuit</span></code> into one another.</p>
+<p>For instance, let us define a custom backend on three qubits like so.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers.fake_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericBackendV2</span>
+
+<span class="n">coupling_map</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">GenericBackendV2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">coupling_map</span><span class="o">=</span><span class="n">coupling_map</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">54</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Let us define a <code class="docutils literal notranslate"><span class="pre">PassManager</span></code> for this backend.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+
+<span class="n">pm</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can then pass this <code class="docutils literal notranslate"><span class="pre">PassManager</span></code> to the <code class="docutils literal notranslate"><span class="pre">transpiler</span></code> keyword argument of the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> constructor. We can also pass any options to the <code class="docutils literal notranslate"><span class="pre">run</span></code> method of the <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> by setting the <code class="docutils literal notranslate"><span class="pre">transpiler_options</span></code> keyword argument to a dictionary specifying said options. For instance, let us define a <code class="docutils literal notranslate"><span class="pre">callback</span></code> function that prints out that it has been called on the very first step of the transpilation.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Callback function has been called!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can then instantiate and use the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class like so.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;(a &amp; b &amp; c)&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracleGate</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
+    <span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span>
+        <span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(),</span> <span class="n">transpiler</span><span class="o">=</span><span class="n">pm</span><span class="p">,</span> <span class="n">transpiler_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">callback</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">assignment</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">MissingOptionalLibraryError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Callback function has been called!
+111
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -912,13 +972,13 @@ True
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:11:00 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><td><code>qiskit_aer</code></td><td>0.17.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:52 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -952,13 +1012,13 @@ True
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -994,6 +1054,7 @@ True
 <li><a class="reference internal" href="#Specifying-good_state">Specifying <code class="docutils literal notranslate"><span class="pre">good_state</span></code></a></li>
 <li><a class="reference internal" href="#The-number-of-iterations">The number of <code class="docutils literal notranslate"><span class="pre">iterations</span></code></a></li>
 <li><a class="reference internal" href="#Applying-post_processing">Applying <code class="docutils literal notranslate"><span class="pre">post_processing</span></code></a></li>
+<li><a class="reference internal" href="#Transpiling-options">Transpiling options</a></li>
 </ul>
 </li>
 </ul>
@@ -1009,11 +1070,11 @@ True
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.minimum_eigensolvers.adapt_vqe - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.minimum_eigensolvers.adapt_vqe - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.minimum_eigensolvers.adapt_vqe</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2022, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2022, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,33 +378,34 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;An implementation of the AdaptVQE algorithm.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolvedOperatorAnsatz</span><span class="p">,</span> <span class="n">evolved_operator_ansatz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info.operators.base_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_version_info</span> <span class="k">as</span> <span class="n">get_qiskit_version_info</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info.operators.base_operator</span> <span class="kn">import</span> <span class="n">BaseOperator</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EvolvedOperatorAnsatz</span>
-
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils.validation</span> <span class="kn">import</span> <span class="n">validate_min</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
-
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.list_or_dict</span> <span class="kn">import</span> <span class="n">ListOrDict</span>
-
-<span class="kn">from</span> <span class="nn">.minimum_eigensolver</span> <span class="kn">import</span> <span class="n">MinimumEigensolver</span>
-<span class="kn">from</span> <span class="nn">.vqe</span> <span class="kn">import</span> <span class="n">VQE</span><span class="p">,</span> <span class="n">VQEResult</span>
-<span class="kn">from</span> <span class="nn">..observables_evaluator</span> <span class="kn">import</span> <span class="n">estimate_observables</span>
-<span class="kn">from</span> <span class="nn">..variational_algorithm</span> <span class="kn">import</span> <span class="n">VariationalAlgorithm</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.list_or_dict</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListOrDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_min</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.minimum_eigensolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimumEigensolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.vqe</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span><span class="p">,</span> <span class="n">VQEResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..observables_evaluator</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_observables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..variational_algorithm</span><span class="w"> </span><span class="kn">import</span> <span class="n">VariationalAlgorithm</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">TerminationCriterion</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TerminationCriterion</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class enumerating the various finishing criteria.&quot;&quot;&quot;</span>
 
     <span class="n">CONVERGED</span> <span class="o">=</span> <span class="s2">&quot;Threshold converged&quot;</span>
@@ -411,7 +413,9 @@
     <span class="n">MAXIMUM</span> <span class="o">=</span> <span class="s2">&quot;Maximum number of iterations reached&quot;</span>
 
 
-<div class="viewcode-block" id="AdaptVQE"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE">[docs]</a><span class="k">class</span> <span class="nc">AdaptVQE</span><span class="p">(</span><span class="n">VariationalAlgorithm</span><span class="p">,</span> <span class="n">MinimumEigensolver</span><span class="p">):</span>
+<div class="viewcode-block" id="AdaptVQE">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdaptVQE</span><span class="p">(</span><span class="n">VariationalAlgorithm</span><span class="p">,</span> <span class="n">MinimumEigensolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Adaptive Variational Quantum Eigensolver algorithm.</span>
 
 <span class="sd">    `AdaptVQE &lt;https://arxiv.org/abs/1812.11173&gt;`__ is a quantum algorithm which creates a compact</span>
@@ -428,8 +432,9 @@
 
 <span class="sd">      from qiskit_algorithms.minimum_eigensolvers import AdaptVQE, VQE</span>
 <span class="sd">      from qiskit_algorithms.optimizers import SLSQP</span>
-<span class="sd">      from qiskit.primitives import Estimator</span>
+<span class="sd">      from qiskit.primitives import StatevectorEstimator</span>
 <span class="sd">      from qiskit.circuit.library import EvolvedOperatorAnsatz</span>
+<span class="sd">      from qiskit import QuantumCircuit</span>
 
 <span class="sd">      # get your Hamiltonian</span>
 <span class="sd">      hamiltonian = ...</span>
@@ -437,9 +442,14 @@
 <span class="sd">      # construct your ansatz</span>
 <span class="sd">      ansatz = EvolvedOperatorAnsatz(...)</span>
 
-<span class="sd">      vqe = VQE(Estimator(), ansatz, SLSQP())</span>
+<span class="sd">      vqe = VQE(StatevectorEstimator(), ansatz, SLSQP())</span>
 
 <span class="sd">      adapt_vqe = AdaptVQE(vqe)</span>
+
+<span class="sd">      # or you can do it without EvolvedOperatorAnsatz</span>
+<span class="sd">      vqe = VQE(StatevectorEstimator(), QuantumCircuit(1), SLSQP())</span>
+
+<span class="sd">      adapt_vqe = AdaptVQE(vqe, operators=...)</span>
 
 <span class="sd">      eigenvalue, _ = adapt_vqe.compute_minimum_eigenvalue(hamiltonian)</span>
 
@@ -449,7 +459,8 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        solver: a :class:`~.VQE` instance used internally to compute the minimum eigenvalues.</span>
 <span class="sd">            It is a requirement that the :attr:`~.VQE.ansatz` of this solver is of type</span>
-<span class="sd">            :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.</span>
+<span class="sd">            :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` if the `operators` arguments is</span>
+<span class="sd">            not set.</span>
 <span class="sd">        gradient_threshold: once all gradients have an absolute value smaller than this threshold,</span>
 <span class="sd">            the algorithm has converged and terminates.</span>
 <span class="sd">        eigenvalue_threshold: once the eigenvalue has changed by less than this threshold from one</span>
@@ -461,19 +472,32 @@
 <span class="sd">            algorithm is not bound in its number of iterations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">solver</span><span class="p">:</span> <span class="n">VQE</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">gradient_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">eigenvalue_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">max_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">operators</span><span class="p">:</span> <span class="n">BaseOperator</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">reps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">evolution</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">insert_barriers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EvolvedOps&quot;</span><span class="p">,</span>
+        <span class="n">parameter_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span>
+        <span class="n">remove_identities</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">initial_state</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            solver: a :class:`~.VQE` instance used internally to compute the minimum eigenvalues.</span>
-<span class="sd">                It is a requirement that the :attr:`~.VQE.ansatz` of this solver is of type</span>
-<span class="sd">                :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz`.</span>
+<span class="sd">                It is a requirement that either the :attr:`~.VQE.ansatz` of this solver is of type</span>
+<span class="sd">                :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` or that the `operators`</span>
+<span class="sd">                argument is specified. The former is deprecated from the 0.4 version of</span>
+<span class="sd">                qiskit-algorithms and this option won&#39;t be possible anymore once the oldest</span>
+<span class="sd">                supported Qiskit version is 3.0. In the latter case, this class will build its own</span>
+<span class="sd">                ansatz using the evolved_operator_ansatz function.</span>
 <span class="sd">            gradient_threshold: once all gradients have an absolute value smaller than this</span>
 <span class="sd">                threshold, the algorithm has converged and terminates. Defaults to ``1e-5``.</span>
 <span class="sd">            eigenvalue_threshold: once the eigenvalue has changed by less than this threshold from</span>
@@ -483,36 +507,96 @@
 <span class="sd">                are not considered.</span>
 <span class="sd">            max_iterations: the maximum number of iterations for the adaptive loop. If ``None``, the</span>
 <span class="sd">                algorithm is not bound in its number of iterations.</span>
+<span class="sd">            operators: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function. If set, the</span>
+<span class="sd">                ansatz of the underlying :class:`.VQE` solver won&#39;t be used.</span>
+<span class="sd">            reps: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            evolution: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            insert_barriers: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            name: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            parameter_prefix: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            remove_identities: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
+<span class="sd">            initial_state: a :class:`~qiskit.circuit.QuantumCircuit` object to prepend to the</span>
+<span class="sd">                ansatz.</span>
+<span class="sd">            flatten: used to build the ansatz using the</span>
+<span class="sd">                :func:`~qiskit.circuit.library.evolved_operator_ansatz` function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">validate_min</span><span class="p">(</span><span class="s2">&quot;gradient_threshold&quot;</span><span class="p">,</span> <span class="n">gradient_threshold</span><span class="p">,</span> <span class="mf">1e-15</span><span class="p">)</span>
         <span class="n">validate_min</span><span class="p">(</span><span class="s2">&quot;eigenvalue_threshold&quot;</span><span class="p">,</span> <span class="n">eigenvalue_threshold</span><span class="p">,</span> <span class="mf">1e-15</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_original_ansatz</span><span class="p">,</span> <span class="n">EvolvedOperatorAnsatz</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">operators</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type or the operators &quot;</span>
+                <span class="s2">&quot;argument must be set.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operators</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">operators</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operators</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">=</span> <span class="n">operators</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">initial_state</span>
+                <span class="k">if</span> <span class="n">initial_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">operators</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The :class:`~qiskit.circuit.library.EvolvedOperatorAnsatz` is deprecated &quot;</span>
+                <span class="s2">&quot;as of Qiskit 2.1 and will be removed in Qiskit 3.0. Use the keywords arguments of&quot;</span>
+                <span class="s2">&quot;the AdaptVQE&#39;s constructor to specify the ansatz instead. Passing the ansatz via the &quot;</span>
+                <span class="s2">&quot;underlying :class:`.VQE` solver is deprecated as of qiskit-algorithms 0.4 and &quot;</span>
+                <span class="s2">&quot;won&#39;t be supported anymore one the oldest supported Qiskit version is 3.0.&quot;</span><span class="p">,</span>
+                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_original_ansatz</span><span class="o">.</span><span class="n">operators</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">gradient_threshold</span> <span class="o">=</span> <span class="n">gradient_threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eigenvalue_threshold</span> <span class="o">=</span> <span class="n">eigenvalue_threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="n">max_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="p">:</span> <span class="n">EvolvedOperatorAnsatz</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="n">operators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reps</span> <span class="o">=</span> <span class="n">reps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evolution</span> <span class="o">=</span> <span class="n">evolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span> <span class="o">=</span> <span class="n">insert_barriers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_prefix</span> <span class="o">=</span> <span class="n">parameter_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_identities</span> <span class="o">=</span> <span class="n">remove_identities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span> <span class="o">=</span> <span class="n">flatten</span>
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the initial point of the internal :class:`~.VQE` solver.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">initial_point</span>
 
     <span class="nd">@initial_point</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initial_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the initial point of the internal :class:`~.VQE` solver.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">initial_point</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="AdaptVQE.supports_aux_operators"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE.supports_aux_operators">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">supports_aux_operators</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptVQE.supports_aux_operators">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE.supports_aux_operators">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports_aux_operators</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-    <span class="k">def</span> <span class="nf">_compute_gradients</span><span class="p">(</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_gradients</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">theta</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
-        <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
+        <span class="n">operator</span><span class="p">:</span> <span class="n">SparsePauliOp</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ListOrDict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseOperator</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the gradients for all available excitation operators.</span>
@@ -526,11 +610,21 @@
         <span class="c1"># The excitations operators are applied later as exp(i*theta*excitation).</span>
         <span class="c1"># For this commutator, we need to explicitly pull in the imaginary phase.</span>
         <span class="n">commutators</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">operator</span> <span class="o">@</span> <span class="n">exc</span> <span class="o">-</span> <span class="n">exc</span> <span class="o">@</span> <span class="n">operator</span><span class="p">)</span> <span class="k">for</span> <span class="n">exc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span><span class="p">]</span>
+        <span class="c1"># We have to call simplify on it since Qiskit doesn&#39;t do so in versions 2.1.0 and 2.1.1, see</span>
+        <span class="c1"># Qiskit/qiskit/issues/14567</span>
+        <span class="k">if</span> <span class="n">get_qiskit_version_info</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;2.1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;2.1.1&quot;</span><span class="p">]:</span>
+            <span class="n">commutators</span> <span class="o">=</span> <span class="p">[</span><span class="n">obs</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">commutators</span><span class="p">]</span>
+
+        <span class="c1"># If the ansatz has been transpiled</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span><span class="p">:</span>
+            <span class="n">commutators</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">commutator</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span> <span class="k">for</span> <span class="n">commutator</span> <span class="ow">in</span> <span class="n">commutators</span>
+            <span class="p">]</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">estimate_observables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">commutators</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_check_cyclicity</span><span class="p">(</span><span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_cyclicity</span><span class="p">(</span><span class="n">indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Auxiliary function to check for cycles in the indices of the selected excitations.</span>
 
@@ -556,7 +650,24 @@
         <span class="c1"># nature of the algorithm.</span>
         <span class="k">return</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-<div class="viewcode-block" id="AdaptVQE.compute_minimum_eigenvalue"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE.compute_minimum_eigenvalue">[docs]</a>    <span class="k">def</span> <span class="nf">compute_minimum_eigenvalue</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_ansatz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the ansatz out of the provided parameters.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span>
+            <span class="n">evolved_operator_ansatz</span><span class="p">(</span>
+                <span class="n">operators</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_operators</span><span class="p">,</span>
+                <span class="n">reps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reps</span><span class="p">,</span>
+                <span class="n">evolution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_evolution</span><span class="p">,</span>
+                <span class="n">insert_barriers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_insert_barriers</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                <span class="n">parameter_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parameter_prefix</span><span class="p">,</span>
+                <span class="n">remove_identities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_remove_identities</span><span class="p">,</span>
+                <span class="n">flatten</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="AdaptVQE.compute_minimum_eigenvalue">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE.compute_minimum_eigenvalue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_minimum_eigenvalue</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operator</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
         <span class="n">aux_operators</span><span class="p">:</span> <span class="n">ListOrDict</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -573,20 +684,18 @@
 <span class="sd">                the first iteration of the algorithm.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also but also</span>
+<span class="sd">            An :class:`~.AdaptVQEResult` which is a :class:`~.VQEResult` but also</span>
 <span class="sd">            includes runtime information about the AdaptVQE algorithm like the number of iterations,</span>
 <span class="sd">            termination criterion, and the final maximum gradient.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">EvolvedOperatorAnsatz</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The AdaptVQE ansatz must be of the EvolvedOperatorAnsatz type.&quot;</span><span class="p">)</span>
-
         <span class="c1"># Overwrite the solver&#39;s ansatz with the initial state</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">operators</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">initial_state</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_state</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_original_ansatz</span><span class="p">,</span> <span class="n">EvolvedOperatorAnsatz</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_original_ansatz</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">initial_state</span>
 
         <span class="n">prev_op_indices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">prev_raw_vqe_result</span><span class="p">:</span> <span class="n">VQEResult</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">raw_vqe_result</span><span class="p">:</span> <span class="n">VQEResult</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">theta</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">max_grad</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseOperator</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -642,8 +751,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span><span class="p">[</span><span class="n">max_grad_index</span><span class="p">])</span>
             <span class="n">theta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
             <span class="c1"># setting up the ansatz for the VQE iteration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_ansatz</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">initial_point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
             <span class="c1"># evaluating the eigenvalue with the internal VQE</span>
             <span class="n">prev_raw_vqe_result</span> <span class="o">=</span> <span class="n">raw_vqe_result</span>
@@ -664,8 +778,13 @@
                     <span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
                     <span class="n">theta</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_ansatz</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_list</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_ansatz</span>
+
                     <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">initial_point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
                     <span class="n">raw_vqe_result</span> <span class="o">=</span> <span class="n">prev_raw_vqe_result</span>
                     <span class="k">break</span>
@@ -687,6 +806,22 @@
 
         <span class="c1"># once finished evaluate auxiliary operators if any</span>
         <span class="k">if</span> <span class="n">aux_operators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">key_op_iterator</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="n">BaseOperator</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aux_operators</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">key_op_iterator</span> <span class="o">=</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">aux_operators</span><span class="p">)</span>
+                    <span class="c1"># Dummy placeholder</span>
+                    <span class="n">converted</span><span class="p">:</span> <span class="n">ListOrDict</span><span class="p">[</span><span class="n">BaseOperator</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">([(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+                    <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">aux_operators</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">key_op_iterator</span> <span class="o">=</span> <span class="n">aux_operators</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="n">converted</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">key_op_iterator</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">op</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">converted</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+
+                <span class="n">aux_operators</span> <span class="o">=</span> <span class="n">converted</span>
             <span class="n">aux_values</span> <span class="o">=</span> <span class="n">estimate_observables</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="p">,</span>
@@ -696,14 +831,18 @@
             <span class="n">result</span><span class="o">.</span><span class="n">aux_operators_evaluated</span> <span class="o">=</span> <span class="n">aux_values</span>  <span class="c1"># type: ignore[assignment]</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The final eigenvalue is: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">operators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excitation_pool</span>
-        <span class="k">return</span> <span class="n">result</span></div></div>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AdaptVQEResult"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult">[docs]</a><span class="k">class</span> <span class="nc">AdaptVQEResult</span><span class="p">(</span><span class="n">VQEResult</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AdaptVQEResult">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AdaptVQEResult</span><span class="p">(</span><span class="n">VQEResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;AdaptVQE Result.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_final_max_gradient</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -711,37 +850,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_eigenvalue_history</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">num_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of iterations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_iterations</span>
 
     <span class="nd">@num_iterations</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">num_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">num_iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the number of iterations.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_iterations</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">final_max_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">final_max_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the final maximum gradient.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_final_max_gradient</span>
 
     <span class="nd">@final_max_gradient</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">final_max_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">final_max_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the final maximum gradient.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_final_max_gradient</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">termination_criterion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">termination_criterion</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the termination criterion.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_termination_criterion</span>
 
     <span class="nd">@termination_criterion</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">termination_criterion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">termination_criterion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the termination criterion.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_termination_criterion</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">eigenvalue_history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenvalue_history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the history of computed eigenvalues.</span>
 
 <span class="sd">        The history&#39;s length matches the number of iterations and includes the final computed value.</span>
@@ -749,9 +888,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eigenvalue_history</span>
 
     <span class="nd">@eigenvalue_history</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">eigenvalue_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eigenvalue_history</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigenvalue_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eigenvalue_history</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">complex</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the history of computed eigenvalues.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_eigenvalue_history</span> <span class="o">=</span> <span class="n">eigenvalue_history</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -763,13 +903,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -786,11 +926,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

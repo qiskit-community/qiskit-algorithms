@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Projected Variational Quantum Dynamics" href="10_pvqd.html" /><link rel="prev" title="Grover’s Algorithm and Amplitude Amplification" href="06_grover.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Grover’s algorithm examples - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Grover’s algorithm examples - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,13 +368,15 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/07_grover_examples.ipynb">docs/tutorials/07_grover_examples.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/07_grover_examples.ipynb">docs/tutorials/07_grover_examples.ipynb</a>.</p>
 </div>
 <section id="Grover's-algorithm-examples">
-<h1>Grover’s algorithm examples<a class="headerlink" href="#Grover's-algorithm-examples" title="Permalink to this heading">#</a></h1>
+<h1>Grover’s algorithm examples<a class="headerlink" href="#Grover's-algorithm-examples" title="Link to this heading">¶</a></h1>
 <p>This notebook has examples demonstrating how to use the Qiskit Algorithms <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.Grover.html">Grover</a> search algorithm, with different oracles.</p>
-<section id="Finding-solutions-to-3-SAT-problems">
-<h2>Finding solutions to 3-SAT problems<a class="headerlink" href="#Finding-solutions-to-3-SAT-problems" title="Permalink to this heading">#</a></h2>
+<div class="alert alert-block alert-warning"><p>We strongly recommend to run this tutorial using Qiskit 2.0 or newer. Though the use of <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> is possible in Qiskit &lt; 2.0, it requires the <code class="docutils literal notranslate"><span class="pre">tweedledum</span></code> library, which has been deprecated for a long time and isn’t compatible with the most recent versions of Python.</p>
+<p>This tutorial instead use the more recent <code class="docutils literal notranslate"><span class="pre">PhaseOracleGate</span></code> that has been introduced in Qiskit 2.1. Note that both are valid inputs for the <code class="docutils literal notranslate"><span class="pre">oracle</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">Grover</span></code> class.</p>
+</div><section id="Finding-solutions-to-3-SAT-problems">
+<h2>Finding solutions to 3-SAT problems<a class="headerlink" href="#Finding-solutions-to-3-SAT-problems" title="Link to this heading">¶</a></h2>
 <p>Let’s look at an example 3-Satisfiability (3-SAT) problem and walk-through how we can use Quantum Search to find its satisfying solutions. 3-SAT problems are usually expressed in <a class="reference external" href="https://en.wikipedia.org/wiki/Conjunctive_normal_form">Conjunctive Normal Forms (CNF)</a> and written in the <a class="reference external" href="http://www.satcompetition.org/2009/format-benchmarks2009.html">DIMACS-CNF</a> format. For example:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -397,40 +400,33 @@
 <p><span class="math notranslate nohighlight">\((v_1, v_2, v_3) = (T, F, T)\)</span> or <span class="math notranslate nohighlight">\((F, F, F)\)</span> or <span class="math notranslate nohighlight">\((T, T, F)\)</span></p>
 <p>Or, expressed using the DIMACS notation:</p>
 <p><code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-2</span> <span class="pre">3</span></code>, or <code class="docutils literal notranslate"><span class="pre">-1</span> <span class="pre">-2</span> <span class="pre">-3</span></code>, or <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">2</span> <span class="pre">-3</span></code>.</p>
-<p>With this example problem input, we then create the corresponding <code class="docutils literal notranslate"><span class="pre">oracle</span></code> for our <code class="docutils literal notranslate"><span class="pre">Grover</span></code> search. In particular, we use the <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> component, which supports parsing DIMACS-CNF format strings and constructing the corresponding oracle circuit.</p>
+<p>With this example problem input, we then create the corresponding <code class="docutils literal notranslate"><span class="pre">oracle</span></code> for our <code class="docutils literal notranslate"><span class="pre">Grover</span></code> search. In particular, we use the <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> component, which supports parsing DIMACS-CNF format strings and constructing the corresponding oracle circuit. Note that the <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> requires the <code class="docutils literal notranslate"><span class="pre">tweedledum</span></code> library if you use Qiskit in a lower version than <code class="docutils literal notranslate"><span class="pre">2.0</span></code>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">from</span> <span class="nn">qiskit.exceptions</span> <span class="kn">import</span> <span class="n">MissingOptionalLibraryError</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library.phase_oracle</span> <span class="kn">import</span> <span class="n">PhaseOracle</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">MissingOptionalLibraryError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library.phase_oracle</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhaseOracleGate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis.boolean.boolean_expression</span><span class="w"> </span><span class="kn">import</span> <span class="n">BooleanExpression</span>
 
-<span class="n">fp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w+t&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_3sat_instance</span><span class="p">)</span>
-<span class="n">file_name</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">name</span>
-<span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="n">oracle</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracle</span><span class="o">.</span><span class="n">from_dimacs_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracleGate</span><span class="p">(</span><span class="n">BooleanExpression</span><span class="o">.</span><span class="n">from_dimacs</span><span class="p">(</span><span class="n">input_3sat_instance</span><span class="p">)</span><span class="o">.</span><span class="n">expression</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
-<span class="k">finally</span><span class="p">:</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">oracle</span></code> can now be used to create an Grover instance:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">oracle</span></code> can now be used to create a <code class="docutils literal notranslate"><span class="pre">Grover</span></code> instance:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">AmplificationProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">AmplificationProblem</span>
 
 <span class="n">problem</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="k">if</span> <span class="n">oracle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">is_good_state</span><span class="o">=</span><span class="n">oracle</span><span class="o">.</span><span class="n">evaluate_bitstring</span><span class="p">)</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -439,10 +435,10 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">Grover</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Grover</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorSampler</span>
 
-<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">())</span>
 <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="k">if</span> <span class="n">problem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
@@ -450,30 +446,21 @@
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-011
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7394/852366760.py:4: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  grover = Grover(sampler=Sampler())
+101
 </pre></div></div>
 </div>
 <p>As seen above, a satisfying solution to the specified 3-SAT problem is obtained. And it is indeed one of the three satisfying solutions.</p>
-<p>Since we used the <code class="docutils literal notranslate"><span class="pre">Sampler</span></code>, the complete measurement result is also returned, as shown in the plot below, where it can be seen that the binary strings <code class="docutils literal notranslate"><span class="pre">000</span></code>, <code class="docutils literal notranslate"><span class="pre">011</span></code>, and <code class="docutils literal notranslate"><span class="pre">101</span></code> (note the bit order in each string), corresponding to the three satisfying solutions all have high probabilities associated with them.</p>
+<p>Since we used the <code class="docutils literal notranslate"><span class="pre">StatevectorSampler</span></code>, the complete measurement result is also returned, as shown in the plot below, where it can be seen that the binary strings <code class="docutils literal notranslate"><span class="pre">000</span></code>, <code class="docutils literal notranslate"><span class="pre">011</span></code>, and <code class="docutils literal notranslate"><span class="pre">101</span></code> (note the bit order in each string), corresponding to the three satisfying solutions all have high probabilities associated with them.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_histogram</span>
 
 <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">display</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">circuit_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
@@ -484,12 +471,12 @@
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_07_grover_examples_10_0.png" src="../_images/tutorials_07_grover_examples_10_0.png" />
+<img alt="../_images/tutorials_07_grover_examples_11_0.png" src="../_images/tutorials_07_grover_examples_11_0.png" />
 </div>
 </div>
 </section>
 <section id="Boolean-Logical-Expressions">
-<h2>Boolean Logical Expressions<a class="headerlink" href="#Boolean-Logical-Expressions" title="Permalink to this heading">#</a></h2>
+<h2>Boolean Logical Expressions<a class="headerlink" href="#Boolean-Logical-Expressions" title="Link to this heading">¶</a></h2>
 <p>Qiskit’s <code class="docutils literal notranslate"><span class="pre">Grover</span></code> can also be used to perform Quantum Search on an <code class="docutils literal notranslate"><span class="pre">Oracle</span></code> constructed from other means, in addition to DIMACS. For example, the <code class="docutils literal notranslate"><span class="pre">PhaseOracle</span></code> can actually be configured using arbitrary Boolean logical expressions, as demonstrated below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -497,9 +484,9 @@
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;(w ^ x) &amp; ~(y ^ z) &amp; (x &amp; y &amp; z)&quot;</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracle</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">is_good_state</span><span class="o">=</span><span class="n">oracle</span><span class="o">.</span><span class="n">evaluate_bitstring</span><span class="p">)</span>
-    <span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">())</span>
+    <span class="n">oracle</span> <span class="o">=</span> <span class="n">PhaseOracleGate</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+    <span class="n">problem</span> <span class="o">=</span> <span class="n">AmplificationProblem</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
+    <span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">())</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">grover</span><span class="o">.</span><span class="n">amplify</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">circuit_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 <span class="k">except</span> <span class="n">MissingOptionalLibraryError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
@@ -507,20 +494,11 @@
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7394/1049556995.py:5: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  grover = Grover(sampler=Sampler())
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_07_grover_examples_12_1.png" src="../_images/tutorials_07_grover_examples_12_1.png" />
+<img alt="../_images/tutorials_07_grover_examples_13_0.png" src="../_images/tutorials_07_grover_examples_13_0.png" />
 </div>
 </div>
 <p>In the example above, the input Boolean logical expression <code class="docutils literal notranslate"><span class="pre">'(w</span> <span class="pre">^</span> <span class="pre">x)</span> <span class="pre">&amp;</span> <span class="pre">~(y</span> <span class="pre">^</span> <span class="pre">z)</span> <span class="pre">&amp;</span> <span class="pre">(x</span> <span class="pre">&amp;</span> <span class="pre">y</span> <span class="pre">&amp;</span> <span class="pre">z)'</span></code> should be quite self-explanatory, where <code class="docutils literal notranslate"><span class="pre">^</span></code>, <code class="docutils literal notranslate"><span class="pre">~</span></code>, and <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> represent the Boolean logical XOR, NOT, and AND operators, respectively. It should be quite easy to figure out the satisfying solution by examining its parts: <code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">^</span> <span class="pre">x</span></code> calls for <code class="docutils literal notranslate"><span class="pre">w</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code> taking different values; <code class="docutils literal notranslate"><span class="pre">~(y</span> <span class="pre">^</span> <span class="pre">z)</span></code> requires <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> be the same; <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&amp;</span> <span class="pre">y</span> <span class="pre">&amp;</span> <span class="pre">z</span></code> dictates all three to be <code class="docutils literal notranslate"><span class="pre">True</span></code>. Putting these
@@ -529,7 +507,7 @@ together, we get the satisfying solution <code class="docutils literal notransla
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -540,13 +518,13 @@ together, we get the satisfying solution <code class="docutils literal notransla
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:11:05 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:56 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -579,13 +557,13 @@ together, we get the satisfying solution <code class="docutils literal notransla
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -622,11 +600,11 @@ together, we get the satisfying solution <code class="docutils literal notransla
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

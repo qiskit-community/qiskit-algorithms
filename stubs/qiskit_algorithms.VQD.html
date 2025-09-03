@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="VQDResult" href="qiskit_algorithms.VQDResult.html" /><link rel="prev" title="NumPyEigensolverResult" href="qiskit_algorithms.NumPyEigensolverResult.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>VQD - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>VQD - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,15 +367,15 @@
         </div>
         <article role="main">
           <br><br><br><section id="vqd">
-<h1>VQD<a class="headerlink" href="#vqd" title="Permalink to this heading">#</a></h1>
+<h1>VQD<a class="headerlink" href="#vqd" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VQD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VQD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">VariationalAlgorithm</span></code>, <a class="reference internal" href="qiskit_algorithms.Eigensolver.html#qiskit_algorithms.Eigensolver" title="qiskit_algorithms.eigensolvers.eigensolver.Eigensolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Eigensolver</span></code></a></p>
 <p>The Variational Quantum Deflation algorithm. Implementation using primitives.</p>
 <p><a class="reference external" href="https://arxiv.org/abs/1805.08138">VQD</a> is a quantum algorithm that uses a
 variational technique to find
-the k eigenvalues of the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span> of a given system.</p>
+the k lowest eigenvalues of the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span> of a given system.</p>
 <p>The algorithm computes excited state energies of generalised hamiltonians
 by optimizing over a modified cost function where each successive eigenvalue
 is calculated iteratively by introducing an overlap term with all
@@ -407,19 +408,19 @@ as the upper bound, the default value will be <span class="math notranslate nohi
 updated once the VQD object has been constructed.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.estimator">
-<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.estimator" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.estimator" title="Link to this definition">¶</a></dt>
 <dd><p>The primitive instance used to perform the expectation
 estimation as indicated in the VQD paper.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>BaseEstimator</p>
+<dd class="field-odd"><p>BaseEstimatorV2</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.fidelity">
-<span class="sig-name descname"><span class="pre">fidelity</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.fidelity" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fidelity</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.fidelity" title="Link to this definition">¶</a></dt>
 <dd><p>The fidelity class instance used to compute the
 overlap estimation as indicated in the VQD paper.</p>
 <dl class="field-list simple">
@@ -430,19 +431,8 @@ overlap estimation as indicated in the VQD paper.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_algorithms.VQD.ansatz">
-<span class="sig-name descname"><span class="pre">ansatz</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.ansatz" title="Permalink to this definition">#</a></dt>
-<dd><p>A parameterized circuit used as ansatz for the wave function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QuantumCircuit</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.optimizer">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.optimizer" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.optimizer" title="Link to this definition">¶</a></dt>
 <dd><p>A classical optimizer or a list of optimizers,
 one for every k-th eigenvalue. Can either be a Qiskit optimizer or a callable
 that takes an array as input and returns a Qiskit or SciPy optimization result.</p>
@@ -455,7 +445,7 @@ that takes an array as input and returns a Qiskit or SciPy optimization result.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.k">
-<span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.k" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.k" title="Link to this definition">¶</a></dt>
 <dd><p>the number of eigenvalues to return. Returns the lowest k eigenvalues.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -466,7 +456,7 @@ that takes an array as input and returns a Qiskit or SciPy optimization result.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.betas">
-<span class="sig-name descname"><span class="pre">betas</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.betas" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">betas</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.betas" title="Link to this definition">¶</a></dt>
 <dd><p>Beta parameters in the VQD paper.
 Should have length k - 1, with k the number of excited states.
 These hyper-parameters balance the contribution of each overlap term to the cost
@@ -481,7 +471,7 @@ coefficients of the observable.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.callback">
-<span class="sig-name descname"><span class="pre">callback</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.callback" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">callback</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.callback" title="Link to this definition">¶</a></dt>
 <dd><p>A callback that can access the intermediate data
 during the optimization. Four parameter values are passed to the callback as
 follows during each evaluation by the optimizer: the evaluation count,
@@ -494,10 +484,18 @@ metadata, and the current step.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qiskit_algorithms.VQD.convergence_threshold">
+<span class="sig-name descname"><span class="pre">convergence_threshold</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.convergence_threshold" title="Link to this definition">¶</a></dt>
+<dd><p>A threshold under which the algorithm is considered to have
+converged. It corresponds to the maximal average fidelity an eigenstate is allowed
+to have with the previous eigenstates. If set to None, no check is performed.</p>
+</dd></dl>
+
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>estimator</strong> (<em>BaseEstimator</em>) – The estimator primitive.</p></li>
+<li><p><strong>estimator</strong> (<em>BaseEstimatorV2</em>) – The estimator primitive.</p></li>
 <li><p><strong>fidelity</strong> (<a class="reference internal" href="qiskit_algorithms.state_fidelities.BaseStateFidelity.html#qiskit_algorithms.state_fidelities.BaseStateFidelity" title="qiskit_algorithms.state_fidelities.BaseStateFidelity"><em>BaseStateFidelity</em></a>) – The fidelity class using primitives.</p></li>
 <li><p><strong>ansatz</strong> (<em>QuantumCircuit</em>) – A parameterized circuit used as ansatz for the wave function.</p></li>
 <li><p><strong>optimizer</strong> (<a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><em>Optimizer</em></a><em> | </em><a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><em>Minimizer</em></a><em> | </em><em>Sequence</em><em>[</em><a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><em>Optimizer</em></a><em> | </em><a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><em>Minimizer</em></a><em>]</em>) – A classical optimizer or a list of optimizers, one for every k-th eigenvalue.
@@ -519,27 +517,42 @@ during the optimization. Five parameter values are passed to the callback as
 follows during each evaluation by the optimizer: the evaluation count,
 the optimizer parameters for the ansatz, the estimated value,
 the estimation metadata, and the current step.</p></li>
+<li><p><strong>convergence_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> | </em><em>None</em>) – A threshold under which the algorithm is considered to have
+converged. It corresponds to the maximal average fidelity an eigenstate is allowed
+to have with the previous eigenstates. If set to None, no check is performed.</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are run when using this algorithm. If set to <cite>None</cite>, these won’t be
+transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="qiskit_algorithms.VQD.ansatz">
+<span class="sig-name descname"><span class="pre">ansatz</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.ansatz" title="Link to this definition">¶</a></dt>
+<dd><p>A parameterized circuit used as ansatz for the wave function. If a transpiler has been
+provided, the ansatz will be automatically transpiled upon being set.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.initial_point">
-<span class="sig-name descname"><span class="pre">initial_point</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.initial_point" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_point</span></span><a class="headerlink" href="#qiskit_algorithms.VQD.initial_point" title="Link to this definition">¶</a></dt>
 <dd><p>Returns initial point.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.compute_eigenvalues">
-<span class="sig-name descname"><span class="pre">compute_eigenvalues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD.compute_eigenvalues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD.compute_eigenvalues" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_eigenvalues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD.compute_eigenvalues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD.compute_eigenvalues" title="Link to this definition">¶</a></dt>
 <dd><p>Computes the minimum eigenvalue. The <code class="docutils literal notranslate"><span class="pre">operator</span></code> and <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> are supplied here.
 While an <code class="docutils literal notranslate"><span class="pre">operator</span></code> is required by algorithms, <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> are optional.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>operator</strong> (<em>BaseOperator</em>) – Qubit operator of the observable.</p></li>
-<li><p><strong>aux_operators</strong> (<em>ListOrDict</em><em>[</em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Optional list of auxiliary operators to be evaluated with the
+<li><p><strong>aux_operators</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a><em>[</em><em>BaseOperator</em><em> | </em><em>None</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Optional list of auxiliary operators to be evaluated with the
 eigenstate of the minimum eigenvalue main result and their expectation values
 returned. For instance, in chemistry, these can be dipole operators and total particle
 count operators, so we can get values for these at the ground state.</p></li>
@@ -549,14 +562,14 @@ count operators, so we can get values for these at the ground state.</p></li>
 <dd class="field-even"><p>An eigensolver result.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.VQDResult.html#qiskit_algorithms.VQDResult" title="qiskit_algorithms.VQDResult">VQDResult</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="qiskit_algorithms.VQDResult.html#qiskit_algorithms.VQDResult" title="qiskit_algorithms.eigensolvers.vqd.VQDResult"><em>VQDResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.VQD.supports_aux_operators">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD.supports_aux_operators" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/eigensolvers/vqd.html#VQD.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.VQD.supports_aux_operators" title="Link to this definition">¶</a></dt>
 <dd><p>Whether computing the expectation value of auxiliary operators is supported.</p>
 <p>If the eigensolver computes the eigenvalues of the main operator, then it can compute
 the expectation value of the <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> for that state. Otherwise they will be ignored.</p>
@@ -602,13 +615,13 @@ the expectation value of the <code class="docutils literal notranslate"><span cl
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -633,11 +646,12 @@ the expectation value of the <code class="docutils literal notranslate"><span cl
 <li><a class="reference internal" href="#qiskit_algorithms.VQD"><code class="docutils literal notranslate"><span class="pre">VQD</span></code></a><ul>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.estimator"><code class="docutils literal notranslate"><span class="pre">VQD.estimator</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.fidelity"><code class="docutils literal notranslate"><span class="pre">VQD.fidelity</span></code></a></li>
-<li><a class="reference internal" href="#qiskit_algorithms.VQD.ansatz"><code class="docutils literal notranslate"><span class="pre">VQD.ansatz</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.optimizer"><code class="docutils literal notranslate"><span class="pre">VQD.optimizer</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.k"><code class="docutils literal notranslate"><span class="pre">VQD.k</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.betas"><code class="docutils literal notranslate"><span class="pre">VQD.betas</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.callback"><code class="docutils literal notranslate"><span class="pre">VQD.callback</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_algorithms.VQD.convergence_threshold"><code class="docutils literal notranslate"><span class="pre">VQD.convergence_threshold</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_algorithms.VQD.ansatz"><code class="docutils literal notranslate"><span class="pre">VQD.ansatz</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.initial_point"><code class="docutils literal notranslate"><span class="pre">VQD.initial_point</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.compute_eigenvalues"><code class="docutils literal notranslate"><span class="pre">VQD.compute_eigenvalues()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.VQD.supports_aux_operators"><code class="docutils literal notranslate"><span class="pre">VQD.supports_aux_operators()</span></code></a></li>
@@ -656,11 +670,11 @@ the expectation value of the <code class="docutils literal notranslate"><span cl
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

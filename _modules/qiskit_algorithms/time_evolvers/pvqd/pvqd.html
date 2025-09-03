@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.time_evolvers.pvqd.pvqd - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.time_evolvers.pvqd.pvqd - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.time_evolvers.pvqd.pvqd</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2019, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2019, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,33 +378,36 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;The projected Variational Quantum Dynamics Algorithm.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">ParameterVector</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimatorV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info.operators.base_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionSynthesis</span><span class="p">,</span> <span class="n">LieTrotter</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">ParameterVector</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info.operators.base_operator</span> <span class="kn">import</span> <span class="n">BaseOperator</span>
-<span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">EvolutionSynthesis</span><span class="p">,</span> <span class="n">LieTrotter</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
-
-<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
-<span class="kn">from</span> <span class="nn">...optimizers</span> <span class="kn">import</span> <span class="n">Minimizer</span><span class="p">,</span> <span class="n">Optimizer</span>
-<span class="kn">from</span> <span class="nn">...state_fidelities.base_state_fidelity</span> <span class="kn">import</span> <span class="n">BaseStateFidelity</span>
-<span class="kn">from</span> <span class="nn">..real_time_evolver</span> <span class="kn">import</span> <span class="n">RealTimeEvolver</span>
-<span class="kn">from</span> <span class="nn">..time_evolution_problem</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
-<span class="kn">from</span> <span class="nn">..time_evolution_result</span> <span class="kn">import</span> <span class="n">TimeEvolutionResult</span>
-<span class="kn">from</span> <span class="nn">.pvqd_result</span> <span class="kn">import</span> <span class="n">PVQDResult</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">_get_observable_evaluator</span><span class="p">,</span> <span class="n">_is_gradient_supported</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Minimizer</span><span class="p">,</span> <span class="n">Optimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...state_fidelities.base_state_fidelity</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseStateFidelity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..real_time_evolver</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealTimeEvolver</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..time_evolution_problem</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..time_evolution_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.pvqd_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVQDResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_observable_evaluator</span><span class="p">,</span> <span class="n">_is_gradient_supported</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="PVQD"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD">[docs]</a><span class="k">class</span> <span class="nc">PVQD</span><span class="p">(</span><span class="n">RealTimeEvolver</span><span class="p">):</span>
+<div class="viewcode-block" id="PVQD">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PVQD</span><span class="p">(</span><span class="n">RealTimeEvolver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The projected Variational Quantum Dynamics (p-VQD) Algorithm.</span>
 
 <span class="sd">    In each timestep, this algorithm computes the next state with a Trotter formula</span>
@@ -416,7 +420,6 @@
 
 <span class="sd">    Attributes:</span>
 
-<span class="sd">        ansatz (QuantumCircuit): The parameterized circuit representing the time-evolved state.</span>
 <span class="sd">        initial_parameters (np.ndarray): The parameters of the ansatz at time 0.</span>
 <span class="sd">        optimizer (Optional[Union[Optimizer, Minimizer]]): The classical optimization routine</span>
 <span class="sd">            used to maximize the fidelity of the Trotter step and ansatz.</span>
@@ -440,17 +443,17 @@
 
 <span class="sd">            from qiskit_algorithms.state_fidelities import ComputeUncompute</span>
 <span class="sd">            from qiskit_algorithms.time_evolvers import TimeEvolutionProblem, PVQD</span>
-<span class="sd">            from qiskit.primitives import Estimator, Sampler</span>
-<span class="sd">            from qiskit.circuit.library import EfficientSU2</span>
+<span class="sd">            from qiskit.primitives import StatevectorEstimator, StatevectorSampler</span>
+<span class="sd">            from qiskit.circuit.library import efficient_su2</span>
 <span class="sd">            from qiskit.quantum_info import SparsePauliOp, Pauli</span>
 <span class="sd">            from qiskit_algorithms.optimizers import L_BFGS_B</span>
 
-<span class="sd">            sampler = Sampler()</span>
+<span class="sd">            sampler = StatevectorSampler()</span>
 <span class="sd">            fidelity = ComputeUncompute(sampler)</span>
-<span class="sd">            estimator = Estimator()</span>
+<span class="sd">            estimator = StatevectorEstimator()</span>
 <span class="sd">            hamiltonian = 0.1 * SparsePauliOp([&quot;ZZ&quot;, &quot;IX&quot;, &quot;XI&quot;])</span>
 <span class="sd">            observable = Pauli(&quot;ZZ&quot;)</span>
-<span class="sd">            ansatz = EfficientSU2(2, reps=1)</span>
+<span class="sd">            ansatz = efficient_su2(2, reps=1)</span>
 <span class="sd">            initial_parameters = np.zeros(ansatz.num_parameters)</span>
 
 <span class="sd">            time = 1</span>
@@ -482,17 +485,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fidelity</span><span class="p">:</span> <span class="n">BaseStateFidelity</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
         <span class="n">initial_parameters</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-        <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimatorV2</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">optimizer</span><span class="p">:</span> <span class="n">Optimizer</span> <span class="o">|</span> <span class="n">Minimizer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_timesteps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">evolution</span><span class="p">:</span> <span class="n">EvolutionSynthesis</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">use_parameter_shift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">initial_guess</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -519,12 +525,17 @@
 <span class="sd">            initial_guess: The initial guess for the first VQE optimization. Afterwards the</span>
 <span class="sd">                previous iteration result is used as initial guess. If None, this is set to</span>
 <span class="sd">                a random vector with elements in the interval :math:`[-0.01, 0.01]`.</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are run when using this algorithm. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">evolution</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">evolution</span> <span class="o">=</span> <span class="n">LieTrotter</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span> <span class="o">=</span> <span class="n">ansatz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="o">=</span> <span class="n">ansatz</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_parameters</span> <span class="o">=</span> <span class="n">initial_parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span> <span class="o">=</span> <span class="n">num_timesteps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
@@ -534,8 +545,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">evolution</span> <span class="o">=</span> <span class="n">evolution</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_parameter_shift</span> <span class="o">=</span> <span class="n">use_parameter_shift</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="o">=</span> <span class="n">transpiler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span> <span class="o">=</span> <span class="n">transpiler_options</span> <span class="k">if</span> <span class="n">transpiler_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ansatz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A parameterized circuit preparing the variational ansatz to model the time evolved</span>
+<span class="sd">        quantum state. If a transpiler has been provided, the ansatz will be automatically</span>
+<span class="sd">        transpiled upon being set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span>
+
+    <span class="nd">@ansatz</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ansatz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ansatz</span> <span class="o">=</span> <span class="n">value</span>
+
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-<div class="viewcode-block" id="PVQD.step"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span>
+<div class="viewcode-block" id="PVQD.step">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
@@ -578,7 +613,10 @@
 
         <span class="k">return</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">optimizer_result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">fidelity</span></div>
 
-<div class="viewcode-block" id="PVQD.get_loss"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.get_loss">[docs]</a>    <span class="k">def</span> <span class="nf">get_loss</span><span class="p">(</span>
+
+<div class="viewcode-block" id="PVQD.get_loss">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.get_loss">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_loss</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
@@ -611,7 +649,7 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">ParameterVector</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">)</span>
         <span class="n">shifted</span> <span class="o">=</span> <span class="n">ansatz</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">(</span><span class="n">current_parameters</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">evaluate_loss</span><span class="p">(</span><span class="n">displacement</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_loss</span><span class="p">(</span><span class="n">displacement</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Evaluate the overlap of the ansatz with the Trotterized evolution.</span>
 
 <span class="sd">            Args:</span>
@@ -639,7 +677,7 @@
                 <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fidelity_primitive</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">states1</span><span class="p">,</span> <span class="n">states2</span><span class="p">,</span> <span class="n">values_2</span><span class="o">=</span><span class="n">param_dicts2</span><span class="p">)</span>
                 <span class="n">fidelities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">fidelities</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fidelities</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">fidelities</span> <span class="o">=</span> <span class="n">fidelities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -650,7 +688,7 @@
 
         <span class="k">if</span> <span class="n">_is_gradient_supported</span><span class="p">(</span><span class="n">ansatz</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_parameter_shift</span><span class="p">:</span>
 
-            <span class="k">def</span> <span class="nf">evaluate_gradient</span><span class="p">(</span><span class="n">displacement</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">evaluate_gradient</span><span class="p">(</span><span class="n">displacement</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Evaluate the gradient with the parameter-shift rule.</span>
 
 <span class="sd">                This is hard-coded here since the gradient framework does not support computing</span>
@@ -678,7 +716,8 @@
 
         <span class="k">return</span> <span class="n">evaluate_loss</span><span class="p">,</span> <span class="n">evaluate_gradient</span>  <span class="c1"># type: ignore[return-value]</span></div>
 
-    <span class="k">def</span> <span class="nf">_transpose_param_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="n">Parameter</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transpose_param_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="n">Parameter</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
         <span class="n">p_0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p_0</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="n">num_parameterizations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p_0</span><span class="p">)</span>
@@ -691,7 +730,9 @@
 
         <span class="k">return</span> <span class="n">param_bindings</span>
 
-<div class="viewcode-block" id="PVQD.evolve"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.evolve">[docs]</a>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evolution_problem</span><span class="p">:</span> <span class="n">TimeEvolutionProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEvolutionResult</span><span class="p">:</span>
+<div class="viewcode-block" id="PVQD.evolve">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD.evolve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evolution_problem</span><span class="p">:</span> <span class="n">TimeEvolutionProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeEvolutionResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Perform real time evolution :math:`\exp(-i t H)|\Psi\rangle`.</span>
 
 <span class="sd">        Evolves an initial state :math:`|\Psi\rangle` for a time :math:`t`</span>
@@ -714,6 +755,10 @@
         <span class="n">time</span> <span class="o">=</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">time</span>
         <span class="n">observables</span> <span class="o">=</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">aux_operators</span>
         <span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">evolution_problem</span><span class="o">.</span><span class="n">hamiltonian</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">observables</span> <span class="o">=</span> <span class="p">[</span><span class="n">obs</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span> <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">observables</span><span class="p">]</span>
+            <span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
 
         <span class="c1"># determine the number of timesteps and set the timestep</span>
         <span class="n">num_timesteps</span> <span class="o">=</span> <span class="p">(</span>
@@ -772,7 +817,8 @@
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-    <span class="k">def</span> <span class="nf">_validate_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the current setup and raise an error if something misses to run.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">skip</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -799,6 +845,7 @@
                 <span class="sa">f</span><span class="s2">&quot;Mismatching number of parameters in the ansatz (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="si">}</span><span class="s2">) &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;and the initial parameters (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_parameters</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -810,13 +857,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -833,11 +880,11 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

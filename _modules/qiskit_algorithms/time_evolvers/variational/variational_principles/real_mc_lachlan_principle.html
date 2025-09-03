@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex.html" /><link rel="search" title="Search" href="../../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.time_evolvers.variational.variational_principles.real_mc_lachlan_principle - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.time_evolvers.variational.variational_principles.real_mc_lachlan_principle - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.time_evolvers.variational.variational_principles.real_mc_lachlan_principle</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2023.</span>
+<span class="c1"># (C) Copyright IBM 2023, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,41 +378,44 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;Class for a Real McLachlan&#39;s Variational Principle.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">real</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">real</span>
 
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Parameter</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info.operators.base_operator</span> <span class="kn">import</span> <span class="n">BaseOperator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info.operators.base_operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseOperator</span>
 
-<span class="kn">from</span> <span class="nn">.real_variational_principle</span> <span class="kn">import</span> <span class="n">RealVariationalPrinciple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.real_variational_principle</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealVariationalPrinciple</span>
 
-<span class="kn">from</span> <span class="nn">....exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
-<span class="kn">from</span> <span class="nn">....gradients</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">....exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">....gradients</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BaseEstimatorGradient</span><span class="p">,</span>
     <span class="n">BaseQGT</span><span class="p">,</span>
     <span class="n">DerivativeType</span><span class="p">,</span>
     <span class="n">LinCombQGT</span><span class="p">,</span>
     <span class="n">LinCombEstimatorGradient</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">....run_estimator_job</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_estimator_job</span>
 
 
-<div class="viewcode-block" id="RealMcLachlanPrinciple"><a class="viewcode-back" href="../../../../../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html#qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple">[docs]</a><span class="k">class</span> <span class="nc">RealMcLachlanPrinciple</span><span class="p">(</span><span class="n">RealVariationalPrinciple</span><span class="p">):</span>
+<div class="viewcode-block" id="RealMcLachlanPrinciple">
+<a class="viewcode-back" href="../../../../../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html#qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RealMcLachlanPrinciple</span><span class="p">(</span><span class="n">RealVariationalPrinciple</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for a Real McLachlan&#39;s Variational Principle. It aims to minimize the distance</span>
 <span class="sd">    between both sides of the Schrödinger equation with a quantum state given as a parametrized</span>
 <span class="sd">    trial state. The principle leads to a system of linear equations handled by a linear solver.</span>
 <span class="sd">    The real variant means that we consider real time dynamics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">qgt</span><span class="p">:</span> <span class="n">BaseQGT</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">gradient</span><span class="p">:</span> <span class="n">BaseEstimatorGradient</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -434,9 +438,9 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span>
                     <span class="s2">&quot;The provided gradient instance does not contain an estimator primitive.&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+            <span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
             <span class="n">gradient</span> <span class="o">=</span> <span class="n">LinCombEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">derivative_type</span><span class="o">=</span><span class="n">DerivativeType</span><span class="o">.</span><span class="n">IMAG</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">qgt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -444,7 +448,9 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">qgt</span><span class="p">,</span> <span class="n">gradient</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RealMcLachlanPrinciple.evolution_gradient"><a class="viewcode-back" href="../../../../../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html#qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.evolution_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">evolution_gradient</span><span class="p">(</span>
+<div class="viewcode-block" id="RealMcLachlanPrinciple.evolution_gradient">
+<a class="viewcode-back" href="../../../../../stubs/qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.html#qiskit_algorithms.time_evolvers.variational.RealMcLachlanPrinciple.evolution_gradient">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evolution_gradient</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">hamiltonian</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span>
         <span class="n">ansatz</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
@@ -468,12 +474,9 @@
 <span class="sd">            AlgorithmError: If a gradient job fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">estimator_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">_estimator</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">ansatz</span><span class="p">],</span> <span class="p">[</span><span class="n">hamiltonian</span><span class="p">],</span> <span class="p">[</span><span class="n">param_values</span><span class="p">])</span>
-            <span class="n">energy</span> <span class="o">=</span> <span class="n">estimator_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
-
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">run_estimator_job</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="o">.</span><span class="n">_estimator</span><span class="p">,</span> <span class="p">[(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">param_values</span><span class="p">)])[</span>
+            <span class="mi">0</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
         <span class="n">modified_hamiltonian</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_modified_hamiltonian</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">real</span><span class="p">(</span><span class="n">energy</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -489,7 +492,7 @@
                 <span class="o">.</span><span class="n">gradients</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The gradient primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The gradient primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="c1"># The BaseEstimatorGradient class returns the gradient of the opposite sign than we expect</span>
         <span class="c1"># here (i.e. with a minus sign), hence the correction that cancels it to recover the</span>
@@ -497,8 +500,9 @@
         <span class="n">evolution_grad</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">evolution_grad</span>
         <span class="k">return</span> <span class="n">evolution_grad</span></div>
 
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_construct_modified_hamiltonian</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span> <span class="n">energy</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseOperator</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_construct_modified_hamiltonian</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">:</span> <span class="n">BaseOperator</span><span class="p">,</span> <span class="n">energy</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseOperator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Modifies a Hamiltonian according to the rules of this variational principle.</span>
 
@@ -515,7 +519,7 @@
         <span class="k">return</span> <span class="n">energy_term</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_validate_grad_settings</span><span class="p">(</span><span class="n">gradient</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_grad_settings</span><span class="p">(</span><span class="n">gradient</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">gradient</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="s2">&quot;_derivative_type&quot;</span><span class="p">):</span>
@@ -530,6 +534,7 @@
                     <span class="s2">&quot;imaginary part. The setting to imaginary was changed automatically.&quot;</span>
                 <span class="p">)</span>
                 <span class="n">gradient</span><span class="o">.</span><span class="n">_derivative_type</span> <span class="o">=</span> <span class="n">DerivativeType</span><span class="o">.</span><span class="n">IMAG</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -541,13 +546,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -564,11 +569,11 @@
   </div>
 </div><script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.gradients.reverse.reverse_qgt - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.gradients.reverse.reverse_qgt - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.gradients.reverse.reverse_qgt</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2023, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2023, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -378,30 +379,31 @@
 
 <span class="sd">&quot;&quot;&quot;QGT with the classically efficient reverse mode.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">Parameter</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">Options</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
 
-<span class="kn">from</span> <span class="nn">..base.base_qgt</span> <span class="kn">import</span> <span class="n">BaseQGT</span>
-<span class="kn">from</span> <span class="nn">..base.qgt_result</span> <span class="kn">import</span> <span class="n">QGTResult</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">DerivativeType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base.base_qgt</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseQGT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base.qgt_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">QGTResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DerivativeType</span>
 
-<span class="kn">from</span> <span class="nn">.split_circuits</span> <span class="kn">import</span> <span class="n">split</span>
-<span class="kn">from</span> <span class="nn">.bind</span> <span class="kn">import</span> <span class="n">bind</span>
-<span class="kn">from</span> <span class="nn">.derive_circuit</span> <span class="kn">import</span> <span class="n">derive_circuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.split_circuits</span><span class="w"> </span><span class="kn">import</span> <span class="n">split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.bind</span><span class="w"> </span><span class="kn">import</span> <span class="n">bind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.derive_circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">derive_circuit</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ReverseQGT"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.gradients.ReverseQGT.html#qiskit_algorithms.gradients.ReverseQGT">[docs]</a><span class="k">class</span> <span class="nc">ReverseQGT</span><span class="p">(</span><span class="n">BaseQGT</span><span class="p">):</span>
+<div class="viewcode-block" id="ReverseQGT">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.gradients.ReverseQGT.html#qiskit_algorithms.gradients.ReverseQGT">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReverseQGT</span><span class="p">(</span><span class="n">BaseQGT</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;QGT calculation with the classically efficient reverse mode.</span>
 
 <span class="sd">    .. note::</span>
@@ -423,7 +425,7 @@
 
     <span class="n">SUPPORTED_GATES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rx&quot;</span><span class="p">,</span> <span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="s2">&quot;rz&quot;</span><span class="p">,</span> <span class="s2">&quot;cp&quot;</span><span class="p">,</span> <span class="s2">&quot;crx&quot;</span><span class="p">,</span> <span class="s2">&quot;cry&quot;</span><span class="p">,</span> <span class="s2">&quot;crz&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">phase_fix</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">derivative_type</span><span class="p">:</span> <span class="n">DerivativeType</span> <span class="o">=</span> <span class="n">DerivativeType</span><span class="o">.</span><span class="n">COMPLEX</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -432,38 +434,33 @@
 <span class="sd">            derivative_type: Determines whether the complex QGT or only the real or imaginary</span>
 <span class="sd">                parts are calculated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">dummy_estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>  <span class="c1"># this method does not need an estimator</span>
+        <span class="n">dummy_estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>  <span class="c1"># this method does not need an estimator</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dummy_estimator</span><span class="p">,</span> <span class="n">phase_fix</span><span class="p">,</span> <span class="n">derivative_type</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;There are no options for the reverse QGT, returns an empty options dict.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Empty options.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span>  <span class="c1"># pylint: disable=arguments-renamed</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span>  <span class="c1"># pylint: disable=arguments-renamed</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
         <span class="n">parameter_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Parameter</span><span class="p">]],</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">precision</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QGTResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the QGT on the given circuits.&quot;&quot;&quot;</span>
         <span class="n">g_circuits</span><span class="p">,</span> <span class="n">g_parameter_values</span><span class="p">,</span> <span class="n">g_parameter_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">(</span>
             <span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUPPORTED_GATES</span>
         <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_unique</span><span class="p">(</span><span class="n">g_circuits</span><span class="p">,</span> <span class="n">g_parameter_values</span><span class="p">,</span> <span class="n">g_parameter_sets</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_unique</span><span class="p">(</span>
+            <span class="n">g_circuits</span><span class="p">,</span> <span class="n">g_parameter_values</span><span class="p">,</span> <span class="n">g_parameter_sets</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_postprocess</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_run_unique</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_unique</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
         <span class="n">parameter_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
         <span class="n">parameter_sets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Parameter</span><span class="p">]],</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">,</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">precision</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QGTResult</span><span class="p">:</span>
         <span class="n">num_qgts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
         <span class="n">qgts</span> <span class="o">=</span> <span class="p">[]</span>
@@ -474,7 +471,6 @@
             <span class="n">circuit</span> <span class="o">=</span> <span class="n">circuits</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">parameter_sets</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
-            <span class="n">num_parameters</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
             <span class="n">original_parameter_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">parameters</span> <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">]</span>
             <span class="n">metadata</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">original_parameter_order</span><span class="p">})</span>
 
@@ -582,10 +578,11 @@
             <span class="c1"># append and cast to real/imag if required</span>
             <span class="n">qgts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_derivtype</span><span class="p">(</span><span class="n">qgt</span><span class="p">))</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">QGTResult</span><span class="p">(</span><span class="n">qgts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative_type</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Doesn&#39;t really make sense to pass the precision since it&#39;s not used</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">QGTResult</span><span class="p">(</span><span class="n">qgts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative_type</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_to_derivtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qgt</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_derivtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qgt</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative_type</span> <span class="o">==</span> <span class="n">DerivativeType</span><span class="o">.</span><span class="n">REAL</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">qgt</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative_type</span> <span class="o">==</span> <span class="n">DerivativeType</span><span class="o">.</span><span class="n">IMAG</span><span class="p">:</span>
@@ -594,7 +591,8 @@
         <span class="k">return</span> <span class="n">qgt</span></div>
 
 
-<span class="k">def</span> <span class="nf">_l_term</span><span class="p">(</span><span class="n">coeffs_i</span><span class="p">,</span> <span class="n">states_i</span><span class="p">,</span> <span class="n">coeffs_j</span><span class="p">,</span> <span class="n">states_j</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_l_term</span><span class="p">(</span><span class="n">coeffs_i</span><span class="p">,</span> <span class="n">states_i</span><span class="p">,</span> <span class="n">coeffs_j</span><span class="p">,</span> <span class="n">states_j</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
         <span class="nb">sum</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">coeff_i</span><span class="p">)</span> <span class="o">*</span> <span class="n">coeff_j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">state_i</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state_j</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -604,13 +602,13 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_phasefix_term</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_phasefix_term</span><span class="p">(</span><span class="n">chi</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
         <span class="n">coeff_i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">chi</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state_i</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">coeff_i</span><span class="p">,</span> <span class="n">state_i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">states</span><span class="p">)</span>
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_extract_parameter</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_parameter</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">Parameter</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">expression</span>
 
@@ -629,13 +627,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -652,11 +650,11 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

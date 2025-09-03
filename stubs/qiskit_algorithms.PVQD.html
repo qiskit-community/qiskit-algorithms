@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="PVQDResult" href="qiskit_algorithms.PVQDResult.html" /><link rel="prev" title="TimeEvolutionProblem" href="qiskit_algorithms.TimeEvolutionProblem.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>PVQD - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>PVQD - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="pvqd">
-<h1>PVQD<a class="headerlink" href="#pvqd" title="Permalink to this heading">#</a></h1>
+<h1>PVQD<a class="headerlink" href="#pvqd" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PVQD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_parameter_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PVQD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fidelity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_parameter_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.RealTimeEvolver.html#qiskit_algorithms.RealTimeEvolver" title="qiskit_algorithms.time_evolvers.real_time_evolver.RealTimeEvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeEvolver</span></code></a></p>
 <p>The projected Variational Quantum Dynamics (p-VQD) Algorithm.</p>
 <p>In each timestep, this algorithm computes the next state with a Trotter formula
@@ -379,19 +380,8 @@ state and the ansatz, using a classical optimization routine. See Ref. [1] for d
 <p>The following attributes can be set via the initializer but can also be read and
 updated once the PVQD object has been constructed.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="qiskit_algorithms.PVQD.ansatz">
-<span class="sig-name descname"><span class="pre">ansatz</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.ansatz" title="Permalink to this definition">#</a></dt>
-<dd><p>The parameterized circuit representing the time-evolved state.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>QuantumCircuit</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.initial_parameters">
-<span class="sig-name descname"><span class="pre">initial_parameters</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.initial_parameters" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_parameters</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.initial_parameters" title="Link to this definition">¶</a></dt>
 <dd><p>The parameters of the ansatz at time 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -402,7 +392,7 @@ updated once the PVQD object has been constructed.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.optimizer">
-<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.optimizer" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.optimizer" title="Link to this definition">¶</a></dt>
 <dd><p>The classical optimization routine
 used to maximize the fidelity of the Trotter step and ansatz.</p>
 <dl class="field-list simple">
@@ -414,7 +404,7 @@ used to maximize the fidelity of the Trotter step and ansatz.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.num_timesteps">
-<span class="sig-name descname"><span class="pre">num_timesteps</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.num_timesteps" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">num_timesteps</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.num_timesteps" title="Link to this definition">¶</a></dt>
 <dd><p>The number of timesteps to take. If None, it is automatically
 selected to achieve a timestep of approximately 0.01.</p>
 <dl class="field-list simple">
@@ -426,7 +416,7 @@ selected to achieve a timestep of approximately 0.01.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.evolution">
-<span class="sig-name descname"><span class="pre">evolution</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.evolution" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">evolution</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.evolution" title="Link to this definition">¶</a></dt>
 <dd><p>The method to perform the Trotter step.
 Defaults to first-order Lie-Trotter evolution.</p>
 <dl class="field-list simple">
@@ -438,7 +428,7 @@ Defaults to first-order Lie-Trotter evolution.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.use_parameter_shift">
-<span class="sig-name descname"><span class="pre">use_parameter_shift</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.use_parameter_shift" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">use_parameter_shift</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.use_parameter_shift" title="Link to this definition">¶</a></dt>
 <dd><p>If True, use the parameter shift rule for loss function
 gradients (if the ansatz supports).</p>
 <dl class="field-list simple">
@@ -450,7 +440,7 @@ gradients (if the ansatz supports).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.initial_guess">
-<span class="sig-name descname"><span class="pre">initial_guess</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.initial_guess" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_guess</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.initial_guess" title="Link to this definition">¶</a></dt>
 <dd><p>The starting point for the first classical optimization
 run, at time 0. Defaults to random values in <span class="math notranslate nohighlight">\([-0.01, 0.01]\)</span>.</p>
 <dl class="field-list simple">
@@ -463,21 +453,21 @@ run, at time 0. Defaults to random values in <span class="math notranslate nohig
 <p class="rubric">Example</p>
 <p>This snippet computes the real time evolution of a quantum Ising model on two
 neighboring sites and keeps track of the magnetization.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.state_fidelities</span> <span class="kn">import</span> <span class="n">ComputeUncompute</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span><span class="p">,</span> <span class="n">PVQD</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span><span class="p">,</span> <span class="n">Sampler</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EfficientSU2</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span><span class="p">,</span> <span class="n">Pauli</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">L_BFGS_B</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.state_fidelities</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComputeUncompute</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span><span class="p">,</span> <span class="n">PVQD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span><span class="p">,</span> <span class="n">StatevectorSampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">efficient_su2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span><span class="p">,</span> <span class="n">Pauli</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">L_BFGS_B</span>
 
-<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">()</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">StatevectorSampler</span><span class="p">()</span>
 <span class="n">fidelity</span> <span class="o">=</span> <span class="n">ComputeUncompute</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 <span class="n">hamiltonian</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="s2">&quot;IX&quot;</span><span class="p">,</span> <span class="s2">&quot;XI&quot;</span><span class="p">])</span>
 <span class="n">observable</span> <span class="o">=</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;ZZ&quot;</span><span class="p">)</span>
-<span class="n">ansatz</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">efficient_su2</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">initial_parameters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">)</span>
 
 <span class="n">time</span> <span class="o">=</span> <span class="mi">1</span>
@@ -516,7 +506,7 @@ neighboring sites and keeps track of the magnetization.</p>
 time evolved quantum state.</p></li>
 <li><p><strong>initial_parameters</strong> (<em>np.ndarray</em>) – The initial parameters for the ansatz. Together with the ansatz,
 these define the initial state of the time evolution.</p></li>
-<li><p><strong>estimator</strong> (<em>BaseEstimator</em><em> | </em><em>None</em>) – An estimator primitive used for calculating expected values of auxiliary
+<li><p><strong>estimator</strong> (<em>BaseEstimatorV2</em><em> | </em><em>None</em>) – An estimator primitive used for calculating expected values of auxiliary
 operators (if provided via the problem).</p></li>
 <li><p><strong>optimizer</strong> (<a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><em>Optimizer</em></a><em> | </em><a class="reference internal" href="qiskit_algorithms.optimizers.Minimizer.html#qiskit_algorithms.optimizers.Minimizer" title="qiskit_algorithms.optimizers.Minimizer"><em>Minimizer</em></a><em> | </em><em>None</em>) – The classical optimizers used to minimize the overlap between
 Trotterization and ansatz. Can be either a <a class="reference internal" href="qiskit_algorithms.optimizers.Optimizer.html#qiskit_algorithms.optimizers.Optimizer" title="qiskit_algorithms.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Optimizer</span></code></a> or a callable
@@ -534,13 +524,27 @@ Qiskit optimizers will use a finite difference rule to approximate the gradients
 <li><p><strong>initial_guess</strong> (<em>np.ndarray</em><em> | </em><em>None</em>) – The initial guess for the first VQE optimization. Afterwards the
 previous iteration result is used as initial guess. If None, this is set to
 a random vector with elements in the interval <span class="math notranslate nohighlight">\([-0.01, 0.01]\)</span>.</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are run when using this algorithm. If set to <cite>None</cite>, these won’t be
+transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Attributes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qiskit_algorithms.PVQD.ansatz">
+<span class="sig-name descname"><span class="pre">ansatz</span></span><a class="headerlink" href="#qiskit_algorithms.PVQD.ansatz" title="Link to this definition">¶</a></dt>
+<dd><p>A parameterized circuit preparing the variational ansatz to model the time evolved
+quantum state. If a transpiler has been provided, the ansatz will be automatically
+transpiled upon being set.</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.evolve">
-<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evolution_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.evolve" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evolution_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.evolve" title="Link to this definition">¶</a></dt>
 <dd><p>Perform real time evolution <span class="math notranslate nohighlight">\(\exp(-i t H)|\Psi\rangle\)</span>.</p>
 <p>Evolves an initial state <span class="math notranslate nohighlight">\(|\Psi\rangle\)</span> for a time <span class="math notranslate nohighlight">\(t\)</span>
 under a Hamiltonian  <span class="math notranslate nohighlight">\(H\)</span>, as provided in the <code class="docutils literal notranslate"><span class="pre">evolution_problem</span></code>.</p>
@@ -567,16 +571,16 @@ time and observables to evaluate.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.get_loss">
-<span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hamiltonian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.get_loss" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hamiltonian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.get_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.get_loss" title="Link to this definition">¶</a></dt>
 <dd><p>Get a function to evaluate the infidelity between Trotter step and ansatz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>hamiltonian</strong> (<em>BaseOperator</em>) – The Hamiltonian under which to evolve.</p></li>
-<li><p><strong>ansatz</strong> (<em>QuantumCircuit</em>) – The parameterized quantum circuit which attempts to approximate the
+<li><p><strong>ansatz</strong> (<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><em>QuantumCircuit</em></a>) – The parameterized quantum circuit which attempts to approximate the
 time-evolved state.</p></li>
 <li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The time step.</p></li>
-<li><p><strong>current_parameters</strong> (<em>np.ndarray</em>) – The current parameters.</p></li>
+<li><p><strong>current_parameters</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>) – The current parameters.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -587,24 +591,24 @@ time-evolved state.</p></li>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[Callable[[np.ndarray], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>], Callable[[np.ndarray], np.ndarray]] | None</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>], <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><em>Callable</em></a>[[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>]] | None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.PVQD.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hamiltonian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.step" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hamiltonian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ansatz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/pvqd/pvqd.html#PVQD.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PVQD.step" title="Link to this definition">¶</a></dt>
 <dd><p>Perform a single time step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>hamiltonian</strong> (<em>BaseOperator</em>) – The Hamiltonian under which to evolve.</p></li>
-<li><p><strong>ansatz</strong> (<em>QuantumCircuit</em>) – The parameterized quantum circuit which attempts to approximate the
+<li><p><strong>ansatz</strong> (<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><em>QuantumCircuit</em></a>) – The parameterized quantum circuit which attempts to approximate the
 time-evolved state.</p></li>
-<li><p><strong>theta</strong> (<em>np.ndarray</em>) – The current parameters.</p></li>
+<li><p><strong>theta</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>) – The current parameters.</p></li>
 <li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The time step.</p></li>
-<li><p><strong>initial_guess</strong> (<em>np.ndarray</em>) – The initial guess for the classical optimization of the
+<li><p><strong>initial_guess</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>) – The initial guess for the classical optimization of the
 fidelity between the next variational state and the Trotter-evolved last state.
 If None, this is set to a random vector with elements in the interval
 <span class="math notranslate nohighlight">\([-0.01, 0.01]\)</span>.</p></li>
@@ -614,7 +618,7 @@ If None, this is set to a random vector with elements in the interval
 <dd class="field-even"><p>A tuple consisting of the next parameters and the fidelity of the optimization.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[np.ndarray, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>ndarray</em></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)">float</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -651,13 +655,13 @@ If None, this is set to a random vector with elements in the interval
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -680,13 +684,13 @@ If None, this is set to a random vector with elements in the interval
             <ul>
 <li><a class="reference internal" href="#">PVQD</a><ul>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD"><code class="docutils literal notranslate"><span class="pre">PVQD</span></code></a><ul>
-<li><a class="reference internal" href="#qiskit_algorithms.PVQD.ansatz"><code class="docutils literal notranslate"><span class="pre">PVQD.ansatz</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.initial_parameters"><code class="docutils literal notranslate"><span class="pre">PVQD.initial_parameters</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.optimizer"><code class="docutils literal notranslate"><span class="pre">PVQD.optimizer</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.num_timesteps"><code class="docutils literal notranslate"><span class="pre">PVQD.num_timesteps</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.evolution"><code class="docutils literal notranslate"><span class="pre">PVQD.evolution</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.use_parameter_shift"><code class="docutils literal notranslate"><span class="pre">PVQD.use_parameter_shift</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.initial_guess"><code class="docutils literal notranslate"><span class="pre">PVQD.initial_guess</span></code></a></li>
+<li><a class="reference internal" href="#qiskit_algorithms.PVQD.ansatz"><code class="docutils literal notranslate"><span class="pre">PVQD.ansatz</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.evolve"><code class="docutils literal notranslate"><span class="pre">PVQD.evolve()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.get_loss"><code class="docutils literal notranslate"><span class="pre">PVQD.get_loss()</span></code></a></li>
 <li><a class="reference internal" href="#qiskit_algorithms.PVQD.step"><code class="docutils literal notranslate"><span class="pre">PVQD.step()</span></code></a></li>
@@ -705,11 +709,11 @@ If None, this is set to a random vector with elements in the interval
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

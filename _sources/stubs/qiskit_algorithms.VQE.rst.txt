@@ -11,6 +11,7 @@
   
    .. rubric:: Attributes
     
+   .. autoattribute:: ansatz
    .. autoattribute:: initial_point
   
 

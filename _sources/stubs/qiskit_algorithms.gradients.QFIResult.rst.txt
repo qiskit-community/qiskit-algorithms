@@ -13,7 +13,7 @@
     
    .. autoattribute:: qfis
    .. autoattribute:: metadata
-   .. autoattribute:: options
+   .. autoattribute:: precision
   
 
   

@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.optimizers.qnspsa - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.optimizers.qnspsa - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.optimizers.qnspsa</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2021, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2021, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -378,24 +379,27 @@
 
 <span class="sd">&quot;&quot;&quot;The QN-SPSA optimizer.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterator</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.state_fidelities</span> <span class="kn">import</span> <span class="n">ComputeUncompute</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.state_fidelities</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComputeUncompute</span>
 
-<span class="kn">from</span> <span class="nn">.spsa</span> <span class="kn">import</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">CALLBACK</span><span class="p">,</span> <span class="n">TERMINATIONCHECKER</span><span class="p">,</span> <span class="n">_batch_evaluate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.spsa</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPSA</span><span class="p">,</span> <span class="n">CALLBACK</span><span class="p">,</span> <span class="n">TERMINATIONCHECKER</span><span class="p">,</span> <span class="n">_batch_evaluate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
 
 <span class="c1"># the function to compute the fidelity</span>
 <span class="n">FIDELITY</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="QNSPSA"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.QNSPSA.html#qiskit_algorithms.optimizers.QNSPSA">[docs]</a><span class="k">class</span> <span class="nc">QNSPSA</span><span class="p">(</span><span class="n">SPSA</span><span class="p">):</span>
+<div class="viewcode-block" id="QNSPSA">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.QNSPSA.html#qiskit_algorithms.optimizers.QNSPSA">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QNSPSA</span><span class="p">(</span><span class="n">SPSA</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The Quantum Natural SPSA (QN-SPSA) optimizer.</span>
 
 <span class="sd">    The QN-SPSA optimizer [1] is a stochastic optimizer that belongs to the family of gradient</span>
@@ -422,35 +426,34 @@
 <span class="sd">    Examples:</span>
 
 <span class="sd">        This short example runs QN-SPSA for the ground state calculation of the ``Z ^ Z``</span>
-<span class="sd">        observable where the ansatz is a ``PauliTwoDesign`` circuit.</span>
+<span class="sd">        observable where the ansatz is a ``pauli_two_design`` circuit.</span>
 
 <span class="sd">        .. code-block:: python</span>
 
 <span class="sd">            import numpy as np</span>
 <span class="sd">            from qiskit_algorithms.optimizers import QNSPSA</span>
-<span class="sd">            from qiskit.circuit.library import PauliTwoDesign</span>
-<span class="sd">            from qiskit.primitives import Estimator, Sampler</span>
+<span class="sd">            from qiskit.circuit.library import pauli_two_design</span>
+<span class="sd">            from qiskit.primitives import StatevectorEstimator, StatevectorSampler</span>
 <span class="sd">            from qiskit.quantum_info import Pauli</span>
 
 <span class="sd">            # problem setup</span>
-<span class="sd">            ansatz = PauliTwoDesign(2, reps=1, seed=2)</span>
+<span class="sd">            ansatz = pauli_two_design(2, reps=1, seed=2)</span>
 <span class="sd">            observable = Pauli(&quot;ZZ&quot;)</span>
 <span class="sd">            initial_point = np.random.random(ansatz.num_parameters)</span>
 
 <span class="sd">            # loss function</span>
-<span class="sd">            estimator = Estimator()</span>
+<span class="sd">            estimator = StatevectorEstimator()</span>
 
 <span class="sd">            def loss(x):</span>
-<span class="sd">                result = estimator.run([ansatz], [observable], [x]).result()</span>
-<span class="sd">                return np.real(result.values[0])</span>
+<span class="sd">                return estimator.run([(ansatz, observable, x)]).result()[0].data.evs</span>
 
 <span class="sd">            # fidelity for estimation of the geometric tensor</span>
-<span class="sd">            sampler = Sampler()</span>
+<span class="sd">            sampler = StatevectorSampler()</span>
 <span class="sd">            fidelity = QNSPSA.get_fidelity(ansatz, sampler)</span>
 
 <span class="sd">            # run QN-SPSA</span>
 <span class="sd">            qnspsa = QNSPSA(fidelity, maxiter=300)</span>
-<span class="sd">            result = qnspsa.optimize(ansatz.num_parameters, loss, initial_point=initial_point)</span>
+<span class="sd">            result = qnspsa.minimize(loss, x0=initial_point)</span>
 
 <span class="sd">    References:</span>
 
@@ -460,7 +463,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fidelity</span><span class="p">:</span> <span class="n">FIDELITY</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -552,7 +555,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fidelity</span> <span class="o">=</span> <span class="n">fidelity</span>
 
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-    <span class="k">def</span> <span class="nf">_point_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">delta1</span><span class="p">,</span> <span class="n">delta2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_point_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">delta1</span><span class="p">,</span> <span class="n">delta2</span><span class="p">):</span>
         <span class="n">loss_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">delta1</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">delta1</span><span class="p">]</span>
         <span class="n">fidelity_points</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">delta1</span><span class="p">),</span>
@@ -583,7 +586,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss_values</span><span class="p">),</span> <span class="n">gradient_estimate</span><span class="p">,</span> <span class="n">hessian_estimate</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The optimizer settings in a dictionary format.&quot;&quot;&quot;</span>
         <span class="c1"># re-use serialization from SPSA</span>
         <span class="n">settings</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings</span>
@@ -595,11 +598,15 @@
 
         <span class="k">return</span> <span class="n">settings</span>
 
-<div class="viewcode-block" id="QNSPSA.get_fidelity"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.QNSPSA.html#qiskit_algorithms.optimizers.QNSPSA.get_fidelity">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_fidelity</span><span class="p">(</span>
+<div class="viewcode-block" id="QNSPSA.get_fidelity">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.QNSPSA.html#qiskit_algorithms.optimizers.QNSPSA.get_fidelity">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fidelity</span><span class="p">(</span>
         <span class="n">circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSamplerV2</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get a function to compute the fidelity of ``circuit`` with itself.</span>
 
@@ -617,16 +624,23 @@
 <span class="sd">        Args:</span>
 <span class="sd">            circuit: The circuit preparing the parameterized ansatz.</span>
 <span class="sd">            sampler: A sampler primitive to sample from a quantum state.</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are produced by the fidelity object. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A handle to the function :math:`F`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fid</span> <span class="o">=</span> <span class="n">ComputeUncompute</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
+        <span class="n">fid</span> <span class="o">=</span> <span class="n">ComputeUncompute</span><span class="p">(</span>
+            <span class="n">sampler</span><span class="p">,</span> <span class="n">transpiler</span><span class="o">=</span><span class="n">transpiler</span><span class="p">,</span> <span class="n">transpiler_options</span><span class="o">=</span><span class="n">transpiler_options</span>
+        <span class="p">)</span>
 
         <span class="n">num_parameters</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_parameters</span>
 
-        <span class="k">def</span> <span class="nf">fidelity</span><span class="p">(</span><span class="n">values_x</span><span class="p">,</span> <span class="n">values_y</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fidelity</span><span class="p">(</span><span class="n">values_x</span><span class="p">,</span> <span class="n">values_y</span><span class="p">):</span>
             <span class="n">values_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">values_x</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_parameters</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="n">batch_size_x</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_x</span><span class="p">)</span>
 
@@ -638,7 +652,9 @@
             <span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">fidelities</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">fidelity</span></div></div>
+        <span class="k">return</span> <span class="n">fidelity</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -650,13 +666,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -673,11 +689,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

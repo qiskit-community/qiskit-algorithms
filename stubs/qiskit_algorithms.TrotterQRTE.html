@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="VarQITE" href="qiskit_algorithms.VarQITE.html" /><link rel="prev" title="SciPyRealEvolver" href="qiskit_algorithms.SciPyRealEvolver.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>TrotterQRTE - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>TrotterQRTE - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,26 +367,26 @@
         </div>
         <article role="main">
           <br><br><br><section id="trotterqrte">
-<h1>TrotterQRTE<a class="headerlink" href="#trotterqrte" title="Permalink to this heading">#</a></h1>
+<h1>TrotterQRTE<a class="headerlink" href="#trotterqrte" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TrotterQRTE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_formula</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert_barriers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TrotterQRTE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_formula</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_timesteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert_barriers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.RealTimeEvolver.html#qiskit_algorithms.RealTimeEvolver" title="qiskit_algorithms.time_evolvers.real_time_evolver.RealTimeEvolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealTimeEvolver</span></code></a></p>
 <p>Quantum Real Time Evolution using Trotterization.</p>
-<p>The type of Trotterization is defined by the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.ProductFormula" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProductFormula</span></code></a>
+<p>The type of Trotterization is defined by the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.synthesis.ProductFormula" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProductFormula</span></code></a>
 provided to the algorithm.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span>
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TrotterQRTE</span><span class="p">,</span> <span class="n">TimeEvolutionProblem</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pauli</span><span class="p">,</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrotterQRTE</span><span class="p">,</span> <span class="n">TimeEvolutionProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
 
 <span class="n">operator</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">),</span> <span class="n">Pauli</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)])</span>
 <span class="n">initial_state</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">time</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">)</span>
 <span class="c1"># LieTrotter with 1 rep</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 <span class="n">trotter_qrte</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">)</span>
 <span class="n">evolved_state</span> <span class="o">=</span> <span class="n">trotter_qrte</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span><span class="o">.</span><span class="n">evolved_state</span>
 </pre></div>
@@ -394,15 +395,20 @@ provided to the algorithm.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>product_formula</strong> (<em>ProductFormula</em><em> | </em><em>None</em>) – A Lie-Trotter-Suzuki product formula. If <code class="docutils literal notranslate"><span class="pre">None</span></code> provided (default),
-the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.LieTrotter" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LieTrotter</span></code></a> first order product formula with a single
+the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.synthesis.LieTrotter" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LieTrotter</span></code></a> first order product formula with a single
 repetition is used. <code class="docutils literal notranslate"><span class="pre">reps</span></code> should be 1 to obtain a number of time-steps equal to
 <code class="docutils literal notranslate"><span class="pre">num_timesteps</span></code> and an evaluation of <a class="reference internal" href="qiskit_algorithms.TimeEvolutionProblem.html#qiskit_algorithms.TimeEvolutionProblem.aux_operators" title="qiskit_algorithms.TimeEvolutionProblem.aux_operators"><code class="xref py py-attr docutils literal notranslate"><span class="pre">TimeEvolutionProblem.aux_operators</span></code></a>
 at every time-step. If <code class="docutils literal notranslate"><span class="pre">reps</span></code> is larger than 1, the true number of time-steps will
 be <code class="docutils literal notranslate"><span class="pre">num_timesteps</span> <span class="pre">*</span> <span class="pre">reps</span></code>.</p></li>
-<li><p><strong>estimator</strong> (<em>BaseEstimator</em><em> | </em><em>None</em>) – An estimator primitive used for calculating expectation values of
+<li><p><strong>estimator</strong> (<em>BaseEstimatorV2</em><em> | </em><em>None</em>) – An estimator primitive used for calculating expectation values of
 <code class="docutils literal notranslate"><span class="pre">TimeEvolutionProblem.aux_operators</span></code>.</p></li>
 <li><p><strong>num_timesteps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The number of time-steps the full evolution time is divided into
 (repetitions of <code class="docutils literal notranslate"><span class="pre">product_formula</span></code>).</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are produced within this algorithm. If set to <cite>None</cite>, these won’t be
+transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 <li><p><strong>insert_barriers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, insert a barrier after the initial state and after each Trotter
 step.</p></li>
 </ul>
@@ -411,26 +417,26 @@ step.</p></li>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE.estimator">
-<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.estimator" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">estimator</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.estimator" title="Link to this definition">¶</a></dt>
 <dd><p>Returns an estimator.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE.num_timesteps">
-<span class="sig-name descname"><span class="pre">num_timesteps</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.num_timesteps" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">num_timesteps</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.num_timesteps" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the number of timesteps.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE.product_formula">
-<span class="sig-name descname"><span class="pre">product_formula</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.product_formula" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">product_formula</span></span><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.product_formula" title="Link to this definition">¶</a></dt>
 <dd><p>Returns a product formula.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE.evolve">
-<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evolution_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.evolve" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evolution_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.evolve" title="Link to this definition">¶</a></dt>
 <dd><p>Evolves a quantum state for a given time using the Trotterization method
 based on a product formula provided. The result is provided in the form of a quantum
 circuit. If auxiliary operators are included in the <code class="docutils literal notranslate"><span class="pre">evolution_problem</span></code>, they are
@@ -463,7 +469,7 @@ auxiliary operators evaluated for a resulting state on an estimator primitive.</
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.TrotterQRTE.supports_aux_operators">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.supports_aux_operators" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/time_evolvers/trotterization/trotter_qrte.html#TrotterQRTE.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.TrotterQRTE.supports_aux_operators" title="Link to this definition">¶</a></dt>
 <dd><p>Whether computing the expectation value of auxiliary operators is supported.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -508,13 +514,13 @@ evaluated, <code class="docutils literal notranslate"><span class="pre">False</s
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -557,11 +563,11 @@ evaluated, <code class="docutils literal notranslate"><span class="pre">False</s
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

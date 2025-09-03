@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Optimizer" href="qiskit_algorithms.optimizers.Optimizer.html" /><link rel="prev" title="Optimizers (qiskit_algorithms.optimizers)" href="../apidocs/qiskit_algorithms.optimizers.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>OptimizerResult - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>OptimizerResult - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="optimizerresult">
-<h1>OptimizerResult<a class="headerlink" href="#optimizerresult" title="Permalink to this heading">#</a></h1>
+<h1>OptimizerResult<a class="headerlink" href="#optimizerresult" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptimizerResult</span></span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/optimizer.html#OptimizerResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OptimizerResult</span></span><a class="reference internal" href="../_modules/qiskit_algorithms/optimizers/optimizer.html#OptimizerResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmResult</span></code></p>
 <p>The result of an optimization routine.</p>
 <p class="rubric">Attributes</p>
@@ -377,44 +378,44 @@
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.fun">
-<span class="sig-name descname"><span class="pre">fun</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.fun" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fun</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.fun" title="Link to this definition">¶</a></dt>
 <dd><p>The final value of the minimization.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.jac">
-<span class="sig-name descname"><span class="pre">jac</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.jac" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">jac</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.jac" title="Link to this definition">¶</a></dt>
 <dd><p>The final gradient of the minimization.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.nfev">
-<span class="sig-name descname"><span class="pre">nfev</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.nfev" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">nfev</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.nfev" title="Link to this definition">¶</a></dt>
 <dd><p>The total number of function evaluations.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.nit">
-<span class="sig-name descname"><span class="pre">nit</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.nit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">nit</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.nit" title="Link to this definition">¶</a></dt>
 <dd><p>The total number of iterations.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.njev">
-<span class="sig-name descname"><span class="pre">njev</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.njev" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">njev</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.njev" title="Link to this definition">¶</a></dt>
 <dd><p>The total number of gradient evaluations.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.x">
-<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.x" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.x" title="Link to this definition">¶</a></dt>
 <dd><p>The final point of the minimization.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.optimizers.OptimizerResult.combine">
-<span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.combine" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.optimizers.OptimizerResult.combine" title="Link to this definition">¶</a></dt>
 <dd><p>Any property from the argument that exists in the receiver is
 updated.
 :param result: Argument result with properties to be set.</p>
@@ -457,13 +458,13 @@ updated.
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -508,11 +509,11 @@ updated.
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

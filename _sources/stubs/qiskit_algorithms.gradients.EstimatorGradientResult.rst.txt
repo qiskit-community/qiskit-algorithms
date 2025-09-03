@@ -13,7 +13,7 @@
     
    .. autoattribute:: gradients
    .. autoattribute:: metadata
-   .. autoattribute:: options
+   .. autoattribute:: precision
   
 
   

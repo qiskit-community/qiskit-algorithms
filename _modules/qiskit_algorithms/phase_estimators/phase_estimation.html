@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.phase_estimators.phase_estimation - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.phase_estimators.phase_estimation - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.phase_estimators.phase_estimation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2020, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2020, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -379,23 +380,27 @@
 
 <span class="sd">&quot;&quot;&quot;The Quantum Phase Estimation Algorithm.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">qiskit</span>
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">circuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.classicalregister</span> <span class="kn">import</span> <span class="n">ClassicalRegister</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
-<span class="kn">from</span> <span class="nn">qiskit.result</span> <span class="kn">import</span> <span class="n">Result</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">qiskit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">circuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">ClassicalRegister</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerV2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.result</span><span class="w"> </span><span class="kn">import</span> <span class="n">Result</span>
 
-<span class="kn">from</span> <span class="nn">.phase_estimation_result</span> <span class="kn">import</span> <span class="n">PhaseEstimationResult</span><span class="p">,</span> <span class="n">_sort_phases</span>
-<span class="kn">from</span> <span class="nn">.phase_estimator</span> <span class="kn">import</span> <span class="n">PhaseEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phase_estimation_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhaseEstimationResult</span><span class="p">,</span> <span class="n">_sort_phases</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.phase_estimator</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhaseEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
 
 
-<div class="viewcode-block" id="PhaseEstimation"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation">[docs]</a><span class="k">class</span> <span class="nc">PhaseEstimation</span><span class="p">(</span><span class="n">PhaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="PhaseEstimation">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PhaseEstimation</span><span class="p">(</span><span class="n">PhaseEstimator</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Run the Quantum Phase Estimation (QPE) algorithm.</span>
 
 <span class="sd">    This runs QPE with a multi-qubit register for reading the phases [1]</span>
@@ -445,16 +450,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_evaluation_qubits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSamplerV2</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            num_evaluation_qubits: The number of qubits used in estimating the phase. The phase will</span>
 <span class="sd">                be estimated as a binary string with this many bits.</span>
 <span class="sd">            sampler: The sampler primitive on which the circuit will be sampled.</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are produced within this algorithm. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            AlgorithmError: If a sampler is not provided</span>
@@ -467,8 +480,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_evaluation_qubits</span> <span class="o">=</span> <span class="n">num_evaluation_qubits</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">sampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="o">=</span> <span class="n">transpiler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span> <span class="o">=</span> <span class="n">transpiler_options</span> <span class="k">if</span> <span class="n">transpiler_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="PhaseEstimation.construct_circuit"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.construct_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">construct_circuit</span><span class="p">(</span>
+<div class="viewcode-block" id="PhaseEstimation.construct_circuit">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.construct_circuit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">unitary</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">state_preparation</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the circuit to be executed to estimate phases.</span>
@@ -491,7 +508,8 @@
 
         <span class="k">return</span> <span class="n">pe_circuit</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_measurement_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe_circuit</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_measurement_if_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe_circuit</span><span class="p">):</span>
 
         <span class="c1"># Measure only the evaluation qubits.</span>
         <span class="n">regname</span> <span class="o">=</span> <span class="s2">&quot;meas&quot;</span>
@@ -502,7 +520,7 @@
 
         <span class="k">return</span> <span class="n">circuit</span>
 
-    <span class="k">def</span> <span class="nf">_compute_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">qiskit</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">Counts</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_phases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">qiskit</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">Counts</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute frequencies/counts of phases from the result of running the QPE circuit.</span>
 
 <span class="sd">        How the frequencies are computed depends on whether the backend computes amplitude or</span>
@@ -542,7 +560,9 @@
 
         <span class="k">return</span> <span class="n">phases</span>
 
-<div class="viewcode-block" id="PhaseEstimation.estimate_from_pe_circuit"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.estimate_from_pe_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">estimate_from_pe_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe_circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PhaseEstimationResult</span><span class="p">:</span>
+<div class="viewcode-block" id="PhaseEstimation.estimate_from_pe_circuit">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.estimate_from_pe_circuit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_from_pe_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe_circuit</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PhaseEstimationResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the phase estimation algorithm on a phase estimation circuit</span>
 
 <span class="sd">        Args:</span>
@@ -555,25 +575,33 @@
 <span class="sd">            AlgorithmError: Primitive job failed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pe_circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">pe_circuit</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_measurement_if_required</span><span class="p">(</span><span class="n">pe_circuit</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">circuit_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">pe_circuit</span><span class="p">])</span>
             <span class="n">circuit_result</span> <span class="o">=</span> <span class="n">circuit_job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
-        <span class="n">phases</span> <span class="o">=</span> <span class="n">circuit_result</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;The primitive job failed!&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="n">phases</span> <span class="o">=</span> <span class="n">circuit_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span>
+        <span class="c1"># Ensure we still return the measurement strings in sorted order, which SamplerV2 doesn&#39;t</span>
+        <span class="c1"># guarantee</span>
+        <span class="n">measurement_labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">phases</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">phases_bitstrings</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">phase</span> <span class="ow">in</span> <span class="n">phases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">bitstring_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_reversed_bitstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_evaluation_qubits</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-            <span class="n">phases_bitstrings</span><span class="p">[</span><span class="n">bitstring_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">measurement_labels</span><span class="p">:</span>
+            <span class="n">phases_bitstrings</span><span class="p">[</span><span class="n">key</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">phases</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/</span> <span class="n">circuit_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meas</span><span class="o">.</span><span class="n">num_shots</span>
         <span class="n">phases</span> <span class="o">=</span> <span class="n">phases_bitstrings</span>
 
         <span class="k">return</span> <span class="n">PhaseEstimationResult</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_evaluation_qubits</span><span class="p">,</span> <span class="n">circuit_result</span><span class="o">=</span><span class="n">circuit_result</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">phases</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PhaseEstimation.estimate"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.estimate">[docs]</a>    <span class="k">def</span> <span class="nf">estimate</span><span class="p">(</span>
+
+<div class="viewcode-block" id="PhaseEstimation.estimate">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation.estimate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">unitary</span><span class="p">:</span> <span class="n">QuantumCircuit</span><span class="p">,</span>
         <span class="n">state_preparation</span><span class="p">:</span> <span class="n">QuantumCircuit</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -593,7 +621,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pe_circuit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_circuit</span><span class="p">(</span><span class="n">unitary</span><span class="p">,</span> <span class="n">state_preparation</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimate_from_pe_circuit</span><span class="p">(</span><span class="n">pe_circuit</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimate_from_pe_circuit</span><span class="p">(</span><span class="n">pe_circuit</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -605,13 +635,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -628,11 +658,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

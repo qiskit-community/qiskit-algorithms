@@ -9,6 +9,10 @@
 
 
   
+   .. rubric:: Attributes
+    
+   .. autoattribute:: ansatz
+  
 
   
   

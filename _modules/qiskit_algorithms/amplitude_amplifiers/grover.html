@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.amplitude_amplifiers.grover - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.amplitude_amplifiers.grover - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.amplitude_amplifiers.grover</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2018, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2018, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,26 +378,26 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;Grover&#39;s search algorithm.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Generator</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassicalRegister</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerV2</span>
 
-<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">ClassicalRegister</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
-<span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
-
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
-
-<span class="kn">from</span> <span class="nn">.amplification_problem</span> <span class="kn">import</span> <span class="n">AmplificationProblem</span>
-<span class="kn">from</span> <span class="nn">.amplitude_amplifier</span> <span class="kn">import</span> <span class="n">AmplitudeAmplifier</span><span class="p">,</span> <span class="n">AmplitudeAmplifierResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.amplification_problem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AmplificationProblem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.amplitude_amplifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">AmplitudeAmplifier</span><span class="p">,</span> <span class="n">AmplitudeAmplifierResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
 
 
-<div class="viewcode-block" id="Grover"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover">[docs]</a><span class="k">class</span> <span class="nc">Grover</span><span class="p">(</span><span class="n">AmplitudeAmplifier</span><span class="p">):</span>
+<div class="viewcode-block" id="Grover">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Grover</span><span class="p">(</span><span class="n">AmplitudeAmplifier</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Grover&#39;s Search algorithm.</span>
 
 <span class="sd">    .. note::</span>
@@ -477,12 +478,15 @@
 <span class="sd">            `arXiv:quant-ph/0005055 &lt;http://arxiv.org/abs/quant-ph/0005055&gt;`_.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">iterations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">growth_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sample_from_iterations</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSamplerV2</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -502,6 +506,11 @@
 <span class="sd">                powers of the Grover operator, a random integer sample between 0 and smaller value</span>
 <span class="sd">                than the iteration is used as a power, see [1], Section 4.</span>
 <span class="sd">            sampler: A Sampler to use for sampling the results of the circuits.</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are produced within this algorithm. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If ``growth_rate`` is a float but not larger than 1.</span>
@@ -531,9 +540,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">sampler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample_from_iterations</span> <span class="o">=</span> <span class="n">sample_from_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iterations_arg</span> <span class="o">=</span> <span class="n">iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="o">=</span> <span class="n">transpiler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span> <span class="o">=</span> <span class="n">transpiler_options</span> <span class="k">if</span> <span class="n">transpiler_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseSampler</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseSamplerV2</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the sampler.</span>
 
 <span class="sd">        Returns:</span>
@@ -542,7 +553,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span>
 
     <span class="nd">@sampler</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSamplerV2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the sampler.</span>
 
 <span class="sd">        Args:</span>
@@ -550,7 +561,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="o">=</span> <span class="n">sampler</span>
 
-<div class="viewcode-block" id="Grover.amplify"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.amplify">[docs]</a>    <span class="k">def</span> <span class="nf">amplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amplification_problem</span><span class="p">:</span> <span class="n">AmplificationProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroverResult&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="Grover.amplify">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.amplify">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">amplify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amplification_problem</span><span class="p">:</span> <span class="n">AmplificationProblem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GroverResult&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the Grover algorithm.</span>
 
 <span class="sd">        Args:</span>
@@ -600,23 +613,29 @@
             <span class="c1"># sample from [0, power) if specified</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_from_iterations</span><span class="p">:</span>
                 <span class="n">power</span> <span class="o">=</span> <span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">power</span><span class="p">)</span>
+
             <span class="c1"># Run a grover experiment for a given power of the Grover operator.</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_circuit</span><span class="p">(</span><span class="n">amplification_problem</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">measurement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">qc</span><span class="p">])</span>
+            <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_circuit</span><span class="p">(</span><span class="n">amplification_problem</span><span class="p">,</span> <span class="n">power</span><span class="p">,</span> <span class="n">measurement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;Sampler job failed.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">qc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
 
-                <span class="n">num_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amplification_problem</span><span class="o">.</span><span class="n">objective_qubits</span><span class="p">)</span>
-                <span class="n">circuit_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Statevector</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">binary_repr</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">num_bits</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="p">}</span>
-                <span class="n">top_measurement</span><span class="p">,</span> <span class="n">max_probability</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                    <span class="n">circuit_results</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># type: ignore[union-attr]</span>
-                <span class="p">)</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">qc</span><span class="p">])</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;Sampler job failed.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+            <span class="n">circuit_results</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">qc</span><span class="o">.</span><span class="n">cregs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">circuit_results</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">label</span><span class="p">:</span> <span class="n">value</span> <span class="o">/</span> <span class="n">circuit_results</span><span class="o">.</span><span class="n">num_shots</span>
+                <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">circuit_results</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+
+            <span class="n">top_measurement</span><span class="p">,</span> <span class="n">max_probability</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">circuit_results</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># type: ignore[union-attr]</span>
+            <span class="p">)</span>
 
             <span class="n">all_circuit_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">circuit_results</span><span class="p">)</span>
 
@@ -647,8 +666,11 @@
 
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Grover.optimal_num_iterations"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.optimal_num_iterations">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">optimal_num_iterations</span><span class="p">(</span><span class="n">num_solutions</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Grover.optimal_num_iterations">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.optimal_num_iterations">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">optimal_num_iterations</span><span class="p">(</span><span class="n">num_solutions</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_qubits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the optimal number of iterations, if the number of solutions is known.</span>
 
 <span class="sd">        Args:</span>
@@ -661,7 +683,10 @@
         <span class="n">amplitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num_solutions</span> <span class="o">/</span> <span class="mi">2</span><span class="o">**</span><span class="n">num_qubits</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="Grover.construct_circuit"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.construct_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">construct_circuit</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Grover.construct_circuit">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover.construct_circuit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">construct_circuit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">problem</span><span class="p">:</span> <span class="n">AmplificationProblem</span><span class="p">,</span> <span class="n">power</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the circuit for Grover&#39;s algorithm with ``power`` Grover operators.</span>
@@ -693,18 +718,22 @@
             <span class="n">qc</span><span class="o">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">measurement_cr</span><span class="p">)</span>
             <span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">problem</span><span class="o">.</span><span class="n">objective_qubits</span><span class="p">,</span> <span class="n">measurement_cr</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">qc</span></div></div>
+        <span class="k">return</span> <span class="n">qc</span></div>
+</div>
 
 
-<div class="viewcode-block" id="GroverResult"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.GroverResult.html#qiskit_algorithms.GroverResult">[docs]</a><span class="k">class</span> <span class="nc">GroverResult</span><span class="p">(</span><span class="n">AmplitudeAmplifierResult</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GroverResult">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.GroverResult.html#qiskit_algorithms.GroverResult">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GroverResult</span><span class="p">(</span><span class="n">AmplitudeAmplifierResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Grover Result.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iterations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;All the powers of the Grover operator that have been tried.</span>
 
 <span class="sd">        Returns:</span>
@@ -713,13 +742,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterations</span>
 
     <span class="nd">@iterations</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iterations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the powers of the Grover operator that have been tried.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: A new value for the powers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iterations</span> <span class="o">=</span> <span class="n">value</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -731,13 +761,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -754,11 +784,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

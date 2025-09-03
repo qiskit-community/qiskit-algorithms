@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.gradients.spsa.spsa_sampler_gradient - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.gradients.spsa.spsa_sampler_gradient - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.gradients.spsa.spsa_sampler_gradient</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2022, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2022, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -378,24 +379,27 @@
 
 <span class="sd">&quot;&quot;&quot;Gradient of Sampler with Finite difference method.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">BaseSampler</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerV2</span>
 
-<span class="kn">from</span> <span class="nn">..base.base_sampler_gradient</span> <span class="kn">import</span> <span class="n">BaseSamplerGradient</span>
-<span class="kn">from</span> <span class="nn">..base.sampler_gradient_result</span> <span class="kn">import</span> <span class="n">SamplerGradientResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base.base_sampler_gradient</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSamplerGradient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base.sampler_gradient_result</span><span class="w"> </span><span class="kn">import</span> <span class="n">SamplerGradientResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...custom_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transpiler</span>
 
-<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="kn">import</span> <span class="n">AlgorithmError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlgorithmError</span>
 
 
-<div class="viewcode-block" id="SPSASamplerGradient"><a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.gradients.SPSASamplerGradient.html#qiskit_algorithms.gradients.SPSASamplerGradient">[docs]</a><span class="k">class</span> <span class="nc">SPSASamplerGradient</span><span class="p">(</span><span class="n">BaseSamplerGradient</span><span class="p">):</span>
+<div class="viewcode-block" id="SPSASamplerGradient">
+<a class="viewcode-back" href="../../../../stubs/qiskit_algorithms.gradients.SPSASamplerGradient.html#qiskit_algorithms.gradients.SPSASamplerGradient">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SPSASamplerGradient</span><span class="p">(</span><span class="n">BaseSamplerGradient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the gradients of the sampling probability by the Simultaneous Perturbation Stochastic</span>
 <span class="sd">    Approximation (SPSA) [1].</span>
@@ -407,13 +411,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSampler</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="n">BaseSamplerV2</span><span class="p">,</span>
         <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">Options</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">transpiler</span><span class="p">:</span> <span class="n">Transpiler</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">transpiler_options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
@@ -421,10 +428,15 @@
 <span class="sd">            epsilon: The offset size for the SPSA gradients.</span>
 <span class="sd">            batch_size: number of gradients to average.</span>
 <span class="sd">            seed: The seed for a random perturbation vector.</span>
-<span class="sd">            options: Primitive backend runtime options used for circuit execution.</span>
-<span class="sd">                The order of priority is: options in ``run`` method &gt; gradient&#39;s</span>
-<span class="sd">                default options &gt; primitive&#39;s default setting.</span>
-<span class="sd">                Higher priority setting overrides lower priority setting</span>
+<span class="sd">            shots: Number of shots to be used by the underlying sampler.</span>
+<span class="sd">                The order of priority is: number of shots in ``run`` method &gt; fidelity&#39;s</span>
+<span class="sd">                number of shots &gt; primitive&#39;s default number of shots.</span>
+<span class="sd">                Higher priority setting overrides lower priority setting.</span>
+<span class="sd">            transpiler: An optional object with a `run` method allowing to transpile the circuits</span>
+<span class="sd">                that are run when using this algorithm. If set to `None`, these won&#39;t be</span>
+<span class="sd">                transpiled.</span>
+<span class="sd">            transpiler_options: A dictionary of options to be passed to the transpiler&#39;s `run`</span>
+<span class="sd">                method as keyword arguments.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If ``epsilon`` is not positive.</span>
@@ -435,19 +447,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">sampler</span><span class="p">,</span> <span class="n">shots</span><span class="p">,</span> <span class="n">transpiler</span><span class="o">=</span><span class="n">transpiler</span><span class="p">,</span> <span class="n">transpiler_options</span><span class="o">=</span><span class="n">transpiler_options</span>
+        <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">QuantumCircuit</span><span class="p">],</span>
         <span class="n">parameter_values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Parameter</span><span class="p">]],</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">shots</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SamplerGradientResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the sampler gradients on the given circuits.&quot;&quot;&quot;</span>
-        <span class="n">job_circuits</span><span class="p">,</span> <span class="n">job_param_values</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="n">metadata</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="n">all_n</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">parameter_values_</span><span class="p">,</span> <span class="n">parameters_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="n">has_transformed_shots</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shots</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">shots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shots</span> <span class="o">=</span> <span class="p">[</span><span class="n">shots</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+            <span class="n">has_transformed_shots</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">pubs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">circuits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transpiler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_transpiler_options</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">parameter_values_</span><span class="p">,</span> <span class="n">parameters_</span><span class="p">,</span> <span class="n">shots_</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">circuits</span><span class="p">,</span> <span class="n">parameter_values</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">shots</span>
+        <span class="p">):</span>
             <span class="c1"># Indices of parameters to be differentiated.</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">circuit</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters_</span><span class="p">]</span>
             <span class="n">metadata</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">parameters_</span><span class="p">})</span>
@@ -463,23 +491,25 @@
 
             <span class="c1"># Combine inputs into a single job to reduce overhead.</span>
             <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span>
-            <span class="n">job_circuits</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">circuit</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
-            <span class="n">job_param_values</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">plus</span> <span class="o">+</span> <span class="n">minus</span><span class="p">)</span>
             <span class="n">all_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">pubs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">circuit</span><span class="p">,</span> <span class="n">plus</span> <span class="o">+</span> <span class="n">minus</span><span class="p">,</span> <span class="n">shots_</span><span class="p">))</span>
 
         <span class="c1"># Run the single job with all circuits.</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">job_circuits</span><span class="p">,</span> <span class="n">job_param_values</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sampler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">pubs</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;Sampler job failed.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="k">raise</span> <span class="n">AlgorithmError</span><span class="p">(</span><span class="s2">&quot;Sampler job failed.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="c1"># Compute the gradients.</span>
         <span class="n">gradients</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">partial_sum_n</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">result_n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">all_n</span><span class="p">,</span> <span class="n">results</span><span class="p">)):</span>
             <span class="n">dist_diffs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">quasi_dists</span><span class="p">[</span><span class="n">partial_sum_n</span> <span class="p">:</span> <span class="n">partial_sum_n</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span> <span class="o">/</span> <span class="n">res</span><span class="o">.</span><span class="n">num_shots</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">get_int_counts</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">result_n</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">result_n</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+            <span class="p">]</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">dist_plus</span><span class="p">,</span> <span class="n">dist_minus</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="p">[:</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span> <span class="p">:])):</span>
                 <span class="n">dist_diff</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dist_plus</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -499,8 +529,18 @@
             <span class="n">gradients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span>
             <span class="n">partial_sum_n</span> <span class="o">+=</span> <span class="n">n</span>
 
-        <span class="n">opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">SamplerGradientResult</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">opt</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">has_transformed_shots</span><span class="p">:</span>
+            <span class="n">shots</span> <span class="o">=</span> <span class="n">shots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">shots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">shots</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">shots_</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">shots</span><span class="p">,</span> <span class="n">results</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">shots_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">shots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">SamplerGradientResult</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -512,13 +552,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -535,11 +575,11 @@
   </div>
 </div><script src="../../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

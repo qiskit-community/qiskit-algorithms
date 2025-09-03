@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="IterativePhaseEstimation" href="qiskit_algorithms.IterativePhaseEstimation.html" /><link rel="prev" title="PhaseEstimation" href="qiskit_algorithms.PhaseEstimation.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>PhaseEstimationResult - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>PhaseEstimationResult - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,15 +367,15 @@
         </div>
         <article role="main">
           <br><br><br><section id="phaseestimationresult">
-<h1>PhaseEstimationResult<a class="headerlink" href="#phaseestimationresult" title="Permalink to this heading">#</a></h1>
+<h1>PhaseEstimationResult<a class="headerlink" href="#phaseestimationresult" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhaseEstimationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_evaluation_qubits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/phase_estimators/phase_estimation_result.html#PhaseEstimationResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PhaseEstimationResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_evaluation_qubits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit_result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phases</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/phase_estimators/phase_estimation_result.html#PhaseEstimationResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PhaseEstimatorResult</span></code></p>
 <p>Store and manipulate results from running <cite>PhaseEstimation</cite>.</p>
 <p>This class is instantiated by the <code class="docutils literal notranslate"><span class="pre">PhaseEstimation</span></code> class, not via user code.
 The <code class="docutils literal notranslate"><span class="pre">PhaseEstimation</span></code> class generates a list of phases and corresponding weights. Upon
-completion it returns the results as an instance of this class. The main method for
+completion, it returns the results as an instance of this class. The main method for
 accessing the results is <cite>filter_phases</cite>.</p>
 <p>The canonical phase satisfying the <code class="docutils literal notranslate"><span class="pre">PhaseEstimator</span></code> interface, returned by the
 attribute <cite>phase</cite>, is the most likely phase.</p>
@@ -383,21 +384,21 @@ attribute <cite>phase</cite>, is the most likely phase.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>num_evaluation_qubits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – number of qubits in phase-readout register.</p></li>
 <li><p><strong>circuit_result</strong> (<em>Result</em>) – result object returned by method running circuit.</p></li>
-<li><p><strong>phases</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – ndarray or dict of phases and frequencies determined by QPE.</p></li>
+<li><p><strong>phases</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><em>numpy.ndarray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>]</em>) – ndarray or dict of phases and frequencies determined by QPE.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult.circuit_result">
-<span class="sig-name descname"><span class="pre">circuit_result</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.circuit_result" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">circuit_result</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.circuit_result" title="Link to this definition">¶</a></dt>
 <dd><p>Return the result object returned by running the QPE circuit (on hardware or simulator).</p>
 <p>This is useful for inspecting and troubleshooting the QPE algorithm.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult.phase">
-<span class="sig-name descname"><span class="pre">phase</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.phase" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">phase</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.phase" title="Link to this definition">¶</a></dt>
 <dd><p>Return the most likely phase as a number in <span class="math notranslate nohighlight">\([0.0, 1.0)\)</span>.</p>
 <p>1.0 corresponds to a phase of <span class="math notranslate nohighlight">\(2\pi\)</span>. This selects the phase corresponding
 to the bit string with the highest probability. This is the most likely phase.</p>
@@ -405,7 +406,7 @@ to the bit string with the highest probability. This is the most likely phase.</
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult.phases">
-<span class="sig-name descname"><span class="pre">phases</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.phases" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">phases</span></span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.phases" title="Link to this definition">¶</a></dt>
 <dd><p>Return all phases and their frequencies computed by QPE.</p>
 <p>This is an array or dict whose values correspond to weights on bit strings.</p>
 </dd></dl>
@@ -413,7 +414,7 @@ to the bit string with the highest probability. This is the most likely phase.</
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult.combine">
-<span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.combine" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.combine" title="Link to this definition">¶</a></dt>
 <dd><p>Any property from the argument that exists in the receiver is
 updated.
 :param result: Argument result with properties to be set.</p>
@@ -426,7 +427,7 @@ updated.
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.PhaseEstimationResult.filter_phases">
-<span class="sig-name descname"><span class="pre">filter_phases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_float</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/phase_estimators/phase_estimation_result.html#PhaseEstimationResult.filter_phases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.filter_phases" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">filter_phases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_float</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/phase_estimators/phase_estimation_result.html#PhaseEstimationResult.filter_phases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.PhaseEstimationResult.filter_phases" title="Link to this definition">¶</a></dt>
 <dd><p>Return a filtered dict of phases (keys) and frequencies (values).</p>
 <p>Only phases with frequencies (counts) larger than <cite>cutoff</cite> are included.
 It is assumed that the <cite>run</cite> method has been called so that the phases have been computed.
@@ -485,13 +486,13 @@ returned keys are bit strings.</p></li>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -534,11 +535,11 @@ returned keys are bit strings.</p></li>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

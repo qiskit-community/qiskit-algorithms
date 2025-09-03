@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="AdaptVQEResult" href="qiskit_algorithms.AdaptVQEResult.html" /><link rel="prev" title="VQEResult" href="qiskit_algorithms.VQEResult.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>AdaptVQE - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>AdaptVQE - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="adaptvqe">
-<h1>AdaptVQE<a class="headerlink" href="#adaptvqe" title="Permalink to this heading">#</a></h1>
+<h1>AdaptVQE<a class="headerlink" href="#adaptvqe" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AdaptVQE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenvalue_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AdaptVQE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenvalue_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert_barriers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EvolvedOps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_identities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">VariationalAlgorithm</span></code>, <a class="reference internal" href="qiskit_algorithms.MinimumEigensolver.html#qiskit_algorithms.MinimumEigensolver" title="qiskit_algorithms.minimum_eigensolvers.minimum_eigensolver.MinimumEigensolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinimumEigensolver</span></code></a></p>
 <p>The Adaptive Variational Quantum Eigensolver algorithm.</p>
 <p><a class="reference external" href="https://arxiv.org/abs/1812.11173">AdaptVQE</a> is a quantum algorithm which creates a compact
@@ -381,10 +382,11 @@ This results in a wavefunction ansatz which is uniquely adapted to the operator 
 eigenvalue is being determined. This class relies on a supplied instance of <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> to
 find the minimum eigenvalue. The performance of AdaptVQE significantly depends on the
 minimization routine.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.minimum_eigensolvers</span> <span class="kn">import</span> <span class="n">AdaptVQE</span><span class="p">,</span> <span class="n">VQE</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SLSQP</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EvolvedOperatorAnsatz</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.minimum_eigensolvers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AdaptVQE</span><span class="p">,</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SLSQP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolvedOperatorAnsatz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
 
 <span class="c1"># get your Hamiltonian</span>
 <span class="n">hamiltonian</span> <span class="o">=</span> <span class="o">...</span>
@@ -392,9 +394,14 @@ minimization routine.</p>
 <span class="c1"># construct your ansatz</span>
 <span class="n">ansatz</span> <span class="o">=</span> <span class="n">EvolvedOperatorAnsatz</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
-<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">Estimator</span><span class="p">(),</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">SLSQP</span><span class="p">())</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">StatevectorEstimator</span><span class="p">(),</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">SLSQP</span><span class="p">())</span>
 
 <span class="n">adapt_vqe</span> <span class="o">=</span> <span class="n">AdaptVQE</span><span class="p">(</span><span class="n">vqe</span><span class="p">)</span>
+
+<span class="c1"># or you can do it without EvolvedOperatorAnsatz</span>
+<span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">StatevectorEstimator</span><span class="p">(),</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">SLSQP</span><span class="p">())</span>
+
+<span class="n">adapt_vqe</span> <span class="o">=</span> <span class="n">AdaptVQE</span><span class="p">(</span><span class="n">vqe</span><span class="p">,</span> <span class="n">operators</span><span class="o">=...</span><span class="p">)</span>
 
 <span class="n">eigenvalue</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">adapt_vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
 </pre></div>
@@ -403,22 +410,23 @@ minimization routine.</p>
 the AdaptVQE object has been constructed.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.solver">
-<span class="sig-name descname"><span class="pre">solver</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.solver" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">solver</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.solver" title="Link to this definition">¶</a></dt>
 <dd><p>a <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> instance used internally to compute the minimum eigenvalues.
 It is a requirement that the <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.ansatz" title="qiskit_algorithms.VQE.ansatz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ansatz</span></code></a> of this solver is of type
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p>
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a> if the <cite>operators</cite> arguments is
+not set.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.gradient_threshold">
-<span class="sig-name descname"><span class="pre">gradient_threshold</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.gradient_threshold" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">gradient_threshold</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.gradient_threshold" title="Link to this definition">¶</a></dt>
 <dd><p>once all gradients have an absolute value smaller than this threshold,
 the algorithm has converged and terminates.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.eigenvalue_threshold">
-<span class="sig-name descname"><span class="pre">eigenvalue_threshold</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.eigenvalue_threshold" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eigenvalue_threshold</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.eigenvalue_threshold" title="Link to this definition">¶</a></dt>
 <dd><p>once the eigenvalue has changed by less than this threshold from one
 iteration to the next, the algorithm has converged and terminates. When this case
 occurs, the excitation included in the final iteration did not result in a significant
@@ -428,7 +436,7 @@ considered.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.max_iterations">
-<span class="sig-name descname"><span class="pre">max_iterations</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.max_iterations" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">max_iterations</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.max_iterations" title="Link to this definition">¶</a></dt>
 <dd><p>the maximum number of iterations for the adaptive loop. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
 algorithm is not bound in its number of iterations.</p>
 </dd></dl>
@@ -437,8 +445,12 @@ algorithm is not bound in its number of iterations.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>solver</strong> (<a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><em>VQE</em></a>) – a <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> instance used internally to compute the minimum eigenvalues.
-It is a requirement that the <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.ansatz" title="qiskit_algorithms.VQE.ansatz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ansatz</span></code></a> of this solver is of type
-<a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p></li>
+It is a requirement that either the <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE.ansatz" title="qiskit_algorithms.VQE.ansatz"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ansatz</span></code></a> of this solver is of type
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a> or that the <cite>operators</cite>
+argument is specified. The former is deprecated from the 0.4 version of
+qiskit-algorithms and this option won’t be possible anymore once the oldest
+supported Qiskit version is 3.0. In the latter case, this class will build its own
+ansatz using the evolved_operator_ansatz function.</p></li>
 <li><p><strong>gradient_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – once all gradients have an absolute value smaller than this
 threshold, the algorithm has converged and terminates. Defaults to <code class="docutils literal notranslate"><span class="pre">1e-5</span></code>.</p></li>
 <li><p><strong>eigenvalue_threshold</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – once the eigenvalue has changed by less than this threshold from
@@ -448,26 +460,45 @@ significant improvement of the eigenvalue and, thus, the results from this itera
 are not considered.</p></li>
 <li><p><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em>) – the maximum number of iterations for the adaptive loop. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the
 algorithm is not bound in its number of iterations.</p></li>
+<li><p><strong>operators</strong> (<em>BaseOperator</em><em> | </em><em>Sequence</em><em>[</em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function. If set, the
+ansatz of the underlying <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> solver won’t be used.</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>evolution</strong> – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>insert_barriers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>parameter_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> | </em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>]</em>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>remove_identities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
+<li><p><strong>initial_state</strong> (<em>QuantumCircuit</em><em> | </em><em>None</em>) – a <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> object to prepend to the
+ansatz.</p></li>
+<li><p><strong>flatten</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a><em> | </em><em>None</em>) – used to build the ansatz using the
+<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.evolved_operator_ansatz" title="(in Qiskit v2.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">evolved_operator_ansatz()</span></code></a> function.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.initial_point">
-<span class="sig-name descname"><span class="pre">initial_point</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.initial_point" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_point</span></span><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.initial_point" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the initial point of the internal <a class="reference internal" href="qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> solver.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.compute_minimum_eigenvalue">
-<span class="sig-name descname"><span class="pre">compute_minimum_eigenvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE.compute_minimum_eigenvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.compute_minimum_eigenvalue" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_minimum_eigenvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aux_operators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE.compute_minimum_eigenvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.compute_minimum_eigenvalue" title="Link to this definition">¶</a></dt>
 <dd><p>Computes the minimum eigenvalue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>operator</strong> (<em>BaseOperator</em>) – Operator whose minimum eigenvalue we want to find.</p></li>
-<li><p><strong>aux_operators</strong> (<em>ListOrDict</em><em>[</em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Additional auxiliary operators to evaluate.</p></li>
+<li><p><strong>aux_operators</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><em>List</em></a><em>[</em><em>BaseOperator</em><em> | </em><em>None</em><em>] </em><em>| </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><em>Dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>BaseOperator</em><em>] </em><em>| </em><em>None</em>) – Additional auxiliary operators to evaluate.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -478,19 +509,19 @@ algorithm is not bound in its number of iterations.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>An <a class="reference internal" href="qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult" title="qiskit_algorithms.AdaptVQEResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptVQEResult</span></code></a> which is a <a class="reference internal" href="qiskit_algorithms.VQEResult.html#qiskit_algorithms.VQEResult" title="qiskit_algorithms.VQEResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQEResult</span></code></a> but also but also
+<dd class="field-odd"><p>An <a class="reference internal" href="qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult" title="qiskit_algorithms.AdaptVQEResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptVQEResult</span></code></a> which is a <a class="reference internal" href="qiskit_algorithms.VQEResult.html#qiskit_algorithms.VQEResult" title="qiskit_algorithms.VQEResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQEResult</span></code></a> but also
 includes runtime information about the AdaptVQE algorithm like the number of iterations,
 termination criterion, and the final maximum gradient.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult" title="qiskit_algorithms.AdaptVQEResult">AdaptVQEResult</a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.AdaptVQEResult.html#qiskit_algorithms.AdaptVQEResult" title="qiskit_algorithms.minimum_eigensolvers.adapt_vqe.AdaptVQEResult"><em>AdaptVQEResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.AdaptVQE.supports_aux_operators">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.supports_aux_operators" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_aux_operators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/minimum_eigensolvers/adapt_vqe.html#AdaptVQE.supports_aux_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.AdaptVQE.supports_aux_operators" title="Link to this definition">¶</a></dt>
 <dd><p>Whether computing the expectation value of auxiliary operators is supported.</p>
 <p>If the minimum eigensolver computes an eigenvalue of the main <code class="docutils literal notranslate"><span class="pre">operator</span></code> then it can
 compute the expectation value of the <code class="docutils literal notranslate"><span class="pre">aux_operators</span></code> for that state. Otherwise they will
@@ -537,13 +568,13 @@ be ignored.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -588,11 +619,11 @@ be ignored.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

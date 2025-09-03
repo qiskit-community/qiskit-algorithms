@@ -14,7 +14,7 @@
    .. autoattribute:: qgts
    .. autoattribute:: derivative_type
    .. autoattribute:: metadata
-   .. autoattribute:: options
+   .. autoattribute:: precision
   
 
   

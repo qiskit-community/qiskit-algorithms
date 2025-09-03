@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Variational Quantum Deflation (VQD) Algorithm" href="04_vqd.html" /><link rel="prev" title="Advanced VQE Options" href="02_vqe_advanced_options.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>VQE with Qiskit Aer Primitives - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>VQE with Qiskit Aer Primitives - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,18 +368,18 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/03_vqe_simulation_with_noise.ipynb">docs/tutorials/03_vqe_simulation_with_noise.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/03_vqe_simulation_with_noise.ipynb">docs/tutorials/03_vqe_simulation_with_noise.ipynb</a>.</p>
 </div>
 <section id="VQE-with-Qiskit-Aer-Primitives">
-<h1>VQE with Qiskit Aer Primitives<a class="headerlink" href="#VQE-with-Qiskit-Aer-Primitives" title="Permalink to this heading">#</a></h1>
+<h1>VQE with Qiskit Aer Primitives<a class="headerlink" href="#VQE-with-Qiskit-Aer-Primitives" title="Link to this heading">¶</a></h1>
 <p>This notebook demonstrates how to leverage the <a class="reference external" href="https://qiskit.github.io/qiskit-aer/apidocs/aer_primitives.html">Qiskit Aer Primitives</a> to run both noiseless and noisy simulations locally. Qiskit Aer not only allows you to define your own custom noise model, but also to easily create a noise model based on the properties of a real quantum device. This notebook will show an example of the latter, to illustrate the general workflow of running algorithms with local noisy simulators.</p>
 <p>For further information on the Qiskit Aer noise model, you can consult the <a class="reference external" href="https://qiskit.github.io/qiskit-aer/apidocs/aer_noise.html">Qiskit Aer documentation</a>, as well the tutorial for <a class="reference external" href="https://qiskit.github.io/qiskit-aer/tutorials/3_building_noise_models.html">building noise models</a>.</p>
-<p>The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.SparsePauliOp">SparsePauliOp</a> class.</p>
+<p>The algorithm of choice is once again VQE, where the task consists on finding the minimum (ground state) energy of a Hamiltonian. As shown in previous tutorials, VQE takes in a qubit operator as input. Here, you will take a set of Pauli operators that were originally computed by Qiskit Nature for the H2 molecule, using the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp">SparsePauliOp</a> class.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">H2_op</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
     <span class="p">[</span>
@@ -407,7 +408,7 @@ Number of qubits: 2
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
 
 <span class="n">numpy_solver</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">numpy_solver</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
@@ -430,18 +431,18 @@ Reference value: -1.85728
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define ansatz and optimizer</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">SPSA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_local</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPSA</span>
 
 <span class="n">iterations</span> <span class="o">=</span> <span class="mi">125</span>
-<span class="n">ansatz</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">n_local</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
 <span class="n">spsa</span> <span class="o">=</span> <span class="n">SPSA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="n">iterations</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<section id="Performance-without-noise">
-<h2>Performance <em>without</em> noise<a class="headerlink" href="#Performance-without-noise" title="Permalink to this heading">#</a></h2>
-<p>Let’s first run the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> on the default Aer simulator without adding noise, with a fixed seed for the run and transpilation to obtain reproducible results. This result should be relatively close to the reference value from the exact computation.</p>
+<section id="Performance-without-backend-noise">
+<h2>Performance <em>without</em> backend noise<a class="headerlink" href="#Performance-without-backend-noise" title="Link to this heading">¶</a></h2>
+<p>Let’s first run the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> on the default Aer simulator without adding noise from the backend. We’ll still specify a target precision to simulate shot noise. This result should be relatively close to the reference value from the exact computation.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -452,7 +453,7 @@ Reference value: -1.85728
 <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<span class="k">def</span> <span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
     <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eval_count</span><span class="p">)</span>
     <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
 </pre></div>
@@ -463,16 +464,13 @@ Reference value: -1.85728
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define Aer Estimator for noiseless statevector simulation</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
-<span class="kn">from</span> <span class="nn">qiskit_aer.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span> <span class="k">as</span> <span class="n">AerEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">EstimatorV2</span> <span class="k">as</span> <span class="n">AerEstimator</span>
 
 <span class="n">seed</span> <span class="o">=</span> <span class="mi">170</span>
 <span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="n">seed</span>
 
-<span class="n">noiseless_estimator</span> <span class="o">=</span> <span class="n">AerEstimator</span><span class="p">(</span>
-    <span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">},</span>
-    <span class="n">transpile_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed_transpiler&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">},</span>
-<span class="p">)</span>
+<span class="n">noiseless_estimator</span> <span class="o">=</span> <span class="n">AerEstimator</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;default_precision&quot;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -481,7 +479,7 @@ Reference value: -1.85728
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># instantiate and run VQE</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
 
 <span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">noiseless_estimator</span><span class="p">,</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">spsa</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">store_intermediate_result</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">vqe</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
@@ -496,8 +494,8 @@ Reference value: -1.85728
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-VQE on Aer qasm simulator (no noise): -1.85160
-Delta from reference energy value is 0.00567
+VQE on Aer qasm simulator (no noise): -1.85798
+Delta from reference energy value is -0.00071
 </pre></div></div>
 </div>
 <p>You captured the energy values above during the convergence, so you can track the process in the graph below.</p>
@@ -505,7 +503,7 @@ Delta from reference energy value is 0.00567
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylab</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span>
 
 <span class="n">pylab</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">pylab</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
@@ -532,16 +530,16 @@ Text(0.5, 1.0, &#39;Convergence with no noise&#39;)
 </div>
 </div>
 </section>
-<section id="Performance-with-noise">
-<h2>Performance <em>with</em> noise<a class="headerlink" href="#Performance-with-noise" title="Permalink to this heading">#</a></h2>
+<section id="Performance-with-backend-noise">
+<h2>Performance <em>with</em> backend noise<a class="headerlink" href="#Performance-with-backend-noise" title="Link to this heading">¶</a></h2>
 <p>Now, let’s add noise to our simulation. Here we create a fake device, using <code class="docutils literal notranslate"><span class="pre">GenericBackendV2</span></code>, which has a default noise model. As stated in the introduction, it is also possible to create custom noise models from scratch, but this task is beyond the scope of this notebook.</p>
 <p>By default the fake device will have all to all coupling, so to make it more realistic, we will give it a coupling map (this map matches what the 5-qubit Vigo device had) Note: You can also use this coupling map as the entanglement map for the variational form if you choose to.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_aer.noise</span> <span class="kn">import</span> <span class="n">NoiseModel</span>
-<span class="kn">from</span> <span class="nn">qiskit.providers.fake_provider</span> <span class="kn">import</span> <span class="n">GenericBackendV2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_aer.noise</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoiseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers.fake_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericBackendV2</span>
 
 <span class="n">coupling_map</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>
 <span class="n">device</span> <span class="o">=</span> <span class="n">GenericBackendV2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">coupling_map</span><span class="o">=</span><span class="n">coupling_map</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">54</span><span class="p">)</span>
@@ -559,7 +557,7 @@ Text(0.5, 1.0, &#39;Convergence with no noise&#39;)
 <div class="highlight"><pre>
 NoiseModel:
   Basis gates: [&#39;cx&#39;, &#39;delay&#39;, &#39;id&#39;, &#39;measure&#39;, &#39;reset&#39;, &#39;rz&#39;, &#39;sx&#39;, &#39;x&#39;]
-  Instructions with noise: [&#39;id&#39;, &#39;measure&#39;, &#39;cx&#39;, &#39;x&#39;, &#39;sx&#39;]
+  Instructions with noise: [&#39;sx&#39;, &#39;x&#39;, &#39;id&#39;, &#39;cx&#39;, &#39;measure&#39;]
   Qubits with noise: [0, 1, 2, 3, 4]
   Specific qubit errors: [(&#39;cx&#39;, (0, 1)), (&#39;cx&#39;, (1, 2)), (&#39;cx&#39;, (2, 3)), (&#39;cx&#39;, (3, 4)), (&#39;id&#39;, (0,)), (&#39;id&#39;, (1,)), (&#39;id&#39;, (2,)), (&#39;id&#39;, (3,)), (&#39;id&#39;, (4,)), (&#39;sx&#39;, (0,)), (&#39;sx&#39;, (1,)), (&#39;sx&#39;, (2,)), (&#39;sx&#39;, (3,)), (&#39;sx&#39;, (4,)), (&#39;x&#39;, (0,)), (&#39;x&#39;, (1,)), (&#39;x&#39;, (2,)), (&#39;x&#39;, (3,)), (&#39;x&#39;, (4,)), (&#39;measure&#39;, (0,)), (&#39;measure&#39;, (1,)), (&#39;measure&#39;, (2,)), (&#39;measure&#39;, (3,)), (&#39;measure&#39;, (4,))]
 </pre></div></div>
@@ -570,13 +568,14 @@ NoiseModel:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_estimator</span> <span class="o">=</span> <span class="n">AerEstimator</span><span class="p">(</span>
-    <span class="n">backend_options</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;density_matrix&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;coupling_map&quot;</span><span class="p">:</span> <span class="n">coupling_map</span><span class="p">,</span>
-        <span class="s2">&quot;noise_model&quot;</span><span class="p">:</span> <span class="n">noise_model</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">run_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">,</span> <span class="s2">&quot;shots&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">},</span>
-    <span class="n">transpile_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seed_transpiler&quot;</span><span class="p">:</span> <span class="n">seed</span><span class="p">},</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;default_precision&quot;</span><span class="p">:</span> <span class="mf">1e-2</span><span class="p">,</span>
+        <span class="s2">&quot;backend_options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;density_matrix&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;coupling_map&quot;</span><span class="p">:</span> <span class="n">coupling_map</span><span class="p">,</span>
+            <span class="s2">&quot;noise_model&quot;</span><span class="p">:</span> <span class="n">noise_model</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -610,8 +609,8 @@ NoiseModel:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-VQE on Aer qasm simulator (with noise): -1.84320
-Delta from reference energy value is 0.01407
+VQE on Aer qasm simulator (with noise): -1.86645
+Delta from reference energy value is -0.00918
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -636,8 +635,8 @@ Delta from reference energy value is 0.01407
 </div>
 </section>
 <section id="Summary">
-<h2>Summary<a class="headerlink" href="#Summary" title="Permalink to this heading">#</a></h2>
-<p>In this tutorial, you compared three calculations for the H2 molecule ground state. First, you produced a reference value using a classical minimum eigensolver. Then, you proceeded to run <code class="docutils literal notranslate"><span class="pre">VQE</span></code> using the Qiskit Aer <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> with 1024 shots. Finally, you extracted a noise model from a backend and used it to define a new <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> for noisy simulations. The results are:</p>
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">¶</a></h2>
+<p>In this tutorial, you compared three calculations for the H2 molecule ground state. First, you produced a reference value using a classical minimum eigensolver. Then, you proceeded to run <code class="docutils literal notranslate"><span class="pre">VQE</span></code> using the Qiskit Aer <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> with a target precision of <span class="math notranslate nohighlight">\(10^{-2}\)</span>. Finally, you extracted a noise model from a backend and used it to define a new <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> for noisy simulations. The results are:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -654,18 +653,18 @@ Delta from reference energy value is 0.01407
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Reference value: -1.85728
-VQE on Aer qasm simulator (no noise): -1.85160
-VQE on Aer qasm simulator (with noise): -1.84320
+VQE on Aer qasm simulator (no noise): -1.85798
+VQE on Aer qasm simulator (with noise): -1.86645
 </pre></div></div>
 </div>
-<p>You can notice that, while the noiseless simulation’s result is closer to the exact reference value, there is still some difference. This is due to the sampling noise, introduced by limiting the number of shots to 1024. A larger number of shots would decrease this sampling error and close the gap between these two values.</p>
-<p>As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit-ibm-runtime">Qiskit Runtime Primitives</a> have enabled error mitigation through the <code class="docutils literal notranslate"><span class="pre">resilience_level</span></code> option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult <a class="reference external" href="https://docs.quantum.ibm.com/run/configure-error-mitigation">this
+<p>You can notice that, while the noiseless simulation’s result is closer to the exact reference value, there is still some difference. This is due to the sampling noise, introduced by limiting the target precision to <span class="math notranslate nohighlight">\(10^{-2}\)</span>, which in turn puts a limit on the number of shots the Estimator uses. A larger number of shots would decrease this sampling error and close the gap between these two values.</p>
+<p>As for the noise introduced by real devices (or simulated noise models), it could be tackled through a wide variety of error mitigation techniques. The <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime">Qiskit Runtime Primitives</a> have enabled error mitigation through the <code class="docutils literal notranslate"><span class="pre">resilience_level</span></code> option. This option is currently available for remote simulators and real backends accessed via the Runtime Primitives, you can consult <a class="reference external" href="https://quantum.cloud.ibm.com/docs/guides/configure-error-mitigation">this
 documentation</a> for further information.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -676,13 +675,13 @@ documentation</a> for further information.</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_aer</code></td><td>0.15.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:10:40 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_aer</code></td><td>0.17.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:35 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -715,13 +714,13 @@ documentation</a> for further information.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -743,8 +742,8 @@ documentation</a> for further information.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">VQE with Qiskit Aer Primitives</a><ul>
-<li><a class="reference internal" href="#Performance-without-noise">Performance <em>without</em> noise</a></li>
-<li><a class="reference internal" href="#Performance-with-noise">Performance <em>with</em> noise</a></li>
+<li><a class="reference internal" href="#Performance-without-backend-noise">Performance <em>without</em> backend noise</a></li>
+<li><a class="reference internal" href="#Performance-with-backend-noise">Performance <em>with</em> backend noise</a></li>
 <li><a class="reference internal" href="#Summary">Summary</a></li>
 </ul>
 </li>
@@ -759,11 +758,11 @@ documentation</a> for further information.</p>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

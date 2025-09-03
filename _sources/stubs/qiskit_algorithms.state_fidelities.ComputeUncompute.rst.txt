@@ -11,7 +11,7 @@
   
    .. rubric:: Attributes
     
-   .. autoattribute:: options
+   .. autoattribute:: shots
   
 
   
@@ -20,5 +20,4 @@
     
    .. automethod:: create_fidelity_circuit
    .. automethod:: run
-   .. automethod:: update_default_options
   

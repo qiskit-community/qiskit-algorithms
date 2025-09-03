@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="VQE with Qiskit Aer Primitives" href="03_vqe_simulation_with_noise.html" /><link rel="prev" title="An Introduction to Algorithms using Qiskit" href="01_algorithms_introduction.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Advanced VQE Options - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Advanced VQE Options - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,14 +368,14 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/02_vqe_advanced_options.ipynb">docs/tutorials/02_vqe_advanced_options.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/02_vqe_advanced_options.ipynb">docs/tutorials/02_vqe_advanced_options.ipynb</a>.</p>
 </div>
 <section id="Advanced-VQE-Options">
-<h1>Advanced VQE Options<a class="headerlink" href="#Advanced-VQE-Options" title="Permalink to this heading">#</a></h1>
+<h1>Advanced VQE Options<a class="headerlink" href="#Advanced-VQE-Options" title="Link to this heading">¶</a></h1>
 <p>In the first algorithms tutorial, you learned how to set up a basic <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a> algorithm. Now, you will see how to provide more advanced configuration parameters to explore the full range of the variational algorithms provided in this library: <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQE.html">VQE</a>,
 <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.QAOA.html">QAOA</a> and <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VQD.html">VQD</a> among others. In particular, this tutorial will cover how to set up a <code class="docutils literal notranslate"><span class="pre">callback</span></code> to monitor convergence and the use of custom <code class="docutils literal notranslate"><span class="pre">initial</span> <span class="pre">point</span></code>s and <code class="docutils literal notranslate"><span class="pre">gradient</span></code>s.</p>
 <section id="Callback">
-<h2>Callback<a class="headerlink" href="#Callback" title="Permalink to this heading">#</a></h2>
+<h2>Callback<a class="headerlink" href="#Callback" title="Link to this heading">¶</a></h2>
 <p>Callback methods can be used to monitor optimization progress as the algorithm runs and converges to the minimum. The callback is invoked for each functional evaluation by the optimizer and provides the current optimizer value, evaluation count, current optimizer parameters etc. Note that, depending on the specific optimizer this may not be each iteration (step) of the optimizer, so for example if the optimizer is calling the cost function to compute a finite difference based gradient this will
 be visible via the callback.</p>
 <p>This section demonstrates how to leverage callbacks in <code class="docutils literal notranslate"><span class="pre">VQE</span></code> to plot the convergence path to the ground state energy with a selected set of optimizers.</p>
@@ -383,7 +384,7 @@ be visible via the callback.</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">H2_op</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
     <span class="p">[</span>
@@ -397,38 +398,29 @@ be visible via the callback.</p>
 </pre></div>
 </div>
 </div>
-<p>The next step is to instantiate the <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> of choice for the evaluation of expectation values within <code class="docutils literal notranslate"><span class="pre">VQE</span></code>. For simplicity, you can select the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.primitives.Estimator">qiskit.primitives.Estimator</a> that comes as part of Qiskit.</p>
-<div class="nbinput docutils container">
+<p>The next step is to instantiate the <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> of choice for the evaluation of expectation values within <code class="docutils literal notranslate"><span class="pre">VQE</span></code>. For simplicity, you can select the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.primitives.Estimator">qiskit.primitives.Estimator</a> that comes as part of Qiskit.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
 
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_2455/2939985673.py:3: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  estimator = Estimator()
-</pre></div></div>
-</div>
-<p>You are now ready to compare a set of optimizers through the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> callback. The minimum energy of the H2 Hamiltonian can be found quite easily, so the maximum number of iterations (<code class="docutils literal notranslate"><span class="pre">maxiter</span></code>) does not have to be very large. You can once again use <code class="docutils literal notranslate"><span class="pre">TwoLocal</span></code> as the selected trial wavefunction (i.e. ansatz).</p>
+<p>You are now ready to compare a set of optimizers through the <code class="docutils literal notranslate"><span class="pre">VQE</span></code> callback. The minimum energy of the H2 Hamiltonian can be found quite easily, so the maximum number of iterations (<code class="docutils literal notranslate"><span class="pre">maxiter</span></code>) does not have to be very large. You can once again use <code class="docutils literal notranslate"><span class="pre">n_local</span></code> as the selected trial wavefunction (i.e. ansatz).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">TwoLocal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">n_local</span>
 
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VQE</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">COBYLA</span><span class="p">,</span> <span class="n">L_BFGS_B</span><span class="p">,</span> <span class="n">SLSQP</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.utils</span> <span class="kn">import</span> <span class="n">algorithm_globals</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">COBYLA</span><span class="p">,</span> <span class="n">L_BFGS_B</span><span class="p">,</span> <span class="n">SLSQP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">algorithm_globals</span>
 
 <span class="c1"># we will iterate over these different optimizers</span>
 <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="n">COBYLA</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">80</span><span class="p">),</span> <span class="n">L_BFGS_B</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span> <span class="n">SLSQP</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">60</span><span class="p">)]</span>
@@ -438,12 +430,12 @@ be visible via the callback.</p>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">optimizer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Optimizer: </span><span class="si">{}</span><span class="s2">        &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">50</span>
-    <span class="n">ansatz</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
+    <span class="n">ansatz</span> <span class="o">=</span> <span class="n">n_local</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
 
     <span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
         <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eval_count</span><span class="p">)</span>
         <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
 
@@ -469,7 +461,7 @@ Optimization complete
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylab</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span>
 
 <span class="n">pylab</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">optimizer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">optimizers</span><span class="p">):</span>
@@ -493,7 +485,7 @@ Optimization complete
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumPyMinimumEigensolver</span>
 
 <span class="n">numpy_solver</span> <span class="o">=</span> <span class="n">NumPyMinimumEigensolver</span><span class="p">()</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">numpy_solver</span><span class="o">.</span><span class="n">compute_minimum_eigenvalue</span><span class="p">(</span><span class="n">operator</span><span class="o">=</span><span class="n">H2_op</span><span class="p">)</span>
@@ -539,29 +531,20 @@ Reference value: -1.85728
 </div>
 </section>
 <section id="Gradients">
-<h2>Gradients<a class="headerlink" href="#Gradients" title="Permalink to this heading">#</a></h2>
+<h2>Gradients<a class="headerlink" href="#Gradients" title="Link to this heading">¶</a></h2>
 <p>In the variational algorithms, if the provided optimizer uses a gradient-based technique, the default gradient method will be finite differences. However, these classes include an option to pass custom gradients via the <code class="docutils literal notranslate"><span class="pre">gradient</span></code> parameter, which can be any of the provided methods within the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.html">gradient</a> framework, which fully supports the use of primitives. This section shows how to use custom
 gradients in the VQE workflow.</p>
 <p>The first step is to initialize both the corresponding primitive and primitive gradient:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">FiniteDiffEstimatorGradient</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.gradients</span><span class="w"> </span><span class="kn">import</span> <span class="n">FiniteDiffEstimatorGradient</span>
 
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 <span class="n">gradient</span> <span class="o">=</span> <span class="n">FiniteDiffEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_2455/1730124370.py:3: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  estimator = Estimator()
-</pre></div></div>
 </div>
 <p>Now, you can inspect an SLSQP run using the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html">FiniteDiffEstimatorGradient</a> from above:</p>
 <div class="nbinput docutils container">
@@ -569,7 +552,7 @@ gradients in the VQE workflow.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">algorithm_globals</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="mi">50</span>
-<span class="n">ansatz</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">n_local</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
 
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SLSQP</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
@@ -577,7 +560,7 @@ gradients in the VQE workflow.</p>
 <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<span class="k">def</span> <span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">store_intermediate_result</span><span class="p">(</span><span class="n">eval_count</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
     <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eval_count</span><span class="p">)</span>
     <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
 
@@ -619,7 +602,7 @@ Value using Gradient: -1.85728
 </div>
 </section>
 <section id="Initial-point">
-<h2>Initial point<a class="headerlink" href="#Initial-point" title="Permalink to this heading">#</a></h2>
+<h2>Initial point<a class="headerlink" href="#Initial-point" title="Link to this heading">¶</a></h2>
 <p>By default, the optimization begins at a random point within the bounds defined by the ansatz. The <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> option allows to override this point with a custom list of values that match the number of ansatz parameters.</p>
 <p>You might wonder… <em>Why set a custom initial point?</em> Well, this option can come in handy if you have a guess for a reasonable starting point for the problem, or perhaps know information from a prior experiment.</p>
 <p>To demonstrate this feature, let’s look at the results from our previous VQE run:</p>
@@ -639,22 +622,22 @@ Value using Gradient: -1.85728
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 9,
-    &#39;eigenvalue&#39;: -1.857275017565581,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7ff4a4aa4ac0&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[2]): 0.5470777607659385,
-                              ParameterVectorElement(θ[6]): -4.71761614744982,
-                              ParameterVectorElement(θ[3]): 6.092947832767051,
-                              ParameterVectorElement(θ[5]): 1.5683250498282393,
-                              ParameterVectorElement(θ[0]): 4.296519450348757,
-                              ParameterVectorElement(θ[4]): -2.5983266516732844,
-                              ParameterVectorElement(θ[1]): 4.4269623583955555,
-                              ParameterVectorElement(θ[7]): 0.36021017470897654},
+    &#39;eigenvalue&#39;: np.float64(-1.8572750175655812),
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fd55d6cde40&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): np.float64(4.426962358395508),
+                              ParameterVectorElement(θ[0]): np.float64(4.296519450348767),
+                              ParameterVectorElement(θ[2]): np.float64(0.5470777607660052),
+                              ParameterVectorElement(θ[3]): np.float64(6.092947832766964),
+                              ParameterVectorElement(θ[4]): np.float64(-2.598326651673286),
+                              ParameterVectorElement(θ[5]): np.float64(1.5683250498282177),
+                              ParameterVectorElement(θ[6]): np.float64(-4.717616147449723),
+                              ParameterVectorElement(θ[7]): np.float64(0.36021017470900696)},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
-    &#39;optimal_value&#39;: -1.857275017565581,
+    &#39;optimal_value&#39;: np.float64(-1.8572750175655812),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7ff4a4aa4bb0&gt;,
-    &#39;optimizer_time&#39;: 0.17137408256530762}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fd5b43ba740&gt;,
+    &#39;optimizer_time&#39;: 0.15569019317626953}
 </pre></div></div>
 </div>
 <p>Now, you can take the <code class="docutils literal notranslate"><span class="pre">optimal_point</span></code> from the above result and use it as the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> for a follow-up computation.</p>
@@ -665,9 +648,9 @@ Value using Gradient: -1.85728
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">initial_pt</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">optimal_point</span>
 
-<span class="n">estimator1</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator1</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">()</span>
 <span class="n">gradient1</span> <span class="o">=</span> <span class="n">FiniteDiffEstimatorGradient</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="n">ansatz1</span> <span class="o">=</span> <span class="n">TwoLocal</span><span class="p">(</span><span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
+<span class="n">ansatz1</span> <span class="o">=</span> <span class="n">n_local</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">rotation_blocks</span><span class="o">=</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span> <span class="n">entanglement_blocks</span><span class="o">=</span><span class="s2">&quot;cz&quot;</span><span class="p">)</span>
 <span class="n">optimizer1</span> <span class="o">=</span> <span class="n">SLSQP</span><span class="p">(</span><span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="n">vqe1</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">estimator1</span><span class="p">,</span> <span class="n">ansatz1</span><span class="p">,</span> <span class="n">optimizer1</span><span class="p">,</span> <span class="n">gradient</span><span class="o">=</span><span class="n">gradient1</span><span class="p">,</span> <span class="n">initial_point</span><span class="o">=</span><span class="n">initial_pt</span><span class="p">)</span>
@@ -675,43 +658,32 @@ Value using Gradient: -1.85728
 <span class="nb">print</span><span class="p">(</span><span class="n">result1</span><span class="p">)</span>
 
 <span class="n">cost_function_evals1</span> <span class="o">=</span> <span class="n">result1</span><span class="o">.</span><span class="n">cost_function_evals</span>
-<span class="nb">print</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
+<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 1,
-    &#39;eigenvalue&#39;: -1.857275017565581,
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.library.n_local.two_local.TwoLocal object at 0x7ff4a509b970&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): 4.4269623583955555,
-                              ParameterVectorElement(θ[5]): 1.5683250498282393,
-                              ParameterVectorElement(θ[3]): 6.092947832767051,
-                              ParameterVectorElement(θ[2]): 0.5470777607659385,
-                              ParameterVectorElement(θ[0]): 4.296519450348757,
-                              ParameterVectorElement(θ[6]): -4.71761614744982,
-                              ParameterVectorElement(θ[4]): -2.5983266516732844,
-                              ParameterVectorElement(θ[7]): 0.36021017470897654},
+    &#39;eigenvalue&#39;: np.float64(-1.8572750175655812),
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fd5b43bace0&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[7]): np.float64(0.36021017470900696),
+                              ParameterVectorElement(θ[0]): np.float64(4.296519450348767),
+                              ParameterVectorElement(θ[1]): np.float64(4.426962358395508),
+                              ParameterVectorElement(θ[6]): np.float64(-4.717616147449723),
+                              ParameterVectorElement(θ[5]): np.float64(1.5683250498282177),
+                              ParameterVectorElement(θ[4]): np.float64(-2.598326651673286),
+                              ParameterVectorElement(θ[2]): np.float64(0.5470777607660052),
+                              ParameterVectorElement(θ[3]): np.float64(6.092947832766964)},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
-    &#39;optimal_value&#39;: -1.857275017565581,
+    &#39;optimal_value&#39;: np.float64(-1.8572750175655812),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7ff4a509b370&gt;,
-    &#39;optimizer_time&#39;: 0.024524688720703125}
-
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_2455/1156415737.py:3: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  estimator1 = Estimator()
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fd55d6660e0&gt;,
+    &#39;optimizer_time&#39;: 0.023780107498168945}
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -739,7 +711,7 @@ solution as the starting point for the next step. There also exist more complex 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -750,13 +722,13 @@ solution as the starting point for the next step. There also exist more complex 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:10:32 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:30 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -789,13 +761,13 @@ solution as the starting point for the next step. There also exist more complex 
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -833,11 +805,11 @@ solution as the starting point for the next step. There also exist more complex 
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

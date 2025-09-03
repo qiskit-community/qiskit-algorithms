@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Release Notes" href="../release_notes.html" /><link rel="prev" title="Gradient Framework" href="12_gradients_framework.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Quantum Real Time Evolution using Trotterization - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Quantum Real Time Evolution using Trotterization - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,10 +368,10 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/13_trotterQRTE.ipynb">docs/tutorials/13_trotterQRTE.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/13_trotterQRTE.ipynb">docs/tutorials/13_trotterQRTE.ipynb</a>.</p>
 </div>
 <section id="Quantum-Real-Time-Evolution-using-Trotterization">
-<h1>Quantum Real Time Evolution using Trotterization<a class="headerlink" href="#Quantum-Real-Time-Evolution-using-Trotterization" title="Permalink to this heading">#</a></h1>
+<h1>Quantum Real Time Evolution using Trotterization<a class="headerlink" href="#Quantum-Real-Time-Evolution-using-Trotterization" title="Link to this heading">¶</a></h1>
 <p>As a real time evolution technique, the Trotterization or Trotterized Real Time Evolution (RTE) consists in the successive application of a quantum gate, assumed to approximate the time evolution of a system for a time slice [1]. Following from the Schrödinger equation, the time evolution of a system initially in the state <span class="math notranslate nohighlight">\(\vert\psi(0)\rangle\)</span> takes the form:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
@@ -417,16 +418,16 @@
 </tbody>
 </table>
 </div>
-<p>First, we will create a function that takes in the system parameters <span class="math notranslate nohighlight">\(L\)</span>, <span class="math notranslate nohighlight">\(J\)</span>, <span class="math notranslate nohighlight">\(h\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span>, and returns our Hamiltonian as a <code class="docutils literal notranslate"><span class="pre">SparsePauliOp</span></code>. A <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.SparsePauliOp">SparsePauliOp</a> is a sparse representation of an operator in terms of weighted <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.Pauli">Pauli</a> terms.</p>
+<p>First, we will create a function that takes in the system parameters <span class="math notranslate nohighlight">\(L\)</span>, <span class="math notranslate nohighlight">\(J\)</span>, <span class="math notranslate nohighlight">\(h\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span>, and returns our Hamiltonian as a <code class="docutils literal notranslate"><span class="pre">SparsePauliOp</span></code>. A <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.SparsePauliOp">SparsePauliOp</a> is a sparse representation of an operator in terms of weighted <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Pauli">Pauli</a> terms.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
 
 
-<span class="k">def</span> <span class="nf">get_hamiltonian</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_hamiltonian</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 
     <span class="c1"># List of Hamiltonian terms as 3-tuples containing</span>
     <span class="c1"># (1) the Pauli string,</span>
@@ -448,7 +449,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
 
 <span class="n">H</span> <span class="o">=</span> <span class="n">get_hamiltonian</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span>
 <span class="n">H</span>
@@ -471,8 +472,8 @@ SparsePauliOp([&#39;ZZ&#39;, &#39;IZ&#39;, &#39;ZI&#39;, &#39;IX&#39;, &#39;XI&#
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
 
 <span class="n">final_time</span> <span class="o">=</span> <span class="mf">1.6</span>
 
@@ -489,7 +490,7 @@ SparsePauliOp([&#39;ZZ&#39;, &#39;IZ&#39;, &#39;ZI&#39;, &#39;IX&#39;, &#39;XI&#
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TrotterQRTE</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrotterQRTE</span>
 
 <span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">()</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">trotter</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
@@ -513,12 +514,12 @@ SparsePauliOp([&#39;ZZ&#39;, &#39;IZ&#39;, &#39;ZI&#39;, &#39;IX&#39;, &#39;XI&#
 <img alt="../_images/tutorials_13_trotterQRTE_10_0.png" src="../_images/tutorials_13_trotterQRTE_10_0.png" />
 </div>
 </div>
-<p>By sequentially decomposing the circuit, we can show it in terms of Qiskit’s <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/circuit_library">Circuit Library</a> standard gates.</p>
+<p>By sequentially decomposing the circuit, we can show it in terms of Qiskit’s <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/circuit_library">Circuit Library</a> standard gates.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">evolved_state</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="n">reps</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="s2">&quot;disentangler_dg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">evolved_state</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="n">reps</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="s2">&quot;disentangler_dg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span>
     <span class="s2">&quot;multiplex1_reverse_dg&quot;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
@@ -557,8 +558,8 @@ Statevector([ 0.02895926+0.08738739j, -0.9411211 +0.31187756j,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="c1"># We prepare an initial state ↑↓ (01).</span>
@@ -593,35 +594,27 @@ Statevector([ 0.02895926+0.08738739j, -0.9411211 +0.31187756j,
     <span class="sa">f</span><span class="s2">&quot;Initial state: 10, Linear lattice of size $L=2$&quot;</span>
 <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7fb19f136c40&gt;
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_13_trotterQRTE_16_1.png" src="../_images/tutorials_13_trotterQRTE_16_1.png" />
+<img alt="../_images/tutorials_13_trotterQRTE_16_0.png" src="../_images/tutorials_13_trotterQRTE_16_0.png" />
 </div>
 </div>
 <p>We have prepared a system initially with a sequence of spins <span class="math notranslate nohighlight">\(\uparrow\downarrow\)</span>, which corresponds to <span class="math notranslate nohighlight">\(\vert\psi(0)\rangle = \vert01\rangle\)</span>. After letting it evolve for <span class="math notranslate nohighlight">\(t=1.6\)</span> under a transversal field (<span class="math notranslate nohighlight">\(\alpha=0^\circ\)</span>), we are almost guaranteed to measure <span class="math notranslate nohighlight">\(\downarrow\uparrow\)</span>, i.e. have a spin swap. (Note that the labels are interpreted from right to left). If the field is longitudinal (<span class="math notranslate nohighlight">\(\alpha=\pm90^\circ\)</span>), we will have no evolution, therefore we will
 measure the system as it was initially prepared, <span class="math notranslate nohighlight">\(\uparrow\downarrow\)</span>. With intermediate angles, at <span class="math notranslate nohighlight">\(\alpha=\pm45^\circ\)</span>, we will be able to measure all combinations will different probabilities, being a spin swap the most likely with a probability of 67%.</p>
 <section id="Auxiliary-operators">
-<h2>Auxiliary operators<a class="headerlink" href="#Auxiliary-operators" title="Permalink to this heading">#</a></h2>
+<h2>Auxiliary operators<a class="headerlink" href="#Auxiliary-operators" title="Link to this heading">¶</a></h2>
 <p>Let us look into another feature of <code class="docutils literal notranslate"><span class="pre">TrotterQRTE</span></code>. We will now explore its ability to perform time evolutions of a system, while keeping track of some observables. The system that we now consider has a size of <span class="math notranslate nohighlight">\(L=6\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">pi</span>
 
 <span class="n">L</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">get_hamiltonian</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">J</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">)</span>
@@ -629,26 +622,17 @@ measure the system as it was initially prepared, <span class="math notranslate n
 </div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">TrotterQRTE</span></code> instance now will be created with a <code class="docutils literal notranslate"><span class="pre">num_timesteps</span></code> argument, and an <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> primitive. The Qiskit’s <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> primitive estimates expectation values of observables, <span class="math notranslate nohighlight">\(\langle\psi\vert\hat{O}\vert\psi\rangle\)</span>.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TrotterQRTE</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TrotterQRTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
 
 <span class="n">num_timesteps</span> <span class="o">=</span> <span class="mi">60</span>
-<span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span><span class="n">num_timesteps</span><span class="o">=</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">Estimator</span><span class="p">())</span>
+<span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span><span class="n">num_timesteps</span><span class="o">=</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">StatevectorEstimator</span><span class="p">())</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_28304/2834281491.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  trotter = TrotterQRTE(num_timesteps=num_timesteps, estimator=Estimator())
-</pre></div></div>
 </div>
 <p>Let us define a <em>magnetization operator</em> <span class="math notranslate nohighlight">\(\sum_i Z_i\)</span>, and a <em>mean spin correlation operator</em> <span class="math notranslate nohighlight">\(\sum_i Z_i Z_{i+1} / (L - 1)\)</span>.</p>
 <div class="nbinput nblast docutils container">
@@ -664,7 +648,12 @@ measure the system as it was initially prepared, <span class="math notranslate n
 </pre></div>
 </div>
 </div>
-<p>Our new initial state will have the two middle spins facing down, and the <code class="docutils literal notranslate"><span class="pre">TimeEvolutionProblem</span></code> will incorporate some observables that will be kept track of: 1. the energy, i.e. the expectation value of the Hamiltonian, <span class="math notranslate nohighlight">\(\langle H\rangle\)</span> 2. the magnetization, <span class="math notranslate nohighlight">\(\langle \sum_i Z_i \rangle\)</span> 3. the mean spin correlation, <span class="math notranslate nohighlight">\(\langle\sum_i Z_i Z_{i+1}\rangle/(L-1)\)</span></p>
+<p>Our new initial state will have the two middle spins facing down, and the <code class="docutils literal notranslate"><span class="pre">TimeEvolutionProblem</span></code> will incorporate some observables that will be kept track of:</p>
+<ol class="arabic simple">
+<li><p>the energy, i.e. the expectation value of the Hamiltonian, <span class="math notranslate nohighlight">\(\langle H\rangle\)</span></p></li>
+<li><p>the magnetization, <span class="math notranslate nohighlight">\(\langle \sum_i Z_i \rangle\)</span></p></li>
+<li><p>the mean spin correlation, <span class="math notranslate nohighlight">\(\langle\sum_i Z_i Z_{i+1}\rangle/(L-1)\)</span></p></li>
+</ol>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -694,7 +683,7 @@ measure the system as it was initially prepared, <span class="math notranslate n
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">observables</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="n">observables</span><span class="o">.</span><span class="n">shape</span>
@@ -714,7 +703,7 @@ measure the system as it was initially prepared, <span class="math notranslate n
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">final_time</span><span class="p">,</span> <span class="n">num_timesteps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># includes initial state</span>
@@ -756,12 +745,12 @@ Text(0.5, 0.98, &#39;Observable evolution&#39;)
 <div class="math notranslate nohighlight">
 \[\vert \psi(t) \rangle = e^{-i H t} \vert \psi(0) \rangle \text{,}\]</div>
 </div>
-<p>on each one of the timesteps used by Trotter. We compute this exponential using SciPy’s <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html">linalg.expm</a> function, and then we let the initial system evolve using the <code class="docutils literal notranslate"><span class="pre">Statevector</span></code>’s <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.quantum_info.Statevector#evolve">evolve</a> method. This becomes too costly to be performed on larger systems very quickly.</p>
+<p>on each one of the timesteps used by Trotter. We compute this exponential using SciPy’s <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.expm.html">linalg.expm</a> function, and then we let the initial system evolve using the <code class="docutils literal notranslate"><span class="pre">Statevector</span></code>’s <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.quantum_info.Statevector#evolve">evolve</a> method. This becomes too costly to be performed on larger systems very quickly.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sc</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
 
 <span class="n">H_array</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">()</span>
 
@@ -817,8 +806,8 @@ Text(0.5, 0.98, &#39;Observable evolution&#39;)
 <p>We see that, as an approximation, a Pauli-Trotter evolution isn’t too far from the exact solution, but the accuracy is limited. Let’s see how to find higher order formulas to address this.</p>
 </section>
 <section id="Product-formula-overview">
-<h2>Product formula overview<a class="headerlink" href="#Product-formula-overview" title="Permalink to this heading">#</a></h2>
-<p>If it isn’t specified, the default product formula that <code class="docutils literal notranslate"><span class="pre">TrotterQRTE</span></code> uses is the Lie product formula [2], which is at first order. In Qiskit this is implemented in the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.LieTrotter">LieTrotter</a> class. A first order formula consists of the approximation stated in the introduction, where the matrix exponential of a sum is approximated by a product of matrix exponentials:</p>
+<h2>Product formula overview<a class="headerlink" href="#Product-formula-overview" title="Link to this heading">¶</a></h2>
+<p>If it isn’t specified, the default product formula that <code class="docutils literal notranslate"><span class="pre">TrotterQRTE</span></code> uses is the Lie product formula [2], which is at first order. In Qiskit this is implemented in the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.synthesis.LieTrotter">LieTrotter</a> class. A first order formula consists of the approximation stated in the introduction, where the matrix exponential of a sum is approximated by a product of matrix exponentials:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[e^{A+B} \approx e^A e^B\]</div>
@@ -828,9 +817,9 @@ Text(0.5, 0.98, &#39;Observable evolution&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
-<span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">LieTrotter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">PauliEvolutionGate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">LieTrotter</span>
 
 <span class="n">dt</span> <span class="o">=</span> <span class="n">final_time</span> <span class="o">/</span> <span class="n">num_timesteps</span>
 <span class="n">trotter_step_first_order</span> <span class="o">=</span> <span class="n">PauliEvolutionGate</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">synthesis</span><span class="o">=</span><span class="n">LieTrotter</span><span class="p">())</span>
@@ -882,7 +871,7 @@ Trotter step with Lie-Trotter
 <img alt="../_images/tutorials_13_trotterQRTE_41_1.png" src="../_images/tutorials_13_trotterQRTE_41_1.png" />
 </div>
 </div>
-<p>There exists a second-order formula, called the Suzuki-Trotter decomposition [3], and can be used in Qiskit by means of the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.synthesis.SuzukiTrotter">SuzukiTrotter class</a>. Using this formula, a second order decomposition is:</p>
+<p>There exists a second-order formula, called the Suzuki-Trotter decomposition [3], and can be used in Qiskit by means of the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.synthesis.SuzukiTrotter">SuzukiTrotter class</a>. Using this formula, a second order decomposition is:</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[e^{A+B} \approx e^{B/2}e^{A}e^{B/2}\]</div>
@@ -892,7 +881,7 @@ Trotter step with Lie-Trotter
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">SuzukiTrotter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SuzukiTrotter</span>
 
 <span class="n">second_order_formula</span> <span class="o">=</span> <span class="n">SuzukiTrotter</span><span class="p">()</span>  <span class="c1"># if not passed, order defaults to 2</span>
 <span class="n">trotter_step_second_order</span> <span class="o">=</span> <span class="n">PauliEvolutionGate</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">synthesis</span><span class="o">=</span><span class="n">second_order_formula</span><span class="p">)</span>
@@ -914,7 +903,7 @@ Trotter step with Lie-Trotter
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 
-<span class="c1"># And finall</span>
+<span class="c1"># And finally</span>
 <span class="n">circuit</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -988,13 +977,15 @@ Trotter step with Suzuki Trotter (4th order)
 </pre></div></div>
 </div>
 <p>Finally, let us perform a simulation at fourth order.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.synthesis</span> <span class="kn">import</span> <span class="n">SuzukiTrotter</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SuzukiTrotter</span>
 
-<span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span><span class="n">SuzukiTrotter</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">num_timesteps</span><span class="o">=</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">Estimator</span><span class="p">())</span>
+<span class="n">trotter</span> <span class="o">=</span> <span class="n">TrotterQRTE</span><span class="p">(</span>
+    <span class="n">SuzukiTrotter</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">num_timesteps</span><span class="o">=</span><span class="n">num_timesteps</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">StatevectorEstimator</span><span class="p">()</span>
+<span class="p">)</span>
 <span class="n">problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span>
     <span class="n">H</span><span class="p">,</span>
     <span class="n">initial_state</span><span class="o">=</span><span class="n">initial_state</span><span class="p">,</span>
@@ -1005,15 +996,6 @@ Trotter step with Suzuki Trotter (4th order)
 <span class="n">observables_order4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_28304/940414233.py:3: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  trotter = TrotterQRTE(SuzukiTrotter(order=4), num_timesteps=num_timesteps, estimator=Estimator())
-</pre></div></div>
 </div>
 <p>and plot the results.</p>
 <div class="nbinput docutils container">
@@ -1053,14 +1035,14 @@ Trotter step with Suzuki Trotter (4th order)
 <p>As it is to expect, we can directly see that a higher-order product formula leads to more accurate expectation values.</p>
 </section>
 <section id="Magnetization-evolution-plot">
-<h2>Magnetization evolution plot<a class="headerlink" href="#Magnetization-evolution-plot" title="Permalink to this heading">#</a></h2>
+<h2>Magnetization evolution plot<a class="headerlink" href="#Magnetization-evolution-plot" title="Link to this heading">¶</a></h2>
 <p>In this last step, we aim at visualizing the time evolution of each one of the sites of the lattice individually. Let us present the expected value of the magnetization of each one of the sites as a function of time in a color plot. As the initial state was <span class="math notranslate nohighlight">\(\vert\psi(0)\rangle = \vert001100\rangle\)</span> (spin sequence <span class="math notranslate nohighlight">\(\uparrow\uparrow\downarrow\downarrow\uparrow\uparrow\)</span>), at time <span class="math notranslate nohighlight">\(t=0\)</span> we expect to see magnetization <span class="math notranslate nohighlight">\(-1\)</span> in the two middle signs and <span class="math notranslate nohighlight">\(+1\)</span> elsewhere.
 During the evolution, as the plot above suggests, we can expect to see oscillations which will eventually damp.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">cm</span>
 
 <span class="c1"># An inner list comprehension loops over the terms of the SparsePauliOp magnetization_op,</span>
 <span class="c1"># which corresponds to the magnetization of each one of the sites</span>
@@ -1077,27 +1059,19 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Site $i$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">langle Z_i </span><span class="se">\\</span><span class="s2">rangle$&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">1.8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.colorbar.Colorbar at 0x7fb19f00bfd0&gt;
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_13_trotterQRTE_51_1.png" src="../_images/tutorials_13_trotterQRTE_51_1.png" />
+<img alt="../_images/tutorials_13_trotterQRTE_51_0.png" src="../_images/tutorials_13_trotterQRTE_51_0.png" />
 </div>
 </div>
 <section id="References">
-<h3>References<a class="headerlink" href="#References" title="Permalink to this heading">#</a></h3>
+<h3>References<a class="headerlink" href="#References" title="Link to this heading">¶</a></h3>
 <p>[1] Hatano, Naomichi, and Masuo Suzuki. “Finding exponential product formulas of higher orders.” <em>Quantum annealing and other optimization methods.</em> Berlin, Heidelberg: Springer Berlin Heidelberg, 2005. 37-68.</p>
 <p>[2] Varadarajan, Veeravalli S. <em>Lie groups, Lie algebras, and their representations.</em> Vol. 102. Springer Science &amp; Business Media, 2013.</p>
 <p>[3] Magnus, Wilhelm. “On the exponential solution of differential equations for a linear operator.” <em>Communications on pure and applied mathematics</em> 7.4 (1954): 649-673.</p>
@@ -1105,7 +1079,7 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -1116,13 +1090,13 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:17:21 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 20:14:50 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -1156,13 +1130,13 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -1203,11 +1177,11 @@ During the evolution, as the plot above suggests, we can expect to see oscillati
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

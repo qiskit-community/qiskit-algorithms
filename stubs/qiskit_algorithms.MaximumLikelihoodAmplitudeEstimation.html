@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="MaximumLikelihoodAmplitudeEstimationResult" href="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html" /><link rel="prev" title="IterativeAmplitudeEstimationResult" href="qiskit_algorithms.IterativeAmplitudeEstimationResult.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>MaximumLikelihoodAmplitudeEstimation - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>MaximumLikelihoodAmplitudeEstimation - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="maximumlikelihoodamplitudeestimation">
-<h1>MaximumLikelihoodAmplitudeEstimation<a class="headerlink" href="#maximumlikelihoodamplitudeestimation" title="Permalink to this heading">#</a></h1>
+<h1>MaximumLikelihoodAmplitudeEstimation<a class="headerlink" href="#maximumlikelihoodamplitudeestimation" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MaximumLikelihoodAmplitudeEstimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluation_schedule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MaximumLikelihoodAmplitudeEstimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluation_schedule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.AmplitudeEstimator.html#qiskit_algorithms.AmplitudeEstimator" title="qiskit_algorithms.amplitude_estimators.amplitude_estimator.AmplitudeEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmplitudeEstimator</span></code></a></p>
 <p>The Maximum Likelihood Amplitude Estimation algorithm.</p>
 <p>This class implements the quantum amplitude estimation (QAE) algorithm without phase
@@ -399,7 +400,11 @@ Defaults to a brute search where the number of evaluation points is determined
 according to <code class="docutils literal notranslate"><span class="pre">evaluation_schedule</span></code>. The minimizer takes a function as first
 argument and a list of (float, float) tuples (as bounds) as second argument and
 returns a single float which is the found minimum.</p></li>
-<li><p><strong>sampler</strong> (<em>BaseSampler</em><em> | </em><em>None</em>) – A sampler primitive to evaluate the circuits.</p></li>
+<li><p><strong>sampler</strong> (<em>BaseSamplerV2</em><em> | </em><em>None</em>) – A sampler primitive to evaluate the circuits.</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are produced within this algorithm. If set to <cite>None</cite>, these won’t be transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -409,7 +414,7 @@ returns a single float which is the found minimum.</p></li>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.sampler">
-<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.sampler" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.sampler" title="Link to this definition">¶</a></dt>
 <dd><p>Get the sampler primitive.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -421,7 +426,7 @@ returns a single float which is the found minimum.</p></li>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_confidence_interval">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_confidence_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fisher'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_post_processing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.compute_confidence_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_confidence_interval" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_confidence_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fisher'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_post_processing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.compute_confidence_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_confidence_interval" title="Link to this definition">¶</a></dt>
 <dd><p>Compute the <cite>alpha</cite> confidence interval using the method <cite>kind</cite>.</p>
 <p>The confidence level is (1 - <cite>alpha</cite>) and supported kinds are ‘fisher’,
 ‘likelihood_ratio’ and ‘observed_fisher’ with shorthand
@@ -429,12 +434,11 @@ notations ‘fi’, ‘lr’ and ‘oi’, respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>result</strong> (<a class="reference internal" href="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult" title="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult"><em>MaximumLikelihoodAmplitudeEstimationResult</em></a>) – A maximum likelihood amplitude estimation result.</p></li>
+<li><p><strong>result</strong> (<a class="reference internal" href="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult" title="qiskit_algorithms.amplitude_estimators.mlae.MaximumLikelihoodAmplitudeEstimationResult"><em>MaximumLikelihoodAmplitudeEstimationResult</em></a>) – A maximum likelihood amplitude estimation result.</p></li>
 <li><p><strong>alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The confidence level.</p></li>
 <li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The method to compute the confidence interval. Defaults to ‘fisher’, which
 computes the theoretical Fisher information.</p></li>
 <li><p><strong>apply_post_processing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, apply post-processing to the confidence interval.</p></li>
-<li><p><strong>exact</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether the result comes from a statevector simulation or not</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -454,14 +458,14 @@ computes the theoretical Fisher information.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_mle">
-<span class="sig-name descname"><span class="pre">compute_mle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_state_qubits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.compute_mle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_mle" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_mle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_state_qubits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.compute_mle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.compute_mle" title="Link to this definition">¶</a></dt>
 <dd><p>Compute the MLE via a grid-search.</p>
 <p>This is a stable approach if sufficient grid-points are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>circuit_results</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em><em>]</em>) – A list of circuit outcomes. Can be counts or statevectors.</p></li>
-<li><p><strong>estimation_problem</strong> (<a class="reference internal" href="qiskit_algorithms.EstimationProblem.html#qiskit_algorithms.EstimationProblem" title="qiskit_algorithms.EstimationProblem"><em>EstimationProblem</em></a>) – The estimation problem containing the evaluation schedule and the
+<li><p><strong>estimation_problem</strong> (<a class="reference internal" href="qiskit_algorithms.EstimationProblem.html#qiskit_algorithms.EstimationProblem" title="qiskit_algorithms.amplitude_estimators.estimation_problem.EstimationProblem"><em>EstimationProblem</em></a>) – The estimation problem containing the evaluation schedule and the
 number of likelihood function evaluations used to find the minimum.</p></li>
 <li><p><strong>return_counts</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, returns the good counts.</p></li>
 <li><p><strong>num_state_qubits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em>) – [Deprecated]. Number of qubits to process statevector results.</p></li>
@@ -478,12 +482,12 @@ number of likelihood function evaluations used to find the minimum.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.construct_circuits">
-<span class="sig-name descname"><span class="pre">construct_circuits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.construct_circuits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.construct_circuits" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">construct_circuits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.construct_circuits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.construct_circuits" title="Link to this definition">¶</a></dt>
 <dd><p>Construct the Amplitude Estimation w/o QPE quantum circuits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>estimation_problem</strong> (<a class="reference internal" href="qiskit_algorithms.EstimationProblem.html#qiskit_algorithms.EstimationProblem" title="qiskit_algorithms.EstimationProblem"><em>EstimationProblem</em></a>) – The estimation problem for which to construct the QAE circuit.</p></li>
+<li><p><strong>estimation_problem</strong> (<a class="reference internal" href="qiskit_algorithms.EstimationProblem.html#qiskit_algorithms.EstimationProblem" title="qiskit_algorithms.amplitude_estimators.estimation_problem.EstimationProblem"><em>EstimationProblem</em></a>) – The estimation problem for which to construct the QAE circuit.</p></li>
 <li><p><strong>measurement</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Boolean flag to indicate if measurement should be included in the circuits.</p></li>
 </ul>
 </dd>
@@ -491,14 +495,14 @@ number of likelihood function evaluations used to find the minimum.</p></li>
 <dd class="field-even"><p>A list with the QuantumCircuit objects for the algorithm.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[QuantumCircuit]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a>[<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><em>QuantumCircuit</em></a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.estimate">
-<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.estimate" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimation_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_estimators/mlae.html#MaximumLikelihoodAmplitudeEstimation.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.estimate" title="Link to this definition">¶</a></dt>
 <dd><p>Run the amplitude estimation algorithm on provided estimation problem.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -515,7 +519,7 @@ number of likelihood function evaluations used to find the minimum.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult" title="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult">MaximumLikelihoodAmplitudeEstimationResult</a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult.html#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimationResult" title="qiskit_algorithms.amplitude_estimators.mlae.MaximumLikelihoodAmplitudeEstimationResult"><em>MaximumLikelihoodAmplitudeEstimationResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -552,13 +556,13 @@ number of likelihood function evaluations used to find the minimum.</p></li>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -601,11 +605,11 @@ number of likelihood function evaluations used to find the minimum.</p></li>
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

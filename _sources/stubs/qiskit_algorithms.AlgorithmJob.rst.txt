@@ -22,5 +22,4 @@
    .. automethod:: result
    .. automethod:: running
    .. automethod:: status
-   .. automethod:: submit
   

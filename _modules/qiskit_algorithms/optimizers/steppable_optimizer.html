@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.optimizers.steppable_optimizer - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.optimizers.steppable_optimizer - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.optimizers.steppable_optimizer</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2022, 2023.</span>
+<span class="c1"># (C) Copyright IBM 2022, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,16 +378,18 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;SteppableOptimizer interface&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABC</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span> <span class="nn">.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">POINT</span><span class="p">,</span> <span class="n">OptimizerResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">ABC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">POINT</span><span class="p">,</span> <span class="n">OptimizerResult</span>
 
 
-<div class="viewcode-block" id="AskData"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.AskData.html#qiskit_algorithms.optimizers.AskData">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">AskData</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="AskData">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.AskData.html#qiskit_algorithms.optimizers.AskData">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AskData</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for return type of :meth:`~.SteppableOptimizer.ask`.</span>
 
 <span class="sd">    Args:</span>
@@ -401,8 +404,11 @@
     <span class="n">x_jac</span><span class="p">:</span> <span class="n">POINT</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">POINT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="TellData"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.TellData.html#qiskit_algorithms.optimizers.TellData">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">TellData</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TellData">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.TellData.html#qiskit_algorithms.optimizers.TellData">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TellData</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for argument type of :meth:`~.SteppableOptimizer.tell`.</span>
 
 <span class="sd">    Args:</span>
@@ -415,8 +421,11 @@
     <span class="n">eval_jac</span><span class="p">:</span> <span class="n">POINT</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">POINT</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="OptimizerState"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.OptimizerState.html#qiskit_algorithms.optimizers.OptimizerState">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">OptimizerState</span><span class="p">:</span>
+
+<div class="viewcode-block" id="OptimizerState">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.OptimizerState.html#qiskit_algorithms.optimizers.OptimizerState">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OptimizerState</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class representing the state of the optimizer.</span>
 
 <span class="sd">    This class stores the current state of the optimizer, given by the current point and</span>
@@ -437,10 +446,36 @@
     <span class="n">njev</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of jacobian evaluations so far in the optimization.&quot;&quot;&quot;</span>
     <span class="n">nit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of optimization steps performed so far in the optimization.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of optimization steps performed so far in the optimization.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Under Python 3.13 the auto-generated equal fails with a error around</span>
+    <span class="c1"># using numpy all or any. See https://github.com/qiskit-community/qiskit-algorithms/pull/225</span>
+    <span class="c1"># for further information. Hence this custom function was added.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OptimizerState</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span>
+                    <span class="kc">False</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">fun</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">jac</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfev</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">nfev</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">njev</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">njev</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nit</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">nit</span>
+        <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="SteppableOptimizer"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer">[docs]</a><span class="k">class</span> <span class="nc">SteppableOptimizer</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SteppableOptimizer">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SteppableOptimizer</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for a steppable optimizer.</span>
 
@@ -515,7 +550,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="p">):</span>
@@ -528,16 +563,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span> <span class="o">=</span> <span class="n">maxiter</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerState</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current state of the optimizer.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
 
     <span class="nd">@state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">OptimizerState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">OptimizerState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current state of the optimizer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
 
-<div class="viewcode-block" id="SteppableOptimizer.ask"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.ask">[docs]</a>    <span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AskData</span><span class="p">:</span>
+<div class="viewcode-block" id="SteppableOptimizer.ask">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.ask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AskData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ask the optimizer for a set of points to evaluate.</span>
 
 <span class="sd">        This method asks the optimizer which are the next points to evaluate.</span>
@@ -552,7 +589,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SteppableOptimizer.tell"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">tell_data</span><span class="p">:</span> <span class="n">TellData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="SteppableOptimizer.tell">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.tell">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">tell_data</span><span class="p">:</span> <span class="n">TellData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the optimization state using the results of the function evaluation.</span>
 
 <span class="sd">        A canonical optimization example using :meth:`~.ask` and :meth:`~.tell` can be seen</span>
@@ -565,8 +605,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SteppableOptimizer.evaluate"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.evaluate">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TellData</span><span class="p">:</span>
+
+<div class="viewcode-block" id="SteppableOptimizer.evaluate">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.evaluate">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TellData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the function according to the instructions contained in :attr:`~.ask_data`.</span>
 
 <span class="sd">        If the user decides to use :meth:`~.step` instead of :meth:`~.ask` and :meth:`~.tell`</span>
@@ -581,13 +624,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="k">def</span> <span class="nf">_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps the callback function to accommodate each optimizer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="SteppableOptimizer.step"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="SteppableOptimizer.step">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Performs one step in the optimization process.</span>
 
 <span class="sd">        This method composes :meth:`~.ask`, :meth:`~.evaluate`, and :meth:`~.tell` to make a &quot;step&quot;</span>
@@ -597,9 +643,12 @@
         <span class="n">tell_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ask_data</span><span class="o">=</span><span class="n">ask_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">(</span><span class="n">ask_data</span><span class="o">=</span><span class="n">ask_data</span><span class="p">,</span> <span class="n">tell_data</span><span class="o">=</span><span class="n">tell_data</span><span class="p">)</span></div>
 
+
     <span class="c1"># pylint: disable=invalid-name</span>
-<div class="viewcode-block" id="SteppableOptimizer.start"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.start">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
+<div class="viewcode-block" id="SteppableOptimizer.start">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.start">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">POINT</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">POINT</span><span class="p">,</span>
@@ -617,7 +666,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SteppableOptimizer.minimize"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.minimize">[docs]</a>    <span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span>
+
+<div class="viewcode-block" id="SteppableOptimizer.minimize">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.minimize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minimize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">POINT</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">POINT</span><span class="p">,</span>
@@ -646,8 +698,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_callback_wrapper</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_result</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SteppableOptimizer.create_result"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.create_result">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">create_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerResult</span><span class="p">:</span>
+
+<div class="viewcode-block" id="SteppableOptimizer.create_result">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.create_result">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the result of the optimization.</span>
 
 <span class="sd">        All the information needed to create such a result should be stored in the optimizer state</span>
@@ -660,13 +715,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SteppableOptimizer.continue_condition"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.continue_condition">[docs]</a>    <span class="k">def</span> <span class="nf">continue_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="SteppableOptimizer.continue_condition">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.SteppableOptimizer.html#qiskit_algorithms.optimizers.SteppableOptimizer.continue_condition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">continue_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Condition that indicates the optimization process should continue.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ``True`` if the optimization process should continue, ``False`` otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">nit</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">nit</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -678,13 +738,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -701,11 +761,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

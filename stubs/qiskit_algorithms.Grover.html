@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="GroverResult" href="qiskit_algorithms.GroverResult.html" /><link rel="prev" title="AmplitudeAmplifier" href="qiskit_algorithms.AmplitudeAmplifier.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Grover - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Grover - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,10 +367,10 @@
         </div>
         <article role="main">
           <br><br><br><section id="grover">
-<h1>Grover<a class="headerlink" href="#grover" title="Permalink to this heading">#</a></h1>
+<h1>Grover<a class="headerlink" href="#grover" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qiskit_algorithms.Grover">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Grover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_from_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Grover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_from_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpiler_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="qiskit_algorithms.AmplitudeAmplifier.html#qiskit_algorithms.AmplitudeAmplifier" title="qiskit_algorithms.amplitude_amplifiers.amplitude_amplifier.AmplitudeAmplifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmplitudeAmplifier</span></code></a></p>
 <p>Grover’s Search algorithm.</p>
 <div class="admonition note">
@@ -403,7 +404,7 @@ The action of the oracle <span class="math notranslate nohighlight">\(\mathcal{S
 <p>i.e. it flips the phase of the state <span class="math notranslate nohighlight">\(|x\rangle\)</span> if <span class="math notranslate nohighlight">\(x\)</span> is a hit.
 The details of how <span class="math notranslate nohighlight">\(S_f\)</span> works are unimportant to the algorithm; Grover’s
 search algorithm treats the oracle as a black box.</p>
-<p>This class supports oracles in form of a <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a>.</p>
+<p>This class supports oracles in form of a <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a>.</p>
 <p>With the given oracle, Grover’s Search constructs the Grover operator to amplify the
 amplitudes of the good states:</p>
 <div class="math-wrapper docutils container">
@@ -426,7 +427,7 @@ equal superposition state, but another state specified via an operator <span cla
 <div class="math notranslate nohighlight">
 \[\mathcal{Q} = \mathcal{A} \mathcal{S}_0 \mathcal{A}^\dagger \mathcal{S}_f.\]</div>
 </div>
-<p>For more information, see the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.GroverOperator" title="(in Qiskit v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroverOperator</span></code></a> in the
+<p>For more information, see the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.GroverOperator" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroverOperator</span></code></a> in the
 circuit library.</p>
 <p class="rubric">References</p>
 <dl class="simple">
@@ -456,7 +457,12 @@ number of iterations is reached.</p></li>
 <li><p><strong>sample_from_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, instead of taking the values in <code class="docutils literal notranslate"><span class="pre">iterations</span></code> as
 powers of the Grover operator, a random integer sample between 0 and smaller value
 than the iteration is used as a power, see [1], Section 4.</p></li>
-<li><p><strong>sampler</strong> (<em>BaseSampler</em><em> | </em><em>None</em>) – A Sampler to use for sampling the results of the circuits.</p></li>
+<li><p><strong>sampler</strong> (<em>BaseSamplerV2</em><em> | </em><em>None</em>) – A Sampler to use for sampling the results of the circuits.</p></li>
+<li><p><strong>transpiler</strong> (<em>Transpiler</em><em> | </em><em>None</em>) – An optional object with a <cite>run</cite> method allowing to transpile the circuits
+that are produced within this algorithm. If set to <cite>None</cite>, these won’t be
+transpiled.</p></li>
+<li><p><strong>transpiler_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>) – A dictionary of options to be passed to the transpiler’s <cite>run</cite>
+method as keyword arguments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -474,7 +480,7 @@ than the iteration is used as a power, see [1], Section 4.</p></li>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qiskit_algorithms.Grover.sampler">
-<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#qiskit_algorithms.Grover.sampler" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">sampler</span></span><a class="headerlink" href="#qiskit_algorithms.Grover.sampler" title="Link to this definition">¶</a></dt>
 <dd><p>Get the sampler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -486,7 +492,7 @@ than the iteration is used as a power, see [1], Section 4.</p></li>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.Grover.amplify">
-<span class="sig-name descname"><span class="pre">amplify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplification_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.amplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.amplify" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">amplify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplification_problem</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.amplify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.amplify" title="Link to this definition">¶</a></dt>
 <dd><p>Run the Grover algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -505,19 +511,19 @@ as <code class="docutils literal notranslate"><span class="pre">result.top_measu
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.GroverResult.html#qiskit_algorithms.GroverResult" title="qiskit_algorithms.GroverResult">GroverResult</a></p>
+<dd class="field-even"><p><a class="reference internal" href="qiskit_algorithms.GroverResult.html#qiskit_algorithms.GroverResult" title="qiskit_algorithms.amplitude_amplifiers.grover.GroverResult"><em>GroverResult</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.Grover.construct_circuit">
-<span class="sig-name descname"><span class="pre">construct_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.construct_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.construct_circuit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">construct_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">problem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.construct_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.construct_circuit" title="Link to this definition">¶</a></dt>
 <dd><p>Construct the circuit for Grover’s algorithm with <code class="docutils literal notranslate"><span class="pre">power</span></code> Grover operators.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>problem</strong> (<a class="reference internal" href="qiskit_algorithms.AmplificationProblem.html#qiskit_algorithms.AmplificationProblem" title="qiskit_algorithms.AmplificationProblem"><em>AmplificationProblem</em></a>) – The amplification problem for the algorithm.</p></li>
+<li><p><strong>problem</strong> (<a class="reference internal" href="qiskit_algorithms.AmplificationProblem.html#qiskit_algorithms.AmplificationProblem" title="qiskit_algorithms.amplitude_amplifiers.amplification_problem.AmplificationProblem"><em>AmplificationProblem</em></a>) – The amplification problem for the algorithm.</p></li>
 <li><p><strong>power</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> | </em><em>None</em>) – The number of times the Grover operator is repeated. If None, this argument
 is set to the first item in <code class="docutils literal notranslate"><span class="pre">iterations</span></code>.</p></li>
 <li><p><strong>measurement</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Boolean flag to indicate if measurement should be included in the circuit.</p></li>
@@ -537,7 +543,7 @@ is set to the first item in <code class="docutils literal notranslate"><span cla
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qiskit_algorithms.Grover.optimal_num_iterations">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimal_num_iterations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_solutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_qubits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.optimal_num_iterations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.optimal_num_iterations" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimal_num_iterations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_solutions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_qubits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qiskit_algorithms/amplitude_amplifiers/grover.html#Grover.optimal_num_iterations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qiskit_algorithms.Grover.optimal_num_iterations" title="Link to this definition">¶</a></dt>
 <dd><p>Return the optimal number of iterations, if the number of solutions is known.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -587,13 +593,13 @@ is set to the first item in <code class="docutils literal notranslate"><span cla
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -635,11 +641,11 @@ is set to the first item in <code class="docutils literal notranslate"><span cla
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

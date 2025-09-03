@@ -11,7 +11,7 @@
   
    .. rubric:: Attributes
     
-   .. autoattribute:: options
+   .. autoattribute:: shots
   
 
   
@@ -19,5 +19,4 @@
    .. rubric:: Methods
     
    .. automethod:: run
-   .. automethod:: update_default_options
   

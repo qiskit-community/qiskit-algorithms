@@ -14,7 +14,7 @@
    .. autoattribute:: fidelities
    .. autoattribute:: raw_fidelities
    .. autoattribute:: metadata
-   .. autoattribute:: options
+   .. autoattribute:: shots
   
 
   

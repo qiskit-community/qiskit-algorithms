@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Variational Quantum Time Evolution" href="11_VarQTE.html" /><link rel="prev" title="Grover’s algorithm examples" href="07_grover_examples.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Projected Variational Quantum Dynamics - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Projected Variational Quantum Dynamics - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,17 +368,17 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/10_pvqd.ipynb">docs/tutorials/10_pvqd.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/10_pvqd.ipynb">docs/tutorials/10_pvqd.ipynb</a>.</p>
 </div>
 <section id="Projected-Variational-Quantum-Dynamics">
-<h1>Projected Variational Quantum Dynamics<a class="headerlink" href="#Projected-Variational-Quantum-Dynamics" title="Permalink to this heading">#</a></h1>
+<h1>Projected Variational Quantum Dynamics<a class="headerlink" href="#Projected-Variational-Quantum-Dynamics" title="Link to this heading">¶</a></h1>
 <p>The projected Variational Quantum Dynamics (p-VQD) algorithm is a quantum algorithm for real time evolution. It’s a variational algorithm that projects the state at time <span class="math notranslate nohighlight">\(t + \Delta_t\)</span>, as calculated with Trotterization, onto a parameterized quantum circuit.</p>
 <p>For a quantum state <span class="math notranslate nohighlight">\(|\phi(\theta)\rangle = U(\theta)|0\rangle\)</span> constructed by a parameterized quantum circuit <span class="math notranslate nohighlight">\(U(\theta)\)</span> and a Hamiltonian <span class="math notranslate nohighlight">\(H\)</span>, the update rule can be written as</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
 \[\theta_{n+1} = \theta_n + \arg\min_{\delta\theta} 1 - |\langle\phi(\theta_n + \delta\theta)|e^{-i\Delta_t H}|\phi(\theta_n)\rangle|^2,\]</div>
 </div>
-<p>where <span class="math notranslate nohighlight">\(e^{-i\Delta_t H}\)</span> is calculated with a Trotter expansion (using e.g. the <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/qiskit.circuit.library.PauliEvolutionGate">PauliEvolutionGate</a> in Qiskit!).</p>
+<p>where <span class="math notranslate nohighlight">\(e^{-i\Delta_t H}\)</span> is calculated with a Trotter expansion (using e.g. the <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PauliEvolutionGate">PauliEvolutionGate</a> in Qiskit!).</p>
 <p>The following tutorial explores the p-VQD algorithm, which is available as the <a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.PVQD.html">PVQD</a> class. For details on the algorithm, see the original paper: <a class="reference external" href="https://quantum-journal.org/papers/q-2021-07-28-512/#">Barison et al. Quantum 5, 512 (2021)</a>.</p>
 <p>The example we’re looking at is the time evolution of the <span class="math notranslate nohighlight">\(|00\rangle\)</span> state under the Hamiltonian</p>
 <div class="math-wrapper docutils container">
@@ -389,7 +390,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">final_time</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="o">.</span><span class="n">from_sparse_list</span><span class="p">(</span>
@@ -409,9 +410,9 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">ParameterVector</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">ParameterVector</span>
 
-<span class="n">theta</span> <span class="o">=</span> <span class="n">ParameterVector</span><span class="p">(</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">ParameterVector</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\theta$&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">ansatz</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">ansatz</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">ansatz</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
@@ -420,10 +421,10 @@
 <span class="n">ansatz</span><span class="o">.</span><span class="n">rx</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># you can try different circuits, like:</span>
-<span class="c1"># from qiskit.circuit.library import EfficientSU2</span>
-<span class="c1"># ansatz = EfficientSU2(2, reps=1)</span>
+<span class="c1"># from qiskit.circuit.library import efficient_su2</span>
+<span class="c1"># ansatz = efficient_su2(2, reps=1)</span>
 
-<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;clifford&quot;</span><span class="p">)</span>
+<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -440,46 +441,35 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">initial_parameters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">num_parameters</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Before running the p-VQD algorithm, we need to select the backend and how we want to calculate the expectation values. Here, we’ll perform exact statevector simulations (which are still very fast, as we investigate a 2 qubit system) through the reference primitive implementations found in <code class="docutils literal notranslate"><span class="pre">qiskit.primitives</span></code>.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Sampler</span><span class="p">,</span> <span class="n">Estimator</span>
-<span class="kn">from</span> <span class="nn">qiskit_algorithms.state_fidelities</span> <span class="kn">import</span> <span class="n">ComputeUncompute</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorSampler</span><span class="p">,</span> <span class="n">StatevectorEstimator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.state_fidelities</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComputeUncompute</span>
 
 <span class="c1"># the fidelity is used to evaluate the objective: the overlap of the variational form and the trotter step</span>
-<span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">()</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">StatevectorSampler</span><span class="p">(</span><span class="n">default_shots</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">fidelity</span> <span class="o">=</span> <span class="n">ComputeUncompute</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
 
 <span class="c1"># the estimator is used to evaluate the observables</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">Estimator</span><span class="p">()</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">StatevectorEstimator</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_7505/1411506614.py:5: DeprecationWarning: The class ``qiskit.primitives.sampler.Sampler`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseSamplerV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Sampler` class is `StatevectorSampler`.
-  sampler = Sampler()
-/tmp/ipykernel_7505/1411506614.py:9: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  estimator = Estimator()
-</pre></div></div>
 </div>
 <p>Since p-VQD performs a classical optimization in each timestep to determine the best parameters for the projection, we also have to specify the classical optimizer. As a first example we’re using BFGS, which typically works well in statevector simulations, but later we can switch to gradient descent.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">L_BFGS_B</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">L_BFGS_B</span>
 
 <span class="n">bfgs</span> <span class="o">=</span> <span class="n">L_BFGS_B</span><span class="p">()</span>
 </pre></div>
@@ -490,7 +480,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">PVQD</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVQD</span>
 
 <span class="n">pvqd</span> <span class="o">=</span> <span class="n">PVQD</span><span class="p">(</span>
     <span class="n">fidelity</span><span class="p">,</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">initial_parameters</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">num_timesteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">bfgs</span>
@@ -503,7 +493,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
 
 <span class="n">problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span>
     <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">final_time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="p">[</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">observable</span><span class="p">]</span>
@@ -511,7 +501,7 @@
 </pre></div>
 </div>
 </div>
-<p>And then run the algorithm!</p>
+<p>And then run the algorithm! Beware that for a large number of shots to compute the fidelity, running the algorithm might take a while.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -526,312 +516,312 @@
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{   &#39;aux_ops_evaluated&#39;: array([ 0.1084508 , -0.82588878]),
-    &#39;estimated_error&#39;: 3.7508893777626895e-06,
-    &#39;evolved_state&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f2d0b624dc0&gt;,
+{   &#39;aux_ops_evaluated&#39;: array([ 0.58497693, -0.4890591 ]),
+    &#39;estimated_error&#39;: 0.0,
+    &#39;evolved_state&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f8d7144d5a0&gt;,
     &#39;fidelities&#39;: [   1.0,
-                      0.9999999966159694,
-                      0.9999999786160764,
-                      0.9999999995406014,
-                      0.9999999996774606,
-                      0.999999996776757,
-                      0.999999990864295,
-                      0.9999999989313226,
-                      0.9999999981647524,
-                      0.9999999971810714,
-                      0.999999995989957,
-                      0.999999994602302,
-                      0.999999999594495,
-                      0.9999999994361006,
-                      0.9999999992124298,
-                      0.9999999989121436,
-                      0.9999999985226362,
-                      0.9999999980299936,
-                      0.9999999974189556,
-                      0.999999996672874,
-                      0.9999999957736904,
-                      0.9999999968119424,
-                      0.9999999961694972,
-                      0.9999999954162004,
-                      0.9999999945370006,
-                      0.9999999935154438,
-                      0.9999999923336444,
-                      0.9999999909722554,
-                      0.9999999905677208,
-                      0.9999999891755638,
-                      0.9999999876113648,
-                      0.9999999858560016,
-                      0.9999999838888428,
-                      0.9999999819005668,
-                      0.999999979760401,
-                      0.999999977696548,
-                      0.9999999752353528,
-                      0.9999999725842242,
-                      0.999999969878108,
-                      0.9999999671203154,
-                      0.9999999640577132,
-                      0.9999999609089124,
-                      0.9999999574907426,
-                      0.9999999537938148,
-                      0.9999999505447132,
-                      0.9999999464730785,
-                      0.9999999420907086,
-                      0.9999999378942585,
-                      0.9999999331205102,
-                      0.999999928835506,
-                      0.9999999239196894,
-                      0.99999991938174,
-                      0.9999999141058752,
-                      0.9999999091800882,
-                      0.9999999036157252,
-                      0.999999898659777,
-                      0.9999998929743918,
-                      0.9999998869819348,
-                      0.9999998822864948,
-                      0.9999998764329812,
-                      0.9999998703034502,
-                      0.9999998652724736,
-                      0.9999998592600384,
-                      0.99999985299987,
-                      0.9999998477712274,
-                      0.9999998415669694,
-                      0.999999836493454,
-                      0.9999998304180336,
-                      0.9999998256516752,
-                      0.9999998197992542,
-                      0.9999999851544044,
-                      0.9999999867881229,
-                      0.999999988021095,
-                      0.999999989113396,
-                      0.999999989805657,
-                      0.9999999898810022,
-                      0.9999999894706822,
-                      0.9999999885138589,
-                      0.9999999869878698,
-                      0.9999999846938158,
-                      0.9999999969813448,
-                      0.9999999952754466,
-                      0.9999999930620576,
-                      0.9999999902635242,
-                      0.9999999868358124,
-                      0.9999999827238916,
-                      0.9999999780439034,
-                      0.9999999724753112,
-                      0.9999999656698108,
-                      0.9999999997478795,
-                      0.9999999995934806,
-                      0.9999999991031044,
-                      0.9999999982450472,
-                      0.9999999971164094,
-                      0.9999999954714566,
-                      0.9999999933490828,
-                      0.9999999909450276,
-                      0.9999999878158726,
-                      0.9999999840840166,
-                      0.9999999800730766,
-                      0.9999999999483394],
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0),
+                      np.float64(1.0)],
     &#39;observables&#39;: [   array([0.1, 2. ]),
-                       array([0.10012442, 1.99960002]),
-                       array([0.1004976, 1.9984003]),
-                       array([0.10051777, 1.9964013 ]),
-                       array([0.10042778, 1.99360381]),
-                       array([0.10022804, 1.99000892]),
-                       array([0.09991912, 1.98561807]),
-                       array([0.09979579, 1.98042867]),
-                       array([0.09964344, 1.974446  ]),
-                       array([0.09946278, 1.9676725 ]),
-                       array([0.09925462, 1.96011093]),
-                       array([0.09901985, 1.95176437]),
-                       array([0.09898967, 1.94264499]),
-                       array([0.09897178, 1.93274943]),
-                       array([0.09896711, 1.9220818 ]),
-                       array([0.09897664, 1.91064655]),
-                       array([0.09900145, 1.89844844]),
-                       array([0.09904264, 1.88549254]),
-                       array([0.09910136, 1.87178427]),
-                       array([0.09917885, 1.85732931]),
-                       array([0.09927635, 1.84213371]),
-                       array([0.09927761, 1.82618523]),
-                       array([0.09929107, 1.80950716]),
-                       array([0.09931822, 1.79210639]),
-                       array([0.09936062, 1.77399015]),
-                       array([0.09941986, 1.75516595]),
-                       array([0.09949756, 1.73564157]),
-                       array([0.09959536, 1.71542512]),
-                       array([0.09962259, 1.69452542]),
-                       array([0.09966734, 1.67295044]),
-                       array([0.09973141, 1.65070908]),
-                       array([0.09981661, 1.6278105 ]),
-                       array([0.09992478, 1.60426415]),
-                       array([0.1000427 , 1.58005951]),
-                       array([0.10017543, 1.5552472 ]),
-                       array([0.10030531, 1.52979153]),
-                       array([0.10045041, 1.50374947]),
-                       array([0.10061043, 1.47708472]),
-                       array([0.10077635, 1.44986199]),
-                       array([0.10094772, 1.42203083]),
-                       array([0.10112537, 1.39366341]),
-                       array([0.10131134, 1.36471057]),
-                       array([0.10150349, 1.33524436]),
-                       array([0.10171875, 1.30521889]),
-                       array([0.10188619, 1.27467901]),
-                       array([0.10208815, 1.24363382]),
-                       array([0.10232651, 1.21209601]),
-                       array([0.10256015, 1.18005127]),
-                       array([0.10283237, 1.14753891]),
-                       array([0.10309362, 1.11460352]),
-                       array([0.10338214, 1.0811978 ]),
-                       array([0.10364401, 1.04737938]),
-                       array([0.10394712, 1.01314728]),
-                       array([0.10424113, 0.9784913 ]),
-                       array([0.10457806, 0.94344886]),
-                       array([0.10488519, 0.90804359]),
-                       array([0.10523611, 0.87228034]),
-                       array([0.10563222, 0.83617363]),
-                       array([0.1059748 , 0.79973374]),
-                       array([0.10636254, 0.76297924]),
-                       array([0.10679666, 0.725925  ]),
-                       array([0.10719113, 0.68856805]),
-                       array([0.10763215, 0.65094079]),
-                       array([0.10812072, 0.61305842]),
-                       array([0.10858807, 0.57493155]),
-                       array([0.10910327, 0.5365799 ]),
-                       array([0.10959731, 0.4980134 ]),
-                       array([0.11013926, 0.45925279]),
-                       array([0.11065802, 0.42031304]),
-                       array([0.11122443, 0.38121013]),
-                       array([0.11132626, 0.34195989]),
-                       array([0.11141037, 0.30258492]),
-                       array([0.11147636, 0.26307261]),
-                       array([0.11153622, 0.22346446]),
-                       array([0.11157786, 0.18376714]),
-                       array([0.11159901, 0.14399885]),
-                       array([0.11159468, 0.10418261]),
-                       array([0.11156505, 0.06432252]),
-                       array([0.11150566, 0.02445129]),
-                       array([ 0.11140992, -0.01541126]),
-                       array([ 0.1113703, -0.0552832]),
-                       array([ 0.11129021, -0.09510915]),
-                       array([ 0.11118104, -0.13491348]),
-                       array([ 0.11103952, -0.17463681]),
-                       array([ 0.11086372, -0.21430888]),
-                       array([ 0.11065207, -0.25386651]),
-                       array([ 0.11041684, -0.29332569]),
-                       array([ 0.11014218, -0.33267325]),
-                       array([ 0.10979001, -0.37188546]),
-                       array([ 0.10983319, -0.41093901]),
-                       array([ 0.10984365, -0.44982345]),
-                       array([ 0.1098199 , -0.48852319]),
-                       array([ 0.10976047, -0.52702272]),
-                       array([ 0.10968011, -0.56529139]),
-                       array([ 0.10956059, -0.60332912]),
-                       array([ 0.10940037, -0.64112065]),
-                       array([ 0.10921915, -0.6786642 ]),
-                       array([ 0.10899342, -0.71593099]),
-                       array([ 0.10872162, -0.75290609]),
-                       array([ 0.10842847, -0.78955464]),
-                       array([ 0.1084508 , -0.82588878])],
+                       array([0.10008343, 1.99961541]),
+                       array([0.10033367, 1.99846185]),
+                       array([0.10075063, 1.99653989]),
+                       array([0.10133412, 1.99385052]),
+                       array([0.10208391, 1.99039509]),
+                       array([0.10299967, 1.98617535]),
+                       array([0.10408103, 1.98119346]),
+                       array([0.10532751, 1.97545192]),
+                       array([0.1067386 , 1.96895365]),
+                       array([0.10831369, 1.96170194]),
+                       array([0.1100521 , 1.95370047]),
+                       array([0.11195309, 1.94495328]),
+                       array([0.11401582, 1.93546482]),
+                       array([0.11623941, 1.92523988]),
+                       array([0.11862286, 1.91428364]),
+                       array([0.12116513, 1.90260165]),
+                       array([0.12386509, 1.89019982]),
+                       array([0.12672152, 1.87708442]),
+                       array([0.12973312, 1.86326209]),
+                       array([0.13289852, 1.84873982]),
+                       array([0.13621626, 1.83352495]),
+                       array([0.13968479, 1.81762517]),
+                       array([0.14330249, 1.80104852]),
+                       array([0.14706763, 1.78380336]),
+                       array([0.1509784 , 1.76589842]),
+                       array([0.15503292, 1.74734271]),
+                       array([0.15922918, 1.72814562]),
+                       array([0.16356511, 1.70831682]),
+                       array([0.16803853, 1.6878663 ]),
+                       array([0.17264717, 1.66680439]),
+                       array([0.17738865, 1.64514168]),
+                       array([0.18226052, 1.62288908]),
+                       array([0.1872602, 1.6000578]),
+                       array([0.19238503, 1.57665933]),
+                       array([0.19763223, 1.55270542]),
+                       array([0.20299893, 1.52820812]),
+                       array([0.20848215, 1.50317973]),
+                       array([0.21407882, 1.47763282]),
+                       array([0.21978573, 1.4515802 ]),
+                       array([0.2255996 , 1.42503495]),
+                       array([0.23151701, 1.39801036]),
+                       array([0.23753446, 1.37051997]),
+                       array([0.24364832, 1.34257753]),
+                       array([0.24985486, 1.31419704]),
+                       array([0.25615024, 1.28539266]),
+                       array([0.26253049, 1.2561788 ]),
+                       array([0.26899156, 1.22657003]),
+                       array([0.27552927, 1.19658112]),
+                       array([0.28213934, 1.16622702]),
+                       array([0.28881735, 1.13552284]),
+                       array([0.29555882, 1.10448386]),
+                       array([0.30235911, 1.07312552]),
+                       array([0.30921351, 1.04146339]),
+                       array([0.31611717, 1.00951318]),
+                       array([0.32306515, 0.97729075]),
+                       array([0.33005241, 0.94481206]),
+                       array([0.33707378, 0.91209317]),
+                       array([0.34412402, 0.87915027]),
+                       array([0.35119775, 0.84599964]),
+                       array([0.35828952, 0.81265762]),
+                       array([0.36539376, 0.77914066]),
+                       array([0.37250481, 0.74546526]),
+                       array([0.37961694, 0.71164799]),
+                       array([0.38672429, 0.67770545]),
+                       array([0.39382093, 0.64365431]),
+                       array([0.40090084, 0.60951126]),
+                       array([0.40795792, 0.575293  ]),
+                       array([0.41498599, 0.54101626]),
+                       array([0.4219788 , 0.50669779]),
+                       array([0.42892999, 0.47235432]),
+                       array([0.43583319, 0.43800256]),
+                       array([0.44268191, 0.40365923]),
+                       array([0.44946964, 0.36934099]),
+                       array([0.45618978, 0.33506448]),
+                       array([0.46283569, 0.3008463 ]),
+                       array([0.46940069, 0.26670297]),
+                       array([0.47587805, 0.23265099]),
+                       array([0.482261  , 0.19870674]),
+                       array([0.48854274, 0.16488654]),
+                       array([0.49471642, 0.13120664]),
+                       array([0.50077521, 0.09768317]),
+                       array([0.50671223, 0.06433216]),
+                       array([0.5125206 , 0.03116953]),
+                       array([ 0.51819342, -0.00178893]),
+                       array([ 0.52372381, -0.03452755]),
+                       array([ 0.52910489, -0.06703079]),
+                       array([ 0.53432978, -0.09928329]),
+                       array([ 0.53939164, -0.13126979]),
+                       array([ 0.54428363, -0.16297525]),
+                       array([ 0.54899896, -0.19438475]),
+                       array([ 0.55353088, -0.22548357]),
+                       array([ 0.55787267, -0.25625717]),
+                       array([ 0.56201767, -0.2866912 ]),
+                       array([ 0.56595928, -0.3167715 ]),
+                       array([ 0.56969095, -0.34648412]),
+                       array([ 0.57320623, -0.37581534]),
+                       array([ 0.57649872, -0.40475162]),
+                       array([ 0.57956212, -0.43327968]),
+                       array([ 0.58239023, -0.46138645]),
+                       array([ 0.58497693, -0.4890591 ])],
     &#39;parameters&#39;: [   array([0., 0., 0., 0., 0.]),
-                      array([0.01059261, 0.00982697, 0.00805252, 0.00940747, 0.01017311]),
-                      array([0.02118523, 0.01965394, 0.01610504, 0.01881493, 0.02034623]),
-                      array([0.02994049, 0.02780753, 0.01520124, 0.03005935, 0.03219237]),
-                      array([0.03869574, 0.03596112, 0.01429743, 0.04130377, 0.04403852]),
-                      array([0.047451  , 0.04411471, 0.01339363, 0.05254819, 0.05588467]),
-                      array([0.05620626, 0.0522683 , 0.01248983, 0.06379261, 0.06773081]),
-                      array([0.06507739, 0.06053761, 0.01391548, 0.07493994, 0.07947561]),
-                      array([0.07394852, 0.06880692, 0.01534113, 0.08608727, 0.09122041]),
-                      array([0.08281965, 0.07707622, 0.01676678, 0.0972346 , 0.10296521]),
-                      array([0.09169077, 0.08534553, 0.01819243, 0.10838193, 0.11471001]),
-                      array([0.1005619 , 0.09361484, 0.01961808, 0.11952926, 0.12645481]),
-                      array([0.10947117, 0.10193866, 0.02212797, 0.13061861, 0.13813087]),
-                      array([0.11838043, 0.11026248, 0.02463786, 0.14170796, 0.14980694]),
-                      array([0.1272897 , 0.1185863 , 0.02714776, 0.15279731, 0.16148301]),
-                      array([0.13619897, 0.12691013, 0.02965765, 0.16388665, 0.17315908]),
-                      array([0.14510823, 0.13523395, 0.03216754, 0.174976  , 0.18483515]),
-                      array([0.1540175 , 0.14355777, 0.03467743, 0.18606535, 0.19651122]),
-                      array([0.16292676, 0.15188159, 0.03718733, 0.1971547 , 0.20818728]),
-                      array([0.17183603, 0.16020542, 0.03969722, 0.20824405, 0.21986335]),
-                      array([0.1807453 , 0.16852924, 0.04220711, 0.2193334 , 0.23153942]),
-                      array([0.18964028, 0.17685769, 0.04439444, 0.23045908, 0.24323133]),
-                      array([0.19853527, 0.18518613, 0.04658176, 0.24158477, 0.25492323]),
-                      array([0.20743025, 0.19351458, 0.04876909, 0.25271045, 0.26661514]),
-                      array([0.21632524, 0.20184303, 0.05095642, 0.26383613, 0.27830704]),
-                      array([0.22522022, 0.21017148, 0.05314374, 0.27496181, 0.28999895]),
-                      array([0.23411521, 0.21849992, 0.05533107, 0.28608749, 0.30169086]),
-                      array([0.24301019, 0.22682837, 0.0575184 , 0.29721317, 0.31338276]),
-                      array([0.25188934, 0.23516091, 0.05950933, 0.30835229, 0.32506881]),
-                      array([0.2607685 , 0.24349345, 0.06150027, 0.3194914 , 0.33675486]),
-                      array([0.26964765, 0.25182599, 0.06349121, 0.33063052, 0.3484409 ]),
-                      array([0.2785268 , 0.26015852, 0.06548214, 0.34176963, 0.36012695]),
-                      array([0.28740595, 0.26849106, 0.06747308, 0.35290874, 0.371813  ]),
-                      array([0.29629112, 0.27683435, 0.06943732, 0.36405699, 0.38350556]),
-                      array([0.30516704, 0.28517007, 0.07138037, 0.37519831, 0.39518708]),
-                      array([0.31404935, 0.29352026, 0.07327196, 0.38635108, 0.4068745 ]),
-                      array([0.32292265, 0.30186357, 0.07514111, 0.39749678, 0.41855029]),
-                      array([0.33180385, 0.31021905, 0.07698804, 0.40865207, 0.43023386]),
-                      array([0.34067345, 0.31856668, 0.07879378, 0.41979864, 0.4419018 ]),
-                      array([0.34955281, 0.32693144, 0.08055985, 0.43095698, 0.45357747]),
-                      array([0.35842182, 0.33529025, 0.08228443, 0.44210657, 0.46523675]),
-                      array([0.36730077, 0.34366667, 0.08397256, 0.45326655, 0.47690217]),
-                      array([0.37617062, 0.3520391 , 0.08561791, 0.46441747, 0.48854999]),
-                      array([0.38504976, 0.36042518, 0.08724751, 0.47557726, 0.50020568]),
-                      array([0.39393057, 0.3688366 , 0.08875295, 0.48673102, 0.51183122]),
-                      array([0.40281138, 0.37724801, 0.09025839, 0.49788478, 0.52345676]),
-                      array([0.4116922 , 0.38565942, 0.09176383, 0.50903854, 0.5350823 ]),
-                      array([0.42058384, 0.39409216, 0.09320943, 0.52019683, 0.54670212]),
-                      array([0.42947547, 0.4025249 , 0.09465504, 0.53135511, 0.55832194]),
-                      array([0.43836175, 0.41096431, 0.09602961, 0.54249807, 0.56991446]),
-                      array([0.44725895, 0.41941865, 0.09738694, 0.55364746, 0.58150956]),
-                      array([0.45616184, 0.42789743, 0.09865214, 0.56477991, 0.59306912]),
-                      array([0.46506473, 0.4363762 , 0.09991735, 0.57591235, 0.60462867]),
-                      array([0.47398751, 0.44489238, 0.10111404, 0.58703661, 0.6161629 ]),
-                      array([0.4829103 , 0.45340856, 0.10231073, 0.59816088, 0.62769712]),
-                      array([0.49185056, 0.46196484, 0.10341135, 0.60925938, 0.63918308]),
-                      array([0.50079082, 0.47052112, 0.10451198, 0.62035789, 0.65066905]),
-                      array([0.50973108, 0.47907741, 0.1056126 , 0.6314564 , 0.66215501]),
-                      array([0.51870979, 0.48770397, 0.10658725, 0.64251444, 0.67356893]),
-                      array([0.5276885 , 0.49633053, 0.1075619 , 0.65357249, 0.68498286]),
-                      array([0.53666722, 0.50495708, 0.10853655, 0.66463054, 0.69639679]),
-                      array([0.54568154, 0.51364123, 0.10940589, 0.67565837, 0.70775912]),
-                      array([0.55469586, 0.52232538, 0.11027522, 0.68668619, 0.71912146]),
-                      array([0.56371018, 0.53100952, 0.11114456, 0.69771401, 0.73048379]),
-                      array([0.5727449 , 0.53972618, 0.11193319, 0.70872039, 0.74181307]),
-                      array([0.58177962, 0.54844284, 0.11272182, 0.71972677, 0.75314235]),
-                      array([0.59083987, 0.55719732, 0.11343062, 0.73070744, 0.76443291]),
-                      array([0.59990011, 0.56595179, 0.11413943, 0.74168812, 0.77572348]),
-                      array([0.60898978, 0.57475209, 0.11476708, 0.75263365, 0.78696731]),
-                      array([0.61807945, 0.58355238, 0.11539473, 0.76357919, 0.79821115]),
-                      array([0.63636375, 0.60445446, 0.11460409, 0.76527467, 0.79729823]),
-                      array([0.65466757, 0.62534291, 0.11391095, 0.76694893, 0.79639457]),
-                      array([0.67299407, 0.64622675, 0.11330944, 0.76861016, 0.7955086 ]),
-                      array([0.69135237, 0.66708295, 0.11280726, 0.7702394 , 0.79464846]),
-                      array([0.70974397, 0.68790892, 0.11238813, 0.77183824, 0.7938219 ]),
-                      array([0.72815708, 0.70871272, 0.11204665, 0.7734175 , 0.79301943]),
-                      array([0.74658655, 0.72949237, 0.11177537, 0.7749796 , 0.79223834]),
-                      array([0.76503349, 0.75024758, 0.11157264, 0.77652771, 0.7914868 ]),
-                      array([0.78349023, 0.77097566, 0.11143256, 0.77806363, 0.79075635]),
-                      array([0.80195069, 0.7916839 , 0.11134758, 0.77959233, 0.79003647]),
-                      array([0.82071932, 0.8098314 , 0.11139455, 0.78083058, 0.79189043]),
-                      array([0.83947476, 0.82797728, 0.11147314, 0.78206457, 0.79374412]),
-                      array([0.85823432, 0.84612338, 0.11159515, 0.78331376, 0.795601  ]),
-                      array([0.87697793, 0.86426612, 0.11175797, 0.78455975, 0.79745943]),
-                      array([0.89572489, 0.88240724, 0.11196049, 0.78582381, 0.79932318]),
-                      array([0.91445306, 0.90054281, 0.11220214, 0.78708615, 0.8011906 ]),
-                      array([0.93316435, 0.91866646, 0.11249634, 0.78837489, 0.80307217]),
-                      array([0.95186178, 0.93677948, 0.11282831, 0.78968731, 0.80496743]),
-                      array([0.97055922, 0.95489251, 0.11316027, 0.79099974, 0.80686269]),
-                      array([0.98527971, 0.97005378, 0.11368141, 0.79630271, 0.81172271]),
-                      array([1.00000021, 0.98521506, 0.11420255, 0.80160569, 0.81658272]),
-                      array([1.0147207 , 1.00037633, 0.11472369, 0.80690866, 0.82144274]),
-                      array([1.0294412 , 1.0155376 , 0.11524483, 0.81221163, 0.82630275]),
-                      array([1.04415449, 1.03069389, 0.11578418, 0.81751071, 0.83116571]),
-                      array([1.05886779, 1.04585019, 0.11632352, 0.82280979, 0.83602866]),
-                      array([1.07358108, 1.06100648, 0.11686286, 0.82810887, 0.84089162]),
-                      array([1.08829621, 1.0761575 , 0.11742684, 0.83341964, 0.84576466]),
-                      array([1.10301134, 1.09130853, 0.11799082, 0.8387304 , 0.85063771]),
-                      array([1.11772647, 1.10645955, 0.1185548 , 0.84404117, 0.85551075]),
-                      array([1.1324215 , 1.12159267, 0.11914978, 0.8493574 , 0.86039995]),
-                      array([1.14520263, 1.13427221, 0.11977574, 0.85660193, 0.86775092])],
+                      array([0.00946808, 0.00962316, 0.00638458, 0.01037215, 0.00975647]),
+                      array([0.01893616, 0.01924631, 0.01276915, 0.0207443 , 0.01951295]),
+                      array([0.02840425, 0.02886947, 0.01915373, 0.03111646, 0.02926942]),
+                      array([0.03787233, 0.03849263, 0.02553831, 0.04148861, 0.03902589]),
+                      array([0.04734041, 0.04811579, 0.03192288, 0.05186076, 0.04878237]),
+                      array([0.05680849, 0.05773894, 0.03830746, 0.06223291, 0.05853884]),
+                      array([0.06627658, 0.0673621 , 0.04469204, 0.07260506, 0.06829532]),
+                      array([0.07574466, 0.07698526, 0.05107662, 0.08297721, 0.07805179]),
+                      array([0.08521274, 0.08660841, 0.05746119, 0.09334937, 0.08780826]),
+                      array([0.09468082, 0.09623157, 0.06384577, 0.10372152, 0.09756474]),
+                      array([0.1041489 , 0.10585473, 0.07023035, 0.11409367, 0.10732121]),
+                      array([0.11361699, 0.11547789, 0.07661492, 0.12446582, 0.11707768]),
+                      array([0.12308507, 0.12510104, 0.0829995 , 0.13483797, 0.12683416]),
+                      array([0.13255315, 0.1347242 , 0.08938408, 0.14521013, 0.13659063]),
+                      array([0.14202123, 0.14434736, 0.09576865, 0.15558228, 0.1463471 ]),
+                      array([0.15148932, 0.15397051, 0.10215323, 0.16595443, 0.15610358]),
+                      array([0.1609574 , 0.16359367, 0.10853781, 0.17632658, 0.16586005]),
+                      array([0.17042548, 0.17321683, 0.11492238, 0.18669873, 0.17561653]),
+                      array([0.17989356, 0.18283999, 0.12130696, 0.19707089, 0.185373  ]),
+                      array([0.18936164, 0.19246314, 0.12769154, 0.20744304, 0.19512947]),
+                      array([0.19882973, 0.2020863 , 0.13407611, 0.21781519, 0.20488595]),
+                      array([0.20829781, 0.21170946, 0.14046069, 0.22818734, 0.21464242]),
+                      array([0.21776589, 0.22133261, 0.14684527, 0.23855949, 0.22439889]),
+                      array([0.22723397, 0.23095577, 0.15322985, 0.24893164, 0.23415537]),
+                      array([0.23670206, 0.24057893, 0.15961442, 0.2593038 , 0.24391184]),
+                      array([0.24617014, 0.25020209, 0.165999  , 0.26967595, 0.25366832]),
+                      array([0.25563822, 0.25982524, 0.17238358, 0.2800481 , 0.26342479]),
+                      array([0.2651063 , 0.2694484 , 0.17876815, 0.29042025, 0.27318126]),
+                      array([0.27457439, 0.27907156, 0.18515273, 0.3007924 , 0.28293774]),
+                      array([0.28404247, 0.28869471, 0.19153731, 0.31116456, 0.29269421]),
+                      array([0.29351055, 0.29831787, 0.19792188, 0.32153671, 0.30245068]),
+                      array([0.30297863, 0.30794103, 0.20430646, 0.33190886, 0.31220716]),
+                      array([0.31244671, 0.31756419, 0.21069104, 0.34228101, 0.32196363]),
+                      array([0.3219148 , 0.32718734, 0.21707561, 0.35265316, 0.3317201 ]),
+                      array([0.33138288, 0.3368105 , 0.22346019, 0.36302532, 0.34147658]),
+                      array([0.34085096, 0.34643366, 0.22984477, 0.37339747, 0.35123305]),
+                      array([0.35031904, 0.35605681, 0.23622935, 0.38376962, 0.36098953]),
+                      array([0.35978713, 0.36567997, 0.24261392, 0.39414177, 0.370746  ]),
+                      array([0.36925521, 0.37530313, 0.2489985 , 0.40451392, 0.38050247]),
+                      array([0.37872329, 0.38492629, 0.25538308, 0.41488607, 0.39025895]),
+                      array([0.38819137, 0.39454944, 0.26176765, 0.42525823, 0.40001542]),
+                      array([0.39765945, 0.4041726 , 0.26815223, 0.43563038, 0.40977189]),
+                      array([0.40712754, 0.41379576, 0.27453681, 0.44600253, 0.41952837]),
+                      array([0.41659562, 0.42341891, 0.28092138, 0.45637468, 0.42928484]),
+                      array([0.4260637 , 0.43304207, 0.28730596, 0.46674683, 0.43904131]),
+                      array([0.43553178, 0.44266523, 0.29369054, 0.47711899, 0.44879779]),
+                      array([0.44499987, 0.45228839, 0.30007511, 0.48749114, 0.45855426]),
+                      array([0.45446795, 0.46191154, 0.30645969, 0.49786329, 0.46831074]),
+                      array([0.46393603, 0.4715347 , 0.31284427, 0.50823544, 0.47806721]),
+                      array([0.47340411, 0.48115786, 0.31922884, 0.51860759, 0.48782368]),
+                      array([0.48287219, 0.49078101, 0.32561342, 0.52897974, 0.49758016]),
+                      array([0.49234028, 0.50040417, 0.331998  , 0.5393519 , 0.50733663]),
+                      array([0.50180836, 0.51002733, 0.33838258, 0.54972405, 0.5170931 ]),
+                      array([0.51127644, 0.51965049, 0.34476715, 0.5600962 , 0.52684958]),
+                      array([0.52074452, 0.52927364, 0.35115173, 0.57046835, 0.53660605]),
+                      array([0.53021261, 0.5388968 , 0.35753631, 0.5808405 , 0.54636253]),
+                      array([0.53968069, 0.54851996, 0.36392088, 0.59121266, 0.556119  ]),
+                      array([0.54914877, 0.55814311, 0.37030546, 0.60158481, 0.56587547]),
+                      array([0.55861685, 0.56776627, 0.37669004, 0.61195696, 0.57563195]),
+                      array([0.56808493, 0.57738943, 0.38307461, 0.62232911, 0.58538842]),
+                      array([0.57755302, 0.58701259, 0.38945919, 0.63270126, 0.59514489]),
+                      array([0.5870211 , 0.59663574, 0.39584377, 0.64307342, 0.60490137]),
+                      array([0.59648918, 0.6062589 , 0.40222834, 0.65344557, 0.61465784]),
+                      array([0.60595726, 0.61588206, 0.40861292, 0.66381772, 0.62441431]),
+                      array([0.61542535, 0.62550521, 0.4149975 , 0.67418987, 0.63417079]),
+                      array([0.62489343, 0.63512837, 0.42138208, 0.68456202, 0.64392726]),
+                      array([0.63436151, 0.64475153, 0.42776665, 0.69493417, 0.65368374]),
+                      array([0.64382959, 0.65437469, 0.43415123, 0.70530633, 0.66344021]),
+                      array([0.65329767, 0.66399784, 0.44053581, 0.71567848, 0.67319668]),
+                      array([0.66276576, 0.673621  , 0.44692038, 0.72605063, 0.68295316]),
+                      array([0.67223384, 0.68324416, 0.45330496, 0.73642278, 0.69270963]),
+                      array([0.68170192, 0.69286731, 0.45968954, 0.74679493, 0.7024661 ]),
+                      array([0.69117   , 0.70249047, 0.46607411, 0.75716709, 0.71222258]),
+                      array([0.70063809, 0.71211363, 0.47245869, 0.76753924, 0.72197905]),
+                      array([0.71010617, 0.72173679, 0.47884327, 0.77791139, 0.73173552]),
+                      array([0.71957425, 0.73135994, 0.48522784, 0.78828354, 0.741492  ]),
+                      array([0.72904233, 0.7409831 , 0.49161242, 0.79865569, 0.75124847]),
+                      array([0.73851041, 0.75060626, 0.497997  , 0.80902785, 0.76100495]),
+                      array([0.7479785 , 0.76022941, 0.50438157, 0.8194    , 0.77076142]),
+                      array([0.75744658, 0.76985257, 0.51076615, 0.82977215, 0.78051789]),
+                      array([0.76691466, 0.77947573, 0.51715073, 0.8401443 , 0.79027437]),
+                      array([0.77638274, 0.78909889, 0.52353531, 0.85051645, 0.80003084]),
+                      array([0.78585083, 0.79872204, 0.52991988, 0.8608886 , 0.80978731]),
+                      array([0.79531891, 0.8083452 , 0.53630446, 0.87126076, 0.81954379]),
+                      array([0.80478699, 0.81796836, 0.54268904, 0.88163291, 0.82930026]),
+                      array([0.81425507, 0.82759151, 0.54907361, 0.89200506, 0.83905674]),
+                      array([0.82372316, 0.83721467, 0.55545819, 0.90237721, 0.84881321]),
+                      array([0.83319124, 0.84683783, 0.56184277, 0.91274936, 0.85856968]),
+                      array([0.84265932, 0.85646099, 0.56822734, 0.92312152, 0.86832616]),
+                      array([0.8521274 , 0.86608414, 0.57461192, 0.93349367, 0.87808263]),
+                      array([0.86159548, 0.8757073 , 0.5809965 , 0.94386582, 0.8878391 ]),
+                      array([0.87106357, 0.88533046, 0.58738107, 0.95423797, 0.89759558]),
+                      array([0.88053165, 0.89495361, 0.59376565, 0.96461012, 0.90735205]),
+                      array([0.88999973, 0.90457677, 0.60015023, 0.97498227, 0.91710852]),
+                      array([0.89946781, 0.91419993, 0.60653481, 0.98535443, 0.926865  ]),
+                      array([0.9089359 , 0.92382309, 0.61291938, 0.99572658, 0.93662147]),
+                      array([0.91840398, 0.93344624, 0.61930396, 1.00609873, 0.94637795]),
+                      array([0.92787206, 0.9430694 , 0.62568854, 1.01647088, 0.95613442]),
+                      array([0.93734014, 0.95269256, 0.63207311, 1.02684303, 0.96589089]),
+                      array([0.94680822, 0.96231571, 0.63845769, 1.03721519, 0.97564737])],
     &#39;times&#39;: [   0.0,
                  0.01,
                  0.02,
@@ -944,12 +934,12 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">fidelities</span></code>: The fidelity of projecting the Trotter timestep onto the variational form at each timestep.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">estimated_error</span></code>: The estimated error as product of all fidelities.</p></li>
 </ul>
-<p>The energy should be constant in a real time evolution. However, we are projecting the time-evolved state onto a variational form, which might violate this rule. Ideally the energy is still more or less constant. In this evolution here we observe shifts of ~5% of the energy.</p>
+<p>The energy should be constant in a real time evolution. However, we are projecting the time-evolved state onto a variational form, which might violate this rule.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">observables</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">]</span>
 
@@ -981,10 +971,10 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sc</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
 
 
-<span class="k">def</span> <span class="nf">exact</span><span class="p">(</span><span class="n">final_time</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">exact</span><span class="p">(</span><span class="n">final_time</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the exact values for energy and the observable.&quot;&quot;&quot;</span>
     <span class="n">O</span> <span class="o">=</span> <span class="n">observable</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">()</span>
     <span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">()</span>
@@ -1011,7 +1001,7 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
 
 <span class="n">initial_state</span> <span class="o">=</span> <span class="n">Statevector</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">(</span><span class="n">initial_parameters</span><span class="p">))</span>
 <span class="n">exact_times</span><span class="p">,</span> <span class="n">exact_energies</span><span class="p">,</span> <span class="n">exact_magnetizations</span> <span class="o">=</span> <span class="n">exact</span><span class="p">(</span>
@@ -1032,28 +1022,20 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;magnetization $\langle Z_1 Z_2 \rangle$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Magnetization over time&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f2d0c272550&gt;
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_10_pvqd_23_1.png" src="../_images/tutorials_10_pvqd_23_1.png" />
+<img alt="../_images/tutorials_10_pvqd_23_0.png" src="../_images/tutorials_10_pvqd_23_0.png" />
 </div>
 </div>
 <p>Looks pretty good!</p>
 <section id="Gradient-based-optimizations">
-<h2>Gradient-based optimizations<a class="headerlink" href="#Gradient-based-optimizations" title="Permalink to this heading">#</a></h2>
+<h2>Gradient-based optimizations<a class="headerlink" href="#Gradient-based-optimizations" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">PVQD</span></code> class also implements parameter-shift gradients for the loss function and we can use a gradient descent optimization routine</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
@@ -1069,7 +1051,7 @@ Text(0.5, 1.0, &#39;Energy over time&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.optimizers</span> <span class="kn">import</span> <span class="n">GradientDescent</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GradientDescent</span>
 
 <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">80</span>
 <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.602</span><span class="p">)</span>
@@ -1174,7 +1156,7 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -1185,13 +1167,13 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:11:44 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 20:09:04 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -1224,13 +1206,13 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -1266,11 +1248,11 @@ Text(0.5, 1.0, &#39;Magnetization over time&#39;)
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

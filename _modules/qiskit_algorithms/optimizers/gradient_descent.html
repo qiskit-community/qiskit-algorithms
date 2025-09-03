@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>qiskit_algorithms.optimizers.gradient_descent - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>qiskit_algorithms.optimizers.gradient_descent - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -144,7 +144,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../../../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -171,7 +171,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -271,6 +271,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -366,7 +367,7 @@
           <h1>Source code for qiskit_algorithms.optimizers.gradient_descent</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of a Qiskit project.</span>
 <span class="c1">#</span>
-<span class="c1"># (C) Copyright IBM 2021, 2024.</span>
+<span class="c1"># (C) Copyright IBM 2021, 2025.</span>
 <span class="c1">#</span>
 <span class="c1"># This code is licensed under the Apache License, Version 2.0. You may</span>
 <span class="c1"># obtain a copy of this license in the LICENSE.txt file in the root directory</span>
@@ -377,21 +378,23 @@
 <span class="c1"># that they have been altered from the originals.</span>
 
 <span class="sd">&quot;&quot;&quot;A standard gradient descent optimizer.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Generator</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">SupportsFloat</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.optimizer</span> <span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerSupportLevel</span><span class="p">,</span> <span class="n">OptimizerResult</span><span class="p">,</span> <span class="n">POINT</span>
-<span class="kn">from</span> <span class="nn">.steppable_optimizer</span> <span class="kn">import</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">TellData</span><span class="p">,</span> <span class="n">OptimizerState</span><span class="p">,</span> <span class="n">SteppableOptimizer</span>
-<span class="kn">from</span> <span class="nn">.optimizer_utils</span> <span class="kn">import</span> <span class="n">LearningRate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">SupportsFloat</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optimizer</span><span class="p">,</span> <span class="n">OptimizerSupportLevel</span><span class="p">,</span> <span class="n">OptimizerResult</span><span class="p">,</span> <span class="n">POINT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.steppable_optimizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">TellData</span><span class="p">,</span> <span class="n">OptimizerState</span><span class="p">,</span> <span class="n">SteppableOptimizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.optimizer_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">LearningRate</span>
 
 <span class="n">CALLBACK</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">SupportsFloat</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="GradientDescentState"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescentState.html#qiskit_algorithms.optimizers.GradientDescentState">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">GradientDescentState</span><span class="p">(</span><span class="n">OptimizerState</span><span class="p">):</span>
+<div class="viewcode-block" id="GradientDescentState">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescentState.html#qiskit_algorithms.optimizers.GradientDescentState">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradientDescentState</span><span class="p">(</span><span class="n">OptimizerState</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State of :class:`~.GradientDescent`.</span>
 
 <span class="sd">    Dataclass with all the information of an optimizer plus the learning_rate and the stepsize.</span>
@@ -406,10 +409,22 @@
 <span class="sd">    It behaves like a generator, (use ``next(learning_rate)`` to get the learning rate for the</span>
 <span class="sd">    next step) but it can also return  the current learning rate with ``learning_rate.current``.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># See parent class for a comment on having a custom equals. I needed this</span>
+    <span class="c1"># too as it does not appear to use super by default and without this failed</span>
+    <span class="c1"># the exact same way. Note it does not include learning rate as that field</span>
+    <span class="c1"># is not included in the compare as pre the field decorator.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GradientDescentState</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">stepsize</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">stepsize</span></div>
 
 
-<div class="viewcode-block" id="GradientDescent"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent">[docs]</a><span class="k">class</span> <span class="nc">GradientDescent</span><span class="p">(</span><span class="n">SteppableOptimizer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GradientDescent">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GradientDescent</span><span class="p">(</span><span class="n">SteppableOptimizer</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;The gradient descent minimization routine.</span>
 
 <span class="sd">    For a function :math:`f` and an initial point :math:`\vec\theta_0`, the standard (or &quot;vanilla&quot;)</span>
@@ -441,7 +456,7 @@
 
 <span class="sd">            from qiskit_algorithms.optimizers import GradientDescent</span>
 
-<span class="sd">            def f(x):</span>
+<span class="sd">            def fun(x):</span>
 <span class="sd">                return (np.linalg.norm(x) - 1) ** 2</span>
 
 <span class="sd">            initial_point = np.array([1, 0.5, -0.2])</span>
@@ -472,7 +487,7 @@
 
 <span class="sd">                return power_law()</span>
 
-<span class="sd">            def f(x):</span>
+<span class="sd">            def fun(x):</span>
 <span class="sd">                return (np.linalg.norm(x) - 1) ** 2</span>
 
 <span class="sd">            def grad_f(x):</span>
@@ -541,7 +556,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># pylint: disable=too-many-positional-arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">maxiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">learning_rate</span><span class="p">:</span> <span class="p">(</span>
@@ -580,29 +595,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
 
     <span class="nd">@property</span>  <span class="c1"># type: ignore[override]</span>
-    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GradientDescentState</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GradientDescentState</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current state of the optimizer.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
 
     <span class="nd">@state</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">GradientDescentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">GradientDescentState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the current state of the optimizer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the tolerance of the optimizer.</span>
 
 <span class="sd">        Any step with smaller stepsize than this value will stop the optimization.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span>
 
     <span class="nd">@tol</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the tolerance.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span> <span class="o">=</span> <span class="n">tol</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">perturbation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perturbation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the perturbation.</span>
 
 <span class="sd">        This is the perturbation used in the finite difference gradient approximation.</span>
@@ -610,11 +625,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perturbation</span>
 
     <span class="nd">@perturbation</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">perturbation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">perturbation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perturbation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">perturbation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the perturbation.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_perturbation</span> <span class="o">=</span> <span class="n">perturbation</span>
 
-    <span class="k">def</span> <span class="nf">_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_callback_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wraps the callback function to accommodate GradientDescent.</span>
 
@@ -631,7 +646,7 @@
             <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">settings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="c1"># if learning rate or perturbation are custom iterators expand them</span>
         <span class="n">learning_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">):</span>
@@ -646,7 +661,9 @@
             <span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="GradientDescent.ask"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.ask">[docs]</a>    <span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AskData</span><span class="p">:</span>
+<div class="viewcode-block" id="GradientDescent.ask">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.ask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AskData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an object with the data needed to evaluate the gradient.</span>
 
 <span class="sd">        If this object contains a gradient function the gradient can be evaluated directly. Otherwise</span>
@@ -656,7 +673,10 @@
             <span class="n">x_jac</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GradientDescent.tell"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">tell_data</span><span class="p">:</span> <span class="n">TellData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GradientDescent.tell">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.tell">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">,</span> <span class="n">tell_data</span><span class="p">:</span> <span class="n">TellData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates :attr:`.~GradientDescentState.x` by an amount proportional to the learning</span>
 <span class="sd">        rate and value of the gradient at that point.</span>
@@ -677,7 +697,10 @@
         <span class="c1"># pylint: enable=attribute-defined-outside-init</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">nit</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="GradientDescent.evaluate"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TellData</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GradientDescent.evaluate">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.evaluate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ask_data</span><span class="p">:</span> <span class="n">AskData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TellData</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates the gradient.</span>
 
 <span class="sd">        It does so either by evaluating an analytic gradient or by approximating it with a</span>
@@ -707,7 +730,10 @@
 
         <span class="k">return</span> <span class="n">TellData</span><span class="p">(</span><span class="n">eval_jac</span><span class="o">=</span><span class="n">grad</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="GradientDescent.create_result"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.create_result">[docs]</a>    <span class="k">def</span> <span class="nf">create_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerResult</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GradientDescent.create_result">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.create_result">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OptimizerResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a result of the optimization process.</span>
 
 <span class="sd">        This result contains the best point, the best function value, the number of function/gradient</span>
@@ -724,7 +750,10 @@
         <span class="n">result</span><span class="o">.</span><span class="n">nit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">nit</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="GradientDescent.start"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
+
+<div class="viewcode-block" id="GradientDescent.start">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">POINT</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span>
         <span class="n">x0</span><span class="p">:</span> <span class="n">POINT</span><span class="p">,</span>
@@ -743,7 +772,10 @@
             <span class="n">stepsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="GradientDescent.continue_condition"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.continue_condition">[docs]</a>    <span class="k">def</span> <span class="nf">continue_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GradientDescent.continue_condition">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.continue_condition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">continue_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Condition that indicates the optimization process should come to an end.</span>
 
@@ -758,13 +790,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">stepsize</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">continue_condition</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="GradientDescent.get_support_level"><a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.get_support_level">[docs]</a>    <span class="k">def</span> <span class="nf">get_support_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GradientDescent.get_support_level">
+<a class="viewcode-back" href="../../../stubs/qiskit_algorithms.optimizers.GradientDescent.html#qiskit_algorithms.optimizers.GradientDescent.get_support_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_support_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the support level dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;gradient&quot;</span><span class="p">:</span> <span class="n">OptimizerSupportLevel</span><span class="o">.</span><span class="n">supported</span><span class="p">,</span>
             <span class="s2">&quot;bounds&quot;</span><span class="p">:</span> <span class="n">OptimizerSupportLevel</span><span class="o">.</span><span class="n">ignored</span><span class="p">,</span>
             <span class="s2">&quot;initial_point&quot;</span><span class="p">:</span> <span class="n">OptimizerSupportLevel</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
-        <span class="p">}</span></div></div>
+        <span class="p">}</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>
@@ -776,13 +813,13 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -799,11 +836,11 @@
   </div>
 </div><script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

@@ -5,14 +5,14 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Gradient Framework" href="12_gradients_framework.html" /><link rel="prev" title="Projected Variational Quantum Dynamics" href="10_pvqd.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Variational Quantum Time Evolution - Qiskit Algorithms 0.3.1</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
+        <title>Variational Quantum Time Evolution - Qiskit Algorithms 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=82a976d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/qiskit-ecosystem.css?v=745c5aa7" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
@@ -145,7 +145,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.3.1</div></a>
+      <a href="../index.html"><div class="brand">Qiskit Algorithms 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -172,7 +172,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit Algorithms 0.3.1</span>
+  <span class="sidebar-brand-text">Qiskit Algorithms 0.4.0</span>
 </div><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -272,6 +272,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.BOBYQA.html">BOBYQA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.IMFIL.html">IMFIL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SNOBFIT.html">SNOBFIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.SBPLX.html">SBPLX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.CRS.html">CRS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L.html">DIRECT_L</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../stubs/qiskit_algorithms.optimizers.DIRECT_L_RAND.html">DIRECT_L_RAND</a></li>
@@ -367,13 +368,13 @@
         <article role="main">
           <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.3/docs/tutorials/11_VarQTE.ipynb">docs/tutorials/11_VarQTE.ipynb</a>.</p>
+<p>This page was generated from <a class="reference external" href="https://github.com/qiskit-community/qiskit-algorithms/blob/stable/0.4/docs/tutorials/11_VarQTE.ipynb">docs/tutorials/11_VarQTE.ipynb</a>.</p>
 </div>
 <section id="Variational-Quantum-Time-Evolution">
-<h1>Variational Quantum Time Evolution<a class="headerlink" href="#Variational-Quantum-Time-Evolution" title="Permalink to this heading">#</a></h1>
+<h1>Variational Quantum Time Evolution<a class="headerlink" href="#Variational-Quantum-Time-Evolution" title="Link to this heading">¶</a></h1>
 <p>This notebook demonstrates how to use the Variational Quantum Time Evolution (VarQTE) algorithm for computing the time evolving state under a given Hamiltonian. Specifically, it introduces variational quantum imaginary and real time evolution based on McLachlan’s variational principle, and shows how this can be leveraged using the <code class="docutils literal notranslate"><span class="pre">time_evolvers.variational</span></code> sub-module.</p>
 <section id="Introduction">
-<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this heading">#</a></h2>
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Link to this heading">¶</a></h2>
 <p>The time evolution of a quantum state <span class="math notranslate nohighlight">\(|\Psi\rangle\)</span> is governed by the Schrödinger equation (here with <span class="math notranslate nohighlight">\(\hbar \equiv 1\)</span>)</p>
 <div class="math-wrapper docutils container">
 <div class="math notranslate nohighlight">
@@ -407,7 +408,7 @@
 <p>.</p>
 </section>
 <section id="Running-VarQTE">
-<h2>Running VarQTE<a class="headerlink" href="#Running-VarQTE" title="Permalink to this heading">#</a></h2>
+<h2>Running VarQTE<a class="headerlink" href="#Running-VarQTE" title="Link to this heading">¶</a></h2>
 <p>In this tutorial, we will use two classes that extend <code class="docutils literal notranslate"><span class="pre">VarQTE</span></code>, <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> (<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VarQITE.html#qiskit_algorithms.VarQITE">Variational Quantum Imaginary Time Evolution</a>) and <code class="docutils literal notranslate"><span class="pre">VarQRTE</span></code> (<a class="reference external" href="https://qiskit-community.github.io/qiskit-algorithms/stubs/qiskit_algorithms.VarQRTE.html">Variational Quantum Real Time Evolution</a>) for time evolution. We can use a simple Ising model on a spin chain to illustrate this. Let us
 consider the following Hamiltonian:</p>
 <div class="math-wrapper docutils container">
@@ -419,7 +420,7 @@ consider the following Hamiltonian:</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">SparsePauliOp</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SparsePauliOp</span>
 
 <span class="n">hamiltonian</span> <span class="o">=</span> <span class="n">SparsePauliOp</span><span class="p">([</span><span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="s2">&quot;IX&quot;</span><span class="p">,</span> <span class="s2">&quot;XI&quot;</span><span class="p">],</span> <span class="n">coeffs</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
@@ -429,16 +430,16 @@ consider the following Hamiltonian:</p>
 </div>
 </section>
 <section id="Imaginary-Time-Evolution">
-<h2>Imaginary Time Evolution<a class="headerlink" href="#Imaginary-Time-Evolution" title="Permalink to this heading">#</a></h2>
-<p>Imaginary time evolution can be used, for example, to find the ground state or calculate the finite temperature expectation value of the system. Here, we will use the <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> class from <code class="docutils literal notranslate"><span class="pre">time_evolvers.variational</span></code> to compute a ground state energy. Firstly, we need to choose an ansatz. We can use <code class="docutils literal notranslate"><span class="pre">EfficientSU2</span></code> to easily construct an ansatz, setting the number of repetitions using <code class="docutils literal notranslate"><span class="pre">reps</span></code>.</p>
+<h2>Imaginary Time Evolution<a class="headerlink" href="#Imaginary-Time-Evolution" title="Link to this heading">¶</a></h2>
+<p>Imaginary time evolution can be used, for example, to find the ground state or calculate the finite temperature expectation value of the system. Here, we will use the <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> class from <code class="docutils literal notranslate"><span class="pre">time_evolvers.variational</span></code> to compute a ground state energy. Firstly, we need to choose an ansatz. We can use <code class="docutils literal notranslate"><span class="pre">efficient_su2</span></code> to easily construct an ansatz, setting the number of repetitions using <code class="docutils literal notranslate"><span class="pre">reps</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">EfficientSU2</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.circuit.library</span><span class="w"> </span><span class="kn">import</span> <span class="n">efficient_su2</span>
 
-<span class="n">ansatz</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ansatz</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
+<span class="n">ansatz</span> <span class="o">=</span> <span class="n">efficient_su2</span><span class="p">(</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -455,7 +456,7 @@ consider the following Hamiltonian:</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">init_param_values</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">parameters</span><span class="p">)):</span>
@@ -469,7 +470,7 @@ consider the following Hamiltonian:</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers.variational</span> <span class="kn">import</span> <span class="n">ImaginaryMcLachlanPrinciple</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers.variational</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImaginaryMcLachlanPrinciple</span>
 
 <span class="n">var_principle</span> <span class="o">=</span> <span class="n">ImaginaryMcLachlanPrinciple</span><span class="p">()</span>
 </pre></div>
@@ -480,7 +481,7 @@ consider the following Hamiltonian:</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeEvolutionProblem</span>
 
 <span class="n">time</span> <span class="o">=</span> <span class="mf">5.0</span>
 <span class="n">aux_ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">hamiltonian</span><span class="p">]</span>
@@ -489,37 +490,28 @@ consider the following Hamiltonian:</p>
 </div>
 </div>
 <p>We now use the <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> class to calculate the imaginary time evolving state. We can use <code class="docutils literal notranslate"><span class="pre">VarQITE.evolve</span></code> to get the results. Note this cell may take around <span class="math notranslate nohighlight">\(1.5\)</span> minutes to finish.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VarQITE</span>
-<span class="kn">from</span> <span class="nn">qiskit.primitives</span> <span class="kn">import</span> <span class="n">Estimator</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">VarQITE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatevectorEstimator</span>
 
-<span class="n">var_qite</span> <span class="o">=</span> <span class="n">VarQITE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">Estimator</span><span class="p">())</span>
-<span class="c1"># an Estimator instance is necessary, if we want to calculate the expectation value of auxiliary operators.</span>
+<span class="n">var_qite</span> <span class="o">=</span> <span class="n">VarQITE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">StatevectorEstimator</span><span class="p">())</span>
+<span class="c1"># an EstimatorV2 instance is necessary, if we want to calculate the expectation value of auxiliary operators.</span>
 <span class="n">evolution_result</span> <span class="o">=</span> <span class="n">var_qite</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_10530/1414327418.py:4: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  var_qite = VarQITE(ansatz, init_param_values, var_principle, Estimator())
-</pre></div></div>
-</div>
 <section id="Exact-Classical-Solution">
-<h3>Exact Classical Solution<a class="headerlink" href="#Exact-Classical-Solution" title="Permalink to this heading">#</a></h3>
+<h3>Exact Classical Solution<a class="headerlink" href="#Exact-Classical-Solution" title="Link to this heading">¶</a></h3>
 <p>In order to check whether our calculation using <code class="docutils literal notranslate"><span class="pre">VarQITE</span></code> is correct or not, we also call <code class="docutils literal notranslate"><span class="pre">SciPyImaginaryEvolver</span></code> to help us calculate the exact solution.</p>
 <p>Firstly, we can use <code class="docutils literal notranslate"><span class="pre">qiskit.quantum_info.Statevector</span></code> to help us get the statevector from the quantum circuit.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.quantum_info</span> <span class="kn">import</span> <span class="n">Statevector</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Statevector</span>
 
 <span class="n">init_state</span> <span class="o">=</span> <span class="n">Statevector</span><span class="p">(</span><span class="n">ansatz</span><span class="o">.</span><span class="n">assign_parameters</span><span class="p">(</span><span class="n">init_param_values</span><span class="p">))</span>
 </pre></div>
@@ -530,7 +522,7 @@ consider the following Hamiltonian:</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">SciPyImaginaryEvolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">SciPyImaginaryEvolver</span>
 
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span>
     <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">init_state</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="n">aux_ops</span>
@@ -542,13 +534,13 @@ consider the following Hamiltonian:</p>
 </div>
 </section>
 <section id="Results-and-Comparison">
-<h3>Results and Comparison<a class="headerlink" href="#Results-and-Comparison" title="Permalink to this heading">#</a></h3>
+<h3>Results and Comparison<a class="headerlink" href="#Results-and-Comparison" title="Link to this heading">¶</a></h3>
 <p>We use <code class="docutils literal notranslate"><span class="pre">evolution_result.observables</span></code> to get the variation over time of the expectation values of the Hamiltonian.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylab</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span>
 
 <span class="n">h_exp_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ele</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">evolution_result</span><span class="o">.</span><span class="n">observables</span><span class="p">])</span>
 
@@ -583,35 +575,26 @@ consider the following Hamiltonian:</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ground state energy -2.0097479079521188
+Ground state energy -2.0097479079521197
 </pre></div></div>
 </div>
 <p>As the above figure indicates, we have obtained the converged ground state energy.</p>
 </section>
 <section id="Efficient-classical-calculation-of-gradients-with-VarQITE">
-<h3>Efficient classical calculation of gradients with VarQITE<a class="headerlink" href="#Efficient-classical-calculation-of-gradients-with-VarQITE" title="Permalink to this heading">#</a></h3>
+<h3>Efficient classical calculation of gradients with VarQITE<a class="headerlink" href="#Efficient-classical-calculation-of-gradients-with-VarQITE" title="Link to this heading">¶</a></h3>
 <p>You can use classically efficient gradient calculations to speed up the time evolution simulation by setting <code class="docutils literal notranslate"><span class="pre">qgt</span></code> to <code class="docutils literal notranslate"><span class="pre">ReverseQGT()</span></code> and <code class="docutils literal notranslate"><span class="pre">gradient</span></code> to <code class="docutils literal notranslate"><span class="pre">ReverseEstimatorGradient()</span></code>.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">ReverseEstimatorGradient</span><span class="p">,</span> <span class="n">ReverseQGT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.gradients</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReverseEstimatorGradient</span><span class="p">,</span> <span class="n">ReverseQGT</span>
 
 <span class="n">var_principle</span> <span class="o">=</span> <span class="n">ImaginaryMcLachlanPrinciple</span><span class="p">(</span><span class="n">qgt</span><span class="o">=</span><span class="n">ReverseQGT</span><span class="p">(),</span> <span class="n">gradient</span><span class="o">=</span><span class="n">ReverseEstimatorGradient</span><span class="p">())</span>
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="n">aux_ops</span><span class="p">)</span>
-<span class="n">var_qite</span> <span class="o">=</span> <span class="n">VarQITE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">Estimator</span><span class="p">())</span>
+<span class="n">var_qite</span> <span class="o">=</span> <span class="n">VarQITE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">StatevectorEstimator</span><span class="p">())</span>
 <span class="n">evolution_result_eff</span> <span class="o">=</span> <span class="n">var_qite</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_10530/740124999.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  var_qite = VarQITE(ansatz, init_param_values, var_principle, Estimator())
-</pre></div></div>
 </div>
 <p>In this example, it takes only <span class="math notranslate nohighlight">\(1\)</span> minute to calculate imaginary time evolution. The execution time is reduced by about 33% (this may vary for each execution, but generally results in a speedup).</p>
 <div class="nbinput docutils container">
@@ -652,7 +635,7 @@ Ground state energy -2.0097479079521188
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Ground state energy -2.0097479079521188
+Ground state energy -2.0097479079521183
 </pre></div></div>
 </div>
 <p>Let us compare the performance of different methods. The error is defined as the difference between the results and exact solution for each method.</p>
@@ -680,17 +663,17 @@ Ground state energy -2.0097479079521188
 </section>
 </section>
 <section id="Real-Time-Evolution">
-<h2>Real Time Evolution<a class="headerlink" href="#Real-Time-Evolution" title="Permalink to this heading">#</a></h2>
+<h2>Real Time Evolution<a class="headerlink" href="#Real-Time-Evolution" title="Link to this heading">¶</a></h2>
 <p>Real time evolution is more suitable for tasks such as simulating quantum dynamics. For example, one can use <code class="docutils literal notranslate"><span class="pre">VarQRTE</span></code> to get time evolving expectation values of the magnetization.</p>
 <section id="VarQRTE">
-<h3>VarQRTE<a class="headerlink" href="#VarQRTE" title="Permalink to this heading">#</a></h3>
+<h3>VarQRTE<a class="headerlink" href="#VarQRTE" title="Link to this heading">¶</a></h3>
 <p>Again, the first step is to select an ansatz.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ansatz</span> <span class="o">=</span> <span class="n">EfficientSU2</span><span class="p">(</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ansatz</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ansatz</span> <span class="o">=</span> <span class="n">efficient_su2</span><span class="p">(</span><span class="n">hamiltonian</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ansatz</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="s2">&quot;mpl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -743,7 +726,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.time_evolvers.variational</span> <span class="kn">import</span> <span class="n">RealMcLachlanPrinciple</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.time_evolvers.variational</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealMcLachlanPrinciple</span>
 
 <span class="n">var_principle</span> <span class="o">=</span> <span class="n">RealMcLachlanPrinciple</span><span class="p">()</span>
 </pre></div>
@@ -758,27 +741,18 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">VarQRTE</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">VarQRTE</span>
 
 <span class="n">time</span> <span class="o">=</span> <span class="mf">10.0</span>
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="n">aux_ops</span><span class="p">)</span>
-<span class="n">var_qrte</span> <span class="o">=</span> <span class="n">VarQRTE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">Estimator</span><span class="p">())</span>
+<span class="n">var_qrte</span> <span class="o">=</span> <span class="n">VarQRTE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">StatevectorEstimator</span><span class="p">())</span>
 <span class="n">evolution_result_re</span> <span class="o">=</span> <span class="n">var_qrte</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_10530/3604634128.py:5: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  var_qrte = VarQRTE(ansatz, init_param_values, var_principle, Estimator())
-</pre></div></div>
 </div>
 <p>We can also obtain the exact solution with <code class="docutils literal notranslate"><span class="pre">SciPyRealEvolver</span></code>. We first create the corresponding initial state for the exact classical method.</p>
 <div class="nbinput nblast docutils container">
@@ -794,7 +768,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms</span> <span class="kn">import</span> <span class="n">SciPyRealEvolver</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">SciPyRealEvolver</span>
 
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span>
     <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="n">init_circ</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="n">aux_ops</span>
@@ -829,32 +803,23 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 </div>
 </section>
 <section id="Efficient-Way-to-run-VarQRTE">
-<h3>Efficient Way to run VarQRTE<a class="headerlink" href="#Efficient-Way-to-run-VarQRTE" title="Permalink to this heading">#</a></h3>
+<h3>Efficient Way to run VarQRTE<a class="headerlink" href="#Efficient-Way-to-run-VarQRTE" title="Link to this heading">¶</a></h3>
 <p>Similarly, we can set <code class="docutils literal notranslate"><span class="pre">qpt</span></code> as <code class="docutils literal notranslate"><span class="pre">ReverseQGT()</span></code> and <code class="docutils literal notranslate"><span class="pre">gradient</span></code> as <code class="docutils literal notranslate"><span class="pre">ReverseEstimatorGradient()</span></code> to speed up the calculation.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit_algorithms.gradients</span> <span class="kn">import</span> <span class="n">DerivativeType</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_algorithms.gradients</span><span class="w"> </span><span class="kn">import</span> <span class="n">DerivativeType</span>
 
 <span class="n">var_principle</span> <span class="o">=</span> <span class="n">RealMcLachlanPrinciple</span><span class="p">(</span>
     <span class="n">qgt</span><span class="o">=</span><span class="n">ReverseQGT</span><span class="p">(),</span> <span class="n">gradient</span><span class="o">=</span><span class="n">ReverseEstimatorGradient</span><span class="p">(</span><span class="n">derivative_type</span><span class="o">=</span><span class="n">DerivativeType</span><span class="o">.</span><span class="n">IMAG</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">time</span> <span class="o">=</span> <span class="mf">10.0</span>
 <span class="n">evolution_problem</span> <span class="o">=</span> <span class="n">TimeEvolutionProblem</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">aux_operators</span><span class="o">=</span><span class="n">aux_ops</span><span class="p">)</span>
-<span class="n">var_qrte</span> <span class="o">=</span> <span class="n">VarQRTE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">Estimator</span><span class="p">())</span>
+<span class="n">var_qrte</span> <span class="o">=</span> <span class="n">VarQRTE</span><span class="p">(</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">init_param_values</span><span class="p">,</span> <span class="n">var_principle</span><span class="p">,</span> <span class="n">StatevectorEstimator</span><span class="p">())</span>
 <span class="n">evolution_result_re_eff</span> <span class="o">=</span> <span class="n">var_qrte</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">evolution_problem</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/tmp/ipykernel_10530/2453938998.py:8: DeprecationWarning: The class ``qiskit.primitives.estimator.Estimator`` is deprecated as of qiskit 1.2. It will be removed no earlier than 3 months after the release date. All implementations of the `BaseEstimatorV1` interface have been deprecated in favor of their V2 counterparts. The V2 alternative for the `Estimator` class is `StatevectorEstimator`.
-  var_qrte = VarQRTE(ansatz, init_param_values, var_principle, Estimator())
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
@@ -902,7 +867,7 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tutorial_magics</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tutorial_magics</span>
 
 <span class="o">%</span><span class="k">qiskit_version_table</span>
 <span class="o">%</span><span class="k">qiskit_copyright</span>
@@ -913,13 +878,13 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>1.2.4</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.3.1</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.8.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Mon Oct 21 11:16:14 2024 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 20:13:37 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2024.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
+<div style='width: 100%; background-color:#d5d9e0;padding-left: 10px; padding-bottom: 10px; padding-right: 10px; padding-top: 5px'><h3>This code is a part of a Qiskit project</h3><p>&copy; Copyright IBM 2017, 2025.</p><p>This code is licensed under the Apache License, Version 2.0. You may<br>obtain a copy of this license in the LICENSE.txt file in the root directory<br> of this source tree or at http://www.apache.org/licenses/LICENSE-2.0.<p>Any modifications or derivative works of this code must retain this<br>copyright notice, and modified files need to carry a notice indicating<br>that they have been altered from the originals.</p></div></div>
 </div>
 </section>
 </section>
@@ -953,13 +918,13 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2017-2024, Qiskit Algorithms Development Team
+                Copyright &#169; 2017-2025, Qiskit Algorithms Development Team
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024/10/21</div>
+              Last updated on 2025/09/03</div>
           </div>
           <div class="right-details">
             
@@ -1007,11 +972,11 @@ Statevector([-5.00000000e-01+0.00000000e+00j,
   </div>
 </div><script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=645b84c4"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/qiskit-sphinx-theme.js?v=4d77b8ca"></script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
