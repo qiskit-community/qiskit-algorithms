@@ -476,23 +476,23 @@
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
-    &#39;cost_function_evals&#39;: 45,
-    &#39;eigenvalue&#39;: np.float64(-1.857274975005136),
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fe46842bbb0&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(-3.6424645845042996),
-                              ParameterVectorElement(θ[1]): np.float64(1.250608642026019),
-                              ParameterVectorElement(θ[2]): np.float64(-1.4093955213233516),
-                              ParameterVectorElement(θ[3]): np.float64(3.8690758455243723),
-                              ParameterVectorElement(θ[4]): np.float64(4.779381093605483),
-                              ParameterVectorElement(θ[5]): np.float64(-5.83227805658591),
-                              ParameterVectorElement(θ[6]): np.float64(0.44142500693458986),
-                              ParameterVectorElement(θ[7]): np.float64(4.1301594477013905)},
-    &#39;optimal_point&#39;: array([-3.64246458,  1.25060864, -1.40939552,  3.86907585,  4.77938109,
-       -5.83227806,  0.44142501,  4.13015945]),
-    &#39;optimal_value&#39;: np.float64(-1.857274975005136),
+    &#39;cost_function_evals&#39;: 74,
+    &#39;eigenvalue&#39;: np.float64(-1.857275026989812),
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f9ef4653640&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(1.7487156327559716),
+                              ParameterVectorElement(θ[1]): np.float64(4.594349056191267),
+                              ParameterVectorElement(θ[2]): np.float64(-5.588483011152245),
+                              ParameterVectorElement(θ[3]): np.float64(-2.732337534742184),
+                              ParameterVectorElement(θ[4]): np.float64(1.3642962446218774),
+                              ParameterVectorElement(θ[5]): np.float64(4.741212465795237),
+                              ParameterVectorElement(θ[6]): np.float64(-2.8222154238755026),
+                              ParameterVectorElement(θ[7]): np.float64(0.23223071154519628)},
+    &#39;optimal_point&#39;: array([ 1.74871563,  4.59434906, -5.58848301, -2.73233753,  1.36429624,
+        4.74121247, -2.82221542,  0.23223071]),
+    &#39;optimal_value&#39;: np.float64(-1.857275026989812),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe41a42ee30&gt;,
-    &#39;optimizer_time&#39;: 0.10297441482543945}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f9ea4733340&gt;,
+    &#39;optimizer_time&#39;: 0.17144560813903809}
 </pre></div></div>
 </div>
 <p>From the above result we can see the number of cost function (=energy) evaluations the optimizer took until it found the minimum eigenvalue of <span class="math notranslate nohighlight">\(\approx -1.85727\)</span> which is the electronic ground state energy of the given H2 molecule. The optimal parameters of the ansatz can also be seen which are the values that were in the ansatz at the minimum value.</p>
@@ -524,22 +524,22 @@
 <div class="highlight"><pre>
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 200,
-    &#39;eigenvalue&#39;: np.float64(-1.8684914773209087),
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fe468462230&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(0.04677262492578556),
-                              ParameterVectorElement(θ[1]): np.float64(4.601141564620746),
-                              ParameterVectorElement(θ[2]): np.float64(2.046918441129523),
-                              ParameterVectorElement(θ[3]): np.float64(2.2628113522144826),
-                              ParameterVectorElement(θ[4]): np.float64(0.9969700897864191),
-                              ParameterVectorElement(θ[5]): np.float64(2.4941297315850157),
-                              ParameterVectorElement(θ[6]): np.float64(-0.4188787133348249),
-                              ParameterVectorElement(θ[7]): np.float64(8.360917340032191)},
-    &#39;optimal_point&#39;: array([ 0.04677262,  4.60114156,  2.04691844,  2.26281135,  0.99697009,
-        2.49412973, -0.41887871,  8.36091734]),
-    &#39;optimal_value&#39;: np.float64(-1.8684914773209087),
+    &#39;eigenvalue&#39;: np.float64(-1.8538394136177272),
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f9ea467ef50&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(-5.845612140276208),
+                              ParameterVectorElement(θ[1]): np.float64(3.0801441087482924),
+                              ParameterVectorElement(θ[2]): np.float64(0.6724285494011719),
+                              ParameterVectorElement(θ[3]): np.float64(-2.2711130325565896),
+                              ParameterVectorElement(θ[4]): np.float64(-1.3097422789317397),
+                              ParameterVectorElement(θ[5]): np.float64(-0.6405740060047842),
+                              ParameterVectorElement(θ[6]): np.float64(4.342132045934191),
+                              ParameterVectorElement(θ[7]): np.float64(-6.105095814289072)},
+    &#39;optimal_point&#39;: array([-5.84561214,  3.08014411,  0.67242855, -2.27111303, -1.30974228,
+       -0.64057401,  4.34213205, -6.10509581]),
+    &#39;optimal_value&#39;: np.float64(-1.8538394136177272),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe41a56b430&gt;,
-    &#39;optimizer_time&#39;: 0.42535972595214844}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f9ea4733370&gt;,
+    &#39;optimizer_time&#39;: 0.44191575050354004}
 </pre></div></div>
 </div>
 <p>Note: We do not fix the random seed in the simulators here, so re-running gives slightly varying results.</p>
@@ -604,22 +604,22 @@
 Callback function has been called!
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 200,
-    &#39;eigenvalue&#39;: np.float64(-1.865991232447525),
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fe4183273d0&gt;,
-    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(-1.9501445709840155),
-                              ParameterVectorElement(θ[1]): np.float64(-2.66431534848416),
-                              ParameterVectorElement(θ[2]): np.float64(5.196714834986046),
-                              ParameterVectorElement(θ[3]): np.float64(4.089342235489793),
-                              ParameterVectorElement(θ[4]): np.float64(-1.6635256855144047),
-                              ParameterVectorElement(θ[5]): np.float64(-0.8462038084902009),
-                              ParameterVectorElement(θ[6]): np.float64(3.90653688450011),
-                              ParameterVectorElement(θ[7]): np.float64(0.25265130662141283)},
-    &#39;optimal_point&#39;: array([-1.95014457, -2.66431535,  5.19671483,  4.08934224, -1.66352569,
-       -0.84620381,  3.90653688,  0.25265131]),
-    &#39;optimal_value&#39;: np.float64(-1.865991232447525),
+    &#39;eigenvalue&#39;: np.float64(-1.8569469657029236),
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f9ea4622ef0&gt;,
+    &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[0]): np.float64(0.6962290518127402),
+                              ParameterVectorElement(θ[1]): np.float64(1.0229372106734622),
+                              ParameterVectorElement(θ[2]): np.float64(1.0947907620819601),
+                              ParameterVectorElement(θ[3]): np.float64(-5.479728800055015),
+                              ParameterVectorElement(θ[4]): np.float64(4.601584976727274),
+                              ParameterVectorElement(θ[5]): np.float64(-5.379278192725871),
+                              ParameterVectorElement(θ[6]): np.float64(1.4358881521598572),
+                              ParameterVectorElement(θ[7]): np.float64(4.668146061776705)},
+    &#39;optimal_point&#39;: array([ 0.69622905,  1.02293721,  1.09479076, -5.4797288 ,  4.60158498,
+       -5.37927819,  1.43588815,  4.66814606]),
+    &#39;optimal_value&#39;: np.float64(-1.8569469657029236),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fe418327340&gt;,
-    &#39;optimizer_time&#39;: 0.9098813533782959}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f9ea254fe80&gt;,
+    &#39;optimizer_time&#39;: 0.9605114459991455}
 </pre></div></div>
 </div>
 <p>Note that as seen below, the ansatz has automatically been transpiled.</p>
@@ -655,7 +655,7 @@ Callback function has been called!
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_aer</code></td><td>0.17.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:25 2025 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_aer</code></td><td>0.17.1</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Tue Sep 09 09:43:53 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -700,7 +700,7 @@ Callback function has been called!
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025/09/03</div>
+              Last updated on 2025/09/09</div>
           </div>
           <div class="right-details">
             

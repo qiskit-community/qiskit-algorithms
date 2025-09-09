@@ -623,7 +623,7 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 9,
     &#39;eigenvalue&#39;: np.float64(-1.8572750175655812),
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fd55d6cde40&gt;,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f7ff9f4e1d0&gt;,
     &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[1]): np.float64(4.426962358395508),
                               ParameterVectorElement(θ[0]): np.float64(4.296519450348767),
                               ParameterVectorElement(θ[2]): np.float64(0.5470777607660052),
@@ -636,8 +636,8 @@ Value using Gradient: -1.85728
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: np.float64(-1.8572750175655812),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fd5b43ba740&gt;,
-    &#39;optimizer_time&#39;: 0.15569019317626953}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f80488a7e20&gt;,
+    &#39;optimizer_time&#39;: 0.16004657745361328}
 </pre></div></div>
 </div>
 <p>Now, you can take the <code class="docutils literal notranslate"><span class="pre">optimal_point</span></code> from the above result and use it as the <code class="docutils literal notranslate"><span class="pre">initial_point</span></code> for a follow-up computation.</p>
@@ -669,21 +669,21 @@ Value using Gradient: -1.85728
 {   &#39;aux_operators_evaluated&#39;: None,
     &#39;cost_function_evals&#39;: 1,
     &#39;eigenvalue&#39;: np.float64(-1.8572750175655812),
-    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7fd5b43bace0&gt;,
+    &#39;optimal_circuit&#39;: &lt;qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7f7ff9978e80&gt;,
     &#39;optimal_parameters&#39;: {   ParameterVectorElement(θ[7]): np.float64(0.36021017470900696),
-                              ParameterVectorElement(θ[0]): np.float64(4.296519450348767),
                               ParameterVectorElement(θ[1]): np.float64(4.426962358395508),
+                              ParameterVectorElement(θ[2]): np.float64(0.5470777607660052),
+                              ParameterVectorElement(θ[3]): np.float64(6.092947832766964),
+                              ParameterVectorElement(θ[4]): np.float64(-2.598326651673286),
                               ParameterVectorElement(θ[6]): np.float64(-4.717616147449723),
                               ParameterVectorElement(θ[5]): np.float64(1.5683250498282177),
-                              ParameterVectorElement(θ[4]): np.float64(-2.598326651673286),
-                              ParameterVectorElement(θ[2]): np.float64(0.5470777607660052),
-                              ParameterVectorElement(θ[3]): np.float64(6.092947832766964)},
+                              ParameterVectorElement(θ[0]): np.float64(4.296519450348767)},
     &#39;optimal_point&#39;: array([ 4.29651945,  4.42696236,  0.54707776,  6.09294783, -2.59832665,
         1.56832505, -4.71761615,  0.36021017]),
     &#39;optimal_value&#39;: np.float64(-1.8572750175655812),
     &#39;optimizer_evals&#39;: None,
-    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7fd55d6660e0&gt;,
-    &#39;optimizer_time&#39;: 0.023780107498168945}
+    &#39;optimizer_result&#39;: &lt;qiskit_algorithms.optimizers.optimizer.OptimizerResult object at 0x7f7ff9f4d930&gt;,
+    &#39;optimizer_time&#39;: 0.024004697799682617}
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -722,7 +722,7 @@ solution as the starting point for the next step. There also exist more complex 
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Wed Sep 03 19:57:30 2025 UTC</td></tr></table></div>
+<h3>Version Information</h3><table><tr><th>Software</th><th>Version</th></tr><tr><td><code>qiskit</code></td><td>2.0.3</td></tr><tr><td><code>qiskit_algorithms</code></td><td>0.4.0</td></tr><tr><th colspan='2'>System information</th></tr><tr><td>Python version</td><td>3.10.18</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td colspan='2'>Tue Sep 09 09:43:58 2025 UTC</td></tr></table></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -767,7 +767,7 @@ solution as the starting point for the next step. There also exist more complex 
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025/09/03</div>
+              Last updated on 2025/09/09</div>
           </div>
           <div class="right-details">
             

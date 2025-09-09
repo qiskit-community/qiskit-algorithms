@@ -372,14 +372,9 @@
 <span id="id1"></span><h2>0.4.0<a class="headerlink" href="#release-notes-0-4-0" title="Link to this heading">¶</a></h2>
 <section id="prelude">
 <span id="release-notes-0-4-0-prelude"></span><h3>Prelude<a class="headerlink" href="#prelude" title="Link to this heading">¶</a></h3>
-<p>Support for Python 3.8 has been dropped.</p>
-<p>This release compiles a series of important updates to the package, including:
-- dropped support for Python 3.8 and added support for Python 3.13 - added support for PrimitivesV2 - addressed deprecations from the 1.x cycle
-These changes allow for qiskit-algorithms to now support  <a class="reference external" href="https://docs.quantum.ibm.com/api/qiskit/release-notes/2.0">Qiskit 2.x</a> while maintaining support for the 1.x cycle.</p>
 <p>Following up on the deprecation of <code class="docutils literal notranslate"><span class="pre">BlueprintsCircuit</span></code> in the 2.1 version of Qiskit, most tests have been updated to use the replacements functions instead. These circuits are still supported by <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code>, though their use is now deprecated, and their support will be removed when the oldest supported Qiskit version is 3.0.
 The <a class="reference internal" href="stubs/qiskit_algorithms.AmplificationProblem.html#qiskit_algorithms.AmplificationProblem" title="qiskit_algorithms.AmplificationProblem"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmplificationProblem</span></code></a> and <a class="reference internal" href="stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover" title="qiskit_algorithms.Grover"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grover</span></code></a> classes now support being passed <code class="xref py py-class docutils literal notranslate"><span class="pre">Gate</span></code> objects to support the use of <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseOracleGate" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhaseOracleGate</span></code></a> in addition to <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.PhaseOracle" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhaseOracle</span></code></a>.
 The <a class="reference internal" href="stubs/qiskit_algorithms.AdaptVQE.html#qiskit_algorithms.AdaptVQE" title="qiskit_algorithms.AdaptVQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptVQE</span></code></a> class now supports a new way to specify its ansatz, following up on the deprecation of <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a>.</p>
-<p>Following up on the deprecation of V1 primitives in Qiskit 1.X and their subsequent removal in Qiskit 2.X, this release of <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> drops their support in favor of the V2 primitives. You can read about how to modify your imports in your code in the [Qiskit migration guide to the V2 primitives](<a class="reference external" href="https://quantum.cloud.ibm.com/docs/en/migration-guides/v2-primitives">https://quantum.cloud.ibm.com/docs/en/migration-guides/v2-primitives</a>). Since V2 primitives may require users to transpile their circuit, it is now possible for the users to provide the classes that define their own <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> with a <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> along with some options. A <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> is any object having a <code class="docutils literal notranslate"><span class="pre">run</span></code> method that can take as input a <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> or a list thereof and additional options and returns the transpiled version of its input(s) according to the provided options.</p>
 </section>
 <section id="new-features">
 <span id="release-notes-0-4-0-new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h3>
@@ -431,57 +426,6 @@ argument that can be passed to <a class="reference external" href="https://quant
 the addition of an <code class="docutils literal notranslate"><span class="pre">initial_state</span></code> to prepend to the ansatz.</p>
 </li>
 </ul>
-<ul>
-<li><p>Some classes, notably those that create their own
-<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a>, now support being passed a
-<code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> along with some options. A <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> is any object
-having a <cite>run</cite> method that can take as input
-a <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> or a list thereof and additional options and returns
-the transpiled version of its input(s) according to the provided options.
-Passing a <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> to such a class is done via the <cite>transpiler</cite>
-keyword-only argument at instantiation, and additional options passed to
-its <cite>run</cite> method can be passed using the <cite>transpiler_options</cite> keyword-only
-argument at instantiation. The classes that support this feature are</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover" title="qiskit_algorithms.Grover"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grover</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.AmplitudeEstimation.html#qiskit_algorithms.AmplitudeEstimation" title="qiskit_algorithms.AmplitudeEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmplitudeEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.FasterAmplitudeEstimation.html#qiskit_algorithms.FasterAmplitudeEstimation" title="qiskit_algorithms.FasterAmplitudeEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">FasterAmplitudeEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.IterativeAmplitudeEstimation.html#qiskit_algorithms.IterativeAmplitudeEstimation" title="qiskit_algorithms.IterativeAmplitudeEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterativeAmplitudeEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation.html#qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation" title="qiskit_algorithms.MaximumLikelihoodAmplitudeEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">MaximumLikelihoodAmplitudeEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.LinCombEstimatorGradient.html#qiskit_algorithms.gradients.LinCombEstimatorGradient" title="qiskit_algorithms.gradients.LinCombEstimatorGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinCombEstimatorGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.LinCombQGT.html#qiskit_algorithms.gradients.LinCombQGT" title="qiskit_algorithms.gradients.LinCombQGT"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinCombQGT</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.LinCombSamplerGradient.html#qiskit_algorithms.gradients.LinCombSamplerGradient" title="qiskit_algorithms.gradients.LinCombSamplerGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinCombSamplerGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.QAOA.html#qiskit_algorithms.QAOA" title="qiskit_algorithms.QAOA"><code class="xref py py-class docutils literal notranslate"><span class="pre">QAOA</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.IterativePhaseEstimation.html#qiskit_algorithms.IterativePhaseEstimation" title="qiskit_algorithms.IterativePhaseEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterativePhaseEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.HamiltonianPhaseEstimation.html#qiskit_algorithms.HamiltonianPhaseEstimation" title="qiskit_algorithms.HamiltonianPhaseEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">HamiltonianPhaseEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.PhaseEstimation.html#qiskit_algorithms.PhaseEstimation" title="qiskit_algorithms.PhaseEstimation"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhaseEstimation</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.state_fidelities.ComputeUncompute.html#qiskit_algorithms.state_fidelities.ComputeUncompute" title="qiskit_algorithms.state_fidelities.ComputeUncompute"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputeUncompute</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.TrotterQRTE.html#qiskit_algorithms.TrotterQRTE" title="qiskit_algorithms.TrotterQRTE"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrotterQRTE</span></code></a></p></li>
-</ul>
-</div></blockquote>
-<p>Additionally, the following classes also support this feature. Contrarily
-to those above, these classes don’t create their own
-<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">qiskit.circuit.QuantumCircuit</span></code></a>, which is instead provided by the user.
-As such, transpiling the circuits prior to passing them to theses classes
-has the same effect as providing these classes with a <cite>Transpiler</cite>. These classes are</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.FiniteDiffEstimatorGradient.html#qiskit_algorithms.gradients.FiniteDiffEstimatorGradient" title="qiskit_algorithms.gradients.FiniteDiffEstimatorGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiniteDiffEstimatorGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.FiniteDiffSamplerGradient.html#qiskit_algorithms.gradients.FiniteDiffSamplerGradient" title="qiskit_algorithms.gradients.FiniteDiffSamplerGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">FiniteDiffSamplerGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.ParamShiftEstimatorGradient.html#qiskit_algorithms.gradients.ParamShiftEstimatorGradient" title="qiskit_algorithms.gradients.ParamShiftEstimatorGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParamShiftEstimatorGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.ParamShiftSamplerGradient.html#qiskit_algorithms.gradients.ParamShiftSamplerGradient" title="qiskit_algorithms.gradients.ParamShiftSamplerGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParamShiftSamplerGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.SPSAEstimatorGradient.html#qiskit_algorithms.gradients.SPSAEstimatorGradient" title="qiskit_algorithms.gradients.SPSAEstimatorGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">SPSAEstimatorGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.gradients.SPSASamplerGradient.html#qiskit_algorithms.gradients.SPSASamplerGradient" title="qiskit_algorithms.gradients.SPSASamplerGradient"><code class="xref py py-class docutils literal notranslate"><span class="pre">SPSASamplerGradient</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.VQD.html#qiskit_algorithms.VQD" title="qiskit_algorithms.VQD"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQD</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.PVQD.html#qiskit_algorithms.PVQD" title="qiskit_algorithms.PVQD"><code class="xref py py-class docutils literal notranslate"><span class="pre">PVQD</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.VarQITE.html#qiskit_algorithms.VarQITE" title="qiskit_algorithms.VarQITE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VarQITE</span></code></a></p></li>
-<li><p><a class="reference internal" href="stubs/qiskit_algorithms.VarQRTE.html#qiskit_algorithms.VarQRTE" title="qiskit_algorithms.VarQRTE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VarQRTE</span></code></a></p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
 <ul class="simple">
 <li><p>Support for <a class="reference internal" href="stubs/qiskit_algorithms.optimizers.SBPLX.html#qiskit_algorithms.optimizers.SBPLX" title="qiskit_algorithms.optimizers.SBPLX"><code class="xref py py-class docutils literal notranslate"><span class="pre">SBPLX</span></code></a> optimizer from NLopt library has been added.
 SBPLX is a local gradient-free optimizer based on Nelder-Mead and
@@ -490,28 +434,8 @@ Further information about this optimizer and the others can be found in
 the API ref for the <a class="reference internal" href="apidocs/qiskit_algorithms.optimizers.html#module-qiskit_algorithms.optimizers" title="qiskit_algorithms.optimizers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">optimizers</span></code></a>.</p></li>
 </ul>
 </section>
-<section id="known-issues">
-<span id="release-notes-0-4-0-known-issues"></span><h3>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Rare bugs might occur when using <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> in version <code class="docutils literal notranslate"><span class="pre">0.4</span></code>
-in conjunction with <code class="docutils literal notranslate"><span class="pre">qiskit</span></code> in version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> and <code class="docutils literal notranslate"><span class="pre">2.1.1</span></code>. If you encounter some
-difficulties using this version of <code class="docutils literal notranslate"><span class="pre">qiskit</span></code>, try to downgrade to <code class="docutils literal notranslate"><span class="pre">2.0.X</span></code> or upgrade to <code class="docutils literal notranslate"><span class="pre">2.1.2</span></code>
-or newer.</p></li>
-</ul>
-<ul class="simple">
-<li><p>Passing to <a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> or <a class="reference internal" href="stubs/qiskit_algorithms.VQD.html#qiskit_algorithms.VQD" title="qiskit_algorithms.VQD"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQD</span></code></a> a transpiler along with an ansatz
-with a number of qubits that hasn’t been set results in an error. Setting
-explicitly the number of qubits fixes it.</p></li>
-</ul>
-</section>
 <section id="upgrade-notes">
 <span id="release-notes-0-4-0-upgrade-notes"></span><h3>Upgrade Notes<a class="headerlink" href="#upgrade-notes" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Python 3.8 support was dropped as Python 3.8 reached End Of Life
-in October 2024 and is no longer being maintained. If you were
-using Python 3.8 you should upgrade to a newer version that Qiskit
-Algorithms now supports.</p></li>
-</ul>
 <ul class="simple">
 <li><p>Previously, the <code class="docutils literal notranslate"><span class="pre">compute_minimum_eigenvalue</span></code> method set the <code class="docutils literal notranslate"><span class="pre">operators</span></code> attribute of its
 solver’s ansatz, which was assumed to be of type
@@ -519,86 +443,6 @@ solver’s ansatz, which was assumed to be of type
 and since the ansatz’s type can’t be assumed to still be
 <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.library.EvolvedOperatorAnsatz" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvolvedOperatorAnsatz</span></code></a> at the end because of transpilation,
 this feature has been removed.</p></li>
-</ul>
-<ul class="simple">
-<li><p>The oldest supported version of Qiskit is now <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></li>
-</ul>
-<ul class="simple">
-<li><p>The V1 primitives such as <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> and <code class="docutils literal notranslate"><span class="pre">Estimator</span></code> from <code class="docutils literal notranslate"><span class="pre">qiskit</span></code> or
-<code class="docutils literal notranslate"><span class="pre">SamplerV1</span></code> and <code class="docutils literal notranslate"><span class="pre">EstimatorV1</span></code> from <code class="docutils literal notranslate"><span class="pre">qiskit-ibm-runtime</span></code> are no longer
-supported.</p></li>
-</ul>
-<ul>
-<li><p>Upgrading to <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> version <code class="docutils literal notranslate"><span class="pre">0.4</span></code> can be done in the
-following manner:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Replace all usage of V1 primitives by their V2 counterpart.</p></li>
-<li><p>If needed, provide the class you want to use with a <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code> set
-up for the backend you wish to use. Note that if you use the
-Statevector simulation primitives from Qiskit you do not need to use
-this feature. You do need to use it if you intend to run on an actual
-quantum computer.</p></li>
-</ol>
-</div></blockquote>
-<p>For instance, the following code for instantiating the <a class="reference internal" href="stubs/qiskit_algorithms.Grover.html#qiskit_algorithms.Grover" title="qiskit_algorithms.Grover"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grover</span></code></a>
-class in the <code class="docutils literal notranslate"><span class="pre">0.3</span></code> version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span>
-    <span class="n">sampler</span><span class="o">=</span><span class="n">Sampler</span><span class="p">()</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>would be translated to, using a custom <a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.providers.fake_provider.GenericBackendV2" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericBackendV2</span></code></a> to
-showcase the transpilation options:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers.fake_provider</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericBackendV2</span>
-
-<span class="n">coupling_map</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-<span class="n">backend</span> <span class="o">=</span> <span class="n">GenericBackendV2</span><span class="p">(</span><span class="n">num_qubits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">coupling_map</span><span class="o">=</span><span class="n">coupling_map</span><span class="p">)</span>
-
-<span class="n">pm</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">optimization_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Callback function has been called!&quot;</span><span class="p">)</span>
-
-<span class="n">grover</span> <span class="o">=</span> <span class="n">Grover</span><span class="p">(</span>
-    <span class="n">sampler</span><span class="o">=</span><span class="n">StatevectorSampler</span><span class="p">(),</span>
-    <span class="n">transpiler</span><span class="o">=</span><span class="n">pm</span><span class="p">,</span>
-    <span class="n">transpiler_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">callback</span><span class="p">}</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>Note that the <code class="docutils literal notranslate"><span class="pre">transpiler</span></code> and <code class="docutils literal notranslate"><span class="pre">transpiler_options</span></code> arguments are
-keyword-only, you must use the above syntax to use them. All options in the
-<code class="docutils literal notranslate"><span class="pre">transpiler_options</span></code> dictionary will be passed to the <code class="docutils literal notranslate"><span class="pre">run</span></code> method of the
-<code class="docutils literal notranslate"><span class="pre">transpiler</span></code>. Similarly, if creating a <a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> instance could be
-done like so in the <code class="docutils literal notranslate"><span class="pre">0.3</span></code> version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span><span class="n">Estimator</span><span class="p">(),</span> <span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You will now have to write the following in the <code class="docutils literal notranslate"><span class="pre">0.4</span></code> version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vqe</span> <span class="o">=</span> <span class="n">VQE</span><span class="p">(</span>
-    <span class="n">StatevectorEstimator</span><span class="p">(),</span>
-    <span class="n">ansatz</span><span class="p">,</span>
-    <span class="n">optimizer</span><span class="p">,</span>
-    <span class="n">transpiler</span><span class="o">=</span><span class="n">pm</span><span class="p">,</span>
-    <span class="n">transpiler_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;callback&quot;</span><span class="p">:</span> <span class="n">callback</span><span class="p">}</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>Note that since <a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> doesn’t create a
-<a class="reference external" href="https://quantum.cloud.ibm.com/docs/api/qiskit/qiskit.circuit.QuantumCircuit" title="(in Qiskit v2.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumCircuit</span></code></a> internally but instead uses the
-ansatz provided by the user, transpiling the ansatz before passing it to
-<a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> allows to not provide <a class="reference internal" href="stubs/qiskit_algorithms.VQE.html#qiskit_algorithms.VQE" title="qiskit_algorithms.VQE"><code class="xref py py-class docutils literal notranslate"><span class="pre">VQE</span></code></a> with a <code class="docutils literal notranslate"><span class="pre">Transpiler</span></code>.
-If one is provided, the ansatz will be transpiled using it regardless.</p>
-</li>
-</ul>
-<ul class="simple">
-<li><p>The list of arguments for <cite>QNSPSA.get_fidelity()</cite> has been updated to
-remove the keyword enforcement for <cite>sampler</cite> so also allowing it now
-as positional. Additionally the <cite>sampler</cite> must be explicitly specified, as a
-valid object, as it no longer supports <cite>None</cite> nor defaults to that.</p></li>
 </ul>
 </section>
 <section id="deprecation-notes">
@@ -612,19 +456,6 @@ also deprecated, and won’t be supported once the oldest supported Qiskit versi
 such, users that made use of this feature would now need to ensure that the ansatz they pass to
 these algorithms have their number of qubits set and matching with that of the operator they
 wish to run the algorithm on.</p></li>
-</ul>
-</section>
-<section id="bug-fixes">
-<span id="release-notes-0-4-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Resolved the issue with multiply-defined Scipy bounds in Optimizers. In line with Scipy, now only the <code class="docutils literal notranslate"><span class="pre">minimize()</span></code>
-method supports the <code class="docutils literal notranslate"><span class="pre">bounds</span></code> keyword. An error is raised when trying to pass <code class="docutils literal notranslate"><span class="pre">bounds</span></code> in the Optimizer constructor
-via <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> or <code class="docutils literal notranslate"><span class="pre">options</span></code>.</p></li>
-</ul>
-<ul class="simple">
-<li><p>Compatibility fix for scipy 1.14 version. csr_matrix.H had been deprecated
-and was removed. The <a class="reference internal" href="stubs/qiskit_algorithms.NumPyEigensolver.html#qiskit_algorithms.NumPyEigensolver" title="qiskit_algorithms.NumPyEigensolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumPyEigensolver</span></code></a> algorithm, which
-had been using that, has been updated to use an alternative.</p></li>
 </ul>
 </section>
 <section id="other-notes">
@@ -651,8 +482,8 @@ compatible with the former Python way as well as the new Qiskit Rust implementat
 <li><p>Added support for using Qiskit Algorithms with Python 3.12.</p></li>
 </ul>
 </section>
-<section id="release-notes-0-3-0-bug-fixes">
-<span id="id5"></span><h3>Bug Fixes<a class="headerlink" href="#release-notes-0-3-0-bug-fixes" title="Link to this heading">¶</a></h3>
+<section id="bug-fixes">
+<span id="release-notes-0-3-0-bug-fixes"></span><h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Fixes state fidelity <a class="reference internal" href="stubs/qiskit_algorithms.state_fidelities.ComputeUncompute.html#qiskit_algorithms.state_fidelities.ComputeUncompute" title="qiskit_algorithms.state_fidelities.ComputeUncompute"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComputeUncompute</span></code></a> to correct an issue arising from
 the threading used for the job result. This issue could be seen sometimes if more
@@ -680,9 +511,9 @@ more efficiently in a single job.</p></li>
 </section>
 </section>
 <section id="release-notes-0-2-0">
-<span id="id6"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Link to this heading">¶</a></h2>
+<span id="id5"></span><h2>0.2.0<a class="headerlink" href="#release-notes-0-2-0" title="Link to this heading">¶</a></h2>
 <section id="release-notes-0-2-0-upgrade-notes">
-<span id="id7"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-2-0-upgrade-notes" title="Link to this heading">¶</a></h3>
+<span id="id6"></span><h3>Upgrade Notes<a class="headerlink" href="#release-notes-0-2-0-upgrade-notes" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">qiskit-algorithms</span></code> code uses a common random number generator,
 which can be seeded for reproducibility. The algorithms code here, having
@@ -747,7 +578,7 @@ would look like this:</p>
 </ul>
 </section>
 <section id="release-notes-0-2-0-other-notes">
-<span id="id8"></span><h3>Other Notes<a class="headerlink" href="#release-notes-0-2-0-other-notes" title="Link to this heading">¶</a></h3>
+<span id="id7"></span><h3>Other Notes<a class="headerlink" href="#release-notes-0-2-0-other-notes" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Removed the custom <code class="docutils literal notranslate"><span class="pre">__str__</span></code> method from <a class="reference internal" href="stubs/qiskit_algorithms.SamplingMinimumEigensolverResult.html#qiskit_algorithms.SamplingMinimumEigensolverResult" title="qiskit_algorithms.SamplingMinimumEigensolverResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">SamplingMinimumEigensolverResult</span></code></a>
 so that string conversion is based on the method of its parent <code class="xref py py-class docutils literal notranslate"><span class="pre">AlgorithmResult</span></code>
@@ -759,9 +590,9 @@ results derived from that, such as returned by <a class="reference internal" hre
 </section>
 </section>
 <section id="release-notes-0-1-0">
-<span id="id9"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Link to this heading">¶</a></h2>
+<span id="id8"></span><h2>0.1.0<a class="headerlink" href="#release-notes-0-1-0" title="Link to this heading">¶</a></h2>
 <section id="release-notes-0-1-0-prelude">
-<span id="id10"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-1-0-prelude" title="Link to this heading">¶</a></h3>
+<span id="id9"></span><h3>Prelude<a class="headerlink" href="#release-notes-0-1-0-prelude" title="Link to this heading">¶</a></h3>
 <p>Qiskit’s <cite>qiskit.algorithms</cite> module has been superseded by this
 new standalone library, <code class="docutils literal notranslate"><span class="pre">qiskit_algorithms</span></code>.</p>
 <p>As of Qiskit’s 0.25 release, active development of new
@@ -782,7 +613,7 @@ separate package was made to clarify the purpose of <a class="reference external
 make a distinction between the tools and libraries built on top of it.</p>
 </section>
 <section id="release-notes-0-1-0-new-features">
-<span id="id11"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Link to this heading">¶</a></h3>
+<span id="id10"></span><h3>New Features<a class="headerlink" href="#release-notes-0-1-0-new-features" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The primitive-based algorithms in <code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.eigensolvers</span></code> and
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">qiskit_algorithms.minimum_eigensolvers</span></code> are now directly
@@ -824,7 +655,7 @@ you should follow the migration guidelines in <a class="reference external" href
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025/09/03</div>
+              Last updated on 2025/09/09</div>
           </div>
           <div class="right-details">
             
@@ -849,17 +680,15 @@ you should follow the migration guidelines in <a class="reference external" href
 <li><a class="reference internal" href="#release-notes-0-4-0">0.4.0</a><ul>
 <li><a class="reference internal" href="#prelude">Prelude</a></li>
 <li><a class="reference internal" href="#new-features">New Features</a></li>
-<li><a class="reference internal" href="#known-issues">Known Issues</a></li>
 <li><a class="reference internal" href="#upgrade-notes">Upgrade Notes</a></li>
 <li><a class="reference internal" href="#deprecation-notes">Deprecation Notes</a></li>
-<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
 <li><a class="reference internal" href="#other-notes">Other Notes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-notes-0-3-0">0.3.0</a><ul>
 <li><a class="reference internal" href="#release-notes-0-3-0-prelude">Prelude</a></li>
 <li><a class="reference internal" href="#release-notes-0-3-0-new-features">New Features</a></li>
-<li><a class="reference internal" href="#release-notes-0-3-0-bug-fixes">Bug Fixes</a></li>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#release-notes-0-2-0">0.2.0</a><ul>

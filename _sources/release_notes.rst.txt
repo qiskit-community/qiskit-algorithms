@@ -1,1 +1,8 @@
 .. release-notes:: Release Notes
+   :ignore-notes:
+     releasenotes/notes/0.3/raise-error-incorrect-bounds-passing-c878f155221fa8f4.yaml,
+     releasenotes/notes/0.4/drop_python_3_8-dffbed172a8cccf1.yaml,
+     releasenotes/notes/0.4/numpy_2.0_fix-c29681db4874eee8.yaml,
+     releasenotes/notes/0.4/prelude_0.4_release-a9d23b9c63550bd2.yaml,
+     releasenotes/notes/0.4/replaced-v1-primitives-by-v2-ones-897d9610351bd54b.yaml,
+     releasenotes/notes/0.4/sampler_as_positional_arg_for_qnspsa-2efca170947f3cd7.yaml,
