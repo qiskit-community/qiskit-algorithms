@@ -17,9 +17,9 @@ from itertools import product
 from test import QiskitAlgorithmsTestCase
 
 import numpy as np
-from ddt import data, ddt
+from ddt import data, ddt, idata, unpack
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import GroverOperator, PhaseOracle, PhaseOracleGate
+from qiskit.circuit.library import grover_operator, GroverOperator, PhaseOracle, PhaseOracleGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import Operator, Statevector
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
@@ -36,24 +36,24 @@ class TestAmplificationProblem(QiskitAlgorithmsTestCase):
         super().setUp()
         oracle = QuantumCircuit(2)
         oracle.cz(0, 1)
-        self._expected_grover_op = GroverOperator(oracle=oracle)
 
-    @data("oracle_only", "oracle_and_stateprep")
-    def test_groverop_getter(self, kind):
+    @idata(product(["oracle_only", "oracle_and_stateprep"], [GroverOperator, grover_operator]))
+    @unpack
+    def test_groverop_getter(self, kind, oracle_builder):
         """Test the default construction of the Grover operator."""
         oracle = QuantumCircuit(2)
         oracle.cz(0, 1)
 
         if kind == "oracle_only":
             problem = AmplificationProblem(oracle, is_good_state=["11"])
-            expected = GroverOperator(oracle)
+            expected = oracle_builder(oracle)
         else:
             stateprep = QuantumCircuit(2)
             stateprep.ry(0.2, [0, 1])
             problem = AmplificationProblem(
                 oracle, state_preparation=stateprep, is_good_state=["11"]
             )
-            expected = GroverOperator(oracle, stateprep)
+            expected = oracle_builder(oracle, stateprep)
 
         self.assertEqual(Operator(expected), Operator(problem.grover_operator))
 
@@ -204,11 +204,12 @@ class TestGrover(QiskitAlgorithmsTestCase):
         result = grover.amplify(problem)
         self.assertIn(result.top_measurement, ["11"])
 
-    def test_run_custom_grover_operator(self):
+    @data(GroverOperator, grover_operator)
+    def test_run_custom_grover_operator(self, oracle_builder):
         """Test execution with a grover operator oracle"""
         oracle = QuantumCircuit(2)
         oracle.cz(0, 1)
-        grover_op = GroverOperator(oracle)
+        grover_op = oracle_builder(oracle)
         problem = AmplificationProblem(
             oracle=oracle, grover_operator=grover_op, is_good_state=["11"]
         )
@@ -225,7 +226,8 @@ class TestGrover(QiskitAlgorithmsTestCase):
             actual = Grover.optimal_num_iterations(num_solutions, num_qubits)
             self.assertEqual(actual, expected)
 
-    def test_construct_circuit(self):
+    @data(GroverOperator, grover_operator)
+    def test_construct_circuit(self, oracle_builder):
         """Test construct_circuit"""
         oracle = QuantumCircuit(2)
         oracle.cz(0, 1)
@@ -233,7 +235,7 @@ class TestGrover(QiskitAlgorithmsTestCase):
         grover = Grover()
         constructed = grover.construct_circuit(problem, 2, measurement=False)
 
-        grover_op = GroverOperator(oracle)
+        grover_op = oracle_builder(oracle)
         expected = QuantumCircuit(2)
         expected.h([0, 1])
         expected.compose(grover_op.power(2), inplace=True)

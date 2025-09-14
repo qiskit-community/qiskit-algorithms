@@ -17,7 +17,7 @@ from collections.abc import Callable
 from typing import Any, List, cast
 
 from qiskit.circuit import QuantumCircuit, Gate
-from qiskit.circuit.library import GroverOperator
+from qiskit.circuit.library import grover_operator as grover_operator_builder
 from qiskit.quantum_info import Statevector
 
 
@@ -205,10 +205,10 @@ class AmplificationProblem:
 
         Returns:
             The Grover operator, or None if neither the Grover operator nor the
-            :math:`\mathcal{A}` operator is  set.
+            :math:`\mathcal{A}` operator is set.
         """
         if self._grover_operator is None:
-            return GroverOperator(self.oracle, self.state_preparation)
+            return grover_operator_builder(self.oracle, self.state_preparation)
         return self._grover_operator
 
     @grover_operator.setter

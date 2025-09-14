@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+    :class:`AmplificationProblem` and :class:`EstimationProblem` now use the function
+    :func:`~qiskit.circuit.library.grover_operator` to construct the Grover operator
+    by default, instead of the class :class:`~qiskit.circuit.library.GroverOperator`,
+    to follow with the latter's deprecation in Qiskit 2.1. In particular, if these classes
+    are instantiated without providing a Grover operator, the new default construction
+    is used, and it won't be possible to access the attributes of the deprecated class.

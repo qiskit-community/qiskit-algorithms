@@ -96,7 +96,7 @@ class Grover(AmplitudeAmplifier):
 
         \mathcal{Q} = \mathcal{A} \mathcal{S}_0 \mathcal{A}^\dagger \mathcal{S}_f.
 
-    For more information, see the :class:`~qiskit.circuit.library.GroverOperator` in the
+    For more information, see the :func:`~qiskit.circuit.library.grover_operator` function in the
     circuit library.
 
     References:
@@ -217,9 +217,7 @@ class Grover(AmplitudeAmplifier):
             iterator: Iterator[int] = iter(self._iterations)
         else:
             max_iterations = max(10, 2**amplification_problem.oracle.num_qubits)
-            max_power = np.ceil(
-                2 ** (len(amplification_problem.grover_operator.reflection_qubits) / 2)
-            )
+            max_power = np.ceil(2 ** (len(amplification_problem.objective_qubits) / 2))
             iterator = self._iterations
 
         result = GroverResult()
