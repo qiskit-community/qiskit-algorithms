@@ -33,7 +33,7 @@ from qiskit_algorithms.state_fidelities import BaseStateFidelity
 from .eigensolver import Eigensolver, EigensolverResult
 from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 from ..observables_evaluator import estimate_observables
 from ..optimizers import Optimizer, Minimizer, OptimizerResult
 from ..utils import validate_bounds, validate_initial_point

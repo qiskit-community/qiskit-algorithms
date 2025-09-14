@@ -32,7 +32,7 @@ from qiskit_algorithms.gradients import BaseEstimatorGradient
 from ..custom_types import Transpiler
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 from ..optimizers import Optimizer, Minimizer, OptimizerResult
 from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult

@@ -28,7 +28,7 @@ from qiskit.result import QuasiDistribution
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 from ..optimizers import Minimizer, Optimizer, OptimizerResult
 from ..variational_algorithm import VariationalAlgorithm, VariationalResult
 from .diagonal_estimator import _DiagonalEstimator
