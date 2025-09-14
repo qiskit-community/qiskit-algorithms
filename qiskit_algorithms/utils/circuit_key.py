@@ -15,7 +15,7 @@ _circuit_key function from Qiskit 1.4
 This file is to be deleted once all interfaces such as the BaseStateFidelity's and gradients' accept
 PUB-like inputs instead of separate arguments.
 """
-from typing import Iterable
+from collections.abc import Iterable
 
 import numpy as np
 from qiskit import QuantumCircuit

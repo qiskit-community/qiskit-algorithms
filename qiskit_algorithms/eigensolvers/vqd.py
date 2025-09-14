@@ -444,7 +444,7 @@ class VQD(VariationalAlgorithm, Eigensolver):
         step: int,
         operator: BaseOperator,
         betas: np.ndarray,
-        current_optimal_point: dict["str", Any],
+        current_optimal_point: dict[str, Any],
         prev_states: list[QuantumCircuit] | None = None,
     ) -> Callable[[np.ndarray], float | np.ndarray]:
         """Returns a function handle to evaluate the ansatz's energy for any given parameters.

@@ -38,7 +38,6 @@ class TestVarQRTE(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
         self.seed = 11
-        np.random.seed(self.seed)
 
     def test_time_dependent_hamiltonian(self):
         """Simple test case with a time dependent Hamiltonian."""

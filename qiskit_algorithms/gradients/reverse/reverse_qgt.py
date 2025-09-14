@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 from collections.abc import Sequence
-from typing import cast, List
+from typing import cast
 import logging
 
 import numpy as np
@@ -114,7 +114,7 @@ class ReverseQGT(BaseQGT):
 
             # initialize the state variables -- naming convention is the same as the paper
             parameter_binds = dict(zip(circuit.parameters, values))
-            bound_unitaries = cast(List[QuantumCircuit], bind(unitaries, parameter_binds))
+            bound_unitaries = cast(list[QuantumCircuit], bind(unitaries, parameter_binds))
 
             chi = Statevector(bound_unitaries[0])
             psi = chi.copy()

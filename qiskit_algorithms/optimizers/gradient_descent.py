@@ -15,7 +15,8 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from dataclasses import dataclass, field
-from typing import Any, Callable, SupportsFloat
+from typing import Any, SupportsFloat
+from collections.abc import Callable
 import numpy as np
 from .optimizer import Optimizer, OptimizerSupportLevel, OptimizerResult, POINT
 from .steppable_optimizer import AskData, TellData, OptimizerState, SteppableOptimizer

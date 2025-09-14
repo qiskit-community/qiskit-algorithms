@@ -190,7 +190,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
 
         fidelity = ComputeUncompute(self._sampler)
         circuit = real_amplitudes(2)
-        values = np.random.random(circuit.num_parameters)
+        values = np.random.default_rng().random(circuit.num_parameters)
         shift = np.ones_like(values) * 0.01
 
         # lists of circuits, lists of numpy arrays

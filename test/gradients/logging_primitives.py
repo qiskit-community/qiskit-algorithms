@@ -12,7 +12,7 @@
 
 """Test primitives that check what kind of operations are in the circuits they execute."""
 from __future__ import annotations
-from typing import Iterable
+from collections.abc import Iterable
 
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.primitives.containers.estimator_pub import EstimatorPub

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -202,7 +202,7 @@ class EstimationProblem:
         """
         self._grover_operator = grover_operator
 
-    def rescale(self, scaling_factor: float) -> "EstimationProblem":
+    def rescale(self, scaling_factor: float) -> EstimationProblem:
         """Rescale the good state amplitude in the estimation problem.
 
         Args:

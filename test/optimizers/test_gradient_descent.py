@@ -26,7 +26,6 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        np.random.seed(12)
         self.initial_point = np.array([1, 1, 1, 1, 0])
 
     def objective(self, x):

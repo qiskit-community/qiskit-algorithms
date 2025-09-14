@@ -15,7 +15,8 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Callable, Union, Tuple, Dict, List, Optional, cast
+from typing import cast
+from collections.abc import Callable
 import logging
 import numpy as np
 from scipy import sparse as scisparse
@@ -31,7 +32,7 @@ from ..list_or_dict import ListOrDict
 logger = logging.getLogger(__name__)
 
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+    [list | np.ndarray, float, ListOrDict[tuple[float, dict[str, float]]] | None], bool
 ]
 
 
@@ -162,9 +163,9 @@ class NumPyEigensolver(Eigensolver):
     def _solve_dense(op_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if op_matrix.all() == op_matrix.conj().T.all():
             # Operator is Hermitian
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
         else:
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
 
     @staticmethod
     def _eval_aux_operators(
