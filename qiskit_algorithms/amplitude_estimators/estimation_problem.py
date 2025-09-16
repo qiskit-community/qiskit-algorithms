@@ -17,9 +17,13 @@ import warnings
 from collections.abc import Callable
 
 import numpy
-
 from qiskit.circuit import QuantumCircuit, QuantumRegister
-from qiskit.circuit.library import grover_operator as grover_operator_builder
+from qiskit.version import get_version_info
+
+if get_version_info() >= "2.1.0":
+    from qiskit.circuit.library import grover_operator as grover_operator_builder
+else:
+    from qiskit.circuit.library import GroverOperator as grover_operator_builder
 
 
 class EstimationProblem:
@@ -200,7 +204,9 @@ class EstimationProblem:
         Args:
             grover_operator: The new :math:`\mathcal{Q}` operator. If set to ``None``,
                 the default construction via :func:`~qiskit.circuit.library.grover_operator` is
-                used when accessing the property.
+                used when accessing the property using Qiskit in its 2.1.0 version or an older
+                one. If using Qiskit in an older version, the
+                :class:`~qiskit.circuit.library.GroverOperator` is instead used.
         """
         self._grover_operator = grover_operator
 

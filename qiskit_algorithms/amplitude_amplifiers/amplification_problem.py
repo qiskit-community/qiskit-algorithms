@@ -16,9 +16,14 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, List, cast
 
+from qiskit.version import get_version_info
 from qiskit.circuit import QuantumCircuit, Gate
-from qiskit.circuit.library import grover_operator as grover_operator_builder
 from qiskit.quantum_info import Statevector
+
+if get_version_info() >= "2.1.0":
+    from qiskit.circuit.library import grover_operator as grover_operator_builder
+else:
+    from qiskit.circuit.library import GroverOperator as grover_operator_builder
 
 
 class AmplificationProblem:

@@ -97,7 +97,8 @@ class Grover(AmplitudeAmplifier):
         \mathcal{Q} = \mathcal{A} \mathcal{S}_0 \mathcal{A}^\dagger \mathcal{S}_f.
 
     For more information, see the :func:`~qiskit.circuit.library.grover_operator` function in the
-    circuit library.
+    circuit library or the :class:`~qiskit.circuit.library.GroverOperator` class if you're using a
+    version of Qiskit older than 2.1.0.
 
     References:
         [1]: L. K. Grover (1996), A fast quantum mechanical algorithm for database search,
