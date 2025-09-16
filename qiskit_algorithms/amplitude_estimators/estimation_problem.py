@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2020, 2024.
+# (C) Copyright IBM 2020, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -17,9 +17,13 @@ import warnings
 from collections.abc import Callable
 
 import numpy
-
 from qiskit.circuit import QuantumCircuit, QuantumRegister
-from qiskit.circuit.library import GroverOperator
+from qiskit.version import get_version_info
+
+if get_version_info() >= "2.1.0":
+    from qiskit.circuit.library import grover_operator as grover_operator_builder
+else:
+    from qiskit.circuit.library import GroverOperator as grover_operator_builder
 
 
 class EstimationProblem:
@@ -167,7 +171,8 @@ class EstimationProblem:
         r"""Get the :math:`\mathcal{Q}` operator, or Grover operator.
 
         If the Grover operator is not set, we try to build it from the :math:`\mathcal{A}` operator
-        and `objective_qubits`. This only works if `objective_qubits` is a list of integers.
+        and `objective_qubits` using the :func:`~qiskit.circuit.library.grover_operator` function.
+        This only works if `objective_qubits` is a list of integers.
 
         Returns:
             The Grover operator, or None if neither the Grover operator nor the
@@ -190,7 +195,7 @@ class EstimationProblem:
         oracle.h(self.objective_qubits[-1])
 
         # construct the grover operator
-        return GroverOperator(oracle, self.state_preparation)
+        return grover_operator_builder(oracle, self.state_preparation)
 
     @grover_operator.setter
     def grover_operator(self, grover_operator: QuantumCircuit | None) -> None:
@@ -198,7 +203,10 @@ class EstimationProblem:
 
         Args:
             grover_operator: The new :math:`\mathcal{Q}` operator. If set to ``None``,
-                the default construction via ``qiskit.circuit.library.GroverOperator`` is used.
+                the default construction via :func:`~qiskit.circuit.library.grover_operator` is
+                used when accessing the property using Qiskit in its 2.1.0 version or an older
+                one. If using Qiskit in an older version, the
+                :class:`~qiskit.circuit.library.GroverOperator` is instead used.
         """
         self._grover_operator = grover_operator
 
