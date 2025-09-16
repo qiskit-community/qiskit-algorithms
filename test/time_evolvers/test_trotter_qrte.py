@@ -138,6 +138,12 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
             Statevector([-0.41614684 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j, 0.90929743 + 0.0j]),
         ),
         (
+            SparsePauliOp([Pauli("XY"), Pauli("XX")]),  # Non-commuting case
+            Statevector(
+                [0.291926582 - 0.708073418j, 0.0 + 0.0j, 0.0 + 0.0j, 0.454648713 - 0.454648713j]
+            ),
+        ),
+        (
             SparsePauliOp([Pauli("ZZ"), Pauli("ZI"), Pauli("IZ")]),
             Statevector([-0.9899925 - 0.14112001j, 0.0 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j]),
         ),

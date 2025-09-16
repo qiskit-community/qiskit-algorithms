@@ -250,7 +250,9 @@ class TrotterQRTE(RealTimeEvolver):
                     dt,
                     synthesis=self.product_formula,
                 )
+
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
+            evolved_state = evolved_state.decompose()
 
             if self._transpiler is not None:
                 evolved_state = self._transpiler.run(evolved_state, **self._transpiler_options)
