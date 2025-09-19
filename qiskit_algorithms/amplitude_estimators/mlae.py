@@ -13,14 +13,13 @@
 """The Maximum Likelihood Amplitude Estimation algorithm."""
 
 from __future__ import annotations
-from collections.abc import Sequence
-from typing import Callable, List, Tuple, cast, Any
+from collections.abc import Callable, Sequence
+from typing import cast, Any
 import warnings
 
 import numpy as np
 from scipy.optimize import brute
 from scipy.stats import norm, chi2
-
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
@@ -29,7 +28,8 @@ from .estimation_problem import EstimationProblem
 from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
 
-MINIMIZER = Callable[[Callable[[float], float], List[Tuple[float, float]]], float]
+
+MINIMIZER = Callable[[Callable[[float], float], list[tuple[float, float]]], float]
 
 
 class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
@@ -181,7 +181,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_confidence_interval(
-        result: "MaximumLikelihoodAmplitudeEstimationResult",
+        result: MaximumLikelihoodAmplitudeEstimationResult,
         alpha: float,
         kind: str = "fisher",
         apply_post_processing: bool = False,
@@ -269,7 +269,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
 
     def estimate(
         self, estimation_problem: EstimationProblem
-    ) -> "MaximumLikelihoodAmplitudeEstimationResult":
+    ) -> MaximumLikelihoodAmplitudeEstimationResult:
         """Run the amplitude estimation algorithm on provided estimation problem.
 
         Args:
@@ -320,7 +320,7 @@ class MaximumLikelihoodAmplitudeEstimation(AmplitudeEstimator):
         num_state_qubits = circuits[0].num_qubits - circuits[0].num_ancillas
 
         theta, good_counts = cast(
-            Tuple[float, List[float]],
+            tuple[float, list[float]],
             self.compute_mle(result.circuit_results, estimation_problem, num_state_qubits, True),
         )
 
@@ -424,7 +424,7 @@ def _safe_max(
 
 
 def _compute_fisher_information(
-    result: "MaximumLikelihoodAmplitudeEstimationResult",
+    result: MaximumLikelihoodAmplitudeEstimationResult,
     num_sum_terms: int | None = None,
     observed: bool = False,
 ) -> float:
@@ -558,7 +558,7 @@ def _likelihood_ratio_confint(
     # then yield [0, pi/2]
     confint = [_safe_min(above_thres, default=0), _safe_max(above_thres, default=np.pi / 2)]
     mapped_confint = cast(
-        Tuple[float, float], tuple(result.post_processing(np.sin(bound) ** 2) for bound in confint)
+        tuple[float, float], tuple(result.post_processing(np.sin(bound) ** 2) for bound in confint)
     )
 
     return mapped_confint

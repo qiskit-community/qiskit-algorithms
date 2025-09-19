@@ -12,13 +12,13 @@
 
 """Tests for the Gradient Descent optimizer."""
 
-from test import QiskitAlgorithmsTestCase
 import numpy as np
 from qiskit.circuit.library import pauli_two_design
 from qiskit.quantum_info import SparsePauliOp, Statevector
 
 from qiskit_algorithms.optimizers import GradientDescent, GradientDescentState
 from qiskit_algorithms.optimizers.steppable_optimizer import TellData, AskData
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestGradientDescent(QiskitAlgorithmsTestCase):
@@ -26,7 +26,6 @@ class TestGradientDescent(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        np.random.seed(12)
         self.initial_point = np.array([1, 1, 1, 1, 0])
 
     def objective(self, x):

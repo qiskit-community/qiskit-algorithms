@@ -13,12 +13,9 @@
 """Test of the AdaptVQE minimum eigensolver"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 from ddt import ddt, data, unpack
-
 import numpy as np
-
 from qiskit import generate_preset_pass_manager
 from qiskit.circuit import QuantumCircuit, QuantumRegister
 from qiskit.circuit.library import EvolvedOperatorAnsatz
@@ -30,6 +27,7 @@ from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, TerminationCriterion
 from qiskit_algorithms.optimizers import SLSQP
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 FIVE_QUBITS_BACKEND = GenericBackendV2(

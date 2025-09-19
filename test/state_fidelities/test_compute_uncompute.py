@@ -13,7 +13,6 @@
 """Tests for Fidelity."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt
@@ -23,6 +22,7 @@ from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms.state_fidelities import ComputeUncompute
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt
@@ -190,7 +190,7 @@ class TestComputeUncompute(QiskitAlgorithmsTestCase):
 
         fidelity = ComputeUncompute(self._sampler)
         circuit = real_amplitudes(2)
-        values = np.random.random(circuit.num_parameters)
+        values = np.random.default_rng().random(circuit.num_parameters)
         shift = np.ones_like(values) * 0.01
 
         # lists of circuits, lists of numpy arrays

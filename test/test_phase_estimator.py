@@ -12,7 +12,6 @@
 
 """Test phase estimation"""
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -29,6 +28,7 @@ from qiskit_algorithms import (
     PhaseEstimation,
     PhaseEstimationScale,
 )
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

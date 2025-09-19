@@ -12,12 +12,10 @@
 
 """Tests for PVQD."""
 import unittest
-from test import QiskitAlgorithmsTestCase
 from functools import partial
 
 import numpy as np
 from ddt import data, ddt, unpack
-
 from qiskit.circuit import Gate, Parameter, QuantumCircuit
 from qiskit.circuit.library import efficient_su2
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
@@ -31,6 +29,7 @@ from qiskit_algorithms.optimizers import L_BFGS_B, SPSA, GradientDescent, Optimi
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.time_evolvers.pvqd import PVQD
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 # pylint: disable=unused-argument, invalid-name

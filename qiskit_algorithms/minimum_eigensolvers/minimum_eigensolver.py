@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -20,7 +20,7 @@ from typing import Any
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..algorithm_result import AlgorithmResult
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 
 
 class MinimumEigensolver(ABC):
@@ -35,7 +35,7 @@ class MinimumEigensolver(ABC):
         self,
         operator: BaseOperator,
         aux_operators: ListOrDict[BaseOperator] | None = None,
-    ) -> "MinimumEigensolverResult":
+    ) -> MinimumEigensolverResult:
         """
         Computes the minimum eigenvalue. The ``operator`` and ``aux_operators`` are supplied here.
         While an ``operator`` is required by algorithms, ``aux_operators`` are optional.

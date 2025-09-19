@@ -14,13 +14,9 @@
 
 import unittest
 
-from test import QiskitAlgorithmsTestCase
-
-from typing import Optional, List, Tuple
 from ddt import ddt, data, unpack
 import numpy as np
 from scipy.optimize import rosen, rosen_der
-
 from qiskit.circuit.library import real_amplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
 from qiskit.primitives import StatevectorSampler
@@ -52,6 +48,7 @@ from qiskit_algorithms.optimizers import (
     SciPyOptimizer,
 )
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt
@@ -67,7 +64,7 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         optimizer: Optimizer,
         max_nfev: int,
         grad: bool = False,
-        bounds: Optional[List[Tuple[float, float]]] = None,
+        bounds: list[tuple[float, float]] | None = None,
     ):
         """Test the optimizer.
 

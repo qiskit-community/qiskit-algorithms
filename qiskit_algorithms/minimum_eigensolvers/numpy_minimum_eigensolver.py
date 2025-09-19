@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from typing import Callable, Union, Tuple, Dict, List, Optional
+from collections.abc import Callable
 import logging
 import numpy as np
 
@@ -23,13 +23,13 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from ..eigensolvers.numpy_eigensolver import NumPyEigensolver
 from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 
 logger = logging.getLogger(__name__)
 
 # future type annotations not supported in type aliases in 3.8
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+    [list | np.ndarray, float, ListOrDict[tuple[float, dict[str, float]]] | None], bool
 ]
 
 

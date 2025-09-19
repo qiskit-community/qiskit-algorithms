@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from abc import ABC
 from collections.abc import Mapping, Callable, Sequence
-from typing import Type, Any
+from typing import Any
 
 import numpy as np
 from scipy.integrate import OdeSolver
@@ -78,7 +78,7 @@ class VarQTE(ABC):
         initial_parameters: Mapping[Parameter, float] | Sequence[float],
         variational_principle: VariationalPrinciple,
         estimator: BaseEstimatorV2,
-        ode_solver: Type[OdeSolver] | str = ForwardEulerSolver,
+        ode_solver: type[OdeSolver] | str = ForwardEulerSolver,
         lse_solver: Callable[[np.ndarray, np.ndarray], np.ndarray] | None = None,
         num_timesteps: int | None = None,
         imag_part_tol: float = 1e-7,

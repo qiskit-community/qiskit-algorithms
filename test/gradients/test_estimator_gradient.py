@@ -14,7 +14,6 @@
 """Test Estimator Gradients"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -37,8 +36,9 @@ from qiskit_algorithms.gradients import (
     ReverseEstimatorGradient,
     DerivativeType,
 )
-
 from .logging_primitives import LoggingEstimator
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
+
 
 gradient_factories = [
     lambda estimator: FiniteDiffEstimatorGradient(estimator, epsilon=1e-6, method="central"),

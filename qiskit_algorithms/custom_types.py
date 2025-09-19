@@ -13,16 +13,29 @@
 """Types used by the qiskit-algorithms package."""
 from __future__ import annotations
 
-from typing import Any, Protocol, Union
+from typing import Any, Protocol, TypeAlias, TypeVar, overload
 
 from qiskit import QuantumCircuit
 
-_Circuits = Union[list[QuantumCircuit], QuantumCircuit]
+_T = TypeVar("_T")  # Pylint does not allow single character class names.
+ListOrDict = list[_T | None] | dict[str, _T]
+
+_Circuits: TypeAlias = list[QuantumCircuit] | QuantumCircuit
 
 
 class Transpiler(Protocol):
     """A Generic type to represent a transpiler."""
 
-    def run(self, circuits: _Circuits, **options: Any) -> _Circuits:
+    @overload
+    def run(self, circuits: list[QuantumCircuit], /, **options: Any) -> list[QuantumCircuit]:
+        """Transpile a list of quantum circuits."""
+        ...
+
+    @overload
+    def run(self, circuits: QuantumCircuit, /, **options: Any) -> QuantumCircuit:
+        """Transpile a single quantum circuit."""
+        ...
+
+    def run(self, circuits: _Circuits, /, **options: Any) -> _Circuits:
         """Transpile a circuit or a list of quantum circuits."""
         pass

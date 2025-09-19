@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,10 +11,12 @@
 # that they have been altered from the originals.
 """Class for testing evolution result."""
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
+
 from qiskit_algorithms import TimeEvolutionResult
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestTimeEvolutionResult(QiskitAlgorithmsTestCase):

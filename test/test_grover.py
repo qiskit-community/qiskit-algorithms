@@ -14,7 +14,6 @@
 
 import unittest
 from itertools import product
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
@@ -26,6 +25,7 @@ from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms import AmplificationProblem, Grover
 from qiskit_algorithms.utils.optionals import CAN_USE_PHASE_ORACLE
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

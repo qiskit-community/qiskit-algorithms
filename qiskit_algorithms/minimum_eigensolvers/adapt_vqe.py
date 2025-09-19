@@ -16,9 +16,8 @@ from __future__ import annotations
 import logging
 import re
 import warnings
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from enum import Enum
-from typing import Iterable
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -27,8 +26,8 @@ from qiskit.quantum_info import SparsePauliOp
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit.version import get_version_info as get_qiskit_version_info
 
+from qiskit_algorithms.custom_types import ListOrDict
 from qiskit_algorithms.exceptions import AlgorithmError
-from qiskit_algorithms.list_or_dict import ListOrDict
 from qiskit_algorithms.utils.validation import validate_min
 from .minimum_eigensolver import MinimumEigensolver
 from .vqe import VQE, VQEResult

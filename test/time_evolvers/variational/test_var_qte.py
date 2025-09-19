@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,14 +13,13 @@
 
 import unittest
 
-from test import QiskitAlgorithmsTestCase
 from numpy.testing import assert_raises
 from ddt import data, ddt
 import numpy as np
-
 from qiskit.circuit import Parameter
 
 from qiskit_algorithms.time_evolvers.variational.var_qte import VarQTE
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

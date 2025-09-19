@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2024.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,8 +14,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
-from typing import Callable, Union, Tuple, Dict, List, Optional, cast
+from collections.abc import Callable, Iterable
+from typing import cast
 import logging
 import numpy as np
 from scipy import sparse as scisparse
@@ -26,12 +26,12 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 from qiskit_algorithms.utils.validation import validate_min
 from .eigensolver import Eigensolver, EigensolverResult
 from ..exceptions import AlgorithmError
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 
 logger = logging.getLogger(__name__)
 
 FilterType = Callable[
-    [Union[List, np.ndarray], float, Optional[ListOrDict[Tuple[float, Dict[str, float]]]]], bool
+    [list | np.ndarray, float, ListOrDict[tuple[float, dict[str, float]]] | None], bool
 ]
 
 
@@ -162,9 +162,9 @@ class NumPyEigensolver(Eigensolver):
     def _solve_dense(op_matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if op_matrix.all() == op_matrix.conj().T.all():
             # Operator is Hermitian
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eigh(op_matrix))
         else:
-            return cast(Tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
+            return cast(tuple[np.ndarray, np.ndarray], np.linalg.eig(op_matrix))
 
     @staticmethod
     def _eval_aux_operators(

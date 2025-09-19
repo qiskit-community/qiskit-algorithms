@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,10 +12,10 @@
 
 """Tests for LearningRate."""
 
-from test import QiskitAlgorithmsTestCase
 import numpy as np
 
 from qiskit_algorithms.optimizers.optimizer_utils import LearningRate
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestLearningRate(QiskitAlgorithmsTestCase):
@@ -23,7 +23,6 @@ class TestLearningRate(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        np.random.seed(12)
         self.initial_point = np.array([1, 1, 1, 1, 0])
 
     def objective(self, x):

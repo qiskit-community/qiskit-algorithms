@@ -159,7 +159,7 @@ class IterativePhaseEstimation(PhaseEstimator):
     # pylint: disable=signature-differs
     def estimate(
         self, unitary: QuantumCircuit, state_preparation: QuantumCircuit | None = None
-    ) -> "IterativePhaseEstimationResult":
+    ) -> IterativePhaseEstimationResult:
         """
         Estimate the eigenphase of the input unitary and initial-state pair.
 

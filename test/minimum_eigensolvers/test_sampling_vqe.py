@@ -15,12 +15,10 @@
 
 import unittest
 from functools import partial
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import data, ddt
 from scipy.optimize import minimize as scipy_minimize
-
 from qiskit.circuit import ParameterVector, QuantumCircuit
 
 # TODO: RealAmplitudes is still imported to check the resize of the ansatz, remove when this
@@ -34,6 +32,7 @@ from qiskit_algorithms.minimum_eigensolvers import SamplingVQE
 from qiskit_algorithms.optimizers import SPSA, QNSPSA, SLSQP, OptimizerResult
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 # pylint: disable=invalid-name

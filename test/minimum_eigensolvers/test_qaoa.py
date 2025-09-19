@@ -14,7 +14,6 @@
 
 import unittest
 from functools import partial
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 import rustworkx as rx
@@ -29,6 +28,7 @@ from scipy.optimize import minimize as scipy_minimize
 from qiskit_algorithms.minimum_eigensolvers import QAOA
 from qiskit_algorithms.optimizers import COBYLA, NELDER_MEAD
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 W1 = np.array([[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1], [1, 0, 1, 0]])

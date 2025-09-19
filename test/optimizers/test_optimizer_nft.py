@@ -13,13 +13,14 @@
 """Test of NFT optimizer"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from qiskit.circuit.library import real_amplitudes
 from qiskit.primitives import StatevectorEstimator
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms.optimizers import NFT
 from qiskit_algorithms.minimum_eigensolvers import VQE
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestOptimizerNFT(QiskitAlgorithmsTestCase):

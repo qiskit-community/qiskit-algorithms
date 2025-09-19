@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2023.
+# (C) Copyright IBM 2021, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -24,7 +24,7 @@ class AmplitudeAmplifier(ABC):
     """The interface for amplification algorithms."""
 
     @abstractmethod
-    def amplify(self, amplification_problem: AmplificationProblem) -> "AmplitudeAmplifierResult":
+    def amplify(self, amplification_problem: AmplificationProblem) -> AmplitudeAmplifierResult:
         """Run the amplification algorithm.
 
         Args:
