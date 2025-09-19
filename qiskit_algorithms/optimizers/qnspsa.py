@@ -14,16 +14,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from typing import Any
-from collections.abc import Callable
 
 import numpy as np
 from qiskit.circuit import QuantumCircuit
-
 from qiskit.primitives import BaseSamplerV2
-from qiskit_algorithms.state_fidelities import ComputeUncompute
 
+from qiskit_algorithms.state_fidelities import ComputeUncompute
 from .spsa import SPSA, CALLBACK, TERMINATIONCHECKER, _batch_evaluate
 from ..custom_types import Transpiler
 

@@ -13,11 +13,9 @@
 """Test Variational Quantum Real Time Evolution algorithm."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 from ddt import ddt
 import numpy as np
-
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 from qiskit.circuit import Parameter, ParameterVector
 from qiskit.circuit.library import efficient_su2
@@ -29,6 +27,7 @@ from qiskit_algorithms.gradients import LinCombQGT, DerivativeType, LinCombEstim
 from qiskit_algorithms import TimeEvolutionProblem, VarQRTE
 from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

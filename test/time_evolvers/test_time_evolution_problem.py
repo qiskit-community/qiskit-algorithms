@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,13 +12,14 @@
 
 """Test evolver problem class."""
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector
 from qiskit.circuit import Parameter
 
 from qiskit_algorithms import TimeEvolutionProblem
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

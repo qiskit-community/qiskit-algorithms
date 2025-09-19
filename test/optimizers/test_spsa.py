@@ -12,18 +12,15 @@
 
 """Tests for the SPSA optimizer."""
 
-from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data
-
 import numpy as np
-
 from qiskit.circuit.library import pauli_two_design
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
-
 from qiskit.quantum_info import SparsePauliOp, Statevector
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

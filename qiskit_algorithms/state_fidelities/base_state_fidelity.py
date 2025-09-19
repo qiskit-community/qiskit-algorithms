@@ -15,9 +15,8 @@ Base state fidelity interface
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from collections.abc import MutableMapping
+from collections.abc import MutableMapping, Sequence
 from typing import cast, Any
-from collections.abc import Sequence
 import numpy as np
 
 from qiskit import QuantumCircuit

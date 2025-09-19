@@ -15,7 +15,6 @@ Validation module
 """
 
 
-
 def validate_in_set(name: str, value: object, values: set[object]) -> None:
     """
     Args:

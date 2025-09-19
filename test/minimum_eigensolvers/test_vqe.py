@@ -13,13 +13,11 @@
 """Test the variational quantum eigensolver algorithm."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
-
 from functools import partial
+
 import numpy as np
 from scipy.optimize import minimize as scipy_minimize
 from ddt import data, ddt
-
 from qiskit import QuantumCircuit, generate_preset_pass_manager
 
 # TODO: RealAmplitudes is still imported to check the resize of the ansatz, remove when this
@@ -46,6 +44,7 @@ from qiskit_algorithms.optimizers import (
 )
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 THREE_QUBITS_BACKEND = GenericBackendV2(num_qubits=3, coupling_map=[[0, 1], [1, 2]], seed=54)

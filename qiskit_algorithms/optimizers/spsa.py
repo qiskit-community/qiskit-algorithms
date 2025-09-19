@@ -17,9 +17,8 @@ This implementation allows both standard first-order and second-order SPSA.
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from typing import Any, SupportsFloat
-from collections.abc import Callable
 import logging
 import warnings
 from time import time

@@ -14,7 +14,6 @@
 """Test Sampler Gradients"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -32,6 +31,8 @@ from qiskit_algorithms.gradients import (
     SPSASamplerGradient,
 )
 from .logging_primitives import LoggingSampler
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
+
 
 gradient_factories = [
     (

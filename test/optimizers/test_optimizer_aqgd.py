@@ -13,7 +13,7 @@
 """Test of AQGD optimizer"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase, slow_test
+
 import numpy as np
 from ddt import ddt, data
 from qiskit.circuit.library import real_amplitudes
@@ -25,6 +25,7 @@ from qiskit_algorithms.gradients import LinCombEstimatorGradient
 from qiskit_algorithms.optimizers import AQGD
 from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase, slow_test  # pylint: disable=wrong-import-order
 
 
 @ddt

@@ -13,9 +13,8 @@
 """Variational Quantum Imaginary Time Evolution algorithm."""
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any
-from collections.abc import Callable
 
 import numpy as np
 from scipy.integrate import OdeSolver

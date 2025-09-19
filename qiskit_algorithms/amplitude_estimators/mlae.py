@@ -13,15 +13,13 @@
 """The Maximum Likelihood Amplitude Estimation algorithm."""
 
 from __future__ import annotations
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import cast, Any
-from collections.abc import Callable
 import warnings
 
 import numpy as np
 from scipy.optimize import brute
 from scipy.stats import norm, chi2
-
 from qiskit import ClassicalRegister, QuantumRegister, QuantumCircuit
 from qiskit.primitives import BaseSamplerV2, StatevectorSampler
 
@@ -29,6 +27,7 @@ from .amplitude_estimator import AmplitudeEstimator, AmplitudeEstimatorResult
 from .estimation_problem import EstimationProblem
 from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
+
 
 MINIMIZER = Callable[[Callable[[float], float], list[tuple[float, float]]], float]
 

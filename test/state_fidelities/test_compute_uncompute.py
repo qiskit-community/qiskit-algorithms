@@ -13,7 +13,6 @@
 """Tests for Fidelity."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt
@@ -23,6 +22,7 @@ from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 
 from qiskit_algorithms.state_fidelities import ComputeUncompute
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

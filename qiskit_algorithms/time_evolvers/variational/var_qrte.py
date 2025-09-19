@@ -13,22 +13,18 @@
 """Variational Quantum Real Time Evolution algorithm."""
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from typing import Any
-from collections.abc import Callable
 
 import numpy as np
 from scipy.integrate import OdeSolver
-
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 from qiskit.primitives import BaseEstimatorV2
 
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
-
 from .variational_principles import RealVariationalPrinciple, RealMcLachlanPrinciple
 from .var_qte import VarQTE
-
 from ..real_time_evolver import RealTimeEvolver
 from ...custom_types import Transpiler
 

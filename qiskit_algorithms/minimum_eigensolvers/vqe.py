@@ -17,12 +17,10 @@ from __future__ import annotations
 import logging
 import warnings
 from time import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any
-from collections.abc import Iterable
 
 import numpy as np
-
 from qiskit.circuit import QuantumCircuit
 from qiskit.primitives import BaseEstimatorV2
 from qiskit.quantum_info import SparsePauliOp
@@ -30,7 +28,6 @@ from qiskit.quantum_info.operators.base_operator import BaseOperator
 
 from qiskit_algorithms.gradients import BaseEstimatorGradient
 from ..custom_types import Transpiler
-
 from ..exceptions import AlgorithmError
 from ..custom_types import ListOrDict
 from ..optimizers import Optimizer, Minimizer, OptimizerResult
@@ -39,8 +36,9 @@ from .minimum_eigensolver import MinimumEigensolver, MinimumEigensolverResult
 from ..observables_evaluator import estimate_observables
 from ..utils import validate_initial_point, validate_bounds
 
-# private function as we expect this to be updated in the next released
+# private function as we expect this to be updated in the next release
 from ..utils.set_batching import _set_default_batchsize
+
 
 logger = logging.getLogger(__name__)
 

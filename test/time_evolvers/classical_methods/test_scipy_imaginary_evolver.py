@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,17 +12,17 @@
 
 """Test Classical Imaginary Evolver."""
 import unittest
-from test import QiskitAlgorithmsTestCase
 from typing import cast
+
 from ddt import data, ddt, unpack
 import numpy as np
-
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.states.statevector import Statevector
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms import SciPyImaginaryEvolver
 from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

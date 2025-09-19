@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,14 +13,13 @@
 """Test NumPy minimum eigensolver"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data
-
 from qiskit.quantum_info import Operator, SparsePauliOp
 
 from qiskit_algorithms.minimum_eigensolvers import NumPyMinimumEigensolver
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 H2_SPARSE_PAULI = SparsePauliOp(
     ["II", "ZI", "IZ", "ZZ", "XX"],

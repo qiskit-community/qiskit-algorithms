@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023.
+# (C) Copyright IBM 2023, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,7 +13,7 @@
 """Test Forward Euler solver."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 import numpy as np
 from ddt import ddt, data, unpack
 from scipy.integrate import solve_ivp
@@ -21,6 +21,7 @@ from scipy.integrate import solve_ivp
 from qiskit_algorithms.time_evolvers.variational.solvers.ode.forward_euler_solver import (
     ForwardEulerSolver,
 )
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

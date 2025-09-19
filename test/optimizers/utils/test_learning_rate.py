@@ -12,10 +12,10 @@
 
 """Tests for LearningRate."""
 
-from test import QiskitAlgorithmsTestCase
 import numpy as np
 
 from qiskit_algorithms.optimizers.optimizer_utils import LearningRate
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestLearningRate(QiskitAlgorithmsTestCase):

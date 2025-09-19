@@ -14,9 +14,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import cast
-from collections.abc import Callable
 import logging
 import numpy as np
 from scipy import sparse as scisparse

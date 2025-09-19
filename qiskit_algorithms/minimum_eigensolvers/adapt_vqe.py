@@ -16,9 +16,8 @@ from __future__ import annotations
 import logging
 import re
 import warnings
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from enum import Enum
-from collections.abc import Iterable
 
 import numpy as np
 from qiskit import QuantumCircuit

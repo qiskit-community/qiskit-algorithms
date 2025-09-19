@@ -269,9 +269,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
 
         return int(one_counts), one_counts / sum(counts_dict.values())
 
-    def estimate(
-        self, estimation_problem: EstimationProblem
-    ) -> IterativeAmplitudeEstimationResult:
+    def estimate(self, estimation_problem: EstimationProblem) -> IterativeAmplitudeEstimationResult:
         """Run the amplitude estimation algorithm on provided estimation problem.
 
         Args:
