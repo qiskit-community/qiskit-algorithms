@@ -96,7 +96,7 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
       - name: Run upload documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: documentation
           path: docs/_build/html/artifacts/documentation.tar.gz
@@ -161,7 +161,7 @@ jobs:
           mv .coverage ./ci-artifact-data/alg.dat
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.9 }}
         shell: bash
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.os }}-${{ matrix.python-version }}
           path: ./ci-artifact-data/*
@@ -245,7 +245,7 @@ jobs:
           tar -zcvf artifacts/tutorials.tar.gz --exclude=./artifacts .
         shell: bash
       - name: Run upload tutorials
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: tutorials${{ matrix.python-version }}
           path: docs/_build/html/artifacts/tutorials.tar.gz
