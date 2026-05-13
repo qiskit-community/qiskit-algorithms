@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2025.
+# (C) Copyright IBM 2021, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: ['3.14']
     steps:
       - name: Print Concurrency Group
         env:
@@ -111,16 +111,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, '3.10', 3.11, 3.12, 3.13]
+        python-version: ['3.10', 3.11, 3.12, 3.13, 3.14]
         include:
           - os: macos-latest
-            python-version: 3.9
+            python-version: '3.10'
           - os: macos-latest
-            python-version: 3.13
+            python-version: 3.14
           - os: windows-latest
-            python-version: 3.9
+            python-version: '3.10'
           - os: windows-latest
-            python-version: 3.13
+            python-version: 3.14
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -159,7 +159,7 @@ jobs:
         run: |
           coverage3 combine
           mv .coverage ./ci-artifact-data/alg.dat
-        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == 3.9 }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10' }}
         shell: bash
       - uses: actions/upload-artifact@v5
         with:
@@ -172,7 +172,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, 3.13]
+        python-version: ['3.10', 3.14]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -209,7 +209,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9, 3.13]
+        python-version: ['3.10', 3.14]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -255,16 +255,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: ['3.10']
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v6
-        with:
-          name: ubuntu-latest-3.9
-          path: /tmp/u39
       - uses: actions/download-artifact@v6
         with:
           name: ubuntu-latest-3.10
@@ -283,29 +279,33 @@ jobs:
           path: /tmp/u313
       - uses: actions/download-artifact@v6
         with:
-          name: macos-latest-3.9
-          path: /tmp/m39
+          name: ubuntu-latest-3.14
+          path: /tmp/u314
       - uses: actions/download-artifact@v6
         with:
-          name: macos-latest-3.13
-          path: /tmp/m313
+          name: macos-latest-3.10
+          path: /tmp/m310
       - uses: actions/download-artifact@v6
         with:
-          name: windows-latest-3.9
-          path: /tmp/w39
+          name: macos-latest-3.14
+          path: /tmp/m314
       - uses: actions/download-artifact@v6
         with:
-          name: windows-latest-3.13
-          path: /tmp/w313
+          name: windows-latest-3.10
+          path: /tmp/w310
+      - uses: actions/download-artifact@v6
+        with:
+          name: windows-latest-3.14
+          path: /tmp/w314
       - name: Install Dependencies
         run: pip install -U coverage coveralls diff-cover
         shell: bash
       - name: Combined Deprecation Messages
         run: |
-          sort -f -u /tmp/u39/alg.dep /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/u313/alg.dep /tmp/m39/alg.dep /tmp/m313/alg.dep /tmp/w39/alg.dep /tmp/w313/alg.dep || true
+          sort -f -u /tmp/u310/alg.dep /tmp/u311/alg.dep /tmp/u312/alg.dep /tmp/u313/alg.dep /tmp/u314/alg.dep /tmp/m310/alg.dep /tmp/m314/alg.dep /tmp/w310/alg.dep /tmp/w314/alg.dep || true
         shell: bash
       - name: Coverage combine
-        run: coverage3 combine /tmp/u39/alg.dat
+        run: coverage3 combine /tmp/u310/alg.dat
         shell: bash
       - name: Upload to Coveralls
         env:
