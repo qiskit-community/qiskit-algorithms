@@ -242,6 +242,7 @@ class TestVQE(QiskitAlgorithmsTestCase):
         self.assertTrue(all(isinstance(metadata, dict) for metadata in history["metadata"]))
         for params in history["parameters"]:
             self.assertTrue(all(isinstance(param, float) for param in params))
+            self.assertTrue(len(params) == wavefunction.num_parameters)
 
     def test_reuse(self):
         """Test re-using a VQE algorithm instance."""
