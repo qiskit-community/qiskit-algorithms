@@ -28,7 +28,6 @@ from .estimation_problem import EstimationProblem
 from ..custom_types import Transpiler
 from ..exceptions import AlgorithmError
 
-
 MINIMIZER = Callable[[Callable[[float], float], list[tuple[float, float]]], float]
 
 

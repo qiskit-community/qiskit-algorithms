@@ -33,7 +33,6 @@ from qiskit_algorithms.gradients import (
 from .logging_primitives import LoggingSampler
 from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
-
 gradient_factories = [
     (
         lambda sampler: FiniteDiffSamplerGradient(sampler, epsilon=1e-2, method="central"),

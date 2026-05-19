@@ -39,7 +39,6 @@ from qiskit_algorithms.gradients import (
 from .logging_primitives import LoggingEstimator
 from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
-
 gradient_factories = [
     lambda estimator: FiniteDiffEstimatorGradient(estimator, epsilon=1e-6, method="central"),
     lambda estimator: FiniteDiffEstimatorGradient(estimator, epsilon=1e-6, method="forward"),
