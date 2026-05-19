@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    Added Python 3.14 support.
+upgrade:
+  - |
+    Python 3.9 support was dropped as Python 3.8 reached End Of Life
+    in October 2025 and is no longer being maintained. If you were
+    using Python 3.9 you should upgrade to a newer version that Qiskit
+    Algorithms now supports.

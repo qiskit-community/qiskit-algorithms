@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2025.
+# (C) Copyright IBM 2022, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -332,7 +332,7 @@ class VQE(VariationalAlgorithm, MinimumEigensolver):
                 values = values.reshape(1)
 
             if self.callback is not None:
-                for params, value in zip(parameters.reshape(-1, 1), values):
+                for params, value in zip(parameters, values):
                     eval_count += 1
                     self.callback(eval_count, params, value, estimator_result.metadata)
 

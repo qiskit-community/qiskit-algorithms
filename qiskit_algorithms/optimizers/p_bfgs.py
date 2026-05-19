@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -11,6 +11,7 @@
 # that they have been altered from the originals.
 
 """Parallelized Limited-memory BFGS optimizer"""
+
 from __future__ import annotations
 
 import logging
@@ -125,7 +126,13 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
                 "For Windows, using only current process. Multiple core use not supported."
             )
 
-        queue: multiprocessing.queues.Queue[tuple[POINT, float, int]] = multiprocessing.Queue()
+        # From Python 3.14 onward, we have to explicitly set the starting method, which has been
+        # changed to forkserver.
+        # TODO: forkserver might be better to use, but requires some objects to be pickled. A way
+        #  to circumvent this is using dill, but that would introduce a dependency
+        # fork is only available on Linux; on Windows/macOS num_procs is already 0
+        ctx = multiprocessing.get_context("fork") if num_procs > 0 else multiprocessing
+        queue: multiprocessing.queues.Queue[tuple[POINT, float, int]] = ctx.Queue()
 
         # TODO: are automatic bounds a good idea? What if the circuit parameters are not
         # just from plain Pauli rotations but have a coefficient?
@@ -145,7 +152,7 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
         processes = []
         for _ in range(num_procs):
             i_pt = algorithm_globals.random.uniform(low, high)  # Another random point in bounds
-            proc = multiprocessing.Process(target=optimize_runner, args=(queue, i_pt))
+            proc = ctx.Process(target=optimize_runner, args=(queue, i_pt))
             processes.append(proc)
             proc.start()
 

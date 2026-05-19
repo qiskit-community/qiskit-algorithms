@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2025.
+# (C) Copyright IBM 2022, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -41,7 +41,6 @@ from ..utils import validate_initial_point, validate_bounds
 
 # private function as we expect this to be updated in the next released
 from ..utils.set_batching import _set_default_batchsize
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2025.
+# (C) Copyright IBM 2022, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -28,7 +28,6 @@ from qiskit_algorithms.minimum_eigensolvers.adapt_vqe import AdaptVQE, Terminati
 from qiskit_algorithms.optimizers import SLSQP
 from qiskit_algorithms.utils import algorithm_globals
 from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
-
 
 FIVE_QUBITS_BACKEND = GenericBackendV2(
     num_qubits=5, coupling_map=[[0, 1], [1, 2], [2, 3], [3, 4]], seed=54
