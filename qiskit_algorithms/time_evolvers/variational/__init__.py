@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2025.
+# (C) Copyright IBM 2023, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -91,6 +91,7 @@ e.g. RK45.
    ForwardEulerSolver
 
 """
+
 from .solvers.ode.forward_euler_solver import ForwardEulerSolver
 from .var_qrte import VarQRTE
 from .var_qite import VarQITE

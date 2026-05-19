@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2025.
+# (C) Copyright IBM 2025, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -15,6 +15,7 @@ _circuit_key function from Qiskit 1.4
 This file is to be deleted once all interfaces such as the BaseStateFidelity's and gradients' accept
 PUB-like inputs instead of separate arguments.
 """
+
 from typing import Iterable
 
 import numpy as np

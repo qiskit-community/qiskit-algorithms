@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2023, 2025.
+# (C) Copyright IBM 2023, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -64,9 +64,7 @@ rst_prolog = """
     <br><br><br>
 
 .. |version| replace:: {0}
-""".format(
-    release
-)
+""".format(release)
 
 nbsphinx_prolog = """
 {% set docname = env.doc2path(env.docname, base=None) %}
