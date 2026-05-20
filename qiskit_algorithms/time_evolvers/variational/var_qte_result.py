@@ -20,7 +20,7 @@ from qiskit.circuit import QuantumCircuit
 
 from ..time_evolution_result import TimeEvolutionResult
 
-from ...list_or_dict import ListOrDict
+from ...custom_types import ListOrDict
 
 
 class VarQTEResult(TimeEvolutionResult):

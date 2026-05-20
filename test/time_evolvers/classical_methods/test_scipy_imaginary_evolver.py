@@ -13,17 +13,17 @@
 """Test Classical Imaginary Evolver."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 from typing import cast
+
 from ddt import data, ddt, unpack
 import numpy as np
-
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.states.statevector import Statevector
 from qiskit.quantum_info import SparsePauliOp
 
 from qiskit_algorithms import SciPyImaginaryEvolver
 from qiskit_algorithms.time_evolvers.time_evolution_problem import TimeEvolutionProblem
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

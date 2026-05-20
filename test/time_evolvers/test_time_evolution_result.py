@@ -12,10 +12,12 @@
 """Class for testing evolution result."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
+
 from qiskit_algorithms import TimeEvolutionResult
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestTimeEvolutionResult(QiskitAlgorithmsTestCase):
