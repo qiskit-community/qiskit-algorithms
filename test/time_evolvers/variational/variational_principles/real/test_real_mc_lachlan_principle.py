@@ -14,20 +14,20 @@
 
 import unittest
 
-from test import QiskitAlgorithmsTestCase
-
-# fmt: off
-from test.time_evolvers.variational.variational_principles.expected_results.\
-    test_imaginary_mc_lachlan_variational_principle_expected2 import expected_bound_metric_tensor_2
-# fmt: on
 import numpy as np
-
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.circuit.library import efficient_su2
 from qiskit.primitives import StatevectorEstimator
 
 from qiskit_algorithms.gradients import LinCombEstimatorGradient, DerivativeType
 from qiskit_algorithms.time_evolvers.variational import RealMcLachlanPrinciple
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
+# fmt: off
+# pylint: disable=wrong-import-order
+from test.time_evolvers.variational.variational_principles.expected_results.\
+    test_imaginary_mc_lachlan_variational_principle_expected2 import expected_bound_metric_tensor_2
+# pylint: enable=wrong-import-order
+# fmt: on
 
 
 class TestRealMcLachlanPrinciple(QiskitAlgorithmsTestCase):

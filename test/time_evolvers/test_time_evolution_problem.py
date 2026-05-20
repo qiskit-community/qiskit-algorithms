@@ -13,13 +13,14 @@
 """Test evolver problem class."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from ddt import data, ddt
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli, SparsePauliOp, Statevector
 from qiskit.circuit import Parameter
 
 from qiskit_algorithms import TimeEvolutionProblem
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt

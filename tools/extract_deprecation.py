@@ -12,7 +12,6 @@
 
 """Extract deprecation messages from input"""
 
-from typing import List
 import sys
 import os
 import argparse

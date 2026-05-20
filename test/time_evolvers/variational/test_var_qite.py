@@ -38,7 +38,6 @@ class TestVarQITE(QiskitAlgorithmsTestCase):
     def setUp(self):
         super().setUp()
         self.seed = 11
-        np.random.seed(self.seed)
 
     def test_run_d_1_with_aux_ops(self):
         """Test VarQITE for d = 1 and t = 1 with evaluating auxiliary operator and the Forward

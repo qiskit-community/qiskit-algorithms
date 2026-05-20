@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2022, 2023.
+# (C) Copyright IBM 2022, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,13 +12,12 @@
 
 """Test validate initial point."""
 
-from test import QiskitAlgorithmsTestCase
-
 from unittest.mock import Mock
 
 import numpy as np
 
 from qiskit_algorithms.utils import algorithm_globals, validate_initial_point
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestValidateInitialPoint(QiskitAlgorithmsTestCase):

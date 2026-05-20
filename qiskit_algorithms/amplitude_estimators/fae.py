@@ -13,7 +13,7 @@
 """Faster Amplitude Estimation."""
 
 from __future__ import annotations
-from typing import cast, Tuple, Any
+from typing import cast, Any
 import warnings
 import numpy as np
 
@@ -182,7 +182,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
 
         return circuit
 
-    def estimate(self, estimation_problem: EstimationProblem) -> "FasterAmplitudeEstimationResult":
+    def estimate(self, estimation_problem: EstimationProblem) -> FasterAmplitudeEstimationResult:
         """Run the amplitude estimation algorithm on provided estimation problem.
 
         Args:
@@ -264,7 +264,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
         result.estimation_processed = problem.post_processing(value)  # type: ignore[assignment]
         result.confidence_interval = value_ci
         result.confidence_interval_processed = cast(
-            Tuple[float, float], (problem.post_processing(x) for x in value_ci)
+            tuple[float, float], (problem.post_processing(x) for x in value_ci)
         )
         result.theta_intervals = theta_cis
 
