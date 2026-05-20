@@ -13,10 +13,8 @@
 """Test of scikit-quant optimizers."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 from ddt import ddt, data, unpack
-
 import numpy
 from qiskit.circuit.library import real_amplitudes
 from qiskit.exceptions import MissingOptionalLibraryError
@@ -26,6 +24,7 @@ from qiskit.quantum_info import SparsePauliOp
 from qiskit_algorithms.minimum_eigensolvers import VQE
 from qiskit_algorithms.optimizers import BOBYQA, SNOBFIT, IMFIL
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt
