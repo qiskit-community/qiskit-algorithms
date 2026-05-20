@@ -21,7 +21,7 @@ from qiskit.circuit import Parameter
 from qiskit.quantum_info import Statevector
 from qiskit.quantum_info.operators.base_operator import BaseOperator
 
-from ..list_or_dict import ListOrDict
+from ..custom_types import ListOrDict
 
 
 class TimeEvolutionProblem:

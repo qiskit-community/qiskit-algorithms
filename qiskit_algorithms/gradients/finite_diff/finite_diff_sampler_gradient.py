@@ -15,7 +15,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Literal, Sequence, Any
+from collections.abc import Sequence
+from typing import Literal, Any
 
 import numpy as np
 

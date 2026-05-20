@@ -13,13 +13,14 @@
 """Test Classical Real Evolver."""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
+
 from ddt import data, ddt, unpack
 import numpy as np
 from qiskit import QuantumCircuit, QuantumRegister
 from qiskit.quantum_info import Statevector, SparsePauliOp
 
 from qiskit_algorithms import SciPyRealEvolver, TimeEvolutionProblem
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 def zero(n):

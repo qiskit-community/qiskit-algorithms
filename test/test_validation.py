@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2023.
+# (C) Copyright IBM 2019, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,8 +14,6 @@
 
 import unittest
 
-from test import QiskitAlgorithmsTestCase
-
 from qiskit_algorithms.utils.validation import (
     validate_in_set,
     validate_min,
@@ -27,6 +25,7 @@ from qiskit_algorithms.utils.validation import (
     validate_range_exclusive_min,
     validate_range_exclusive_max,
 )
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 class TestValidation(QiskitAlgorithmsTestCase):

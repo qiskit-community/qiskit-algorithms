@@ -15,8 +15,8 @@ Base state fidelity interface
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from collections.abc import MutableMapping
-from typing import cast, Sequence, List, Any
+from collections.abc import MutableMapping, Sequence
+from typing import cast, Any
 import numpy as np
 
 from qiskit import QuantumCircuit
@@ -112,11 +112,11 @@ class BaseStateFidelity(ABC):
 
             # ensure 2d
             if len(values) > 0 and not isinstance(values[0], Sequence) or len(values) == 0:
-                values = [cast(List[float], values)]
+                values = [cast(list[float], values)]
 
             # we explicitly cast the type here because mypy appears to be unable to understand the
             # above few lines where we ensure that values are 2d
-            return cast(Sequence[List[float]], values)
+            return cast(Sequence[list[float]], values)
 
     def _check_qubits_match(self, circuit_1: QuantumCircuit, circuit_2: QuantumCircuit) -> None:
         """

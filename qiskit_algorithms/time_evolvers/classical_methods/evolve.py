@@ -25,7 +25,7 @@ from ..time_evolution_problem import TimeEvolutionProblem
 from ..time_evolution_result import TimeEvolutionResult
 from ...exceptions import AlgorithmError
 
-from ...list_or_dict import ListOrDict
+from ...custom_types import ListOrDict
 
 logger = logging.getLogger(__name__)
 

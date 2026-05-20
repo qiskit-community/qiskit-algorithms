@@ -12,18 +12,15 @@
 
 """Tests for the SPSA optimizer."""
 
-from test import QiskitAlgorithmsTestCase
 from ddt import ddt, data
-
 import numpy as np
-
 from qiskit.circuit.library import pauli_two_design
 from qiskit.primitives import StatevectorEstimator, StatevectorSampler
-
 from qiskit.quantum_info import SparsePauliOp, Statevector
 
 from qiskit_algorithms.optimizers import SPSA, QNSPSA
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt
@@ -32,7 +29,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
 
     def setUp(self):
         super().setUp()
-        np.random.seed(12)
+        self.random_generator = np.random.default_rng(12)
         algorithm_globals.random_seed = 12
 
     # @slow_test
@@ -141,7 +138,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
         """Test the termination_callback"""
 
         def objective(x):
-            return np.linalg.norm(x) + np.random.rand(1)
+            return np.linalg.norm(x) + self.random_generator.random(1)
 
         class TerminationChecker:
             """Example termination checker"""
@@ -204,7 +201,7 @@ class TestSPSA(QiskitAlgorithmsTestCase):
     def test_qnspsa_fidelity_primitives(self):
         """Test the primitives can be used in get_fidelity."""
         ansatz = pauli_two_design(2, reps=1, seed=2)
-        initial_point = np.random.random(ansatz.num_parameters)
+        initial_point = self.random_generator.random(ansatz.num_parameters)
 
         with self.subTest(msg="pass as kwarg"):
             fidelity = QNSPSA.get_fidelity(ansatz, sampler=StatevectorSampler(seed=123))

@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2019, 2025.
+# (C) Copyright IBM 2019, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -14,7 +14,6 @@
 """Test Sampler Gradients"""
 
 import unittest
-from test import QiskitAlgorithmsTestCase
 
 import numpy as np
 from ddt import ddt, data, unpack
@@ -32,6 +31,7 @@ from qiskit_algorithms.gradients import (
     SPSASamplerGradient,
 )
 from .logging_primitives import LoggingSampler
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 gradient_factories = [
     (

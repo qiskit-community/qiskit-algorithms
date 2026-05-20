@@ -228,7 +228,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_mle(
-        result: "AmplitudeEstimationResult", apply_post_processing: bool = False
+        result: AmplitudeEstimationResult, apply_post_processing: bool = False
     ) -> float:
         """Compute the Maximum Likelihood Estimator (MLE).
 
@@ -285,7 +285,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
         return a_opt
 
-    def estimate(self, estimation_problem: EstimationProblem) -> "AmplitudeEstimationResult":
+    def estimate(self, estimation_problem: EstimationProblem) -> AmplitudeEstimationResult:
         """Run the amplitude estimation algorithm on provided estimation problem.
 
         Args:
@@ -379,7 +379,7 @@ class AmplitudeEstimation(AmplitudeEstimator):
 
     @staticmethod
     def compute_confidence_interval(
-        result: "AmplitudeEstimationResult",
+        result: AmplitudeEstimationResult,
         alpha: float = 0.05,
         kind: str = "likelihood_ratio",
     ) -> tuple[float, float]:

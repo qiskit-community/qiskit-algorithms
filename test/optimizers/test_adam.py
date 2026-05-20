@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2024.
+# (C) Copyright IBM 2024, 2025.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -12,13 +12,12 @@
 
 """Tests for the ADAM optimizer."""
 
-from test import QiskitAlgorithmsTestCase
-
 from ddt import ddt, data
 import numpy as np
 
 from qiskit_algorithms.optimizers import ADAM, Optimizer
 from qiskit_algorithms.utils import algorithm_globals
+from test import QiskitAlgorithmsTestCase  # pylint: disable=wrong-import-order
 
 
 @ddt
