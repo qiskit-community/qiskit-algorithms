@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2025.
+# (C) Copyright IBM 2018, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -13,6 +13,7 @@
 """Test Optimizers"""
 
 import unittest
+from unittest.mock import patch
 
 from test import QiskitAlgorithmsTestCase
 
@@ -116,6 +117,26 @@ class TestOptimizers(QiskitAlgorithmsTestCase):
         """parallel l_bfgs_b test"""
         optimizer = P_BFGS(maxfun=1000, max_processes=4)
         self.run_optimizer(optimizer, max_nfev=10000)
+
+    def test_p_bfgs_uses_fork_context(self):
+        """P_BFGS explicitly selects fork on platforms that support parallelism."""
+
+        class ForkContextRequested(Exception):
+            """Raised when the mocked fork context is requested."""
+
+        optimizer = P_BFGS(maxfun=1000, max_processes=2)
+        with patch("qiskit_algorithms.optimizers.p_bfgs.platform.system", return_value="Linux"):
+            with patch(
+                "qiskit_algorithms.optimizers.p_bfgs.multiprocessing.cpu_count", return_value=2
+            ):
+                with patch(
+                    "qiskit_algorithms.optimizers.p_bfgs.multiprocessing.get_context",
+                    side_effect=ForkContextRequested,
+                ) as get_context:
+                    with self.assertRaises(ForkContextRequested):
+                        optimizer.minimize(rosen, np.asarray([1.13, 0.7, 0.8, 1.9, 1.2]))
+
+        get_context.assert_called_once_with("fork")
 
     def test_nelder_mead(self):
         """nelder mead test"""

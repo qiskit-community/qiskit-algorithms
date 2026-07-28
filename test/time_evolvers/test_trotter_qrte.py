@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2025.
+# (C) Copyright IBM 2021, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -136,6 +136,12 @@ class TestTrotterQRTE(QiskitAlgorithmsTestCase):
         (
             SparsePauliOp([Pauli("XY"), Pauli("YX")]),
             Statevector([-0.41614684 + 0.0j, 0.0 + 0.0j, 0.0 + 0.0j, 0.90929743 + 0.0j]),
+        ),
+        (
+            SparsePauliOp([Pauli("XY"), Pauli("XX")]),  # Non-commuting case
+            Statevector(
+                [0.291926582 - 0.708073418j, 0.0 + 0.0j, 0.0 + 0.0j, 0.454648713 - 0.454648713j]
+            ),
         ),
         (
             SparsePauliOp([Pauli("ZZ"), Pauli("ZI"), Pauli("IZ")]),

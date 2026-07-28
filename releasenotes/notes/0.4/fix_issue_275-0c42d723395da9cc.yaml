@@ -1,0 +1,11 @@
+---
+fixes:
+  - |
+    Fixed :class:`.P_BFGS` on Linux with Python 3.14 by explicitly using the
+    ``fork`` multiprocessing context. Python 3.14 changed the default POSIX
+    start method to ``forkserver``, which cannot serialize the local
+    optimization callables used by :class:`.P_BFGS`.
+  - |
+    Fixed :class:`.TrotterQRTE` results with recent Qiskit versions by
+    decomposing each :class:`~qiskit.circuit.library.PauliEvolutionGate`
+    before evaluating or returning the evolved circuit.

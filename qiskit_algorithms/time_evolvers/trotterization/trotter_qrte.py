@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2021, 2025.
+# (C) Copyright IBM 2021, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -251,6 +251,7 @@ class TrotterQRTE(RealTimeEvolver):
                     synthesis=self.product_formula,
                 )
             evolved_state.append(single_step_evolution_gate, evolved_state.qubits)
+            evolved_state = evolved_state.decompose()
 
             if self._transpiler is not None:
                 evolved_state = self._transpiler.run(evolved_state, **self._transpiler_options)

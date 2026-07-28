@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2024.
+# (C) Copyright IBM 2018, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -125,7 +125,12 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
                 "For Windows, using only current process. Multiple core use not supported."
             )
 
-        queue: multiprocessing.queues.Queue[tuple[POINT, float, int]] = multiprocessing.Queue()
+        # Python 3.14 changed the default POSIX start method from fork to forkserver. P_BFGS
+        # relies on fork because the optimization callables are commonly local closures and
+        # therefore cannot be pickled for forkserver.
+        # fork is available on POSIX; Windows/macOS have already disabled workers above.
+        ctx = multiprocessing.get_context("fork") if num_procs > 0 else multiprocessing
+        queue: multiprocessing.queues.Queue[tuple[POINT, float, int]] = ctx.Queue()
 
         # TODO: are automatic bounds a good idea? What if the circuit parameters are not
         # just from plain Pauli rotations but have a coefficient?
@@ -145,7 +150,7 @@ class P_BFGS(SciPyOptimizer):  # pylint: disable=invalid-name
         processes = []
         for _ in range(num_procs):
             i_pt = algorithm_globals.random.uniform(low, high)  # Another random point in bounds
-            proc = multiprocessing.Process(target=optimize_runner, args=(queue, i_pt))
+            proc = ctx.Process(target=optimize_runner, args=(queue, i_pt))
             processes.append(proc)
             proc.start()
 
