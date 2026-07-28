@@ -81,6 +81,15 @@ class SineIntegral(QuantumCircuit):
             self.cry(2 * 2**i / 2**num_qubits, qubit, qr_objective[0])
 
 
+class MetadataFreeStatevectorSampler(StatevectorSampler):
+    """A statevector sampler that omits shot metadata from its results."""
+
+    def _run_pub(self, pub):
+        result = super()._run_pub(pub)
+        result.metadata.pop("shots", None)
+        return result
+
+
 @ddt
 class TestBernoulli(QiskitAlgorithmsTestCase):
     """Tests based on the Bernoulli A operator.
@@ -122,6 +131,24 @@ class TestBernoulli(QiskitAlgorithmsTestCase):
             self.assertAlmostEqual(
                 value, getattr(result, key), places=3, msg=f"estimate `{key}` failed"
             )
+
+    def test_sampler_without_shot_metadata(self):
+        """Sampler results need not include the number of shots in their metadata."""
+        problem = EstimationProblem(BernoulliStateIn(0.2), [0], BernoulliGrover(0.2))
+        algorithms = [
+            AmplitudeEstimation(2),
+            IterativeAmplitudeEstimation(0.1, 0.1),
+            FasterAmplitudeEstimation(0.1, 1, rescale=False),
+        ]
+
+        for algorithm in algorithms:
+            with self.subTest(algorithm=type(algorithm).__name__):
+                algorithm.sampler = MetadataFreeStatevectorSampler(default_shots=1_000, seed=42)
+                result = algorithm.estimate(problem)
+                self.assertIsNotNone(result.estimation)
+                if isinstance(algorithm, AmplitudeEstimation):
+                    self.assertEqual(result.shots, 1_000)
+                    self.assertEqual(sum(result.circuit_results.values()), 1_000)
 
     @data(True, False)
     def test_qae_circuit(self, efficient_circuit):

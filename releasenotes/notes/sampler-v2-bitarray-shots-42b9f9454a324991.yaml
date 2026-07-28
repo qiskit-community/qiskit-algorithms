@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Fixed :class:`.AmplitudeEstimation`, :class:`.IterativeAmplitudeEstimation`,
+    and :class:`.FasterAmplitudeEstimation` for SamplerV2 implementations that omit
+    the number of shots from result metadata. The algorithms now obtain the shot
+    count from the returned :class:`~qiskit.primitives.BitArray`.
