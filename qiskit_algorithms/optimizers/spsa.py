@@ -230,8 +230,8 @@ class SPSA(Optimizer):
                 information is, in this order: the number of function evaluations, the parameters,
                 the function value, the stepsize, whether the step was accepted.
             termination_checker: A callback function executed at the end of each iteration step. The
-                arguments are, in this order: the parameters, the function value, the number
-                of function evaluations, the stepsize, whether the step was accepted. If the callback
+                arguments are, in this order: the number of function evaluations, the parameters,
+                the function value, the stepsize, whether the step was accepted. If the callback
                 returns True, the optimization is terminated.
                 To prevent additional evaluations of the objective method, if the objective has not yet
                 been evaluated, the objective is estimated by taking the mean of the objective
