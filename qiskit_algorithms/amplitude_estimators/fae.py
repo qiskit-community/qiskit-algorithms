@@ -115,7 +115,7 @@ class FasterAmplitudeEstimation(AmplitudeEstimator):
             raise AlgorithmError("The job was not completed successfully. ") from exc
 
         circuit_results = getattr(result.data, next(iter(result.data.keys())))
-        shots = result.metadata["shots"]
+        shots = circuit_results.num_shots
 
         self._num_oracle_calls += (2 * k + 1) * shots
 
