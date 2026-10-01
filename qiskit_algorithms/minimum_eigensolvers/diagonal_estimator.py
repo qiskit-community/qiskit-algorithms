@@ -75,13 +75,24 @@ class _DiagonalEstimator(BaseEstimatorV2):
 
     # If precision is set to None, the default number of shots of the Sampler will be used. It will
     # otherwise be computed as a function of the observable and the precision
-    def run(
-        self, pubs: Iterable[EstimatorPubLike], *, precision: float | None = None
-    ) -> AlgorithmJob[PrimitiveResult[_DiagonalEstimatorResult]]:
+    def run(self, pubs: Iterable[EstimatorPubLike], *, precision=None):
+        aligned_pubs = []
+        for pub in pubs:
+            circ, obs, *rest = pub
+    
+            # If the circuit has a layout and the observable doesn't, align them.
+            if hasattr(circ, "layout") and circ.layout is not None:
+                try:
+                    obs = obs.apply_layout(layout=circ.layout)
+                except Exception:
+                    # If the observable can't apply the layout, skip silently
+                    pass
+
+            aligned_pubs.append((circ, obs, *rest))
+
         # Since we will convert the standalone observables to a list, this `observables` list will
         # remember the shape of the original observables, either standalone or in a list.
-        coerced_pubs = [EstimatorPub.coerce(pub, precision) for pub in pubs]
-
+        coerced_pubs = [EstimatorPub.coerce(pub, precision) for pub in aligned_pubs]
         job = AlgorithmJob(self._run, coerced_pubs)
         job._submit()
         return job
