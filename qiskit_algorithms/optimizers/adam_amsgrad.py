@@ -107,8 +107,9 @@ class ADAM(Optimizer):
             self._v_eff = np.zeros(1)
 
         if self._snapshot_dir:
-            # pylint: disable=unspecified-encoding
-            with open(os.path.join(self._snapshot_dir, "adam_params.csv"), mode="w") as csv_file:
+            with open(
+                os.path.join(self._snapshot_dir, "adam_params.csv"), mode="w", encoding="utf-8"
+            ) as csv_file:
                 if self._amsgrad:
                     fieldnames = ["v", "v_eff", "m", "t"]
                 else:
@@ -150,14 +151,16 @@ class ADAM(Optimizer):
             snapshot_dir: The directory to store the file in.
         """
         if self._amsgrad:
-            # pylint: disable=unspecified-encoding
-            with open(os.path.join(snapshot_dir, "adam_params.csv"), mode="a") as csv_file:
+            with open(
+                os.path.join(snapshot_dir, "adam_params.csv"), mode="a", encoding="utf-8"
+            ) as csv_file:
                 fieldnames = ["v", "v_eff", "m", "t"]
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writerow({"v": self._v, "v_eff": self._v_eff, "m": self._m, "t": self._t})
         else:
-            # pylint: disable=unspecified-encoding
-            with open(os.path.join(snapshot_dir, "adam_params.csv"), mode="a") as csv_file:
+            with open(
+                os.path.join(snapshot_dir, "adam_params.csv"), mode="a", encoding="utf-8"
+            ) as csv_file:
                 fieldnames = ["v", "m", "t"]
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writerow({"v": self._v, "m": self._m, "t": self._t})
@@ -165,11 +168,14 @@ class ADAM(Optimizer):
     def load_params(self, load_dir: str) -> None:
         """Load iteration parameters for a file called ``adam_params.csv``.
 
+        Note:
+
+            The file is expected to be UTF-8 encoded.
+
         Args:
             load_dir: The directory containing ``adam_params.csv``.
         """
-        # pylint: disable=unspecified-encoding
-        with open(os.path.join(load_dir, "adam_params.csv")) as csv_file:
+        with open(os.path.join(load_dir, "adam_params.csv"), encoding="utf-8") as csv_file:
             if self._amsgrad:
                 fieldnames = ["v", "v_eff", "m", "t"]
             else:
