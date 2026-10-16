@@ -329,7 +329,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 raise AlgorithmError("The job was not completed successfully. ") from exc
 
             circuit_results = getattr(ret.data, next(iter(ret.data.keys())))
-            shots = ret.metadata["shots"]
+            shots = circuit_results.num_shots
 
             counts = circuit_results.get_counts()
 
