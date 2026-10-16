@@ -378,7 +378,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             counts = circuit_results.get_counts()
 
             # calculate the probability of measuring '1', 'prob' is a_i in the paper
-            one_counts, prob = self._good_state_probability(estimation_problem, counts)
+            one_counts, _ = self._good_state_probability(estimation_problem, counts)
 
             num_one_shots.append(one_counts)
 
