@@ -1,6 +1,6 @@
 # This code is part of a Qiskit project.
 #
-# (C) Copyright IBM 2018, 2025.
+# (C) Copyright IBM 2018, 2026.
 #
 # This code is licensed under the Apache License, Version 2.0. You may
 # obtain a copy of this license in the LICENSE.txt file in the root directory
@@ -185,12 +185,12 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             theta_min = scaling * theta_l - int(scaling * theta_l)
             theta_max = scaling * theta_u - int(scaling * theta_u)
 
-            if theta_min <= theta_max <= 0.5 and theta_min <= 0.5:
+            if theta_min <= theta_max <= 0.5:
                 # the extrapolated theta interval is in the upper half-circle
                 upper_half_circle = True
                 return int((scaling - 2) / 4), upper_half_circle
 
-            elif theta_max >= 0.5 and theta_max >= theta_min >= 0.5:
+            elif 0.5 <= theta_min <= theta_max:
                 # the extrapolated theta interval is in the upper half-circle
                 upper_half_circle = False
                 return int((scaling - 2) / 4), upper_half_circle
