@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Added support for the no-overshooting condition in iterative amplitude
+    estimation (IAE) through an optional ``shots`` parameter.
+    When a shot count is provided, IAE can reduce the number of shots used
+    in later iterations according to the no-overshooting condition.
