@@ -58,6 +58,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         min_ratio: float = 2,
         sampler: BaseSamplerV2 | None = None,
         *,
+        shots: int | None = None,
         transpiler: Transpiler | None = None,
         transpiler_options: dict[str, Any] | None = None,
     ) -> None:
@@ -74,6 +75,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 Clopper-Pearson intervals (default)
             min_ratio: Minimal q-ratio (:math:`K_{i+1} / K_i`) for FindNextK
             sampler: A sampler primitive to evaluate the circuits.
+            shots: Optional baseline number of shots per iteration. If None, use the sampler's default.
             transpiler: An optional object with a `run` method allowing to transpile the circuits
                 that are produced within this algorithm. If set to `None`, these won't be transpiled.
             transpiler_options: A dictionary of options to be passed to the transpiler's `run`
@@ -97,6 +99,11 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 f"The confidence interval method must be chernoff or beta, but is {confint_method}."
             )
 
+        if shots is not None and (
+            isinstance(shots, bool) or not isinstance(shots, int) or shots <= 0
+        ):
+            raise ValueError("The number of shots must be a positive integer or None.")
+
         super().__init__()
 
         # store parameters
@@ -105,6 +112,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         self._min_ratio = min_ratio
         self._confint_method = confint_method
         self._sampler = sampler
+        self._shots = shots
         self._transpiler = transpiler
         self._transpiler_options = transpiler_options if transpiler_options is not None else {}
 
@@ -295,13 +303,26 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
         a_intervals = [[0.0, 1.0]]  # a priori knowledge of the confidence interval of the estimate
         num_oracle_queries = 0
         num_one_shots = []
+        num_shots_per_iteration = []
 
         # maximum number of rounds
         max_rounds = (
             int(np.log(self._min_ratio * np.pi / 8 / self._epsilon) / np.log(self._min_ratio)) + 1
         )
-        upper_half_circle = True  # initially theta is in the upper half-circle
+        baseline_shots = self._shots
+        t_epsilon = int(np.ceil(np.log2(np.pi / (8 * self._epsilon))))
+        l_max = (
+            _calculate_lmax(
+                baseline_shots,
+                t_epsilon,
+                self._alpha,
+                self._confint_method,
+            )
+            if baseline_shots is not None and t_epsilon > 0
+            else None
+        )
 
+        upper_half_circle = True  # initially theta is in the upper half-circle
         num_iterations = 0  # keep track of the number of iterations
         # do while loop, keep in mind that we scaled theta mod 2pi such that it lies in [0,1]
         while theta_intervals[-1][1] - theta_intervals[-1][0] > self._epsilon / np.pi:
@@ -322,15 +343,38 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             # run measurements for Q^k A|0> circuit
             circuit = self.construct_circuit(estimation_problem, k, measurement=True)
 
+            shots_to_use = baseline_shots
+
+            if baseline_shots is not None and l_max is not None:
+                scaling = 4 * k + 2
+
+                if scaling > np.ceil(l_max / self._epsilon):
+                    shots_to_use = max(
+                        1,
+                        int(
+                            np.ceil(
+                                baseline_shots * l_max
+                                / (10 * self._epsilon * scaling)
+                            )
+                        ),
+                    )
+                else:
+                    shots_to_use = baseline_shots
+
             try:
-                job = self._sampler.run([(circuit,)])
+                if shots_to_use is None:
+                    job = self._sampler.run([(circuit,)])
+                else:
+                    job = self._sampler.run([(circuit,)], shots=shots_to_use)
+
                 ret = job.result()[0]
             except Exception as exc:
-                raise AlgorithmError("The job was not completed successfully. ") from exc
-
+                raise AlgorithmError(
+                    "The job was not completed successfully. "
+                ) from exc
             circuit_results = getattr(ret.data, next(iter(ret.data.keys())))
             shots = ret.metadata["shots"]
-
+            num_shots_per_iteration.append(shots)
             counts = circuit_results.get_counts()
 
             # calculate the probability of measuring '1', 'prob' is a_i in the paper
@@ -347,20 +391,23 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             round_one_counts = one_counts
             if num_iterations > 1:
                 while (
-                    powers[num_iterations - j] == powers[num_iterations] and num_iterations >= j + 1
+                    num_iterations >= j + 1
+                    and powers[num_iterations - j] == powers[num_iterations]
                 ):
-                    j = j + 1
-                    round_shots += shots
+                    j += 1
+                    round_shots += num_shots_per_iteration[-j]
                     round_one_counts += num_one_shots[-j]
 
             # compute a_min_i, a_max_i
             if self._confint_method == "chernoff":
-                a_i_min, a_i_max = _chernoff_confint(prob, round_shots, max_rounds, self._alpha)
+                round_prob = round_one_counts / round_shots
+                a_i_min, a_i_max = _chernoff_confint(
+                    round_prob, round_shots, max_rounds, self._alpha
+                )
             else:  # 'beta'
                 a_i_min, a_i_max = _clopper_pearson_confint(
                     round_one_counts, round_shots, self._alpha / max_rounds
                 )
-
             # compute theta_min_i, theta_max_i
             if upper_half_circle:
                 theta_min_i = np.arccos(1 - 2 * a_i_min) / 2 / np.pi
@@ -569,3 +616,22 @@ def _clopper_pearson_confint(counts: int, shots: int, alpha: float) -> tuple[flo
         upper = beta.ppf(1 - alpha / 2, counts + 1, shots - counts)
 
     return lower, upper
+
+def _calculate_lmax(
+    shots: int, max_rounds: int, alpha: float, confint_method: str
+) -> float:
+    """Calculate the maximum angle-interval width for the given shot count."""
+    if confint_method == "chernoff":
+        term = 2 * np.log(2 * max_rounds / alpha) / shots
+        return np.arcsin(np.clip(term**0.25, 0, 1))
+
+    max_width = 0.0
+    for counts in range(shots + 1):
+        lower, upper = _clopper_pearson_confint(
+            counts, shots, alpha / max_rounds
+        )
+        width = (
+            np.arccos(1 - 2 * upper) - np.arccos(1 - 2 * lower)
+        ) / 2
+        max_width = max(max_width, width)
+    return max_width

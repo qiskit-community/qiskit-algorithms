@@ -355,6 +355,82 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
         np.testing.assert_array_almost_equal(confint, expected_confint, decimal=2)
         self.assertTrue(confint[0] <= result.estimation <= confint[1])
 
+    def test_iqae_shots_parameter(self):
+        """Test the optional baseline shots parameter."""
+        qae = IterativeAmplitudeEstimation(0.1, 0.01, shots=1000)
+        self.assertEqual(qae._shots, 1000)
+
+        qae_default = IterativeAmplitudeEstimation(0.1, 0.01)
+        self.assertIsNone(qae_default._shots)
+
+    def test_iqae_invalid_shots(self):
+        """Test that invalid baseline shot counts raise an error."""
+        for shots in [0, -1, 1.5, True]:
+            with self.subTest(shots=shots):
+                with self.assertRaises(ValueError):
+                    IterativeAmplitudeEstimation(0.1, 0.01, shots=shots)
+
+    def test_iqae_shots_are_reduced(self):
+        """Test that the no-overshooting rule reduces shots when required."""
+        from unittest.mock import patch
+
+        sampler = self._sampler_shots(1000)
+
+        with patch(
+            "qiskit_algorithms.amplitude_estimators.iae._calculate_lmax",
+            return_value=0.01,
+        ):
+            with patch.object(sampler, "run", wraps=sampler.run) as run:
+                qae = IterativeAmplitudeEstimation(
+                    0.1, 0.01, sampler=sampler, shots=1000
+                )
+
+                estimation_problem = EstimationProblem(
+                    SineIntegral(3), objective_qubits=[3]
+                )
+                qae.estimate(estimation_problem)
+
+        shot_counts = [
+            call.kwargs["shots"]
+            for call in run.call_args_list
+            if "shots" in call.kwargs
+        ]
+
+        self.assertTrue(shot_counts)
+        self.assertTrue(all(0 < shots < 1000 for shots in shot_counts))
+
+    def test_iqae_lmax_is_positive(self):
+        """Test that L_max is positive for valid shot counts."""
+        from qiskit_algorithms.amplitude_estimators.iae import _calculate_lmax
+
+        for method in ("chernoff", "beta"):
+            with self.subTest(method=method):
+                l_max = _calculate_lmax(
+                    shots=100,
+                    max_rounds=5,
+                    alpha=0.05,
+                    confint_method=method,
+                )
+                self.assertGreater(l_max, 0)
+
+    def test_iqae_max_epsilon_with_shots(self):
+        """Test that baseline shots are used when L_max is unavailable."""
+        from unittest.mock import patch
+
+        sampler = self._sampler_shots(1000)
+        qae = IterativeAmplitudeEstimation(
+            0.5, 0.1, sampler=sampler, shots=1000
+        )
+        estimation_problem = EstimationProblem(
+            SineIntegral(3), objective_qubits=[3]
+        )
+
+        with patch.object(sampler, "run", wraps=sampler.run) as run:
+            qae.estimate(estimation_problem)
+
+        self.assertTrue(
+            any(call.kwargs.get("shots") == 1000 for call in run.call_args_list)
+        )
 
 @ddt
 class TestTranspiler(QiskitAlgorithmsTestCase):
