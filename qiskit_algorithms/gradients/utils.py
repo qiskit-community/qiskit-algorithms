@@ -304,15 +304,29 @@ def _assign_unique_parameters(
     gradient_parameter_map = {}
     num_gradient_parameters = 0
     for instruction in circuit.data:
-        if instruction.operation.is_parameterized():
+        is_param = (
+            instruction.is_parameterized()
+            if hasattr(instruction, "is_parameterized")
+            else (
+                instruction.operation.is_parameterized()
+                or any(
+                    isinstance(p, ParameterExpression) and p.parameters
+                    for p in getattr(instruction.operation, "params", [])
+                )
+            )
+        )
+        if is_param:
             new_op_params = []
             for angle in instruction.operation.params:
-                new_parameter = Parameter(f"__gθ{num_gradient_parameters}")
-                new_op_params.append(new_parameter)
-                num_gradient_parameters += 1
-                for parameter in angle.parameters:
-                    parameter_map[parameter].append((new_parameter, angle.gradient(parameter)))
-                gradient_parameter_map[new_parameter] = angle
+                if isinstance(angle, ParameterExpression):
+                    new_parameter = Parameter(f"__gθ{num_gradient_parameters}")
+                    new_op_params.append(new_parameter)
+                    num_gradient_parameters += 1
+                    for parameter in angle.parameters:
+                        parameter_map[parameter].append((new_parameter, angle.gradient(parameter)))
+                    gradient_parameter_map[new_parameter] = angle
+                else:
+                    new_op_params.append(angle)
             instruction.operation.params = new_op_params
         gradient_circuit.append(instruction.operation, instruction.qubits, instruction.clbits)
     # For the global phase

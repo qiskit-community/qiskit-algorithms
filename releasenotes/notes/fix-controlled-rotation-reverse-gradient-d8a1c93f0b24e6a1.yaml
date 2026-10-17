@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Fixed an issue in :class:`.ReverseEstimatorGradient` where circuits containing
+    parameterized controlled gates (such as :class:`~qiskit.circuit.library.CRXGate`,
+    :class:`~qiskit.circuit.library.CRYGate`, :class:`~qiskit.circuit.library.CRZGate`,
+    or :class:`~qiskit.circuit.library.CPhaseGate`) caused a ``KeyError`` during
+    gradient preprocessing because the parameter identification logic failed to detect
+    parameters inside controlled gates (`#216 <https://github.com/qiskit-community/qiskit-algorithms/issues/216>`__).
