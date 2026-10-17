@@ -527,6 +527,45 @@ class TestEstimatorGradient(QiskitAlgorithmsTestCase):
         with self.assertRaises(NotImplementedError):
             _ = derive_circuit(qc, p)
 
+    def test_reverse_gradient_controlled_rotations(self):
+        """Test ReverseEstimatorGradient with circuits containing controlled rotations."""
+        a = Parameter("a")
+        qc = QuantumCircuit(2)
+        qc.h(0)
+        qc.crx(a, 0, 1)
+
+        op = SparsePauliOp.from_list([("IX", 1)])
+        param_value = [np.pi / 4]
+
+        rev_grad = ReverseEstimatorGradient().run([qc], [op], [param_value]).result().gradients[0]
+        shift_grad = (
+            ParamShiftEstimatorGradient(StatevectorEstimator())
+            .run([qc], [op], [param_value])
+            .result()
+            .gradients[0]
+        )
+        np.testing.assert_allclose(rev_grad, shift_grad, atol=1e-6)
+
+        # Test multiple parameters and controlled gates
+        b = Parameter("b")
+        qc2 = QuantumCircuit(3)
+        qc2.h(0)
+        qc2.crx(a, 0, 1)
+        qc2.cry(b * 2, 1, 2)
+        op2 = SparsePauliOp.from_list([("ZZZ", 1)])
+        param_values2 = [0.3, 0.7]
+
+        rev_grad2 = (
+            ReverseEstimatorGradient().run([qc2], [op2], [param_values2]).result().gradients[0]
+        )
+        shift_grad2 = (
+            ParamShiftEstimatorGradient(StatevectorEstimator())
+            .run([qc2], [op2], [param_values2])
+            .result()
+            .gradients[0]
+        )
+        np.testing.assert_allclose(rev_grad2, shift_grad2, atol=1e-6)
+
     @data(
         FiniteDiffEstimatorGradient,
         ParamShiftEstimatorGradient,
