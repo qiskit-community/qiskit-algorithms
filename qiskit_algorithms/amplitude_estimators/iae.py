@@ -351,12 +351,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
                 if scaling > np.ceil(l_max / self._epsilon):
                     shots_to_use = max(
                         1,
-                        int(
-                            np.ceil(
-                                baseline_shots * l_max
-                                / (10 * self._epsilon * scaling)
-                            )
-                        ),
+                        int(np.ceil(baseline_shots * l_max / (10 * self._epsilon * scaling))),
                     )
                 else:
                     shots_to_use = baseline_shots
@@ -369,9 +364,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
 
                 ret = job.result()[0]
             except Exception as exc:
-                raise AlgorithmError(
-                    "The job was not completed successfully. "
-                ) from exc
+                raise AlgorithmError("The job was not completed successfully. ") from exc
             circuit_results = getattr(ret.data, next(iter(ret.data.keys())))
             shots = ret.metadata["shots"]
             num_shots_per_iteration.append(shots)
@@ -391,8 +384,7 @@ class IterativeAmplitudeEstimation(AmplitudeEstimator):
             round_one_counts = one_counts
             if num_iterations > 1:
                 while (
-                    num_iterations >= j + 1
-                    and powers[num_iterations - j] == powers[num_iterations]
+                    num_iterations >= j + 1 and powers[num_iterations - j] == powers[num_iterations]
                 ):
                     j += 1
                     round_shots += num_shots_per_iteration[-j]
@@ -617,9 +609,8 @@ def _clopper_pearson_confint(counts: int, shots: int, alpha: float) -> tuple[flo
 
     return lower, upper
 
-def _calculate_lmax(
-    shots: int, max_rounds: int, alpha: float, confint_method: str
-) -> float:
+
+def _calculate_lmax(shots: int, max_rounds: int, alpha: float, confint_method: str) -> float:
     """Calculate the maximum angle-interval width for the given shot count."""
     if confint_method == "chernoff":
         term = 2 * np.log(2 * max_rounds / alpha) / shots
@@ -627,11 +618,7 @@ def _calculate_lmax(
 
     max_width = 0.0
     for counts in range(shots + 1):
-        lower, upper = _clopper_pearson_confint(
-            counts, shots, alpha / max_rounds
-        )
-        width = (
-            np.arccos(1 - 2 * upper) - np.arccos(1 - 2 * lower)
-        ) / 2
+        lower, upper = _clopper_pearson_confint(counts, shots, alpha / max_rounds)
+        width = (np.arccos(1 - 2 * upper) - np.arccos(1 - 2 * lower)) / 2
         max_width = max(max_width, width)
     return max_width

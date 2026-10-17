@@ -381,19 +381,13 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
             return_value=0.01,
         ):
             with patch.object(sampler, "run", wraps=sampler.run) as run:
-                qae = IterativeAmplitudeEstimation(
-                    0.1, 0.01, sampler=sampler, shots=1000
-                )
+                qae = IterativeAmplitudeEstimation(0.1, 0.01, sampler=sampler, shots=1000)
 
-                estimation_problem = EstimationProblem(
-                    SineIntegral(3), objective_qubits=[3]
-                )
+                estimation_problem = EstimationProblem(SineIntegral(3), objective_qubits=[3])
                 qae.estimate(estimation_problem)
 
         shot_counts = [
-            call.kwargs["shots"]
-            for call in run.call_args_list
-            if "shots" in call.kwargs
+            call.kwargs["shots"] for call in run.call_args_list if "shots" in call.kwargs
         ]
 
         self.assertTrue(shot_counts)
@@ -418,19 +412,14 @@ class TestSineIntegral(QiskitAlgorithmsTestCase):
         from unittest.mock import patch
 
         sampler = self._sampler_shots(1000)
-        qae = IterativeAmplitudeEstimation(
-            0.5, 0.1, sampler=sampler, shots=1000
-        )
-        estimation_problem = EstimationProblem(
-            SineIntegral(3), objective_qubits=[3]
-        )
+        qae = IterativeAmplitudeEstimation(0.5, 0.1, sampler=sampler, shots=1000)
+        estimation_problem = EstimationProblem(SineIntegral(3), objective_qubits=[3])
 
         with patch.object(sampler, "run", wraps=sampler.run) as run:
             qae.estimate(estimation_problem)
 
-        self.assertTrue(
-            any(call.kwargs.get("shots") == 1000 for call in run.call_args_list)
-        )
+        self.assertTrue(any(call.kwargs.get("shots") == 1000 for call in run.call_args_list))
+
 
 @ddt
 class TestTranspiler(QiskitAlgorithmsTestCase):
